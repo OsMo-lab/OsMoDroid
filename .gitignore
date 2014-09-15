@@ -1,0 +1,14 @@
+/nbproject/
+GPSLocalService/local.properties.sample
+GPSLocalService/build.xml
+GPSLocalService/.settings/org.eclipse.jdt.core.prefs
+GPSLocalService/.settings/org.eclipse.core.resources.prefs
+*.properties
+*.properties
+GPSLocalService/proguard/dump.txt
+GPSLocalService/proguard/mapping.txt
+GPSLocalService/proguard/dump.txt
+GPSLocalService/proguard/mapping.txt
+GPSLocalService/proguard/usage.txt
+GPSLocalService/proguard/usage.txt
+v7/appcompat/bin/android-support-v7-appcompat.jar

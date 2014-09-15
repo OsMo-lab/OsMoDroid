@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="hello">Hello World, RemoteOsMoDroidClientActivity!</string>
+    <string name="app_name">RemoteOsMoDroidClient</string>
+    <string name="Start">Start</string>
+    <string name="UnBind">UnBind</string>
+    <string name="Stop">Stop</string>
+
+</resources>

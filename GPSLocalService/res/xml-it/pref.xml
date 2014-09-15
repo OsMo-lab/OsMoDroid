@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" android:title="Impostazioni">
+    
+    <EditTextPreference android:summary="Millisecondi" android:title="intervallo campionamento GPS" android:key="refreshrate" android:defaultValue="1000"/><EditTextPreference android:summary="Secondi" android:title="Network timeout" android:key="timeout" android:defaultValue="30"/><PreferenceCategory android:title="Online">
+        
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="live"
+            android:title="Monitoraggio in diretta"/>
+
+                    <PreferenceScreen android:title="Impostazioni monitoraggio" android:dependency="live">
+                            <EditTextPreference
+                                android:digits="0123456789"
+                                android:inputType= "number"
+                                android:key= "period"
+                                android:numeric= "integer"
+                                android:summary= "Millisecondi "
+                                android:title= "Tempo invio" android:defaultValue= "5000"/>
+                            <EditTextPreference
+                                android:digits= "0123456789"
+                                android:inputType= "number"
+                                android:key= "distance"
+                                android:numeric= "integer"
+                                android:summary= "Metri "
+                                android:title= "Distanza invio" android:defaultValue= "0"/>
+                            <EditTextPreference
+                                android:digits= "0123456789"
+                                android:inputType= "number"
+                                android:key= "bearing"
+                                android:numeric= "integer"
+                                android:summary= "Gradi "
+                                android:title= "Deviazione percorso" android:defaultValue= "0"/>
+                            <EditTextPreference
+                                android:digits= "0123456789"
+                                android:inputType= "number"
+                                android:key= "speedbearing"
+                                android:summary= "kilometeri per ora "
+                                android:title="Speed Trigger For Course Deviation" android:defaultValue="5" />
+                            <EditTextPreference
+                                android:digits= "0123456789"
+                                android:inputType= "number"
+                                android:key= "hdop"
+                                android:numeric= "integer"
+                                android:summary= "Metri"
+                                android:title= "Errore massimo HDOP" android:defaultValue= "30"/>
+                            <EditTextPreference
+                                android:key= "speed"
+                                android:title= "La velocità minima di invio "
+                                android:summary= "kilometeri per ora "
+                                android:digits= "0123456789"
+                                android:inputType= "number"
+                                android:defaultValue= "0"/>
+                            <CheckBoxPreference android:key="modeAND" android:title="Modo E" android:defaultValue="false" android:summary="Modo OPPURE preimpostato"/>
+                            <CheckBoxPreference
+                                android:key= "usebuffer"
+                                android:title= "Trasferimento non impostato"
+                                android:summary= "Utilizzabile con connesione internet ballerina. Potrebbe aumentare il traffico web."
+                                android:defaultValue= "false"/>
+                            
+                    </PreferenceScreen>
+    </PreferenceCategory>
+    
+    <PreferenceCategory android:title="Offline">
+
+        <CheckBoxPreference
+            android:defaultValue= "false"
+            android:key= "gpx"
+            android:summary= "Le tracce sono conservate nella carta di memoria di default (/sdcard/OsMoDroid/)"
+            android:title= "Registra traccia"/>
+
+                <PreferenceScreen android:title="Impostazioni di registrazione" android:dependency="gpx">
+                        <EditTextPreference
+                            android:digits= "0123456789"
+                            android:inputType= "number"
+                            android:key= "period_gpx"
+                            android:numeric= "integer"
+                            android:summary= "Millisecondi"
+                            android:title= "Intervallo di salvataggio" android:defaultValue= "1000"/>
+                        <EditTextPreference
+                            android:digits= "0123456789"
+                            android:inputType= "number"
+                            android:key= "distance_gpx"
+                            android:numeric= "integer"
+                            android:summary= "Metri"
+                            android:title= "Distanza per il salvataggio " android:defaultValue= "0"/>
+                        <EditTextPreference
+                            android:digits= "0123456789"
+                            android:inputType= "number"
+                            android:key= "bearing_gpx"
+                            android:numeric= "integer"
+                            android:summary= "Gradi"
+                            android:title= "Deviazione traccia" android:defaultValue= "0"/>
+                        <EditTextPreference
+                            android:digits= "0123456789"
+                            android:inputType= "number"
+                            android:key= "speedbearing_gpx"
+                            android:summary= "kilometri per ora"
+                            android:title= "Speed Trigger for Course Deviation" android:defaultValue= "0"/>
+                        <EditTextPreference
+                            android:digits= "0123456789"
+                            android:inputType= "number"
+                            android:key= "hdop_gpx"
+                            android:numeric= "integer"
+                            android:summary= "Metri"
+                            android:title= "Precisione accettabile" android:defaultValue= "30"/>
+                        <EditTextPreference
+                            android:digits= "0123456789"
+                            android:inputType= "number"
+                            android:key= "speed_gpx"
+                            android:numeric= "integer"
+                            android:summary= "kilometri per ora"
+                            android:title= "Velocità Minima per salvataggio ​"
+                            android:defaultValue= "0"/><CheckBoxPreference android:key="modeAND_gpx" android:title="Modo E o OPPURE" android:defaultValue="false"/>
+                        <EditTextPreference android:title="Percorso SDcard" android:key="sdpath"/>
+                </PreferenceScreen>
+                    
+    </PreferenceCategory>
+    
+    <PreferenceCategory android:title="Avanzate">
+
+                    <PreferenceScreen android:title="Notifica" >
+                            <CheckBoxPreference
+                                android:key= "vibrate"
+                                android:title= "Vibra alla perdita della connesione a Internet o del GPS"
+                                android:defaultValue= "false"/>
+                            <EditTextPreference
+                                android:digits= "0123456789"
+                                android:inputType= "number"
+                                android:key= "vibratetime"
+                                android:numeric= "integer"
+                                android:summary= "Millisecondi"
+                                android:title= "Durata vibrazione"
+                                android:defaultValue= "500"/>
+                            <CheckBoxPreference
+                                android:key= "playsound"
+                                android:title= "Riproduci un suono alla perdita della connessione Internet o GPS"
+                                android:defaultValue= "false"/>
+                            <EditTextPreference
+                                android:digits= "0123456789"
+                                android:inputType= "number"
+                                android:key= "notifyperiod"
+                                android:numeric= "integer"
+                                android:summary= "Millisecondi"
+                                android:title= "Periodo di indisponibilità del GPS"
+                                android:defaultValue= "60000"/>
+                            <CheckBoxPreference
+                                android:key= "sendsound"
+                                android:title= "Suona quando spedisci"
+                                android:defaultValue= "false"/>
+                            <CheckBoxPreference
+                                android:key= "usetts"
+                                android:summary= "Usa text-to-speech"
+                                android:title= "Pronuncia la velocità"
+                                android:defaultValue= "false"/>
+                            <CheckBoxPreference
+                                android:key= "silentnotify"
+                                android:title= "Nessuna notifica"
+                                android:defaultValue= "false"/>
+                            <CheckBoxPreference
+                                android:key= "onlinenotify"
+                                android:title= "Avvisa se online"
+                                android:defaultValue= "false"
+                                android:summary= "Notifica del cambio dello stato online dei tuoi dispositivi"/>
+                            <CheckBoxPreference
+                                android:key= "statenotify"
+                                android:title= "Notifica con il monitoraggio"
+                                android:defaultValue= "false"
+                                android:summary= "notifica lo stato dell monitoraggio per i tuoi dispositivi"/>
+                            <CheckBoxPreference
+                                android:summary= "Usa l'allarme"
+                                android:key= "usealarm"
+                                android:title= "Allarme"
+                                android:defaultValue= "false"/>
+                            <EditTextPreference
+                                android:title= "Sensibilità"
+                                android:summary= "Accelerazione per attivare l'allarme"
+                                android:key= "sensivity" android:defaultValue= "2"/>
+                    </PreferenceScreen>
+
+        <CheckBoxPreference
+            android:key= "usewake"
+            android:summary= "Aumenta il consumo di energia"
+            android:title= "Non mostrare lo schermo"
+            android:defaultValue= "false"/>
+        <CheckBoxPreference
+            android:key= "usegps"
+            android:summary= "Utilizza per determinare le coordinate GPS"
+            android:title= "GPS"
+            android:defaultValue= "true"/>
+        <CheckBoxPreference
+            android:key= "usenetwork"
+            android:summary= "Usa per determinare le coordinate le reti cellulare e WiFi (traffico Internet aggiuntivo)"
+            android:title= "Reti Mobili"
+            android:defaultValue= "true"/>
+        <CheckBoxPreference
+            android:key= "autostart"
+            android:summary= "Lancia il servizio in backgroung all'avvio del telefono."
+            android:title= "Avvia all'accensione"
+            android:defaultValue= "false"/>
+        
+    </PreferenceCategory>
+    
+    
+</PreferenceScreen>

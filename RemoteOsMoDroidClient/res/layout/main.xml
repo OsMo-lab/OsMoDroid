@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/t1"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/hello" />
+
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/Start" />
+
+    <Button
+        android:id="@+id/Button2"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/UnBind" />
+
+    <Button
+        android:id="@+id/Button3"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/Stop" />
+
+    <Button
+        android:id="@+id/getInfobutton"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="getInfo" />
+
+    <TextView
+        android:id="@+id/infotextView"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:text="TextView" />
+    
+      <TextView
+        android:id="@+id/testtextView"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:text="TextView" />
+
+</LinearLayout>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+     <dimen name="speed_text_size">150sp</dimen>
+     <dimen name="all_text_size">90sp</dimen>
+     <dimen name="sign_text_size">60sp</dimen>
+</resources>

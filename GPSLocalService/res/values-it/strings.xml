@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<string name="app_name">OsMoDroid</string>
+<string name="start">Avvia</string>
+<string name="stop">Ferma</string>
+<string name="serviceStatus">Stato:</string>
+<string name="location">Posizione:</string>
+<string name="sends">Inviati:</string>
+<string name="url">Indirizzi:</string>
+<string name="settings">Impostazioni</string>
+<string name="period">Campionamento GPS</string>
+<string name="succes">A buon fine</string>
+<string name="error">Errore:</string>
+<string name="Sputniki">Satelliti:</string>
+<string name="GlonasFindString">usa Glonass</string>
+<string name="NoConnection">Manca la connessione</string>
+<string name="Unknow">Sconosciuto</string>
+<string name="NotDefined">Non definito</string>
+<string name="Sended">Inviando:</string>
+<string name="Adres">Indirizzi:</string>
+<string name="RepeatAuth">Resetta dati di accesso</string>
+<string name="Settings">Impostazioni</string>
+
+<!-- Fuzzy -->
+<string name="EqualsParameters">Compara le impostazioni</string>
+<string name="AgreeRepeatAuth">Conferma la richiesta di nuova autorizzazione</string>
+<string name="ChangeAdresMonitor">Questo cambia gli indirizzi di monitoraggio!</string>
+<string name="yes">Si</string>
+<string name="No">No</string>
+
+<!-- Fuzzy -->
+<string name="AgreeParameterEqual">Conferma la comparazione dei parametri di trasmissione e registrazione</string>
+<string name="TrackRecordParameterChanges">I parametri di registrazione della traccia saranno cambiati</string>
+<string name="Running">Lanciato</string>
+<string name="NotRunning">Non avviato</string>
+<string name="Status">Stato:</string>
+<string name="Sendcount">Numero inviati:</string>
+<string name="ErrorRecieve">Errori ricevendo</string>
+<string name="AuthWait">Autorizzazione richiesta, prego attendere ...</string>
+<string name="CheckInternet">Autenticazione fallita. Controlla la connesisone Internet</string>
+<string name="CanNotWriteHeader">Non posso scrivere il file della traccia</string>
+<string name="CanNotWriteEnd">Non posso scrivere la fine della traccia</string>
+<string name="SendCourseChange">Cambia la frequenza di trasmissione:</string>
+
+<!-- Fuzzy -->
+<string name="TrackCourseChange">Cambiando un tratto della traccia:</string>
+<string name="ServerError">Errore del Server</string>
+<string name="buffer">Buffer:</string>
+<string name="request">Autorizzazione richiesta, prego attendere ...</string>
+<string name="noappcode">Password vuota</string>
+<string name="nokey">Errore nell\'autorizzazione</string>
+<string name="getkey">Autorizza</string>
+<string name="getadres">Ottieni indirizzi</string>
+<string name="getdevice">Acquisisci dispositivo</string>
+<string name="enterchanel">Entra nel canale</string>
+<string name="SimLinkButtonText">Aggiorna</string>
+<string name="addsymlink">Aggiungi collegamento</string>
+<string name="symlink">Miei collegamenti</string>
+<string name="sendnow">Invia adesso</string>
+<string name="message">Messaggio</string>
+<string name="sendsupport">Riporta al supporto</string>
+<string name="about">A proposito</string>
+<string name="abouttext">OsMoDroid, client di monitoraggio OsMo 
+Autore: Denis Fokin (c) 2012-2014 
+
+Utilizzando questa applicazione si accettano i Termini di Utilizzo: http://osmo.mobi/terms/
+
+Il sito OsMoDroid: http://osmodroid.com 
+Il Manuale di OsMoDroid: http://osmodroid.com/help/
+Link a OsmAnd: http://osmodroid.com/withosmand.html
+ 
+Manuale a proposito del monitoraggio: http://esya.ru/om/start/
+
+Map Data © OpenStreetMap contributors www.osm.org
+Tiles © GIScience Heidelberg
+</string>
+<string name="send">Invia</string>
+<string name="cancel">Cancella</string>
+<string name="speed">Velocità km/h:</string>
+<string name="auth">Autorizzazione</string>
+<string name="warnhash">I dati di identificazione (hash o numero di riferimento) sono sbagliati, è necessario reimpostare l\'hash o immetterlo nelle impostazioni manualmente</string>
+
+<!-- Fuzzy -->
+<string name="nomapapp">Applicazione tipo Maps non installata</string>
+<string name="showonmap">Mostra nella mappa</string>
+<string name="chanal">Canale</string>
+<string name="refresh">Aggiorna</string>
+<string name="coordinats">Posizione:</string>
+<string name="Distantion">Raggio:</string>
+<string name="Km">Km</string>
+<string name="m">m</string>
+<string name="chanals">Canali</string>
+<string name="yourmessage">Tuo messaggio:</string>
+<string name="sendingmessage">Messaggio in uscita</string>
+<string name="sharelink">Condividi</string>
+<string name="deviceslis">Lista dispositivo</string>
+<string name="messagetochanal">Messaggio al canale</string>
+<string name="copylink">Copia questo collegamento</string>
+<string name="openinbrowser">Apri nel browser</string>
+<string name="exitfromchanal">Esci dal canale</string>
+<string name="createchanel">Crea un canale</string>
+
+<!-- Fuzzy -->
+<string name="enterchanal">Entra nel canale</string>
+<string name="chanalname">Nome Canale:</string>
+<string name="chanalcode">Codice del canale:</string>
+<string name="privatechanal">Canale privato</string>
+<string name="chanalkey">Chiave del canale</string>
+<string name="createchanal">Registra il canale qui</string>
+<string name="noallenter">Non include tutti i dati</string>
+<string name="bindtochanal">Connessione al canale</string>
+
+<!-- Fuzzy -->
+<string name="requestdevicebefore">Richiesta precedente dispositivo</string>
+<string name="chatwith">Chatta con</string>
+<string name="devices">Dispositivi</string>
+<string name="writemessage">Scrivi un messaggio</string>
+<string name="messages">Messaggi</string>
+<string name="binddevice">Pareggia il dispositivo</string>
+<string name="hash">Hash:</string>
+<string name="controlnumber">Codice di conferma:</string>
+<string name="bindapp">Collega l\'app</string>
+<string name="esya_ru_notrespond">OsMoDroid non può accedere al server</string>
+
+<!-- Fuzzy -->
+<string name="tracker">Tracker</string>
+<string name="links">Collegamenti</string>
+<string name="tracks">Tracce</string>
+<string name="notifications">Avvisi</string>
+<string name="stat">Statistiche</string>
+<string name="login">Nome utente su Esya.ru:</string>
+<string name="password">Password:</string>
+<string name="appauth">Autorizza l\'Applicazione</string>
+<string name="inbuffer">in buffer:</string>
+<string name="authpleasewait">Autorizzazione richiesta, prego attendere ...</string>
+<string name="commandpleasewait">Comando in esecuzione, prego attendere ...</string>
+<string name="resultenterchanalnoget">Risultato ingresso al canale non ricevuto</string>
+<string name="linksnotget">Collegamenti non letti</string>
+<string name="noanswerfromserver">Mancata risposta dal server</string>
+<string name="urlnoget">Impossibile ottenere l\'URL</string>
+<string name="prefsaved">Impostazioni salvate sulla scheda di memoria</string>
+<string name="prefloaded">Impostazioni lette dalla scheda di memoria</string>
+<string name="started">Avviato</string>
+<string name="stoped">Fermato</string>
+<string name="monitoringondevice">Monitorando sul dispositivo\</string>
+<string name="enternet">Unito alla rete</string>
+<string name="exitnet">Lascia la rete</string>
+<string name="device">Il dispositivo\</string>
+<string name="accuracy">Accuratezza:</string>
+<string name="maximal">Massimo:</string>
+<string name="kmch">Km/h</string>
+<string name="average">Media:</string>
+<string name="going">Percorrenza:</string>
+<string name="km">km</string>
+<string name="worktime">Tempo di attività:</string>
+<string name="observers">Osservatori</string>
+<string name="monitoringstarted">Monitoraggio avviato</string>
+<string name="monitoringactive">Il monitoraggio è attivo</string>
+<string name="tracktoshort">La traccia è troppo corta (meno di 1 KB), il file no sarà salvato o caricato</string>
+<string name="osmodroiduploadfile">Invio file OsMoDroid</string>
+<string name="commansendlocation">Comando: Inviando la posizione</string>
+<string name="letsgo">Andiamo!</string>
+<string name="comand">Comando:</string>
+<string name="errorcode">Codice errore:</string>
+<string name="detalisation">Spiegazione:</string>
+<string name="query">Interrogazione:</string>
+<string name="versionosmodroid">versione OsMoDroid:</string>
+<string name="dayssend">invii per giorno:</string>
+<string name="monthsends">invii per mese:</string>
+<string name="exit">Esci</string>
+<string name="savepref">Salva le Impostazioni sulla carta SD</string>
+<string name="loadpref">Carica le impostazioni dalla memoria SD</string>
+<string name="more">Informazioni</string>
+<string name="iamhere">Io sono qui!</string>
+<string name="linkcopied">Collegamento copiato negli appunti</string>
+<string name="Stoping">Ferma</string>
+<string name="closesession">Chiudere la sessione?</string>
+<string name="loading">Caricando ...</string>
+<string name="uploadtrera">Invio a TReRa?</string>
+<string name="servermessage">Messaggio dal server</string>
+<string name="deletelink">Rimuovi il collegamento</string>
+<string name="uploadtotrera">Invia a TReRa</string>
+<string name="delete">Cancella</string>
+<string name="channelsend">Invia ai canali</string>
+<string name="alarm">Sveglia</string>
+<string name="recivedmessages">Messaggi ricevuti:</string>
+<string name="spd">Velocità</string>
+<string name="max">Massimo</string>
+<string name="avg">Media</string>
+<string name="inway">sulla via</string>
+<string name="ingoing2">Percorrenza</string>
+<string name="sended">Inviato</string>
+<string name="writen"> Registrato:</string>
+<string name="wekksends"> Settimane inviate:</string>
+<string name="from_undefined">da anonimo</string>
+<string name="map">Mappa</string>
+<string name="iam">Io</string>
+<string name="needgps">Necessita del GPS acceso </string>
+<string name="enablegps">Prego accenda il GPS</string>
+<string name="showtraces">Mostra le tracce</string>
+<string name="enable_manual_rotation">Abilita la rotazione manuale</string>
+<string name="enable_course_rotation">Abilita la rotazione della traccia</string>
+<string name="drawer_open">Apri</string>
+<string name="drawer_close">Chiudi</string>
+</resources>
