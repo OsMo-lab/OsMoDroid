@@ -94,7 +94,7 @@
 <string name="hash">Hash:</string>
 <string name="controlnumber">Confirmation code:</string>
 <string name="bindapp">Connect app</string>
-<string name="esya_ru_notrespond">OsMoDroid can't access the server</string>
+<string name="esya_ru_notrespond">OsMoDroid can\'t access the server</string>
 <string name="tracker">Tracker</string>
 <string name="links">Links</string>
 <string name="tracks">Tracks</string>
