@@ -107,6 +107,7 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
 			MenuItem mapsurfer = menu2.add(0, 5, 1, "MapSurfer");
 			MenuItem mapnik = menu2.add(0, 6, 2, "Mapnik");
 			MenuItem bing = menu2.add(0, 7, 3, "Microsoft Bing");
+			MenuItem binglabels = menu2.add(0, 8, 4, "Microsoft Bing with Labels");
 			super.onCreateOptionsMenu(menu, inflater);
 			
 		}
@@ -146,8 +147,15 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
 				break;
 			case 7:
 				BingMapTileSource.retrieveBingKey(globalActivity);
+				bingTileSource.setStyle(BingMapTileSource.IMAGERYSET_AERIAL);
 				mMapView.setTileSource(bingTileSource);
 				LocalService.selectedTileSourceInt=3;
+				break;
+			case 8:
+				BingMapTileSource.retrieveBingKey(globalActivity);
+				bingTileSource.setStyle(BingMapTileSource.IMAGERYSET_AERIALWITHLABELS);
+				mMapView.setTileSource(bingTileSource);
+				LocalService.selectedTileSourceInt=4;
 				break;
 			default:
 				break;
@@ -318,7 +326,6 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
 			final String aImageFilenameEnding = ".png";
 			final String[] aBaseUrl=new String[] {"http://openmapsurfer.uni-hd.de/tiles/roads/"};
 			bingTileSource = new BingMapTileSource(null);
-			bingTileSource.setStyle(BingMapTileSource.IMAGERYSET_AERIALWITHLABELS);
 			mapSurferTileSource = new MAPSurferTileSource(name, string.unknown, aZoomMinLevel, aZoomMaxLevel, aTileSizePixels, aImageFilenameEnding, aBaseUrl);
 			View view = inflater.inflate(R.layout.map, container, false);
 			mMapView = (MapView)view.findViewById(R.id.mapview);
@@ -332,8 +339,14 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
 				mMapView.setTileSource(mapSurferTileSource);
 				break;
 			case 3:
+				bingTileSource.setStyle(BingMapTileSource.IMAGERYSET_AERIAL);
 				mMapView.setTileSource(bingTileSource);
 				break;
+			case 4:
+				bingTileSource.setStyle(BingMapTileSource.IMAGERYSET_AERIALWITHLABELS);
+				mMapView.setTileSource(bingTileSource);
+				break;
+				
 			default:
 				break;
 			}
