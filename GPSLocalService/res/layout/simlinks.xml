@@ -2,10 +2,12 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    android:background="@android:color/transparent"
     android:orientation="vertical" android:alwaysDrawnWithCache="false" android:descendantFocusability="blocksDescendants">
     
     <ListView
         android:id="@+id/listView1"
+        android:background="@android:color/transparent"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
          android:fastScrollAlwaysVisible="true"

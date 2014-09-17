@@ -369,6 +369,7 @@ public  class LocalService extends Service implements LocationListener,GpsStatus
 	private ArrayList<String> buffer= new ArrayList<String>();
 	public String motd="";
 	private long pausemill;
+	private int intKM;
 	static int selectedTileSourceInt=1;
 	//boolean connecting=false;
 	     static String formatInterval(final long l)
@@ -1563,6 +1564,12 @@ public void sendid()
 		if (location.getSpeed()>=speed_gpx/3.6 && (int)location.getAccuracy()<hdop_gpx && prevlocation_spd!=null )
 		{
 			workdistance=workdistance+location.distanceTo(prevlocation_spd);
+			if (OsMoDroid.settings.getBoolean("usetts", false)&&tts!=null && !tts.isSpeaking() &&((int)workdistance)/1000>intKM )
+				{
+					intKM=(int)workdistance/1000;
+					tts.speak(getString(R.string.going)+' '+Integer.toString(intKM)+' '+getString(R.string.avg)+' '+df1.format(avgspeed*3600)+' '+ getString(R.string.inway)+' '+formatInterval(timeperiod), TextToSpeech.QUEUE_ADD, null);
+					
+				}
 			//if(log)Log.d(this.getClass().getName(),"Log of Workdistance, Workdistance="+ Float.toString(workdistance)+" location="+location.toString()+" prevlocation_spd="+prevlocation_spd.toString()+" distanceto="+Float.toString(location.distanceTo(prevlocation_spd)));
 			prevlocation_spd.set(location);	
 			GeoPoint geopoint = new GeoPoint(location);

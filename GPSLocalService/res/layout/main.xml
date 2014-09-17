@@ -1,103 +1,98 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:alwaysDrawnWithCache="false"
     android:descendantFocusability="blocksDescendants"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    tools:context=".GPSLocalServiceClient" >
 
-	<LinearLayout
-	    android:layout_width="match_parent"
-	    android:layout_height="wrap_content" >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
 
-	    <TextView
-	        android:id="@+id/serviceStatus"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:layout_weight="0.50"
-	        android:text="@string/serviceStatus"
-	        android:textSize="20sp" />
+        <TextView
+            android:id="@+id/serviceStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.50"
+            android:text="@string/serviceStatus"
+            android:textSize="20sp" />
 
-	    <TextView
-	        android:id="@+id/Send"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:layout_weight="0.50"
-	        android:gravity="right"
-	        android:text="@string/sends"
-	        android:textSize="20sp" />
+        <TextView
+            android:id="@+id/Send"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.50"
+            android:gravity="right"
+            android:text="@string/sends"
+            android:textSize="20sp" />
+    </LinearLayout>
 
-	</LinearLayout>
+    <TextView
+        android:id="@+id/URL"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        android:textSize="20sp" />
 
-	<TextView
-	    android:id="@+id/URL"
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    android:layout_gravity="left"
-	    android:textSize="20sp" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
 
-	<LinearLayout
-	    android:layout_width="match_parent"
-	    android:layout_height="wrap_content" >
+        <ToggleButton
+            android:id="@+id/toggleButton1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="ToggleButton"
+            android:textOff="@string/channelsend"
+            android:textOn="@string/channelsend" />
 
-	    <ToggleButton
-	        android:id="@+id/toggleButton1"
-	        
-	        android:layout_height="wrap_content"
-	        android:layout_weight="1"
-	        android:layout_width="0dp"
-	        android:text="ToggleButton"
-	        android:textOff="@string/channelsend"
-	        android:textOn="@string/channelsend" />
+        <ToggleButton
+            android:id="@+id/alarmButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/alarm"
+            android:textOff="@string/alarm"
+            android:textOn="@string/alarm" />
+    </LinearLayout>
 
-	    <ToggleButton
-	        android:id="@+id/alarmButton"
-	        
-	        android:layout_height="wrap_content"
-	        android:layout_weight="1"
-	        android:layout_width="0dp"
-	        android:text="@string/alarm"
-	        android:textOff="@string/alarm"
-	        android:textOn="@string/alarm" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="fill_horizontal" >
 
-	</LinearLayout>
+        <Button
+            android:id="@+id/startButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:clickable="false"
+            android:text="@string/start" />
 
-	<LinearLayout
-	    android:layout_width="match_parent"
-	    android:layout_height="wrap_content"
-	    android:gravity="fill_horizontal" >
+        <Button
+            android:id="@+id/exitButton"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:clickable="true"
+            android:text="@string/stop" />
+    </LinearLayout>
 
-	    <Button
-	        android:id="@+id/startButton"
-	         android:layout_width="0dp"
-	        android:layout_height="wrap_content"
-	        android:layout_weight="1"
-	        android:clickable="false"
-	        android:text="@string/start" />
+    <Button
+        android:id="@+id/authButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/auth" />
 
-	    <Button
-	        android:id="@+id/exitButton"
-	        android:layout_width="0dp"
-	        android:layout_height="match_parent"
-	        android:layout_weight="1"
-	        android:clickable="true"
-	        android:text="@string/stop" />
-
-	</LinearLayout>
-
-	<Button
-	    android:id="@+id/authButton"
-	    android:layout_width="match_parent"
-	    android:layout_height="wrap_content"
-	    android:text="@string/auth" />
-	
-
-
-	<TextView
-	    android:id="@+id/Location"
-	    android:layout_width="fill_parent"
-	    android:layout_height="wrap_content"
-	    android:textSize="20sp"
-	    android:autoLink="all" />
+    <TextView
+        android:id="@+id/Location"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:autoLink="all"
+        android:textSize="20sp" />
 
 </LinearLayout>

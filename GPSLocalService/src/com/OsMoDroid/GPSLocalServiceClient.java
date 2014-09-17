@@ -345,7 +345,7 @@ void showFragment(Fragment fragment, boolean backstack) {
 
 		     
 		        mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
-		        mDrawerLayout.setBackgroundColor(Color.WHITE);
+		        //mDrawerLayout.setBackgroundColor(Color.WHITE);
 		        mDrawerList.setCacheColorHint(0);
 		       
 			
