@@ -29,6 +29,7 @@ import org.json.JSONObject;
 import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.util.GeoPoint;
 
+import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -372,9 +373,15 @@ public  class LocalService extends Service implements LocationListener,GpsStatus
 	private int intKM;
 	static int selectedTileSourceInt=1;
 	//boolean connecting=false;
-	     static String formatInterval(final long l)
+	     
+		static String formatInterval(final long l)
 	    {
-	    	return String.format("%02d:%02d:%02d", l/(1000*60*60), (l%(1000*60*60))/(1000*60), ((l%(1000*60*60))%(1000*60))/1000);
+	    	if(l/(1000*60*60)==0)
+	    		{
+	    	
+	    			return String.format("%02d:%02d",  (l%(1000*60*60))/(1000*60), ((l%(1000*60*60))%(1000*60))/1000);
+	    		}
+			return String.format("%02d:%02d:%02d", l/(1000*60*60), (l%(1000*60*60))/(1000*60), ((l%(1000*60*60))%(1000*60))/1000);
 	    }
 
 	public class LocalBinder extends Binder {
@@ -577,6 +584,7 @@ public void stopcomand()
 	public void onCreate() {
 		super.onCreate();
 		Log.d(this.getClass().getName(), "localserviceoncreate");
+		ttsManage();
 		getversion();
 		serContext=LocalService.this;
 		mSensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
@@ -859,7 +867,13 @@ OsMoDroid.settings.edit().putBoolean("ondestroy", false).commit();
 	@Override
 
 	public void onDestroy() {
-		
+	    if (tts != null) {
+
+            tts.stop();
+
+            tts.shutdown();
+            tts=null;
+        }
 		mSensorManager.unregisterListener(this);
 		if(log)Log.d(this.getClass().getName(), "Disable signalisation after destroy");
 		if (state){ stopServiceWork(false);}
@@ -1039,7 +1053,7 @@ OsMoDroid.settings.edit().putBoolean("ondestroy", false).commit();
 		
 		}
 		setPause(false);
-		ttsManage();
+		
 requestLocationUpdates();
 
 
@@ -1122,7 +1136,10 @@ if (live){
 
 		if(log)Log.d(getClass().getSimpleName(), "notify:"+notification.toString());
 
-		
+		if(tts!=null&&OsMoDroid.settings.getBoolean("usetts", false))
+			{
+				tts.speak(getString(R.string.letsgo), TextToSpeech.QUEUE_ADD, null);
+			}
 
 
 
@@ -1339,13 +1356,7 @@ public void sendid()
         OsMoDroid.editor.commit();
         
         firstgpsbeepedon=false;
-        if (tts != null) {
-
-            tts.stop();
-
-            tts.shutdown();
-            tts=null;
-        }
+    
         
         
 		if (OsMoDroid.settings.getBoolean("playsound", false)){
@@ -1564,10 +1575,10 @@ public void sendid()
 		if (location.getSpeed()>=speed_gpx/3.6 && (int)location.getAccuracy()<hdop_gpx && prevlocation_spd!=null )
 		{
 			workdistance=workdistance+location.distanceTo(prevlocation_spd);
-			if (OsMoDroid.settings.getBoolean("usetts", false)&&tts!=null && !tts.isSpeaking() &&((int)workdistance)/1000>intKM )
+			if (OsMoDroid.settings.getBoolean("ttsavgspeed", false)&&OsMoDroid.settings.getBoolean("usetts", false)&&tts!=null && !tts.isSpeaking() &&((int)workdistance)/1000>intKM )
 				{
 					intKM=(int)workdistance/1000;
-					tts.speak(getString(R.string.going)+' '+Integer.toString(intKM)+' '+getString(R.string.avg)+' '+df1.format(avgspeed*3600)+' '+ getString(R.string.inway)+' '+formatInterval(timeperiod), TextToSpeech.QUEUE_ADD, null);
+					tts.speak(getString(R.string.going)+' '+Integer.toString(intKM)+' '+"километров"+','+getString(R.string.avg)+' '+df1.format(avgspeed*3600)+','+ getString(R.string.inway)+' '+formatInterval(timeperiod), TextToSpeech.QUEUE_ADD, null);
 					
 				}
 			//if(log)Log.d(this.getClass().getName(),"Log of Workdistance, Workdistance="+ Float.toString(workdistance)+" location="+location.toString()+" prevlocation_spd="+prevlocation_spd.toString()+" distanceto="+Float.toString(location.distanceTo(prevlocation_spd)));
@@ -1593,7 +1604,7 @@ public void sendid()
 		}
 		//if(log)Log.d(this.getClass().getName(), df0.format(location.getSpeed()*3.6).toString());
 		//if(log)Log.d(this.getClass().getName(), df0.format(prevlocation.getSpeed()*3.6).toString());
-		if (OsMoDroid.settings.getBoolean("usetts", false)&&tts!=null && !tts.isSpeaking() && !(df0.format(location.getSpeed()*3.6).toString()).equals(lastsay))
+		if (OsMoDroid.settings.getBoolean("ttsspeed", false)&&OsMoDroid.settings.getBoolean("usetts", false)&&tts!=null && !tts.isSpeaking() && !(df0.format(location.getSpeed()*3.6).toString()).equals(lastsay))
 		{
 			//if(log)Log.d(this.getClass().getName(), df0.format(location.getSpeed()*3.6).toString());
 			//if(log)Log.d(this.getClass().getName(), df0.format(prevlocation.getSpeed()*3.6).toString());
@@ -2008,18 +2019,18 @@ public void onInit(int status) {
 
           if (langTTSavailable==TextToSpeech.LANG_MISSING_DATA||langTTSavailable==TextToSpeech.LANG_NOT_SUPPORTED)
         	  {
-        	  if(log)Log.d(this.getClass().getName(), "Нету языка");
+        	  if(log)Log.d(this.getClass().getName(), "No TTS for system language");
         	  }
           		else if ( langTTSavailable >= 0 && OsMoDroid.settings.getBoolean("usetts", false)) 
           			{
-          				if(log)Log.d(this.getClass().getName(), "Произносим");
-          				tts.speak(getString(R.string.letsgo), TextToSpeech.QUEUE_ADD, null);
+          				if(log)Log.d(this.getClass().getName(), "TTS succefully start");
+          				
           			}
 
       } 
 	  else
 		  {
-			  if(log)Log.d(this.getClass().getName(), "Инициализация TTS не выполнилась");
+			  if(log)Log.d(this.getClass().getName(), "TTS succefully inited");
 		  }
 }
 

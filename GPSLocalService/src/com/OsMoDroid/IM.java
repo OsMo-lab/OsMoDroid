@@ -900,7 +900,7 @@ if (mes.from.equals(OsMoDroid.settings.getString("device", ""))){
 			localService.stopServiceWork(false);
 		}
 		if(d.contains("TTS:")){
-			if(localService.tts!=null){localService.tts.speak(d , TextToSpeech.QUEUE_ADD, null);}
+			if(OsMoDroid.settings.getBoolean("ttsremote", false)&&localService.tts!=null){localService.tts.speak(d , TextToSpeech.QUEUE_ADD, null);}
 		}
 		if(d.equals("ALARM_ON"))
 			{

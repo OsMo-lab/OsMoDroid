@@ -148,11 +148,7 @@
                                 android:key= "sendsound"
                                 android:title= "Suena cuando envía"
                                 android:defaultValue= "false"/>
-                            <CheckBoxPreference
-                                android:key= "usetts"
-                                android:summary= "Usa text-to-speech"
-                                android:title= "Pronuncia la velocidad"
-                                android:defaultValue= "false"/>
+                            
                             <CheckBoxPreference
                                 android:key= "silentnotify"
                                 android:title= "Sin notificaciones"
@@ -175,7 +171,207 @@
                             <EditTextPreference
                                 android:title= "Sensibilidad"
                                 android:summary= "Aceleración para activar la alarma"
-                                android:key= "sensivity" android:defaultValue= "2"/>
+                                android:key= "sensivity" android:defaultValue= "2"/><CheckBoxPreference android:key="usetts" android:summary="Use text-to-speech" android:title="Speak Speed" android:defaultValue="false" /><PreferenceCategory android:dependency="usetts" android:title="TTS Settings">
+                                <CheckBoxPreference android:title="Проговаривать текущую скорость" android:key="ttsspeed"/>
+                                <CheckBoxPreference android:title="Проговаривать среднюю скорость" android:key="ttsavgspeed"/>
+                                <CheckBoxPreference android:title="Проговаривать удаленные команды" android:key="ttsremote"/>
+                            </PreferenceCategory><CheckBoxPreference android:title="Speak current speed" android:key="ttsspeed"/><CheckBoxPreference android:title="Speak average speed" android:key="ttsavgspeed"/><CheckBoxPreference android:title="Speak remote comands" android:key="ttsremote"/>
+Oracle Technology Network Developer License Terms 
+for Oracle Database Express Edition
+ 
+
+Export Controls
+Export laws and regulations of the United States and any other relevant local export laws and regulations apply to the programs. You agree that such export control laws govern your use of the Program (including technical data) and any services deliverables provided under this agreement, and you agree to comply with all such export laws and regulations (including "deemed export" and "deemed re-export" regulations). You agree that no data, information, program and/or materials resulting from services (or direct product thereof) will be exported, directly or indirectly, in violation of these laws, or will be used for any purpose prohibited by these laws including, without limitation, nuclear, chemical, or biological weapons proliferation, or development of missile technology.
+
+Accordingly, you confirm:
+
+-You will not download, provide, make available or otherwise export or re-export the Programs, directly or indirectly, to countries prohibited by applicable laws and regulations nor to citizens, nationals or residents of those countries.
+
+-You are not listed on the United States Department of Treasury lists of Specially Designated Nationals and Blocked Persons, Specially Designated Terrorists, and Specially Designated Narcotic Traffickers, nor are you listed on the United States Department of Commerce Table of Denial Orders.
+
+- You will not download or otherwise export or re-export the Programs, directly or indirectly, to persons on the above mentioned lists.
+
+- You will not use the Program for, and will not allow the Program to be used for, any purposes prohibited by applicable law, including, without limitation, for the development, design, manufacture or production of nuclear, chemical or biological weapons of mass destruction.
+
+Oracle Employees: Under no circumstances are Oracle Employees authorized to download software for the purpose of distributing it to customers. Oracle products are available to employees for internal use or demonstration purposes only. In keeping with Oracle's trade compliance obligations under U.S. and applicable multilateral law, failure to comply with this policy could result in disciplinary action up to and including termination.
+
+PLEASE READ THE FOLLOWING LICENSE AGREEMENT TERMS AND CONDITIONS CAREFULLY BEFORE DOWNLOADING, INSTALLING OR USING THE PROGRAMS. THESE TERMS AND CONDITIONS CONSTITUTE A LEGAL AGREEMENT BETWEEN YOU AND ORACLE.
+
+Note: Your use of Oracle Database 11 g Express Edition is governed by the OTN Developer License Terms for Oracle Database Express Edition terms. The OTN License Agreement for Oracle Database 11 g Express Edition terms below supercede any shrinkwrap license on the OTN Technology Track software CDs and previous OTN License terms (including the Oracle Program License as modified by the OTN Program Use Certificate) solely with respect to your use of Oracle Database 11 g Express Edition. 
+
+Oracle Database 11 g Express Edition License Agreement 
+
+"We," "us," and "our" refers to Oracle America, Inc. "You" and "your" refers to the individual or entity that has acquired the programs "Programs" refers to the software product which you have acquired and program documentation. "License" refers to your right to use the programs under the terms of this Agreement. The substantive and procedural laws of California govern this Agreement. You and Oracle agree to submit to the exclusive jurisdiction of, and venue in, the courts of California in any dispute relating to this Agreement. 
+
+We are willing to license the programs to you only upon the condition that you accept all of the terms contained in this Agreement. Read the terms carefully and indicate your acceptance by either selecting the "Accept" button at the bottom of the page to confirm your acceptance, if you are licensing via our online system, or continuing to install the program if you have received this license agreement during the installation process. If you are not willing to be bound by these terms, select the "Do Not Accept" button or discontinue the installation process and the registration process will not continue. 
+
+License Rights 
+We grant you a nonexclusive, nontransferable limited license to use the programs for: (a) purposes of developing, prototyping and running your applications for your own internal data processing operations; (b) you may also distribute the programs with your applications; (c) you may use the programs to provide third party demonstrations and training; and d) you may copy and distribute the programs to your licensees provided that each such licensee agrees to the terms of this Agreement. You are not permitted to use the programs for any purpose other than as permitted under this Agreement. Program documentation is either shipped with the programs, or documentation may accessed online at http://www.oracle.com/technetwork/indexes/documentation/index.html. 
+
+Any use of the Oracle Database Express Edition is subject to the following limitations; 
+1. Express Edition is limited to a single instance on any server; 
+2. Express Edition may be installed on a multiple CPU server, but may only be executed on one processor in any server; 
+3. Express Edition may only be used to support up to 11GB of user data (not including Express Edition system data); 
+4. Express Edition may use up to 1 GB RAM of available memory.
+
+Third-Party Technology
+The Programs may contain or be distributed with certain third-party technology. Oracle may provide certain notices related to such third-party technology in the program documentation, or in readme or notice files provided with the Programs.
+Third party technology will be licensed to you either under the terms of this agreement, or, if specified in the program documentation, readme files or otherwise in writing, under separate license terms ("Separate Terms") and not under the terms of this agreement ("Separately Licensed Third Party Technology"). Licensee's rights to use such Separately Licensed Third Party Technology under the Separate Terms are not restricted or modified in any way by this Agreement.
+
+Trademarks and Copyrights 
+You agree not to use Oracle trademarks (including "ORACLE") or potentially confusing variations (including "ORA") as a part of your product name(s), service name(s), company name, or domain name(s). In marketing, promoting, or distributing the programs, you agree to make it clear that Oracle is the source of the programs. You shall include on all copies of the programs used or distributed by you: A. A reproduction of Oracle's copyright notice; or 
+B. A copyright notice indicating that the copyright is vested in you containing the following: 
+1. A "c" in a circle and the word "copyright"; 
+2. Your name; 
+3. The date of copyright; and 
+4. The words "All rights reserved." 
+Such notices shall be placed on the documentation, the sign-on screen for any software incorporating the programs, and any media containing the programs.
+
+Ownership and Restrictions
+
+We retain all ownership and intellectual property rights in the programs. You may make a reasonable number of copies of the programs for backup purposes. 
+
+You may not: 
+- remove or modify any program markings or any notice of our proprietary rights; 
+- assign this Agreement or give or transfer the programs to another individual or entity except as specified in this Agreement; 
+- cause or permit reverse engineering or decompilation of the programs; 
+- disclose results of any program benchmark tests without our prior consent. 
+
+Export 
+You agree that U.S. export control laws and other applicable export and import laws govern your use of the Programs, including technical data; additional information can be found on Oracle's Global Trade Compliance web site located at: http://www.oracle.com/products/export/index.html?content.html. You agree that neither the Programs nor any direct product thereof will be exported, directly, or indirectly, in violation of these laws, or will be used for any purpose prohibited by these laws including, without limitation, nuclear, chemical, or biological weapons proliferation.
+
+Disclaimer of Warranty and Exclusive Remedies 
+THE PROGRAMS ARE PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND. WE FURTHER DISCLAIM ALL WARRANTIES, EXPRESS AND IMPLIED, INCLUDING WITHOUT LIMITATION, ANY IMPLIED WARRANTIES OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. 
+
+IN NO EVENT SHALL WE BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, PUNITIVE OR CONSEQUENTIAL DAMAGES, OR DAMAGES FOR LOSS OF PROFITS, REVENUE, DATA OR DATA USE, INCURRED BY YOU OR ANY THIRD PARTY, WHETHER IN AN ACTION IN CONTRACT OR TORT, EVEN IF WE HAVE BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES. OUR ENTIRE LIABILITY FOR DAMAGES HEREUNDER SHALL IN NO EVENT EXCEED ONE THOUSAND DOLLARS (U.S. $1,000).
+
+Additional Trial Programs
+We may include additional trial programs with your download of the Programs licensed under this agreement. You will have 30 days from the delivery date to evaluate these additional trial programs. Any use of these trial programs after the 30-day trial period requires you to obtain the applicable license. Any additional trial programs are provided "as is" and we do not provide technical support or any warranties for these programs.
+
+No Technical Support 
+Our technical support organization will not provide technical support, phone support, or updates to you for the programs licensed under this agreement. 
+
+End of Agreement 
+You may terminate this Agreement by destroying all copies of the programs. We have the right to terminate your right to use the programs if you fail to comply with any of the terms of this Agreement, in which case you shall destroy all copies of the programs. 
+
+Relationship Between the Parties 
+The relationship between you and us is that of licensee/licensor. Neither party will represent that it has any authority to assume or create any obligation, express or implied, on behalf of the other party, nor to represent the other party as agent, employee, franchisee, or in any other capacity. Nothing in this Agreement shall be construed to limit either party's right to independently develop or distribute software that is functionally similar to the other party's products, so long as proprietary information of the other party is not included in such software. 
+
+Open Source 
+"Open Source" software - software available without charge for use, modification and distribution - is often licensed under terms that require the user to make the user's modifications to the Open Source software or any software that the user 'combines' with the Open Source software freely available in source code form. If you use Open Source software in conjunction with the programs, you must ensure that your use does not: (i) create, or purport to create, obligations of us with respect to the Oracle programs; or (ii) grant, or purport to grant, to any third party any rights to or immunities under our intellectual property or proprietary rights in the Oracle programs. For example, you may not develop a software program using an Oracle program and an Open Source program where such use results in a program file(s) that contains code from both the Oracle program and the Open Source program (including without limitation libraries) if the Open Source program is licensed under a license that requires any "modifications" be made freely available. You also may not combine the Oracle program with programs licensed under the GNU General Public License ("GPL") in any manner that could cause, or could be interpreted or asserted to cause, the Oracle program or any modifications thereto to become subject to the terms of the GPL. 
+
+Other 
+Upon 45 days written notice Oracle may audit the use of the program. You agree to cooperate with Oracle's audit and provide reasonable assistance and access to information. You agree that Oracle shall not be responsible for any of your costs incurred in cooperating with the audit. 
+
+Entire Agreement 
+You agree that this Agreement is the complete Agreement for the programs and licenses, and this Agreement supersedes all prior or contemporaneous Agreements or representations. If any term of this Agreement is found to be invalid or unenforceable, the remaining provisions will remain effective.
+
+Last updated: 08/03/11 
+
+Should you have any questions concerning this License Agreement, or if you desire to contact Oracle for any reason, please write:
+
+Oracle America, Inc. 
+500 Oracle Parkway, 
+Redwood City, CA 94065
+Oracle may contact you to ask if you had a satisfactory experience installing and using this OTN software download.
+Oracle Technology Network Developer License Terms 
+for Oracle Database Express Edition
+ 
+
+Export Controls
+Export laws and regulations of the United States and any other relevant local export laws and regulations apply to the programs. You agree that such export control laws govern your use of the Program (including technical data) and any services deliverables provided under this agreement, and you agree to comply with all such export laws and regulations (including "deemed export" and "deemed re-export" regulations). You agree that no data, information, program and/or materials resulting from services (or direct product thereof) will be exported, directly or indirectly, in violation of these laws, or will be used for any purpose prohibited by these laws including, without limitation, nuclear, chemical, or biological weapons proliferation, or development of missile technology.
+
+Accordingly, you confirm:
+
+-You will not download, provide, make available or otherwise export or re-export the Programs, directly or indirectly, to countries prohibited by applicable laws and regulations nor to citizens, nationals or residents of those countries.
+
+-You are not listed on the United States Department of Treasury lists of Specially Designated Nationals and Blocked Persons, Specially Designated Terrorists, and Specially Designated Narcotic Traffickers, nor are you listed on the United States Department of Commerce Table of Denial Orders.
+
+- You will not download or otherwise export or re-export the Programs, directly or indirectly, to persons on the above mentioned lists.
+
+- You will not use the Program for, and will not allow the Program to be used for, any purposes prohibited by applicable law, including, without limitation, for the development, design, manufacture or production of nuclear, chemical or biological weapons of mass destruction.
+
+Oracle Employees: Under no circumstances are Oracle Employees authorized to download software for the purpose of distributing it to customers. Oracle products are available to employees for internal use or demonstration purposes only. In keeping with Oracle's trade compliance obligations under U.S. and applicable multilateral law, failure to comply with this policy could result in disciplinary action up to and including termination.
+
+PLEASE READ THE FOLLOWING LICENSE AGREEMENT TERMS AND CONDITIONS CAREFULLY BEFORE DOWNLOADING, INSTALLING OR USING THE PROGRAMS. THESE TERMS AND CONDITIONS CONSTITUTE A LEGAL AGREEMENT BETWEEN YOU AND ORACLE.
+
+Note: Your use of Oracle Database 11 g Express Edition is governed by the OTN Developer License Terms for Oracle Database Express Edition terms. The OTN License Agreement for Oracle Database 11 g Express Edition terms below supercede any shrinkwrap license on the OTN Technology Track software CDs and previous OTN License terms (including the Oracle Program License as modified by the OTN Program Use Certificate) solely with respect to your use of Oracle Database 11 g Express Edition. 
+
+Oracle Database 11 g Express Edition License Agreement 
+
+"We," "us," and "our" refers to Oracle America, Inc. "You" and "your" refers to the individual or entity that has acquired the programs "Programs" refers to the software product which you have acquired and program documentation. "License" refers to your right to use the programs under the terms of this Agreement. The substantive and procedural laws of California govern this Agreement. You and Oracle agree to submit to the exclusive jurisdiction of, and venue in, the courts of California in any dispute relating to this Agreement. 
+
+We are willing to license the programs to you only upon the condition that you accept all of the terms contained in this Agreement. Read the terms carefully and indicate your acceptance by either selecting the "Accept" button at the bottom of the page to confirm your acceptance, if you are licensing via our online system, or continuing to install the program if you have received this license agreement during the installation process. If you are not willing to be bound by these terms, select the "Do Not Accept" button or discontinue the installation process and the registration process will not continue. 
+
+License Rights 
+We grant you a nonexclusive, nontransferable limited license to use the programs for: (a) purposes of developing, prototyping and running your applications for your own internal data processing operations; (b) you may also distribute the programs with your applications; (c) you may use the programs to provide third party demonstrations and training; and d) you may copy and distribute the programs to your licensees provided that each such licensee agrees to the terms of this Agreement. You are not permitted to use the programs for any purpose other than as permitted under this Agreement. Program documentation is either shipped with the programs, or documentation may accessed online at http://www.oracle.com/technetwork/indexes/documentation/index.html. 
+
+Any use of the Oracle Database Express Edition is subject to the following limitations; 
+1. Express Edition is limited to a single instance on any server; 
+2. Express Edition may be installed on a multiple CPU server, but may only be executed on one processor in any server; 
+3. Express Edition may only be used to support up to 11GB of user data (not including Express Edition system data); 
+4. Express Edition may use up to 1 GB RAM of available memory.
+
+Third-Party Technology
+The Programs may contain or be distributed with certain third-party technology. Oracle may provide certain notices related to such third-party technology in the program documentation, or in readme or notice files provided with the Programs.
+Third party technology will be licensed to you either under the terms of this agreement, or, if specified in the program documentation, readme files or otherwise in writing, under separate license terms ("Separate Terms") and not under the terms of this agreement ("Separately Licensed Third Party Technology"). Licensee's rights to use such Separately Licensed Third Party Technology under the Separate Terms are not restricted or modified in any way by this Agreement.
+
+Trademarks and Copyrights 
+You agree not to use Oracle trademarks (including "ORACLE") or potentially confusing variations (including "ORA") as a part of your product name(s), service name(s), company name, or domain name(s). In marketing, promoting, or distributing the programs, you agree to make it clear that Oracle is the source of the programs. You shall include on all copies of the programs used or distributed by you: A. A reproduction of Oracle's copyright notice; or 
+B. A copyright notice indicating that the copyright is vested in you containing the following: 
+1. A "c" in a circle and the word "copyright"; 
+2. Your name; 
+3. The date of copyright; and 
+4. The words "All rights reserved." 
+Such notices shall be placed on the documentation, the sign-on screen for any software incorporating the programs, and any media containing the programs.
+
+Ownership and Restrictions
+
+We retain all ownership and intellectual property rights in the programs. You may make a reasonable number of copies of the programs for backup purposes. 
+
+You may not: 
+- remove or modify any program markings or any notice of our proprietary rights; 
+- assign this Agreement or give or transfer the programs to another individual or entity except as specified in this Agreement; 
+- cause or permit reverse engineering or decompilation of the programs; 
+- disclose results of any program benchmark tests without our prior consent. 
+
+Export 
+You agree that U.S. export control laws and other applicable export and import laws govern your use of the Programs, including technical data; additional information can be found on Oracle's Global Trade Compliance web site located at: http://www.oracle.com/products/export/index.html?content.html. You agree that neither the Programs nor any direct product thereof will be exported, directly, or indirectly, in violation of these laws, or will be used for any purpose prohibited by these laws including, without limitation, nuclear, chemical, or biological weapons proliferation.
+
+Disclaimer of Warranty and Exclusive Remedies 
+THE PROGRAMS ARE PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND. WE FURTHER DISCLAIM ALL WARRANTIES, EXPRESS AND IMPLIED, INCLUDING WITHOUT LIMITATION, ANY IMPLIED WARRANTIES OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. 
+
+IN NO EVENT SHALL WE BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, PUNITIVE OR CONSEQUENTIAL DAMAGES, OR DAMAGES FOR LOSS OF PROFITS, REVENUE, DATA OR DATA USE, INCURRED BY YOU OR ANY THIRD PARTY, WHETHER IN AN ACTION IN CONTRACT OR TORT, EVEN IF WE HAVE BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES. OUR ENTIRE LIABILITY FOR DAMAGES HEREUNDER SHALL IN NO EVENT EXCEED ONE THOUSAND DOLLARS (U.S. $1,000).
+
+Additional Trial Programs
+We may include additional trial programs with your download of the Programs licensed under this agreement. You will have 30 days from the delivery date to evaluate these additional trial programs. Any use of these trial programs after the 30-day trial period requires you to obtain the applicable license. Any additional trial programs are provided "as is" and we do not provide technical support or any warranties for these programs.
+
+No Technical Support 
+Our technical support organization will not provide technical support, phone support, or updates to you for the programs licensed under this agreement. 
+
+End of Agreement 
+You may terminate this Agreement by destroying all copies of the programs. We have the right to terminate your right to use the programs if you fail to comply with any of the terms of this Agreement, in which case you shall destroy all copies of the programs. 
+
+Relationship Between the Parties 
+The relationship between you and us is that of licensee/licensor. Neither party will represent that it has any authority to assume or create any obligation, express or implied, on behalf of the other party, nor to represent the other party as agent, employee, franchisee, or in any other capacity. Nothing in this Agreement shall be construed to limit either party's right to independently develop or distribute software that is functionally similar to the other party's products, so long as proprietary information of the other party is not included in such software. 
+
+Open Source 
+"Open Source" software - software available without charge for use, modification and distribution - is often licensed under terms that require the user to make the user's modifications to the Open Source software or any software that the user 'combines' with the Open Source software freely available in source code form. If you use Open Source software in conjunction with the programs, you must ensure that your use does not: (i) create, or purport to create, obligations of us with respect to the Oracle programs; or (ii) grant, or purport to grant, to any third party any rights to or immunities under our intellectual property or proprietary rights in the Oracle programs. For example, you may not develop a software program using an Oracle program and an Open Source program where such use results in a program file(s) that contains code from both the Oracle program and the Open Source program (including without limitation libraries) if the Open Source program is licensed under a license that requires any "modifications" be made freely available. You also may not combine the Oracle program with programs licensed under the GNU General Public License ("GPL") in any manner that could cause, or could be interpreted or asserted to cause, the Oracle program or any modifications thereto to become subject to the terms of the GPL. 
+
+Other 
+Upon 45 days written notice Oracle may audit the use of the program. You agree to cooperate with Oracle's audit and provide reasonable assistance and access to information. You agree that Oracle shall not be responsible for any of your costs incurred in cooperating with the audit. 
+
+Entire Agreement 
+You agree that this Agreement is the complete Agreement for the programs and licenses, and this Agreement supersedes all prior or contemporaneous Agreements or representations. If any term of this Agreement is found to be invalid or unenforceable, the remaining provisions will remain effective.
+
+Last updated: 08/03/11 
+
+Should you have any questions concerning this License Agreement, or if you desire to contact Oracle for any reason, please write:
+
+Oracle America, Inc. 
+500 Oracle Parkway, 
+Redwood City, CA 94065
+Oracle may contact you to ask if you had a satisfactory experience installing and using this OTN software download.
                     </PreferenceScreen>
 
         <CheckBoxPreference
