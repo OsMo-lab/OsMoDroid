@@ -304,6 +304,10 @@ void showFragment(Fragment fragment, boolean backstack) {
 		Log.d(this.getClass().getSimpleName(), "onCreate() gpsclient"); 
 		
 		super.onCreate(savedInstanceState);
+
+		
+		
+		
 		OsMoDroid.activity=this;
 		PreferenceManager.setDefaultValues(this, R.xml.pref, true);
 		ReadPref();
@@ -347,7 +351,16 @@ void showFragment(Fragment fragment, boolean backstack) {
 		        mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
 		        //mDrawerLayout.setBackgroundColor(Color.WHITE);
 		        mDrawerList.setCacheColorHint(0);
-		       
+				if(OsMoDroid.settings.getBoolean("darktheme", true))
+				{
+					setTheme(R.style.Theme_Osmodroid);
+					mDrawerLayout.setBackgroundColor(Color.TRANSPARENT);
+				}
+				else
+				{
+					setTheme(R.style.Theme_AppCompat_Light);
+					mDrawerLayout.setBackgroundColor(Color.WHITE);
+				} 
 			
 	         actionBar = getSupportActionBar();
 	         actionBar.setDisplayHomeAsUpEnabled(true);
@@ -527,6 +540,12 @@ void showFragment(Fragment fragment, boolean backstack) {
 			if(requestCode==0){
 				Log.d(this.getClass().getSimpleName(), "void onActivityResult=preference");
 			mService.applyPreference();
+			Intent intent = new Intent(this, GPSLocalServiceClient.class);
+			intent.setAction(Intent.ACTION_MAIN);
+			intent.addCategory(Intent.CATEGORY_LAUNCHER);
+			finish();
+			startActivity(intent);
+			
 			}
 			if(requestCode==1&&resultCode==Activity.RESULT_OK){
 				Log.d(this.getClass().getSimpleName(), "void onActivityResult=auth");
@@ -545,10 +564,9 @@ void showFragment(Fragment fragment, boolean backstack) {
 		super.onResume();
 		 Log.d(this.getClass().getSimpleName(), "onResume() gpsclient");
 		OsMoDroid.gpslocalserviceclientVisible=true;
-	
 		ReadPref();
 		started = checkStarted();
-		
+
 		
 //		if (hash.equals("") && live) {
 //			RequestAuthTask requestAuthTask = new RequestAuthTask();

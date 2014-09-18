@@ -202,7 +202,7 @@ public class MainFragment extends Fragment implements GPSLocalServiceClient.upd 
 			
 			Intent intent = new Intent();
 			intent.setClass(getActivity(),PrefActivity.class);
-			startActivityForResult(intent, 0);
+			globalActivity.startActivityForResult(intent, 0);
 			
 		}
 		

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" android:title="Settings">
     
-    <EditTextPreference android:summary="Milisegundos" android:title="Periodo de muestreo GPS" android:key="refreshrate" android:defaultValue="1000"/><EditTextPreference android:summary="Seconds" android:title="Network timeout" android:key="timeout" android:defaultValue="30"/><PreferenceCategory android:title="Online">
+    <CheckBoxPreference android:title="Dark Theme" android:defaultValue="true" android:key="darktheme" /><EditTextPreference android:summary="Milisegundos" android:title="Periodo de muestreo GPS" android:key="refreshrate" android:defaultValue="1000"/><EditTextPreference android:summary="Seconds" android:title="Network timeout" android:key="timeout" android:defaultValue="30"/><PreferenceCategory android:title="Online">
         
         <CheckBoxPreference
             android:defaultValue="true"

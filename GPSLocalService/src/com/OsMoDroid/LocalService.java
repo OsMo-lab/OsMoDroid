@@ -376,11 +376,6 @@ public  class LocalService extends Service implements LocationListener,GpsStatus
 	     
 		static String formatInterval(final long l)
 	    {
-	    	if(l/(1000*60*60)==0)
-	    		{
-	    	
-	    			return String.format("%02d:%02d",  (l%(1000*60*60))/(1000*60), ((l%(1000*60*60))%(1000*60))/1000);
-	    		}
 			return String.format("%02d:%02d:%02d", l/(1000*60*60), (l%(1000*60*60))/(1000*60), ((l%(1000*60*60))%(1000*60))/1000);
 	    }
 
@@ -1556,7 +1551,7 @@ public void sendid()
 			{
 				prevnetworklocationtime=System.currentTimeMillis();
 				sendlocation(location);
-				return;
+				return; 
 			}
 		}
 		if(firstsend&&sessionstarted&&myIM!=null&&myIM.authed)
@@ -1578,7 +1573,7 @@ public void sendid()
 			if (OsMoDroid.settings.getBoolean("ttsavgspeed", false)&&OsMoDroid.settings.getBoolean("usetts", false)&&tts!=null && !tts.isSpeaking() &&((int)workdistance)/1000>intKM )
 				{
 					intKM=(int)workdistance/1000;
-					tts.speak(getString(R.string.going)+' '+Integer.toString(intKM)+' '+"километров"+','+getString(R.string.avg)+' '+df1.format(avgspeed*3600)+','+ getString(R.string.inway)+' '+formatInterval(timeperiod), TextToSpeech.QUEUE_ADD, null);
+					tts.speak(getString(R.string.going)+' '+Integer.toString(intKM)+' '+"KM"+','+getString(R.string.avg)+' '+df1.format(avgspeed*3600)+','+ getString(R.string.inway)+' '+formatInterval(timeperiod), TextToSpeech.QUEUE_ADD, null);
 					
 				}
 			//if(log)Log.d(this.getClass().getName(),"Log of Workdistance, Workdistance="+ Float.toString(workdistance)+" location="+location.toString()+" prevlocation_spd="+prevlocation_spd.toString()+" distanceto="+Float.toString(location.distanceTo(prevlocation_spd)));

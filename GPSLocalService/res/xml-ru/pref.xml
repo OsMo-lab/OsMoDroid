@@ -1,6 +1,6 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" android:title="Настройки" >
     
-    <EditTextPreference android:summary="Миллисекунды" android:title="Период опроса GPS" android:key="refreshrate" android:defaultValue="5000"/><EditTextPreference android:summary="Секунды" android:title="Таймаут сети" android:key="timeout" android:defaultValue="30" />
+    <CheckBoxPreference android:title="Dark Theme" android:defaultValue="true" android:key="darktheme" /><EditTextPreference android:summary="Миллисекунды" android:title="Период опроса GPS" android:key="refreshrate" android:defaultValue="5000"/><EditTextPreference android:summary="Секунды" android:title="Таймаут сети" android:key="timeout" android:defaultValue="30" />
     
     <PreferenceCategory android:title="Онлайн">
         
