@@ -21,7 +21,7 @@
                                 android:inputType="number"
                                 android:key="distance"
                                 android:numeric="integer"
-                                android:summary="Meters - Distance changed to trigger sending"
+                                android:summary="Meters - Must move at least this far to send location update"
                                 android:title="Send Distance" android:defaultValue="0"/>
                             <EditTextPreference
                                 android:digits="0123456789"
@@ -41,8 +41,8 @@
                                 android:inputType="number"
                                 android:key="hdop"
                                 android:numeric="integer"
-                                android:summary="Meters - (Maximum error HDOP)"
-                                android:title="Acceptable Location Accuracy" android:defaultValue="30"/>
+                                android:summary="Acceptable Location Accuracy (Horizontal Dilution of Precision). Location signals less accurate than this (higher numbers) will not be sent as updates. (default=30)"
+                                android:title="Maximum HDOP" android:defaultValue="30"/>
                             <EditTextPreference
                                 android:key="speed"
                                 android:title="Minimum Send Speed"
@@ -54,7 +54,7 @@
                             	android:key="modeAND"
                             	android:title="Mode AND"
                             	android:defaultValue="false"
-                            	android:summary="If checked, ALL conditions (speed, time, distance) must be met to send a location update. Mode OR is default."/>
+                            	android:summary="If checked, ALL conditions (speed, time, distance) must be met to send a location update. If unchecked, any condition may cause an update."/>
                             <PreferenceScreen android:title="Identification" >
                                 <EditTextPreference
                                     android:key="hash"
@@ -85,14 +85,14 @@
                             android:inputType="number"
                             android:key="period_gpx"
                             android:numeric="integer"
-                            android:summary="Milliseconds - How often to send location"
+                            android:summary="Milliseconds - How often to save location"
                             android:title="Send Frequency" android:defaultValue="1000"/>
                         <EditTextPreference
                             android:digits="0123456789"
                             android:inputType="number"
                             android:key="distance_gpx"
                             android:numeric="integer"
-                            android:summary="Meters - Distance changed to trigger sending"
+                            android:summary="Meters - Must move at least this far to save new location"
                             android:title="Send Distance" android:defaultValue="0"/>
                         <EditTextPreference
                             android:digits="0123456789"
@@ -126,12 +126,12 @@
                         	android:key="modeAND_gpx"
                         	android:title="Mode AND"
                         	android:defaultValue="false"
-                        	android:summary="If checked, ALL conditions (speed, time, distance) must be met to send a location update. Mode OR is default."/>
+                        	android:summary="If checked, ALL conditions (speed, time, distance) must be met to save a location update. If unchecked, any condition may cause an update."/>
                         <CheckBoxPreference
                             android:title="Load automatically on TreRa"
                             android:key="automaticupload"
                             android:defaultValue="false"/>
-                        <EditTextPreference android:title="SDcard path" android:key="sdpath"/>
+                        <EditTextPreference android:title="Memory card path" android:key="sdpath"/>
                 </PreferenceScreen>
                     
     </PreferenceCategory>
@@ -194,11 +194,18 @@
                             <EditTextPreference
                                 android:title="Sensitivity"
                                 android:summary="Acceleration to activate the alarm"
-                                android:key="sensivity" android:defaultValue="2"/><CheckBoxPreference android:key="usetts" android:summary="Use text-to-speech" android:title="Speak Speed" android:defaultValue="false" /><PreferenceCategory android:dependency="usetts" android:title="TTS Settings">
-                                <CheckBoxPreference android:title="Проговаривать текущую скорость" android:key="ttsspeed"/>
-                                <CheckBoxPreference android:title="Проговаривать среднюю скорость" android:key="ttsavgspeed"/>
-                                <CheckBoxPreference android:title="Проговаривать удаленные команды" android:key="ttsremote"/>
-                            </PreferenceCategory><CheckBoxPreference android:title="Speak current speed" android:key="ttsspeed"/><CheckBoxPreference android:title="Speak average speed" android:key="ttsavgspeed"/><CheckBoxPreference android:title="Speak remote comands" android:key="ttsremote"/>
+                                android:key="sensivity"
+                                android:defaultValue="2"/>
+                            <CheckBoxPreference
+                            	android:key="usetts"
+                            	android:summary="Enable speech options"
+                            	android:title="Use text-to-speech (TTS)"
+                            	android:defaultValue="false" />
+                            <PreferenceCategory android:dependency="usetts" android:title="TTS Settings">
+                                <CheckBoxPreference android:title="Speak current speed" android:key="ttsspeed"/>
+                                <CheckBoxPreference android:title="Speak average speed" android:key="ttsavgspeed"/>
+                                <CheckBoxPreference android:title="Speak remote commands" android:key="ttsremote"/>
+                            </PreferenceCategory>
                     </PreferenceScreen>
 
         <CheckBoxPreference
