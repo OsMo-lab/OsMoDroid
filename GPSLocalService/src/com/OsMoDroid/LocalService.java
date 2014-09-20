@@ -133,7 +133,7 @@ public  class LocalService extends Service implements LocationListener,GpsStatus
 	float currentspeed;
 	long timeperiod=0;
 	float workdistance;
-	private long workmilli=0;
+	long workmilli=0;
 	private boolean firstsend=true;
 	private boolean sended=true;
 	private boolean gpx = false;
@@ -370,7 +370,7 @@ public  class LocalService extends Service implements LocationListener,GpsStatus
 	private ArrayList<String> buffer= new ArrayList<String>();
 	public String motd="";
 	private long pausemill;
-	private int intKM;
+	int intKM;
 	static int selectedTileSourceInt=1;
 	//boolean connecting=false;
 	     
@@ -996,7 +996,7 @@ OsMoDroid.settings.edit().putBoolean("ondestroy", false).commit();
 		avgspeed=0;
 
 		maxspeed=0;
-
+		intKM=0;
 		workdistance=0;
 
 		timeperiod=0;

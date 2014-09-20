@@ -1,5 +1,7 @@
 package com.OsMoDroid;
 
+import org.json.JSONException;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
@@ -9,8 +11,12 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.MenuItemCompat;
 import android.text.util.Linkify;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
@@ -51,6 +57,34 @@ public class StatFragment extends Fragment {
          //setRetainInstance(true);
          super.onCreate(savedInstanceState);
      }
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		MenuItem bind = menu.add(0, 1, 0, R.string.reset);
+		MenuItemCompat.setShowAsAction(bind, MenuItemCompat.SHOW_AS_ACTION_IF_ROOM);
+		bind.setIcon(android.R.drawable.ic_menu_revert);
+		
+		super.onCreateOptionsMenu(menu, inflater);
+	}
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+	switch (item.getItemId()) {
+	case 1:
+		globalActivity.mService.avgspeed=0;
+		globalActivity.mService.maxspeed=0;
+		globalActivity.mService.intKM=0;
+		globalActivity.mService.workdistance=0;
+		globalActivity.mService.timeperiod=0;
+		globalActivity.mService.workmilli=System.currentTimeMillis();
+		globalActivity.mService.refresh();
+		break;
+	
+	default:
+		break;
+	}	
+		return super.onOptionsItemSelected(item);
+	}
+	
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {

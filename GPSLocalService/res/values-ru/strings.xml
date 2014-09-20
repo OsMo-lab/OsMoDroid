@@ -196,4 +196,5 @@
 <string name="monitoring_on">Мониторинг запущен</string>
 <string name="monitoring_off">Мониторинг остановлен</string>
 <string name="kilometers">километров</string>
+<string name="reset">Сбросить</string>
 </resources>
