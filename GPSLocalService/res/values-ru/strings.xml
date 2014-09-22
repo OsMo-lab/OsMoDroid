@@ -197,4 +197,5 @@
 <string name="monitoring_off">Мониторинг остановлен</string>
 <string name="kilometers">километров</string>
 <string name="reset">Сбросить</string>
+<string name="where_">Запросить однократную отправку координат</string>
 </resources>
