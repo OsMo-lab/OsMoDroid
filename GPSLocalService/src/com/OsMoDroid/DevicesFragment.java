@@ -237,6 +237,10 @@ if(!deviceU.equals("")){
 	 {
 		 globalActivity.mService.myIM.sendToServer("REMOTE_CONTROL:"+ LocalService.deviceList.get((int) subacmi.id).tracker_id+"|"+"SIGNAL_OFF");
 	 }
+ if (item.getItemId() == 15) 
+	 {
+		 globalActivity.mService.myIM.sendToServer("REMOTE_CONTROL:"+ LocalService.deviceList.get((int) subacmi.id).tracker_id+"|"+"WHERE");
+	 }
 	    
 		return super.onContextItemSelected(item);
 	}
@@ -274,6 +278,7 @@ if(!deviceU.equals("")){
 		MenuItem alarmoff =menu2.add(0, 12, 12, R.string.play_alarm_off);
 		MenuItem signalon =menu2.add(0, 13, 13, R.string.signalisation_set_on);
 		MenuItem signaloff =menu2.add(0, 14, 14, R.string.signalisation_set_off);
+		MenuItem where =menu2.add(0, 15, 15, R.string.where_);
 		 //   menu.add(0, 2, 2, R.string.messages).setIcon(android.R.drawable.ic_menu_delete);
 		   
 		//    menu.add(0, 3, 3, R.string.copylink).setIcon(android.R.drawable.ic_menu_edit);

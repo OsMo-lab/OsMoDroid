@@ -95,18 +95,24 @@ public class IM implements ResultsListener {
 			Message msg =new Message();
 			Bundle b =new Bundle();
 			b.putString("write",str);
+			b.putBoolean("pp", str.equals("PP"));
 			msg.setData(b);
 			if (iMWriter.handler!=null){
 				String[] data = str.split("\\=");
+				ArrayList<String> cl = new ArrayList<String>(); 
 				for (int index =0; index < data.length; index++)
 					{
 						if(data[index].contains("|"))
 							{  
 								data[index] = data[index].substring(0,data[index].indexOf('|'));
 							}
+						if(!data[index].equals("PP"))
+							{
+								cl.add(data[index]);
+							}
 					}
-				ExecutedCommandArryaList.addAll(Arrays.asList(data));
-				addlog("add to command order "+Arrays.asList(data));
+				ExecutedCommandArryaList.addAll(cl);
+				addlog("add to command order "+cl);
 				iMWriter.handler.sendMessage(msg);	
 			}
 			else {
@@ -445,7 +451,10 @@ if (mes.from.equals(OsMoDroid.settings.getString("device", ""))){
 								Bundle b = msg.getData();
 								if(running){
 									if (socket!=null&&socket.isConnected()&&wr!=null){
-										 setReconnectAlarm(); 
+										 if(!b.getBoolean("pp"))
+											 {
+												 setReconnectAlarm();
+											 }
 										 try
 												{
 													
@@ -897,7 +906,7 @@ if (mes.from.equals(OsMoDroid.settings.getString("device", ""))){
 			localService.startServiceWork();
 		}
 		if(d.equals("TRACKER_SESSION_STOP")){
-			localService.stopServiceWork(false);
+			localService.stopServiceWork(true);
 		}
 		if(d.contains("TTS:")){
 			if(OsMoDroid.settings.getBoolean("ttsremote", false)&&localService.tts!=null){localService.tts.speak(d , TextToSpeech.QUEUE_ADD, null);}
@@ -917,6 +926,39 @@ if (mes.from.equals(OsMoDroid.settings.getString("device", ""))){
 		if(d.equals("SIGNAL_OFF"))
 			{
 				localService.disableSignalisation();
+			}
+		if(d.equals("WHERE"))
+			{
+				localService.where=true;
+				if (!localService.state){
+					localService.alertHandler.post(new Runnable() {
+
+						public void run() {
+					localService.myManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, localService);
+					 if(log)Log.d(this.getClass().getName(), "подписались на GPS");
+						}
+					});
+					}
+					localService.alertHandler.postDelayed(new Runnable() {
+
+						public void run() {
+					localService.myManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, localService);
+					 if(log)Log.d(this.getClass().getName(), "подписались на NETWORK");
+						}
+					},30000);
+					localService.alertHandler.postDelayed(new Runnable() {
+
+						public void run() {
+					if (localService.state){
+							localService.myManager.removeUpdates(localService);
+							localService.requestLocationUpdates();
+							 if(log)Log.d(this.getClass().getName(), "Переподписались");
+					} else {
+						localService.myManager.removeUpdates(localService);
+						 if(log)Log.d(this.getClass().getName(), "Отписались");
+					}
+						}
+					},90000);
 			}
 	}
 	
@@ -1325,6 +1367,32 @@ if (mes.from.equals(OsMoDroid.settings.getString("device", ""))){
 			}
 			//localService.saveObject(LocalService.channelList, OsMoDroid.CHANNELLIST);
 		}
+		if (c.contains("LD:"))
+			{
+				for (Device dev : LocalService.deviceList)
+				{
+					if(dev.tracker_id.equals(c.substring(c.indexOf(":")+1, c.length())))
+						{
+							if(jo.has("t")&&jo.has("v"))
+								{
+									if (jo.optInt("t")==2)
+										{
+											dev.state=jo.optInt("v");
+										}
+								}
+								{
+									if (jo.optInt("t")==3)
+										{
+											dev.online=jo.optInt("v");
+										}
+								}
+								if(LocalService.deviceAdapter!=null)
+									{
+										LocalService.deviceAdapter.notifyDataSetChanged();
+									}
+						}
+				}		
+			}	
 	//LT:fI8qCrlvw6j0dEKZtB9h|L59.252465:30.324515S20.3A124.3H2.5C235
 	if(c.length()>2&&c.substring(0, 2).contains("LT"))
 		

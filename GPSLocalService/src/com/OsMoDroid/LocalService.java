@@ -10,7 +10,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.PrintWriter;
 import java.io.StreamCorruptedException;
+import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.text.DecimalFormat;
@@ -255,13 +257,33 @@ public  class LocalService extends Service implements LocationListener,GpsStatus
 				{
 					str=str.substring(0, str.length()-1);
 					
-			  					myIM.parseEx(new String(str));
+			  					try
+									{
+										myIM.parseEx(new String(str));
+									}
+										catch (Exception e) {
+											e.printStackTrace();
+											StringWriter sw = new StringWriter();
+											e.printStackTrace(new PrintWriter(sw));
+											String exceptionAsString = sw.toString();
+											myIM.addlog(exceptionAsString);
+									}
 			  	
 				}
 				else 
 				{
 					
-		  					myIM.parseEx(new String(str));
+					try
+						{
+							myIM.parseEx(new String(str));
+						}
+							catch (Exception e) {
+								e.printStackTrace();
+								StringWriter sw = new StringWriter();
+								e.printStackTrace(new PrintWriter(sw));
+								String exceptionAsString = sw.toString();
+								myIM.addlog(exceptionAsString);
+						}
 		  						
 		  		
 				}
@@ -371,6 +393,7 @@ public  class LocalService extends Service implements LocationListener,GpsStatus
 	public String motd="";
 	private long pausemill;
 	int intKM;
+	boolean where=false;
 	static int selectedTileSourceInt=1;
 	//boolean connecting=false;
 	     
@@ -1527,7 +1550,11 @@ public void sendid()
 	}
 
 	public void onLocationChanged(Location location) {
-
+		if(where)
+			{
+				sendlocation(location);
+				where=false;
+			}
 		if (!state){
 			myManager.removeUpdates(this);
 		}
