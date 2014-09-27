@@ -887,6 +887,13 @@ if (mes.from.equals(OsMoDroid.settings.getString("device", ""))){
 	if(c.equals("T")){
 		localService.sendcounter++;
 		localService.sending="";
+		if(localService.sendingbuffer.size()==0&&localService.buffer.size()!=0)
+		{
+			localService.sendingbuffer.addAll(localService.buffer);
+			localService.buffer.clear();
+			sendToServer("B|"+ new JSONArray(localService.sendingbuffer));
+		}
+		
 		if (localService.sendsound && !localService.mayak) {
 			localService.soundPool.play(localService.sendpalyer, 1f, 1f, 1, 0, 1f);
 			localService.mayak = false;
@@ -896,6 +903,19 @@ if (mes.from.equals(OsMoDroid.settings.getString("device", ""))){
 		localService.refresh();
 		return;
 	}
+	if(c.equals("B"))
+	{
+		localService.buffercounter=localService.buffercounter-localService.sendingbuffer.size();
+		localService.sendcounter=localService.sendcounter+localService.sendingbuffer.size();
+		localService.sendingbuffer.clear();
+		localService.refresh();
+	}
+	
+	if(c.equals("PP"))
+	{
+		sendToServer("PP");
+	}
+	
 	if(c.contains("REMOTE_CONTROL"))
 	{
 		if(d.equals("PP"))

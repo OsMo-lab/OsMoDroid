@@ -170,7 +170,7 @@ public  class LocalService extends Service implements LocationListener,GpsStatus
 	private int speed_gpx;
 	int sendcounter;
 	int writecounter=0;
-	private int buffercounter=0;
+	int buffercounter=0;
 	BroadcastReceiver receiver;
 	BroadcastReceiver checkreceiver;
 	BroadcastReceiver onlinePauseforStartReciever;
@@ -389,7 +389,8 @@ public  class LocalService extends Service implements LocationListener,GpsStatus
 	boolean paused=false;
 	private boolean log=true;
 	String sending="";
-	private ArrayList<String> buffer= new ArrayList<String>();
+	ArrayList<String> buffer= new ArrayList<String>();
+	ArrayList<String> sendingbuffer= new ArrayList<String>();
 	public String motd="";
 	private long pausemill;
 	int intKM;
@@ -742,6 +743,8 @@ public void stopcomand()
 				buffer.add(sending);
 				sending="";
 				buffercounter++;
+				buffer.addAll(sendingbuffer);
+				sendingbuffer.clear();
 				String time = sdf3.format(new Date(System.currentTimeMillis()));
 				sendresult = time + " " +  getString(R.string.error);
 				if (notification!=null){
@@ -992,12 +995,11 @@ OsMoDroid.settings.edit().putBoolean("ondestroy", false).commit();
 
 
 	public void applyPreference(){
-		if (state) {
-		myManager.removeUpdates(this);
 		ReadPref();
 		ttsManage();
 		manageGPSFixAlarm();
-		
+		if (state) {
+		myManager.removeUpdates(this);
 		if ( gpx && !fileheaderok) {
 			openGPX();
 		}
@@ -1988,13 +1990,17 @@ private void sendlocation (Location location){
 	} else
 		{
 			if(log)Log.d(this.getClass().getName(), "Отправка не пошла: "+myIM.authed +" s "+sending);
+			if(usebuffer)
+			{
 			buffer.add("T|L"+df6.format( location.getLatitude()) +":"+ df6.format(location.getLongitude())
 					+"S" + df1.format( location.getSpeed())
 					+"A" + df1.format( location.getAltitude())
 					+"H" + df1.format( location.getAccuracy())
 					+"C" + df0.format( location.getBearing())
+					+"T" + location.getTime()/1000
 					);
 			buffercounter++;
+			}
 		}
 
 
