@@ -402,49 +402,33 @@ void showFragment(Fragment fragment, boolean backstack) {
 
 				@Override
 				public void onReceive(Context context, Intent intent) {
+					int icon = 0;
 					if (intent.hasExtra("connecting")&&intent.hasExtra("connect"))
 					{
 						
 						if(intent.getBooleanExtra("connect", false)&&!intent.getBooleanExtra("connecting", false))
 							{
 								actionBar.setLogo(R.drawable.eyeo);
-								 if(mService!=null&&mService.state)
-									 {
-										 int icon = R.drawable.eyeo;
-										 //CharSequence tickerText = getString(R.string.monitoringstarted); //getString(R.string.Working);
-										 long when = System.currentTimeMillis();
-										 mService.notification = new Notification(icon, "", when);
-										 mService.notification.setLatestEventInfo(getApplicationContext(), "OsMoDroid", getString(R.string.Sendcount)+mService.sendcounter+getString(R.string.writen)+mService.writecounter, mService.osmodroidLaunchIntent);
-										 mService.mNotificationManager.notify(mService.OSMODROID_ID, mService.notification);
-										 
-									 }
+								icon = R.drawable.eyeo;
 							}
 						else if (intent.getBooleanExtra("connecting", false))
 							{
 								actionBar.setLogo(R.drawable.eyeu);
-								 if(mService!=null&&mService.state)
-									 {
-										 int icon = R.drawable.eyeu;
-										 //CharSequence tickerText = getString(R.string.monitoringstarted); //getString(R.string.Working);
-										 long when = System.currentTimeMillis();
-										 mService.notification = new Notification(icon, "", when);
-										 mService.notification.setLatestEventInfo(getApplicationContext(), "OsMoDroid", getString(R.string.Sendcount)+mService.sendcounter+getString(R.string.writen)+mService.writecounter, mService.osmodroidLaunchIntent);
-										 mService.mNotificationManager.notify(mService.OSMODROID_ID, mService.notification);
-									 }
+								icon = R.drawable.eyeu;
 							}
 						else	
 							{
 								actionBar.setLogo(R.drawable.eyen);
-								 if(mService!=null&&mService.state)
-									 {
-										 int icon = R.drawable.eyen;
-										 //CharSequence tickerText = getString(R.string.monitoringstarted); //getString(R.string.Working);
-										 long when = System.currentTimeMillis();
-										 mService.notification = new Notification(icon, "", when);
-										 mService.notification.setLatestEventInfo(getApplicationContext(), "OsMoDroid", getString(R.string.Sendcount)+mService.sendcounter+getString(R.string.writen)+mService.writecounter, mService.osmodroidLaunchIntent);
-										 mService.mNotificationManager.notify(mService.OSMODROID_ID, mService.notification);
-									 }
+								icon = R.drawable.eyen;
 							}
+						if(mService!=null&&mService.state)
+						 {
+						 long when = System.currentTimeMillis();
+						 mService.notification.icon=icon;
+						 //mService.notification = new Notification(icon, getString(R.string.Sendcount)+mService.sendcounter+getString(R.string.writen)+mService.writecounter, when);
+						 mService.notification.setLatestEventInfo(getApplicationContext(), "OsMoDroid", getString(R.string.Sendcount)+mService.sendcounter+' '+getString(R.string.writen)+mService.writecounter, mService.osmodroidLaunchIntent);
+						 mService.mNotificationManager.notify(mService.OSMODROID_ID, mService.notification);
+						 }
 					}
 					
 				}
@@ -788,7 +772,7 @@ if (mBound) {
 				unbindService(conn);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
-				Log.d(this.getClass().getSimpleName(), "Исключение при отсоединении от сервиса");
+				Log.d(this.getClass().getSimpleName(), "Р�СЃРєР»СЋС‡РµРЅРёРµ РїСЂРё РѕС‚СЃРѕРµРґРёРЅРµРЅРёРё РѕС‚ СЃРµСЂРІРёСЃР°");
 				e.printStackTrace();
 			}
 		}

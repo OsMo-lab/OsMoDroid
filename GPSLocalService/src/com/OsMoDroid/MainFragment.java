@@ -86,9 +86,11 @@ public class MainFragment extends Fragment implements GPSLocalServiceClient.upd 
 
 		String startStatus =globalActivity.checkStarted() ? getString(R.string.Running)
 				: getString(R.string.NotRunning);
-		String statusText = //getString(R.string.Status) + startStatus+
-				getString(R.string.Sendcount) + globalActivity.sendcounter+"\n" + getString(R.string.inbuffer)+globalActivity.buffercounter;
-
+		String statusText = getString(R.string.Sendcount) + globalActivity.sendcounter;
+		if(globalActivity.buffercounter!=0)
+		{
+			statusText=statusText +"\n"+ getActivity().getString(R.string.inbuffer)+globalActivity.buffercounter;
+		}
 		TextView t = (TextView) getView().findViewById(R.id.serviceStatus);
 		t.setText(statusText);
 		if (!OsMoDroid.settings.getBoolean("usealarm", false) || OsMoDroid.settings.getString("p", "").equals("")){
@@ -697,8 +699,12 @@ else {
 		//Log.d(getClass().getSimpleName(), "mainfragment updateservicestatus() gpsclient");
 		String startStatus =globalActivity.checkStarted() ? getString(R.string.Running)
 				: getString(R.string.NotRunning);
-		String statusText = //getString(R.string.Status) + startStatus+
-				getString(R.string.Sendcount) + globalActivity.sendcounter +"\n"+ getActivity().getString(R.string.inbuffer)+globalActivity.buffercounter;
+		String statusText = getString(R.string.Sendcount) + globalActivity.sendcounter;
+		if(globalActivity.buffercounter!=0)
+		{
+			statusText=statusText +"\n"+ getActivity().getString(R.string.inbuffer)+globalActivity.buffercounter;
+		}
+		
 		TextView t = (TextView) view.findViewById(R.id.serviceStatus);
 		t.setText(statusText);
 	}
