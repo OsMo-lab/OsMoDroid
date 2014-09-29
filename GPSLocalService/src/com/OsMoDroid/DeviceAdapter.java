@@ -71,8 +71,15 @@ public class DeviceAdapter extends ArrayAdapter<Device> {
 		        		deviceLast.setText(Float.toString(device.lat)+' '+Float.toString(device.lon)+' '+device.speed +" -");
 		        	}
 		        
-		        deviceName.setTextColor(Color.parseColor(device.color));
-		        deviceWhere.setTextColor(Color.parseColor(device.color));
+		        try
+					{
+						deviceName.setTextColor(Color.parseColor(device.color));
+						deviceWhere.setTextColor(Color.parseColor(device.color));
+					} catch (Exception e)
+					{
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 		        //Log.d(getClass().getSimpleName(),"device.name="+device.name.toString());
 		        //Log.d(getClass().getSimpleName(),"device.online="+device.online.toString());
 		        //Log.d(getClass().getSimpleName(),"device.state="+device.state.toString());
