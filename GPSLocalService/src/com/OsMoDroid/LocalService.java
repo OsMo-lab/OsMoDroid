@@ -322,8 +322,9 @@ public  class LocalService extends Service implements LocationListener,GpsStatus
 			if (b.containsKey("deviceU")&&LocalService.currentDevice!=null&&LocalService.currentDevice.tracker_id.equals(b.getString("deviceU")) ){
 				LocalService.mNotificationManager.cancel(OsMoDroid.mesnotifyid);
 			}
+			String text="";
 			if(b.containsKey("MessageText")){
-			String text = b.getString("MessageText");
+			text = b.getString("MessageText");
 			}
 			if (b.containsKey("om_online")&&b.getBoolean("om_online",false)){
 

@@ -1398,12 +1398,44 @@ if (mes.from.equals(OsMoDroid.settings.getString("device", ""))){
 									if (jo.optInt("t")==2)
 										{
 											dev.state=jo.optInt("v");
+											String status;
+											String messageText="";
+											if (dev.state==1)
+												{ status=localService.getString(R.string.started); }
+											else
+												{ status=localService.getString(R.string.stoped); }
+											messageText = messageText+localService.getString(R.string.monitoringondevice)+dev.name+"\" "+status;
+											if (OsMoDroid.settings.getBoolean("statenotify", true))
+												{
+													Message msg = new Message();
+													Bundle b = new Bundle();
+													b.putBoolean("om_online", true);
+													b.putString("MessageText", sdf1.format(new Date())+" "+messageText);
+													msg.setData(b);
+													if(log)Log.d(this.getClass().getName(), "statenotify entered");
+													localService.alertHandler.sendMessage(msg);
+												}
 										}
 								}
 								{
 									if (jo.optInt("t")==3)
 										{
 											dev.online=jo.optInt("v");
+											String status = "";
+											String messageText="";
+											if (dev.online==1) { status=localService.getString(R.string.enternet);}
+							                if (dev.online==0) { status=localService.getString(R.string.exitnet); }
+							                messageText = messageText+localService.getString(R.string.device)+dev.name+"\" "+status;
+							                if (OsMoDroid.settings.getBoolean("onlinenotify", false))
+							                			{
+							                				if(log)Log.d(this.getClass().getName(), "statenotify onlaine entered");
+							                				Message msg = new Message();
+							                				Bundle b = new Bundle();
+							                				b.putBoolean("om_online", true);
+							                				b.putString("MessageText", sdf1.format(new Date())+" "+messageText);
+							                				msg.setData(b);
+							                				localService.alertHandler.sendMessage(msg);
+							                			}
 										}
 								}
 								if(LocalService.deviceAdapter!=null)
