@@ -979,7 +979,7 @@ OsMoDroid.settings.edit().putBoolean("ondestroy", false).commit();
 
 	public void onStart(Intent intent, int startId) {
 		if(log)Log.d(getClass().getSimpleName(), "on start ");
-		
+		handleStart(intent, startId);
 		super.onStart(intent, startId);
 
 
@@ -990,11 +990,24 @@ OsMoDroid.settings.edit().putBoolean("ondestroy", false).commit();
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		if(log)Log.d(getClass().getSimpleName(), "on startcommand");
-		
+		handleStart(intent, startId);
 		 return START_STICKY;
 	}
 
-
+	void handleStart(Intent intent, int startId) {
+        if(intent!=null&&intent.hasExtra("SMS"))
+        	{
+        		if(intent.getStringExtra("SMS").equals("START")&&!state)
+        			{
+        				startServiceWork();
+        			}
+        		if(intent.getStringExtra("SMS").equals("STOP")&&state)
+        			{
+        				stopServiceWork(true);
+        			}
+        	}
+    }
+	
 	public void applyPreference(){
 		ReadPref();
 		ttsManage();

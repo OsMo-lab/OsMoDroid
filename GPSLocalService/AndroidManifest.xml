@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.OsMoDroid"
-    android:versionCode="220"
-    android:versionName="2.0.20" android:installLocation="auto">
+    android:versionCode="221"
+    android:versionName="2.0.21" android:installLocation="auto">
     <uses-sdk android:minSdkVersion="5"  />
 	<uses-feature android:name="android.hardware.camera" android:required="false" />
 	<uses-feature android:name="android.hardware.microphone" android:required="false"/>
@@ -27,6 +27,7 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.RECEIVE_SMS"/>
   
     <application
         android:icon="@drawable/eye"
@@ -52,8 +53,9 @@
         <activity android:name="WarnActivity" android:theme="@android:style/Theme.Dialog"></activity>
         <activity android:theme="@android:style/Theme.Dialog" android:name="AboutActivity"></activity>
         <receiver android:name="BootComplitedReceiver">
-            <intent-filter>
+            <intent-filter android:priority="500">
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="android.provider.Telephony.SMS_RECEIVED"/>
             </intent-filter>
         </receiver>
         <activity android:name="AuthActivity">
