@@ -394,16 +394,14 @@ if (mes.from.equals(OsMoDroid.settings.getString("device", ""))){
 	        if(OsMoDroid.settings.getString("p", "").equals("")){
 	        	params = new APIcomParams("http://api.osmo.mobi/prepare?key="+OsMoDroid.settings.getString("newkey", "")
 	        			+"&protocol=1"+"&app=OsMoDroid"+"&version="+localService.getversion()
-	        			+"&android_model="+localService.getDeviceName()
-	        			+"&android_product"+android.os.Build.PRODUCT,"","gettoken");
+	        			,"","gettoken");
 	        }
 	        else
 	        {
 	        	params = new APIcomParams("http://api.osmo.mobi/prepare?key="+OsMoDroid.settings.getString("newkey", "")
 	        			+"&protocol=1&auth="+OsMoDroid.settings.getString("p", "")
 	        			+"&app=OsMoDroid"+"&version="+localService.getversion()
-	        			+"&android_model="+localService.getDeviceName()
-	        			+"&android_product"+android.os.Build.PRODUCT,"","gettoken");	
+	        			,"","gettoken");	
 	        }
 	        sendidtask = new Netutil.MyAsyncTask(this);
 	        
