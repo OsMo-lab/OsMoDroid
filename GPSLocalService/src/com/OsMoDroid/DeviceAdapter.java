@@ -60,6 +60,10 @@ public class DeviceAdapter extends ArrayAdapter<Device> {
 		        	{
 		        		deviceName.setText("Unknown");
 		        	}
+		        if(device.tracker_id.equals(OsMoDroid.settings.getString("tracker_id", "")))
+		        	{
+		        		deviceName.setText(ctx.getString(R.string.this_device_)+device.name);
+		        	}
 		        
 		        deviceWhere.setText(device.tracker_id);
 		        if(device.updatated>0)

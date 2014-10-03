@@ -204,4 +204,5 @@
 <string name="kilometers">kilometers</string>
 <string name="reset">Reset</string>
 <string name="where_">Where?</string>
+<string name="this_device_">"This device "</string>
 </resources>

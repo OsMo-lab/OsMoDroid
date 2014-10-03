@@ -30,6 +30,7 @@ public class Channel implements Serializable {
 	
 	public ArrayList<ColoredGPX> gpxList = new ArrayList<ColoredGPX>();
 	public String name;
+	public String myNameInGroup;
 	public int u;
 	public String created;
 	public String group_id;
@@ -129,6 +130,10 @@ public class Channel implements Serializable {
 	
 		try {
 			this.deviceList.add(new Device(jsonObject.getString("group_tracker_id"),jsonObject.getString("name"), jsonObject.getString("color") ) );
+			if(jsonObject.getString("group_tracker_id").equals(OsMoDroid.settings.getString("device", "")))
+				{
+					this.myNameInGroup=jsonObject.getString("name");
+				}
 		} catch (NumberFormatException e) {
 			Log.d(getClass().getSimpleName(),"Wrong device info");
 			e.printStackTrace();

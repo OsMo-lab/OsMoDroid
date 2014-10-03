@@ -807,6 +807,10 @@ if (mes.from.equals(OsMoDroid.settings.getString("device", ""))){
 			OsMoDroid.editor.putString("tracker_id", jo.optString("tracker_id"));
 			OsMoDroid.editor.commit();
 			authed=true;
+			if(!jo.optString("poll").equals(""))
+				{
+					sendToServer("L:"+jo.optString("poll"));
+				}
 			if(needopensession){
 				sendToServer("TRACKER_SESSION_OPEN");
 			}
@@ -1116,6 +1120,19 @@ if (mes.from.equals(OsMoDroid.settings.getString("device", ""))){
 				sendToServer(str);
 			}
 			Collections.sort(LocalService.deviceList);
+			int mypos=-1;
+			for (Device dev : LocalService.deviceList){
+				if(dev.tracker_id.equals(OsMoDroid.settings.getString("tracker_id", "")))
+					{
+						mypos= LocalService.deviceList.indexOf(dev);
+					}
+			}
+			if(mypos!=-1)
+				{
+					Device mydev= LocalService.deviceList.get(mypos); 
+					LocalService.deviceList.remove(mypos);
+					LocalService.deviceList.add(0, mydev);
+				}
 			if(LocalService.deviceAdapter!=null)
 			{
 				LocalService.deviceAdapter.notifyDataSetChanged();
@@ -1312,6 +1329,10 @@ if (mes.from.equals(OsMoDroid.settings.getString("device", ""))){
 					 			
 								try {
 									jsonObject = a.getJSONObject(i);
+									if(jsonObject.getString("group_tracker_id").equals(OsMoDroid.settings.getString("device", "")))
+										{
+											ch.myNameInGroup=jsonObject.getString("name");
+										}
 						try {
 							if(jsonObject.has("deleted"))
 							{

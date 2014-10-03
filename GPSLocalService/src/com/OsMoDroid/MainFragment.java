@@ -543,80 +543,82 @@ else {
 			receiver = new BroadcastReceiver() {
 				@Override
 				public void onReceive(Context context, final Intent intent) {
-					TextView dt = (TextView) view.findViewById(R.id.URL);
-					dt.setText("");
-					if(!OsMoDroid.settings.getString("viewurl", "").equals(""))
+					try
 						{
-							dt.setText(dt.getText()+OsMoDroid.settings.getString("viewurl", ""));
-						}
-					if(!OsMoDroid.settings.getString("u", "").equals(""))
-					{
-						if(dt.getText().equals(""))
-						{
-							dt.setText(OsMoDroid.settings.getString("u", "")+" "+dt.getText());
-						}
-						else
-						{
-							dt.setText(OsMoDroid.settings.getString("u", "")+"\n"+dt.getText());
-						}
-						
-					}
-					if(!OsMoDroid.settings.getString("tracker_id", "").equals(""))
-					{
-						if(dt.getText().equals(""))
-						{
-							dt.setText(dt.getText()+" "+"TrackerID="+OsMoDroid.settings.getString("tracker_id", ""));
-						}
-						else
-						{
-							dt.setText(dt.getText()+"\n"+"TrackerID="+OsMoDroid.settings.getString("tracker_id", ""));
-						}
-						
-					}
-					if(dt.getText().equals(""))
-					{
-						dt.setText(intent.getStringExtra("sattelite"));
-					}
-					else
-					{
-						dt.setText(dt.getText()+"\n"+intent.getStringExtra("sattelite"));
-					}
-					if(dt.getText().equals(""))
-					{
-						dt.setText(getString(R.string.approximate_traffic)+':' + intent.getStringExtra("traffic"));
-					}
-					else
-					{
-						dt.setText(dt.getText()+"\n"+getString(R.string.approximate_traffic)+':'+intent.getStringExtra("traffic"));
-					}
-					Linkify.addLinks(dt, Linkify.ALL);
-					//TextView t = (TextView) view.findViewById(R.id.Location);
-					globalActivity.sendcounter = intent.getIntExtra("sendcounter", 0);
-					globalActivity.buffercounter = intent.getIntExtra("buffercounter", 0);
-					globalActivity.position = intent.getStringExtra("position");
-					globalActivity.sendresult = intent.getStringExtra("sendresult");
-					String stat = intent.getStringExtra("stat");
-					String startmessage = intent.getStringExtra("motd");
-					if (intent.hasExtra("globalsend")){
-						final ToggleButton globalsendToggle = (ToggleButton) view.findViewById(R.id.toggleButton1);
-						globalsendToggle.setOnClickListener(new OnClickListener() {
-							
-							public void onClick(View v) {
-	globalsendToggle.toggle();
-	String boolglobalsend =intent.getBooleanExtra("globalsend", false) ? "0" : "1";
-	Netutil.newapicommand((ResultsListener)globalActivity.mService,(Context)globalActivity, "om_device_channel_active:"+OsMoDroid.settings.getString("device", "")+",0,"+boolglobalsend);
-
+							TextView dt = (TextView) view.findViewById(R.id.URL);
+							dt.setText("");
+							if(!OsMoDroid.settings.getString("viewurl", "").equals(""))
+								{
+									dt.setText(dt.getText()+OsMoDroid.settings.getString("viewurl", ""));
+								}
+							if(!OsMoDroid.settings.getString("u", "").equals(""))
+							{
+								if(dt.getText().equals(""))
+								{
+									dt.setText(OsMoDroid.settings.getString("u", "")+" "+dt.getText());
+								}
+								else
+								{
+									dt.setText(OsMoDroid.settings.getString("u", "")+"\n"+dt.getText());
+								}
+								
 							}
-						});
-						globalsendToggle.setChecked(intent.getBooleanExtra("globalsend", false));
-						
-					}
-					if (intent.hasExtra("signalisationon")){
-						ToggleButton alarmButton=(ToggleButton) view.findViewById(R.id.alarmButton);
-						alarmButton.setChecked(intent.getBooleanExtra("signalisationon", false));
-					}
-					
-					if (intent.hasExtra("started")){
+							if(!OsMoDroid.settings.getString("tracker_id", "").equals(""))
+							{
+								if(dt.getText().equals(""))
+								{
+									dt.setText(dt.getText()+" "+"TrackerID="+OsMoDroid.settings.getString("tracker_id", ""));
+								}
+								else
+								{
+									dt.setText(dt.getText()+"\n"+"TrackerID="+OsMoDroid.settings.getString("tracker_id", ""));
+								}
+								
+							}
+							if(dt.getText().equals(""))
+							{
+								dt.setText(intent.getStringExtra("sattelite"));
+							}
+							else
+							{
+								dt.setText(dt.getText()+"\n"+intent.getStringExtra("sattelite"));
+							}
+							if(dt.getText().equals(""))
+							{
+								dt.setText(getString(R.string.approximate_traffic)+':' + intent.getStringExtra("traffic"));
+							}
+							else
+							{
+								dt.setText(dt.getText()+"\n"+getString(R.string.approximate_traffic)+':'+intent.getStringExtra("traffic"));
+							}
+							Linkify.addLinks(dt, Linkify.ALL);
+							//TextView t = (TextView) view.findViewById(R.id.Location);
+							globalActivity.sendcounter = intent.getIntExtra("sendcounter", 0);
+							globalActivity.buffercounter = intent.getIntExtra("buffercounter", 0);
+							globalActivity.position = intent.getStringExtra("position");
+							globalActivity.sendresult = intent.getStringExtra("sendresult");
+							String stat = intent.getStringExtra("stat");
+							String startmessage = intent.getStringExtra("motd");
+							if (intent.hasExtra("globalsend")){
+								final ToggleButton globalsendToggle = (ToggleButton) view.findViewById(R.id.toggleButton1);
+								globalsendToggle.setOnClickListener(new OnClickListener() {
+									
+									public void onClick(View v) {
+globalsendToggle.toggle();
+String boolglobalsend =intent.getBooleanExtra("globalsend", false) ? "0" : "1";
+Netutil.newapicommand((ResultsListener)globalActivity.mService,(Context)globalActivity, "om_device_channel_active:"+OsMoDroid.settings.getString("device", "")+",0,"+boolglobalsend);
+
+									}
+								});
+								globalsendToggle.setChecked(intent.getBooleanExtra("globalsend", false));
+								
+							}
+							if (intent.hasExtra("signalisationon")){
+								ToggleButton alarmButton=(ToggleButton) view.findViewById(R.id.alarmButton);
+								alarmButton.setChecked(intent.getBooleanExtra("signalisationon", false));
+							}
+							
+							if (intent.hasExtra("started")){
 //						Button pause = (Button) view.findViewById(R.id.pauseButton);
 //						if(globalActivity.checkStarted())
 //							{
@@ -634,36 +636,41 @@ else {
 //							{
 //								pause.setText("Continue");
 //							}
-						Button start = (Button) view.findViewById(R.id.startButton);
-						Button stop = (Button) view.findViewById(R.id.exitButton);
+								Button start = (Button) view.findViewById(R.id.startButton);
+								Button stop = (Button) view.findViewById(R.id.exitButton);
 
-						
-							start.setEnabled(!intent.getBooleanExtra("started", false));
-							stop.setEnabled(intent.getBooleanExtra("started", false));
-							globalActivity.started=intent.getBooleanExtra("started", false);
-					}
-					
-				
+								
+									start.setEnabled(!intent.getBooleanExtra("started", false));
+									stop.setEnabled(intent.getBooleanExtra("started", false));
+									globalActivity.started=intent.getBooleanExtra("started", false);
+							}
+							
+
 
 //					if (!(startmessage==null)&&!globalActivity.messageShowed) {
-					if (!(startmessage==null)) {
-						
-						TextView tt = (TextView) view.findViewById(R.id.Location);
-						tt.setText(getString(R.string.servermessage)+":\n"+startmessage);
-						globalActivity.messageShowed=true;
-						
+							if (!(startmessage==null)) {
+								
+								TextView tt = (TextView) view.findViewById(R.id.Location);
+								tt.setText(getString(R.string.servermessage)+":\n"+startmessage);
+								globalActivity.messageShowed=true;
+								
 
-					}
-
-
-
-					//if (globalActivity.position == null){globalActivity.position = context.getString(R.string.NotDefined);}
+							}
 
 
-					if (globalActivity.sendresult == null){	globalActivity.sendresult = "";}
-					TextView t2 = (TextView) view.findViewById(R.id.Send);
-					updateServiceStatus(view);
-					if (!(globalActivity.sendresult == null)){t2.setText(getString(R.string.Sended) +"\n"+ (globalActivity.sendresult));}
+
+							//if (globalActivity.position == null){globalActivity.position = context.getString(R.string.NotDefined);}
+
+
+							if (globalActivity.sendresult == null){	globalActivity.sendresult = "";}
+							TextView t2 = (TextView) view.findViewById(R.id.Send);
+							updateServiceStatus(view);
+							if (!(globalActivity.sendresult == null)){t2.setText(getString(R.string.Sended) +"\n"+ (globalActivity.sendresult));}
+						} catch (IllegalStateException e)
+						{
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 				}
 
 
