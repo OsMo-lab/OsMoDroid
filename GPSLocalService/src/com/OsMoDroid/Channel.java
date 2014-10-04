@@ -67,7 +67,7 @@ public class Channel implements Serializable {
 		lat=Float.parseFloat(json.getString("lat"));
 		lon=Float.parseFloat(json.getString("lon"));
 		description=json.getString("description");
-		color=json.getString("color");
+		color=json.optString("color");
 		name=json.getString("name");
 		}
 	}
@@ -142,18 +142,27 @@ public class Channel implements Serializable {
 	
 		
 	} catch (JSONException e) {
-		// TODO Auto-generated catch block
+
 		e.printStackTrace();
 	}   
 		
 
-	//channelList.add(chanitem);
-//	netutil.newapicommand((ResultsListener)serContext, "om_channel_user:"+chanitem.u);
 
 
 	 		 }
-		
-		//connect();
+		 JSONArray points =jo.optJSONArray("points");
+			for (int i = 0; i < a.length(); i++) {
+		 			JSONObject jsonObject;
+					try {
+						jsonObject = points.getJSONObject(i);
+						this.pointList.add(new Point(jsonObject));
+					}
+					catch (JSONException e) {
+						e.printStackTrace();
+					}
+					
+			}
+
 				}
 	
 	@Override
