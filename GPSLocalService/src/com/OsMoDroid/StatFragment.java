@@ -69,13 +69,38 @@ public class StatFragment extends Fragment {
 	public boolean onOptionsItemSelected(MenuItem item) {
 	switch (item.getItemId()) {
 	case 1:
-		globalActivity.mService.avgspeed=0;
-		globalActivity.mService.maxspeed=0;
-		globalActivity.mService.intKM=0;
-		globalActivity.mService.workdistance=0;
-		globalActivity.mService.timeperiod=0;
-		globalActivity.mService.workmilli=System.currentTimeMillis();
-		globalActivity.mService.refresh();
+		AlertDialog alertdialog1 = new AlertDialog.Builder(
+				getActivity()).create();
+		alertdialog1.setTitle(getActivity().getString(R.string.confirm_reset_staticstic));
+
+		alertdialog1
+				.setMessage(getActivity()
+						.getString(R.string.please_confirm_reset_statistic));
+
+		alertdialog1.setButton(getString(R.string.yes),
+				new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						globalActivity.mService.avgspeed=0;
+						globalActivity.mService.maxspeed=0;
+						globalActivity.mService.intKM=0;
+						globalActivity.mService.workdistance=0;
+						globalActivity.mService.timeperiod=0;
+						globalActivity.mService.workmilli=System.currentTimeMillis();
+						globalActivity.mService.refresh();
+						return;
+					}
+				});
+
+		alertdialog1.setButton2(getString(R.string.No),
+				new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+
+						return;
+					}
+				});
+		alertdialog1.show();
+
+		
 		break;
 	
 	default:

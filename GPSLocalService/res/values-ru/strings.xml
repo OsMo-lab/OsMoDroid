@@ -199,4 +199,6 @@
 <string name="reset">Сбросить</string>
 <string name="where_">Запросить однократную отправку координат</string>
 <string name="this_device_">"Данное устройство "</string>
+<string name="confirm_reset_staticstic">Подтверждение сброса стаистики</string>
+<string name="please_confirm_reset_statistic">Пожалуйста, подтвердите сброс статистики</string>
 </resources>

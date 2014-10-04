@@ -205,4 +205,6 @@
 <string name="reset">Reset</string>
 <string name="where_">Where?</string>
 <string name="this_device_">"This device "</string>
+<string name="confirm_reset_staticstic">Confirm reset staticstic</string>
+<string name="please_confirm_reset_statistic">Please, confirm reset statistic</string>
 </resources>
