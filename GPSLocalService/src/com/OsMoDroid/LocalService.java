@@ -466,7 +466,7 @@ public synchronized void refresh(){
 
 	in.removeExtra("startmessage");
 	in.putExtra("position", position+"\n"+satellite+" "+getString(R.string.accuracy)+accuracy);
-	in.putExtra("sattelite", satellite);
+	in.putExtra("sattelite", satellite+" "+getString(R.string.accuracy)+accuracy);
 	in.putExtra("sendresult", sendresult);
 	in.putExtra("buffercounter", buffercounter);
 	in.putExtra("stat", getString(R.string.maximal)+df1.format(maxspeed*3.6)+getString(R.string.kmch)+getString(R.string.average)+df1.format(avgspeed*3600)+getString(R.string.kmch)+getString(R.string.going)+df2.format(workdistance/1000) + getString(R.string.km)+"\n"+getString(R.string.worktime)+formatInterval(timeperiod));
