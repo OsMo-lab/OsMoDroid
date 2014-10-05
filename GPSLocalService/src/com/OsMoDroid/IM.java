@@ -36,7 +36,7 @@ import android.support.v4.app.NotificationCompat;import android.telephony.Telep
 import android.util.Log;import android.widget.Toast;
 /**
  * @author dfokin
- *Class for work with LongPolling
+ *Class for work with osmo server 
  */
 public class IM implements ResultsListener {	
 	private IMWriter iMWriter;
@@ -50,7 +50,7 @@ public class IM implements ResultsListener {
     PendingIntent reconnectPIntent;
     PendingIntent keepAlivePIntent;
     PendingIntent getTokenTimeoutPIntent;
-	volatile protected  boolean running       = false;	//protected boolean autoReconnect = true;	//protected Integer timeout       = 0;	//String adr;	//String lcursor="";	//int pingTimeout=900;	Thread connectThread;	volatile private boolean gettokening=false;	Context parent;	private String token="";	//String myLongPollCh;
+	volatile protected  boolean running       = false;	Thread connectThread;	volatile private boolean gettokening=false;	Context parent;	private String token="";
 	int mestype=0;	LocalService localService;	FileOutputStream fos;
 	ObjectOutputStream output = null;	final private static SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	static String SERVER_IP;// = "osmo.mobi";
@@ -59,6 +59,7 @@ public class IM implements ResultsListener {
 	volatile protected boolean connecting=false;
 	final boolean  log=true;
 	public Socket socket;
+	private String poll="";
 	volatile public boolean authed=false;
 	public BufferedReader rd;
 	public PrintWriter wr;
@@ -334,6 +335,7 @@ if (mes.from.equals(OsMoDroid.settings.getString("device", ""))){
 						stop();
 					}
 									}		    }		}	};
+	
 	
 	
 	
@@ -810,6 +812,7 @@ if (mes.from.equals(OsMoDroid.settings.getString("device", ""))){
 			if(!jo.optString("poll").equals(""))
 				{
 					sendToServer("L:"+jo.optString("poll"));
+					poll=jo.optString("poll");
 				}
 			if(needopensession){
 				sendToServer("TRACKER_SESSION_OPEN");
@@ -1410,7 +1413,7 @@ if (mes.from.equals(OsMoDroid.settings.getString("device", ""))){
 			{
 				for (Device dev : LocalService.deviceList)
 				{
-					if(dev.tracker_id.equals(c.substring(c.indexOf(":")+1, c.length())))
+					if(jo.optInt("d")==dev.u||dev.tracker_id.equals(c.substring(c.indexOf(":")+1, c.length())))
 						{
 							if(jo.has("t")&&jo.has("v"))
 								{
@@ -1464,6 +1467,7 @@ if (mes.from.equals(OsMoDroid.settings.getString("device", ""))){
 						}
 				}		
 			}	
+		
 	//LT:fI8qCrlvw6j0dEKZtB9h|L59.252465:30.324515S20.3A124.3H2.5C235
 	if(c.length()>2&&c.substring(0, 2).contains("LT"))
 		
