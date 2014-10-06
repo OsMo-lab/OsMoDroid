@@ -17,6 +17,7 @@ import org.osmdroid.views.overlay.OverlayItem;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.database.DataSetObserver;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -29,8 +30,13 @@ import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.view.MotionEvent;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
+import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
 public class ChannelsOverlay extends Overlay implements RotationGestureDetector.RotationListener {
@@ -306,6 +312,13 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
 				layout.addView(txv5);
 				final EditText pointName = new EditText(map.getContext());
 				layout.addView(pointName);
+				final TextView txv6 = new TextView(map.getContext());
+				txv6.setText(R.string.chanal);
+				layout.addView(txv6);
+				final Spinner groupSpinner = new Spinner(map.getContext());
+				layout.addView(groupSpinner);
+				ArrayAdapter<Channel> dataAdapter = new ArrayAdapter<Channel>(map.getContext(),android.R.layout.simple_spinner_item, LocalService.channelList);
+				groupSpinner.setAdapter(dataAdapter);
 			 	AlertDialog alertdialog1 = new AlertDialog.Builder(map.getContext()).create();
 			 	alertdialog1.setView(layout);
 				alertdialog1.setTitle(map.getContext().getString(R.string.point_create));
@@ -316,11 +329,12 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
 								 try
 										{
 											jo.put("name",pointName.getText().toString());
+											jo.put("u", ((Channel)groupSpinner.getSelectedItem()).u);
 										} catch (JSONException e1)
 										{
 											e1.printStackTrace();
 										}
-								LocalService.myIM.sendToServer("POINT|"+jo.toString());
+								LocalService.myIM.sendToServer("POINT_ADD|"+jo.toString());
 								return;
 							}
 						});

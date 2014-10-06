@@ -197,9 +197,7 @@ public class Channel implements Serializable {
 	
 	@Override
 	public String toString() {
-		
-		
-		return "Channel:u="+u+",name="+name+",added="+created;
+		return name;
 	}
 
 	public void getPointList(JSONArray jsonArray) {
