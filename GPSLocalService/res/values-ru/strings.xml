@@ -201,4 +201,7 @@
 <string name="this_device_">"Данное устройство "</string>
 <string name="confirm_reset_staticstic">Подтверждение сброса стаистики</string>
 <string name="please_confirm_reset_statistic">Пожалуйста, подтвердите сброс статистики</string>
+<string name="point_name_">Имя точки:</string>
+<string name="point_create">Отправить точку на сервер</string>
+<string name="point_create_description">Укажите имя точки для отправки на сервер</string>
 </resources>

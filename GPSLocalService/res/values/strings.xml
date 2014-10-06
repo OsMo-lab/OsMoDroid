@@ -207,4 +207,7 @@
 <string name="this_device_">"This device "</string>
 <string name="confirm_reset_staticstic">Confirm reset staticstic</string>
 <string name="please_confirm_reset_statistic">Please, confirm reset statistic</string>
+<string name="point_name_">Point name:</string>
+<string name="point_create">Send point to server</string>
+<string name="point_create_description">Enter name for poit to send</string>
 </resources>

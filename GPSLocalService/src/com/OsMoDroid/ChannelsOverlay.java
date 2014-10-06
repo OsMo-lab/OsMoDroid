@@ -2,6 +2,8 @@ package com.OsMoDroid;
 
 import java.util.ArrayList;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.osmdroid.ResourceProxy;
 import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.api.IMapView;
@@ -13,6 +15,8 @@ import org.osmdroid.views.overlay.ItemizedOverlay;
 import org.osmdroid.views.overlay.Overlay;
 import org.osmdroid.views.overlay.OverlayItem;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -25,6 +29,9 @@ import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.view.MotionEvent;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 public class ChannelsOverlay extends Overlay implements RotationGestureDetector.RotationListener {
 	//private final float mScale;
@@ -276,6 +283,55 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
 					map.setMapOrientation(map.getMapOrientation()+deltaAngle);
 				}
 			
+		}
+
+	@Override
+	public boolean onLongPress(MotionEvent e, MapView mapView)
+		{
+			 Projection proj = mapView.getProjection();
+			 IGeoPoint p = proj.fromPixels((int)e.getX(), (int)e.getY());
+			 final JSONObject jo = new JSONObject();
+			 try
+				{
+					jo.put("lat", p.getLatitude());
+					jo.put("lon", p.getLongitude());
+				} catch (JSONException e1)
+				{
+					e1.printStackTrace();
+				}
+			 	LinearLayout layout = new LinearLayout(map.getContext());
+				layout.setOrientation(LinearLayout.VERTICAL);
+				final TextView txv5 = new TextView(map.getContext());
+				txv5.setText(R.string.point_name_);
+				layout.addView(txv5);
+				final EditText pointName = new EditText(map.getContext());
+				layout.addView(pointName);
+			 	AlertDialog alertdialog1 = new AlertDialog.Builder(map.getContext()).create();
+			 	alertdialog1.setView(layout);
+				alertdialog1.setTitle(map.getContext().getString(R.string.point_create));
+				alertdialog1.setMessage(map.getContext().getString(R.string.point_create_description));
+				alertdialog1.setButton(map.getContext().getString(R.string.yes),
+						new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								 try
+										{
+											jo.put("name",pointName.getText().toString());
+										} catch (JSONException e1)
+										{
+											e1.printStackTrace();
+										}
+								LocalService.myIM.sendToServer("POINT|"+jo.toString());
+								return;
+							}
+						});
+				alertdialog1.setButton2(map.getContext().getString(R.string.No),
+						new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								return;
+							}
+						});
+				alertdialog1.show();
+			return super.onLongPress(e, mapView);
 		}
 
 
