@@ -1413,7 +1413,7 @@ if (mes.from.equals(OsMoDroid.settings.getString("device", ""))){
 			{
 				for (Device dev : LocalService.deviceList)
 				{
-					if(jo.optInt("d")==dev.u||dev.tracker_id.equals(c.substring(c.indexOf(":")+1, c.length())))
+					if(!dev.tracker_id.equals(OsMoDroid.settings.getString("tracker_id", ""))&&(jo.optInt("d")==dev.u||dev.tracker_id.equals(c.substring(c.indexOf(":")+1, c.length()))))
 						{
 							if(jo.has("t")&&jo.has("v"))
 								{
