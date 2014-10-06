@@ -317,7 +317,7 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
 				layout.addView(txv6);
 				final Spinner groupSpinner = new Spinner(map.getContext());
 				layout.addView(groupSpinner);
-				ArrayAdapter<Channel> dataAdapter = new ArrayAdapter<Channel>(map.getContext(),android.R.layout.simple_spinner_item, LocalService.channelList);
+				ArrayAdapter<Channel> dataAdapter = new ArrayAdapter<Channel>(map.getContext(),R.layout.spinneritem, LocalService.channelList);
 				groupSpinner.setAdapter(dataAdapter);
 			 	AlertDialog alertdialog1 = new AlertDialog.Builder(map.getContext()).create();
 			 	alertdialog1.setView(layout);
