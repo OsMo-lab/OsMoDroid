@@ -150,8 +150,8 @@ public class Channel implements Serializable {
 
 
 	 		 }
-		 JSONArray points =jo.optJSONArray("points");
-			for (int i = 0; i < a.length(); i++) {
+		 JSONArray points =jo.optJSONArray("point");
+			for (int i = 0; i < points.length(); i++) {
 		 			JSONObject jsonObject;
 					try {
 						jsonObject = points.getJSONObject(i);
@@ -162,6 +162,18 @@ public class Channel implements Serializable {
 					}
 					
 			}
+			JSONArray tracks =jo.optJSONArray("track");
+			for (int i = 0; i < tracks.length(); i++) {
+	 			JSONObject jsonObject;
+				try {
+					jsonObject = tracks.getJSONObject(i);
+					this.downloadgpx(jsonObject.getString("url"), jsonObject.getString("u"),jsonObject.getString("color"));
+				}
+				catch (JSONException e) {
+					e.printStackTrace();
+				}
+				
+		}
 
 				}
 	

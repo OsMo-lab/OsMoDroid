@@ -81,6 +81,10 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
 		final BoundingBoxE6 theBoundingBox = mapView.getBoundingBox();
 		final Projection pj = mapView.getProjection();
         final Point scrPoint = new Point();
+        for(ColoredGPX gpx : LocalService.showedgpxList)
+        	{
+        		drawGPX(canvas, pj, gpx);
+        	}
         for(Device dev:LocalService.deviceList)
 		{
 			
@@ -126,88 +130,10 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
 				}
 		}
 		for (Channel ch :LocalService.channelList){
-			for (ColoredGPX gpx :ch.gpxList){
-				int size=gpx.points.size();
-				if(size>2)
+			for (ColoredGPX gpx :ch.gpxList)
 				{
-					//
-					
-			
-					// precompute new points to the intermediate projection.
-					while (gpx.mPointsPrecomputed < size) {
-						final Point pt = gpx.points.get(gpx.mPointsPrecomputed);
-						pj.toProjectedPixels(pt.x, pt.y, pt);
-
-						gpx.mPointsPrecomputed++;
-					}
-
-					Point screenPoint0 = null; // points on screen
-					Point screenPoint1;
-					Point projectedPoint0; // points from the points list
-					Point projectedPoint1;
-
-					// clipping rectangle in the intermediate projection, to avoid performing projection.
-					BoundingBoxE6 boundingBox = pj.getBoundingBox();
-					Point topLeft = pj.toProjectedPixels(boundingBox.getLatNorthE6(),
-					boundingBox.getLonWestE6(), null);
-					Point bottomRight = pj.toProjectedPixels(boundingBox.getLatSouthE6(),
-					boundingBox.getLonEastE6(), null);
-					final Rect clipBounds = new Rect(topLeft.x, topLeft.y, bottomRight.x, bottomRight.y);
-
-					gpx.mPath.rewind();
-					projectedPoint0 = gpx.points.get(size - 1);
-					gpx.mLineBounds.set(projectedPoint0.x, projectedPoint0.y, projectedPoint0.x, projectedPoint0.y);
-
-					for (int i = size - 2; i >= 0; i--) {
-						// compute next points
-						projectedPoint1 = gpx.points.get(i);
-						gpx.mLineBounds.union(projectedPoint1.x, projectedPoint1.y);
-
-						if (!Rect.intersects(clipBounds, gpx.mLineBounds)) {
-							// skip this line, move to next point
-							projectedPoint0 = projectedPoint1;
-							screenPoint0 = null;
-							continue;
-						}
-
-						// the starting point may be not calculated, because previous segment was out of clip
-						// bounds
-						if (screenPoint0 == null) {
-							screenPoint0 = pj.toPixelsFromProjected(projectedPoint0, this.mTempPoint1);
-							gpx.mPath.moveTo(screenPoint0.x, screenPoint0.y);
-						}
-
-						screenPoint1 = pj.toPixelsFromProjected(projectedPoint1, this.mTempPoint2);
-
-						// skip this point, too close to previous point
-						if (Math.abs(screenPoint1.x - screenPoint0.x) + Math.abs(screenPoint1.y - screenPoint0.y) <= 1) {
-							continue;
-						}
-
-						gpx.mPath.lineTo(screenPoint1.x, screenPoint1.y);
-
-						// update starting point to next position
-						projectedPoint0 = projectedPoint1;
-						screenPoint0.x = screenPoint1.x;
-						screenPoint0.y = screenPoint1.y;
-						gpx.mLineBounds.set(projectedPoint0.x, projectedPoint0.y, projectedPoint0.x, projectedPoint0.y);
-					}
-					pathpaint.setColor(gpx.color);
-					canvas.drawPath(gpx.mPath, this.pathpaint);
-					
-					///
-					
-//					Path path = new Path();
-//					pj.toMapPixels(gpx.points.get(0), scrPoint);
-//					path.moveTo(scrPoint.x, scrPoint.y);
-//					for (IGeoPoint geo: gpx.points)
-//				 		{
-//							pj.toMapPixels(geo, scrPoint);
-//							path.lineTo(scrPoint.x, scrPoint.y);
-//							path.moveTo(scrPoint.x, scrPoint.y);
-//				 		}
-//				 	canvas.drawPath(path, pathpaint);
-				}
+				
+				drawGPX(canvas, pj, gpx);
 			}
 			
 			for(Device dev:ch.deviceList)
@@ -280,6 +206,91 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
 		}
 		
 	}
+
+	private void drawGPX(Canvas canvas, final Projection pj, ColoredGPX gpx)
+		{
+			int size=gpx.points.size();
+			if(size>2)
+			{
+				//
+				
+
+				// precompute new points to the intermediate projection.
+				while (gpx.mPointsPrecomputed < size) {
+					final Point pt = gpx.points.get(gpx.mPointsPrecomputed);
+					pj.toProjectedPixels(pt.x, pt.y, pt);
+
+					gpx.mPointsPrecomputed++;
+				}
+
+				Point screenPoint0 = null; // points on screen
+				Point screenPoint1;
+				Point projectedPoint0; // points from the points list
+				Point projectedPoint1;
+
+				// clipping rectangle in the intermediate projection, to avoid performing projection.
+				BoundingBoxE6 boundingBox = pj.getBoundingBox();
+				Point topLeft = pj.toProjectedPixels(boundingBox.getLatNorthE6(),
+				boundingBox.getLonWestE6(), null);
+				Point bottomRight = pj.toProjectedPixels(boundingBox.getLatSouthE6(),
+				boundingBox.getLonEastE6(), null);
+				final Rect clipBounds = new Rect(topLeft.x, topLeft.y, bottomRight.x, bottomRight.y);
+
+				gpx.mPath.rewind();
+				projectedPoint0 = gpx.points.get(size - 1);
+				gpx.mLineBounds.set(projectedPoint0.x, projectedPoint0.y, projectedPoint0.x, projectedPoint0.y);
+
+				for (int i = size - 2; i >= 0; i--) {
+					// compute next points
+					projectedPoint1 = gpx.points.get(i);
+					gpx.mLineBounds.union(projectedPoint1.x, projectedPoint1.y);
+
+					if (!Rect.intersects(clipBounds, gpx.mLineBounds)) {
+						// skip this line, move to next point
+						projectedPoint0 = projectedPoint1;
+						screenPoint0 = null;
+						continue;
+					}
+
+					// the starting point may be not calculated, because previous segment was out of clip
+					// bounds
+					if (screenPoint0 == null) {
+						screenPoint0 = pj.toPixelsFromProjected(projectedPoint0, this.mTempPoint1);
+						gpx.mPath.moveTo(screenPoint0.x, screenPoint0.y);
+					}
+
+					screenPoint1 = pj.toPixelsFromProjected(projectedPoint1, this.mTempPoint2);
+
+					// skip this point, too close to previous point
+					if (Math.abs(screenPoint1.x - screenPoint0.x) + Math.abs(screenPoint1.y - screenPoint0.y) <= 1) {
+						continue;
+					}
+
+					gpx.mPath.lineTo(screenPoint1.x, screenPoint1.y);
+
+					// update starting point to next position
+					projectedPoint0 = projectedPoint1;
+					screenPoint0.x = screenPoint1.x;
+					screenPoint0.y = screenPoint1.y;
+					gpx.mLineBounds.set(projectedPoint0.x, projectedPoint0.y, projectedPoint0.x, projectedPoint0.y);
+				}
+				pathpaint.setColor(gpx.color);
+				canvas.drawPath(gpx.mPath, this.pathpaint);
+				
+				///
+				
+//					Path path = new Path();
+//					pj.toMapPixels(gpx.points.get(0), scrPoint);
+//					path.moveTo(scrPoint.x, scrPoint.y);
+//					for (IGeoPoint geo: gpx.points)
+//				 		{
+//							pj.toMapPixels(geo, scrPoint);
+//							path.lineTo(scrPoint.x, scrPoint.y);
+//							path.moveTo(scrPoint.x, scrPoint.y);
+//				 		}
+//				 	canvas.drawPath(path, pathpaint);
+			}
+		}
 
 	@Override
 	public void onRotate(float deltaAngle)

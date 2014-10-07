@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.view.MenuItemCompat;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
@@ -38,7 +39,7 @@ public class TracFileListFragment extends Fragment  implements ResultsListener {
       int progress=0;
       private ProgressDialog progressDialog;
       private ReadTrackList readTask;
-      
+      private File sdDir = android.os.Environment.getExternalStorageDirectory();
       
       @Override
       public void onCreate(Bundle savedInstanceState) {
@@ -72,15 +73,8 @@ public class TracFileListFragment extends Fragment  implements ResultsListener {
                       
                       String sdState = android.os.Environment.getExternalStorageState();
                       if (sdState.equals(android.os.Environment.MEDIA_MOUNTED)) {
-
-                               File sdDir = android.os.Environment.getExternalStorageDirectory();
-
-                              
-
                                path = new File (sdDir, "OsMoDroid/");
-
                                File[] fileArray = path.listFiles(new FilenameFilter() {
-                                      
                                       @Override
                                       public boolean accept(File dir, String filename) {
                                               
@@ -91,7 +85,13 @@ public class TracFileListFragment extends Fragment  implements ResultsListener {
                                        //tempTrackFileList.add(new TrackFile(file.getName(),file.lastModified(),file.length()));
                                        count++;
                progress += ( (float)count / (float)fileArray.length ) * 100;
-               publishProgress(new TrackFile(file.getName(),file.lastModified(),file.length()));
+               TrackFile tr = new TrackFile(file.getName(),file.lastModified(),file.length());
+               ColoredGPX load = new ColoredGPX(file,"#AAAAAA");
+               if(LocalService.showedgpxList.contains(load))
+            	   {
+            		   tr.showedonmap=true;
+            	   }
+               publishProgress(tr);
               
                                }
                               
@@ -106,7 +106,7 @@ public class TracFileListFragment extends Fragment  implements ResultsListener {
                */
               @Override
               protected void onPostExecute(Void result) {
-                      progressDialog.dismiss();
+                    //  progressDialog.dismiss();
                       Collections.sort(trackFileList);
                       trackFileAdapter.notifyDataSetChanged();
                       super.onPostExecute(result);
@@ -118,7 +118,7 @@ public class TracFileListFragment extends Fragment  implements ResultsListener {
               @Override
               protected void onPreExecute() {
                       trackFileList.clear();
-                      progressDialog.show();
+                     // progressDialog.show();
                       Collections.sort(trackFileList);
                       trackFileAdapter.notifyDataSetChanged();
                       super.onPreExecute();
@@ -131,6 +131,7 @@ public class TracFileListFragment extends Fragment  implements ResultsListener {
               
       }
       private GPSLocalServiceClient globalActivity;
+	
       @Override
 	public void onResume() {
                getFileList();
@@ -170,7 +171,6 @@ public class TracFileListFragment extends Fragment  implements ResultsListener {
 		 final AdapterContextMenuInfo acmi = (AdapterContextMenuInfo) item.getMenuInfo();
 
          if (item.getItemId() == 1) {
-                 File sdDir = android.os.Environment.getExternalStorageDirectory();
                  File file = new File (sdDir,"OsMoDroid/"+trackFileList.get((int) acmi.id).fileName);
                  PendingIntent contentIntent = PendingIntent.getActivity(getActivity(), 0, new Intent(), 0);
                         
@@ -204,11 +204,30 @@ public class TracFileListFragment extends Fragment  implements ResultsListener {
          }
         
          if (item.getItemId() == 2){
-                 File sdDir = android.os.Environment.getExternalStorageDirectory();
                  File file = new File (sdDir,"OsMoDroid/"+trackFileList.get((int) acmi.id).fileName);
                  file.delete();
                  getFileList();
          }
+         if (item.getItemId()==3)
+        	 {
+        		 File fileName = new File (sdDir,"OsMoDroid/"+trackFileList.get((int) acmi.id).fileName);
+    			 Log.d(getClass().getSimpleName(),"filename="+fileName);
+    			 ColoredGPX load = new ColoredGPX(fileName,"#AAAAAA");
+    			 if (!LocalService.showedgpxList.contains(load)){
+    				 LocalService.showedgpxList.add(load);
+    				 load.initPathOverlay();
+    				 trackFileList.get((int) acmi.id).showedonmap=true;
+    				}
+    			 trackFileAdapter.notifyDataSetChanged();
+        	 }
+         if (item.getItemId()==4)
+        	 {	
+        		 File fileName = new File (sdDir,"OsMoDroid/"+trackFileList.get((int) acmi.id).fileName);
+        		 ColoredGPX load = new ColoredGPX(fileName,"#AAAAAA");
+        		 LocalService.showedgpxList.remove(load);
+        		 trackFileList.get((int) acmi.id).showedonmap=false;
+        		 trackFileAdapter.notifyDataSetChanged();
+        	 }
 		return super.onContextItemSelected(item);
 	}
 
@@ -217,6 +236,8 @@ public class TracFileListFragment extends Fragment  implements ResultsListener {
 			ContextMenuInfo menuInfo) {
 		 //menu.add(0, 1, 1, R.string.uploadtotrera).setIcon(android.R.drawable.arrow_up_float);
          menu.add(0, 2, 2, R.string.delete).setIcon(android.R.drawable.ic_menu_delete);
+         menu.add(0, 3, 3, R.string.showonmap).setIcon(android.R.drawable.ic_menu_directions);
+         menu.add(0, 4, 4, R.string.cancel).setIcon(android.R.drawable.ic_menu_manage);
 		super.onCreateContextMenu(menu, v, menuInfo);
 	}
 

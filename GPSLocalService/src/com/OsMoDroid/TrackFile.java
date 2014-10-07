@@ -9,6 +9,7 @@ public class TrackFile implements Comparable<TrackFile> {
         public String fileName;
         public String fileDate;
         public String fileSize;
+        public boolean showedonmap=false;
         
         public TrackFile(String fileName, long date, long size){
                 this.fileName=fileName;

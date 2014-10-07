@@ -90,6 +90,7 @@ import com.OsMoDroid.Netutil.MyAsyncTask;
 
 public  class LocalService extends Service implements LocationListener,GpsStatus.Listener, TextToSpeech.OnInitListener,  ResultsListener, SensorEventListener  {
 	public static List<IGeoPoint> traceList= new ArrayList<IGeoPoint>();
+	public static ArrayList<ColoredGPX> showedgpxList = new ArrayList<ColoredGPX>();
 	boolean binded=false;
 	private SensorManager mSensorManager;
 	private Sensor mAccelerometer;
