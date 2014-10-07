@@ -36,6 +36,14 @@ public class TrackFileAdapter extends ArrayAdapter<TrackFile> {
 		        fileName.setText(trackFile.fileName);
 		        fileDate.setText(trackFile.fileDate);
 		        fileSize.setText(trackFile.fileSize);
+		        if(trackFile.showedonmap)
+		        	{
+		        		fileName.setBackgroundColor(Color.GREEN);
+		        	}
+		        else
+		        	{
+		        		fileName.setBackgroundColor(Color.TRANSPARENT);
+		        	}
 		        return row;
 
 	}

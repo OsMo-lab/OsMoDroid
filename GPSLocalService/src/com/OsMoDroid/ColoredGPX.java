@@ -22,7 +22,7 @@ public class ColoredGPX {
 	File gpxfile;
 	int color;
 	//PathOverlay path;
-	List<Point> points = new ArrayList<Point>();
+	List<Point> points = new ArrayList<Point>(3000);
 	public int mPointsPrecomputed;
 	public Path mPath = new Path();
 	Rect mLineBounds = new Rect();
@@ -30,7 +30,7 @@ public class ColoredGPX {
 	public ColoredGPX(File fileName, String scolor) {
 		gpxfile=fileName;
 		try {
-			color= Color.parseColor("#" + scolor);	
+			color= Color.parseColor(scolor);	
 		} catch (Exception e) {
 			color=Color.MAGENTA;
 		}
