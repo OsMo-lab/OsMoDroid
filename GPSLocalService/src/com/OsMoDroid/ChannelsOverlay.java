@@ -329,7 +329,7 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
 								 try
 										{
 											jo.put("name",pointName.getText().toString());
-											jo.put("u", ((Channel)groupSpinner.getSelectedItem()).u);
+											jo.put("group", ((Channel)groupSpinner.getSelectedItem()).u);
 										} catch (JSONException e1)
 										{
 											e1.printStackTrace();
