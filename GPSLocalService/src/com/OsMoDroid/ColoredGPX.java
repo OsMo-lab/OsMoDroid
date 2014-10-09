@@ -19,6 +19,7 @@ import android.graphics.Rect;
 import android.util.Log;
 
 public class ColoredGPX {
+	public int u;
 	File gpxfile;
 	int color;
 	//PathOverlay path;
@@ -27,7 +28,7 @@ public class ColoredGPX {
 	public Path mPath = new Path();
 	Rect mLineBounds = new Rect();
 	
-	public ColoredGPX(File fileName, String scolor) {
+	public ColoredGPX(int u,File fileName, String scolor) {
 		gpxfile=fileName;
 		try {
 			color= Color.parseColor(scolor);	
@@ -57,7 +58,7 @@ public class ColoredGPX {
 	
 	@Override
 	public boolean equals(Object o) {
-		 if((o instanceof ColoredGPX) && this.gpxfile.getName().equals(((ColoredGPX)o).gpxfile.getName() ))  
+		 if((o instanceof ColoredGPX) && this.u==(((ColoredGPX)o).u ))  
 	        {    
 	            return true;    
 	        }  

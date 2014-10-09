@@ -30,7 +30,9 @@ public class Channel implements Serializable {
 	
 	public ArrayList<ColoredGPX> gpxList = new ArrayList<ColoredGPX>();
 	public String name;
+	public String description;
 	public String myNameInGroup;
+	public String general_id;
 	public int u;
 	public String created;
 	public String group_id;
@@ -43,6 +45,9 @@ public class Channel implements Serializable {
 	public Boolean send=false;
 	LocalService localService;
 	//MapFragment map;
+	 File sdDir = android.os.Environment.getExternalStorageDirectory();
+	 File fileName = new File (sdDir, "OsMoDroid/channelsgpx/");
+	
 	ResultsListener gpxdownloadListener = new ResultsListener() {
 	
 		@Override
@@ -94,6 +99,106 @@ public class Channel implements Serializable {
 //		 this.created=created;
 //		}
 	//{"uid":"173","lon":"30","count":"0","zoom":"14","track":"0","code":"zxc","url":"ByIWINB22Fj74452is","main":"0","private":"0","u":"51","created":"2013-02-20 12:54:18","color":"0","name":"zxc","me":{"channel_name":"zxc","uid":"173","icon":"1","u":"19","channel_url":"ByIWINB22Fj74452is","added":"2013-02-24 13:40:27","color":"FFFFFF","name":"TEST2","device":"1436","active":"1","role":"0","channel":"51"},"ch":"omc_RAzHkQ9JzY5","user":[{"uid":"173","icon":"1","lon":"41.332442","u":"1436","color":"FFFFFF","name":"TEST2","state":"0","active":"1","role":"0","lat":"54.95365","online":"1"},{"uid":"173","icon":"1","lon":"37.685934","u":"40","color":"FFFFFF","name":"Денис","state":"0","active":"1","role":"0","lat":"55.682043","online":"1"}],"lat":"60","zone":"0"},{"uid":"173","lon":"30","count":"0","zoom":"14","track":"0","code":"123","url":"w2GjFV1BcviZz6qo83","main":"0","private":"0","u":"54","created":"2013-02-25 14:46:35","color":"0","name":"Каналья","me":{"channel_name":"Каналья","uid":"173","icon":"1","u":"21","channel_url":"w2GjFV1BcviZz6qo83","added":"2013-02-25 18:48:42","color":"FFFFFF","name":"TEST2","device":"1436","active":"1","role":"0","channel":"54"},"ch":"omc_qg9q1W06aB6","user":[{"uid":"173","icon":"1","lon":"41.332442","u":"1436","color":"FFFFFF","name":"TEST2","state":"0","active":"1","role":"0","lat":"54.95365","online":"1"}],"lat":"60","zone":"0"}]}
+	
+	public void updChannel(JSONObject jo, LocalService localService)
+		{
+			this.localService=localService;
+			this.name=jo.optJSONObject("group").optString("name");
+			this.u=Integer.parseInt(jo.optJSONObject("group").optString("u"));
+			this.created=jo.optJSONObject("group").optString("created");
+			this.group_id=jo.optJSONObject("group").optString("group_id");
+			this.url="http://osmo.mobi/g/"+jo.optJSONObject("group").optString("url");
+
+			JSONArray users =jo.optJSONArray("users");
+			ArrayList<Device> recieveddeviceList= new ArrayList<Device>();
+			for (int i = 0; i < users.length(); i++) 
+				{
+		 			JSONObject jsonObject;
+					try {
+						jsonObject = users.getJSONObject(i);
+						try {
+							recieveddeviceList.add(new Device(jsonObject.getString("group_tracker_id"),jsonObject.getString("name"), jsonObject.getString("color") ) );
+						} catch (NumberFormatException e) {
+							Log.d(getClass().getSimpleName(),"Wrong device info");
+							e.printStackTrace();
+						}
+						Collections.sort(this.deviceList);
+					} catch (JSONException e) {
+						e.printStackTrace();
+					}   
+				}
+			ArrayList<Device> deleteDeviceList= new ArrayList<Device>(this.deviceList);
+			deleteDeviceList.removeAll(recieveddeviceList);
+			recieveddeviceList.removeAll(this.deviceList);
+			String str = "";
+			for (Device dev:deleteDeviceList)
+				{
+					str=str+"UL:"+dev.tracker_id+'=';
+				}
+			if(!str.equals(""))
+				{
+					localService.myIM.sendToServer(str);
+				}
+			this.deviceList.addAll(recieveddeviceList);
+			this.deviceList.removeAll(deleteDeviceList);
+			str="";
+			for (Device dev:this.deviceList)
+				{
+					str=str+"L:"+dev.tracker_id+'=';
+				}
+			if(!str.equals(""))
+				{
+					localService.myIM.sendToServer(str);
+				}
+
+			
+			 JSONArray points =jo.optJSONArray("point");
+			 this.pointList.clear();
+				for (int i = 0; i < points.length(); i++)
+					{
+			 			JSONObject jsonObject;
+						try {
+							jsonObject = points.getJSONObject(i);
+							this.pointList.add(new Point(jsonObject));
+						}
+						catch (JSONException e) {
+							e.printStackTrace();
+						}
+					}
+				
+				JSONArray tracks =jo.optJSONArray("track");
+				ArrayList<ColoredGPX> recievedgpxList = new ArrayList<ColoredGPX>();
+				for (int i = 0; i < tracks.length(); i++)
+					{
+						JSONObject jsonObject;
+						try {
+							jsonObject = tracks.getJSONObject(i);
+							fileName.mkdirs();
+							fileName = new File(sdDir, "OsMoDroid/channelsgpx/"+u+".gpx");
+							Log.d(getClass().getSimpleName(),"filename="+fileName);
+							recievedgpxList.add(new ColoredGPX(jsonObject.getInt("u"), fileName, jsonObject.getString("color")));
+							//this.downloadgpx(jsonObject.getString("url"), jsonObject.getString("u"),jsonObject.getString("color"));
+						}
+						catch (JSONException e) {
+							e.printStackTrace();
+						}
+					
+					}
+				ArrayList<ColoredGPX> deletegpxList = new ArrayList<ColoredGPX>(gpxList);
+				deletegpxList.removeAll(recievedgpxList);
+				recievedgpxList.removeAll(gpxList);
+				gpxList.addAll(recievedgpxList);
+				gpxList.removeAll(deletegpxList);
+				for(ColoredGPX cgpx: gpxList)
+					{
+						if(cgpx.points.size()==0)
+							{
+								
+							}
+					}
+				
+		}
+	
 	public Channel(JSONObject jo, LocalService localService)
 	{
 		this.localService=localService;
@@ -103,53 +208,27 @@ public class Channel implements Serializable {
 		this.created=jo.optJSONObject("group").optString("created");
 		this.group_id=jo.optJSONObject("group").optString("group_id");
 		this.url="http://osmo.mobi/g/"+jo.optJSONObject("group").optString("url");
-		
-//		if (jo.optJSONObject("me")!=null&&jo.optJSONObject("me").optString("active").equals("1")){
-//	 		this.send=true;
-//	 	} else
-//	 	{
-//	 		this.send=false;
-//	 	}
-		
-	
-		 JSONArray a =jo.optJSONArray("users");
-		for (int i = 0; i < a.length(); i++) {
+		JSONArray users =jo.optJSONArray("users");
+		for (int i = 0; i < users.length(); i++) 
+			{
 	 			JSONObject jsonObject;
 				try {
-					jsonObject = a.getJSONObject(i);
-				
-//	 			 u = 1163
-//	 				    uid = 192
-//	 				    lat = 54.907503
-//	 				    lon = 41.271125
-//	 				    state = 0
-//	 				    online = 0
-//	 				    name = toxIC jiayu
-//	 				    icon = 1
-		 			
-	
-		try {
-			this.deviceList.add(new Device(jsonObject.getString("group_tracker_id"),jsonObject.getString("name"), jsonObject.getString("color") ) );
-			if(jsonObject.getString("group_tracker_id").equals(OsMoDroid.settings.getString("device", "")))
-				{
-					this.myNameInGroup=jsonObject.getString("name");
-				}
-		} catch (NumberFormatException e) {
-			Log.d(getClass().getSimpleName(),"Wrong device info");
-			e.printStackTrace();
-		}
-		Collections.sort(this.deviceList);
-	
+					jsonObject = users.getJSONObject(i);
+					try {
+						this.deviceList.add(new Device(jsonObject.getString("group_tracker_id"),jsonObject.getString("name"), jsonObject.getString("color") ) );
+					} catch (NumberFormatException e) {
+						Log.d(getClass().getSimpleName(),"Wrong device info");
+						e.printStackTrace();
+					}
+					Collections.sort(this.deviceList);
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}   
+			}
+
 		
-	} catch (JSONException e) {
-
-		e.printStackTrace();
-	}   
-		
-
-
-
-	 		 }
+	
+		 
 		 JSONArray points =jo.optJSONArray("point");
 			for (int i = 0; i < points.length(); i++) {
 		 			JSONObject jsonObject;

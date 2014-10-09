@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.Date;import java.util.Iterator;import java.util.Map.Entry;
 import org.json.JSONArray;import org.json.JSONException;import org.json.JSONObject;import org.osmdroid.util.GeoPoint;
 
+import com.OsMoDroid.Channel.Point;
 import com.OsMoDroid.IM.IMWriter;
 import com.OsMoDroid.Netutil.MyAsyncTask;
 import android.app.AlarmManager;
@@ -828,11 +829,16 @@ if (mes.from.equals(OsMoDroid.settings.getString("device", ""))){
 			sendToServer("GROUP_GET_ALL");
 			}
 			else
-				{
+				{	
+					String str="";
 					for (Channel ch : LocalService.channelList)
 					{
-						sendToServer("GROUP_CONNECT:"+ch.group_id);
+						str=str+"GROUP_CONNECT:"+ch.group_id+'=';
 					}
+					if(!str.equals(""))
+						{
+							sendToServer(str);
+						}
 				}
 			
 			if(LocalService.deviceList.isEmpty()){
@@ -997,7 +1003,7 @@ if (mes.from.equals(OsMoDroid.settings.getString("device", ""))){
 		localService.refresh();
 	}
 	if(c.contains("GROUP_JOIN")){
-		sendToServer("GROUP_CONNECT"+c.substring(c.indexOf(":")));
+		sendToServer("GROUP_GET_ALL");
 	}
 	if(c.contains("SUBSCRIBE")&&!c.contains("UNSUBSCRIBE")){
 		sendToServer("DEVICE_GET_ALL");
@@ -1149,15 +1155,15 @@ if (mes.from.equals(OsMoDroid.settings.getString("device", ""))){
 		{
 		if(!jo.has("error")&&jo.has("group")){
 			String listen="";
-			Channel ch = new Channel(jo, localService);
-			
-			if(!LocalService.channelList.contains(ch))
-			{
-				LocalService.channelList.add(ch);
-				
-			}
-			else 
-			{	
+//			Channel ch = new Channel();
+//			ch.u=jo.optInt("u");
+//			if(!LocalService.channelList.contains(ch))
+//			{
+//				LocalService.channelList.add(new Channel(jo, localService));
+//				
+//			}
+//			else 
+//			{	
 				 
 				for(Device dev: LocalService.channelList.get(LocalService.channelList.indexOf(ch)).deviceList){
 					if (!dev.tracker_id.equals(OsMoDroid.settings.getString("device", "")))
@@ -1165,7 +1171,7 @@ if (mes.from.equals(OsMoDroid.settings.getString("device", ""))){
 					listen=listen+("UL:"+dev.tracker_id)+"=";
 						}
 					
-				}
+				//}
 				
 				LocalService.channelList.remove(ch);
 				LocalService.channelList.add(ch);
@@ -1195,17 +1201,25 @@ if (mes.from.equals(OsMoDroid.settings.getString("device", ""))){
 		}
 	if(c.contains("GROUP_GET_ALL"))
 	{
-		LocalService.channelList.clear();
+		//LocalService.channelList.clear();
+		ArrayList<Channel> recievedChannelList=new ArrayList<Channel>(); 
 		String str="";
 			for (int i = 0; i < ja.length(); i++) {
-	 			
+
 				try {
 					jsonObject = ja.getJSONObject(i);
-					if(!jsonObject.getString("group_id").equals("null"))
+					if(!jsonObject.getString("group_id").equals("null")&&!jsonObject.getString("u").equals("null"))
 					{
-					str =str+"=GROUP_CONNECT:"+jsonObject.getString("group_id"); 
+						Channel ch= new Channel();
+						ch.u=jsonObject.getInt("u");
+						ch.name=jsonObject.getString("name");
+						ch.description=jsonObject.getString("description");
+						ch.myNameInGroup=jsonObject.getString("nick");
+						ch.general_id=jsonObject.getString("general_id");
+						recievedChannelList.add(ch);
+						//LocalService.channelList.add(ch);
+						//str =str+"=GROUP_CONNECT:"+jsonObject.getString("group_id"); 
 					}
-					
 								}
 				catch (Exception e) {
 					e.printStackTrace();
@@ -1214,15 +1228,19 @@ if (mes.from.equals(OsMoDroid.settings.getString("device", ""))){
 					String exceptionAsString = sw.toString();
 					addlog(exceptionAsString);
 				}
-				
-				
-		}
+	}
+			recievedChannelList.removeAll(LocalService.channelList);
+			for (Channel ch: recievedChannelList)
+				{
+					str =str+"GROUP_CONNECT:"+ch.group_id+"=";
+				}
+			LocalService.channelList.addAll(recievedChannelList);
 			if(!str.equals(""))
 			{
 				sendToServer(str);
 			}
 			
-						LocalService.channelsAdapter.notifyDataSetChanged();
+			LocalService.channelsAdapter.notifyDataSetChanged();
 		}
 	if(c.contains("GROUP_LEAVE"))
 		{
@@ -1327,11 +1345,38 @@ if (mes.from.equals(OsMoDroid.settings.getString("device", ""))){
 			{
 				if(ch.group_id.equals(c.substring(c.indexOf(":")+1, c.length())))
 				{
-					 JSONArray a =jo.optJSONArray("users");
-						for (int i = 0; i < a.length(); i++) {
+					 JSONArray users =jo.optJSONArray("users");
+					 JSONArray points =jo.optJSONArray("points");
+					 if(points!=null){
+						 for (int i = 0; i < points.length(); i++) 
+							 {
+								 try
+									{
+										jsonObject = points.getJSONObject(i);
+										boolean exist=false;
+										for(Point p: ch.pointList)
+											{
+												if(p.u==jsonObject.optInt("u")){
+													exist=true;
+												}
+											}
+										if(!exist){
+											ch.pointList.add(ch.new Point(jsonObject));
+											LocalService.devlistener.onChannelListChange();
+										}
+									} catch (JSONException e)
+									{
+										e.printStackTrace();
+									}
+								 
+						 }
+					 }
+					 
+					 if (users!=null){
+						for (int i = 0; i < users.length(); i++) {
 					 			
 								try {
-									jsonObject = a.getJSONObject(i);
+									jsonObject = users.getJSONObject(i);
 									if(jsonObject.getString("group_tracker_id").equals(OsMoDroid.settings.getString("device", "")))
 										{
 											ch.myNameInGroup=jsonObject.getString("name");
@@ -1399,7 +1444,7 @@ if (mes.from.equals(OsMoDroid.settings.getString("device", ""))){
 
 
 					 		 }
-					
+					 }
 					
 				}
 			}
