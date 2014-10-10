@@ -42,9 +42,10 @@ public class Channel implements Serializable {
 	public List<ChannelChatMessage> messagesstringList= new ArrayList<ChannelChatMessage>();
 	//public List<PathOverlay> paths = new ArrayList<PathOverlay>();
 	ArrayList<Point> pointList= new ArrayList<Channel.Point>();
-	public Boolean connected=false;
-	public Boolean send=false;
+	public boolean connected=false;
+	public boolean send=false;
 	LocalService localService;
+	boolean active;
 	//MapFragment map;
 	 File sdDir = android.os.Environment.getExternalStorageDirectory();
 	 File fileName = new File (sdDir, "OsMoDroid/channelsgpx/");
