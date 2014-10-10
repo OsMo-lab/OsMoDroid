@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 
 import android.app.Activity;
 import android.app.Notification;
@@ -86,11 +87,16 @@ public class TracFileListFragment extends Fragment  implements ResultsListener {
                                        count++;
                progress += ( (float)count / (float)fileArray.length ) * 100;
                TrackFile tr = new TrackFile(file.getName(),file.lastModified(),file.length());
-               ColoredGPX load = new ColoredGPX(0, file,"#AAAAAA");
-               if(LocalService.showedgpxList.contains(load))
-            	   {
-            		   tr.showedonmap=true;
-            	   }
+               ColoredGPX load = new ColoredGPX(0, file,"#AAAAAA",null);
+               Iterator<ColoredGPX> it = LocalService.showedgpxList.iterator();
+      		 while (it.hasNext())
+      			 {
+      				 ColoredGPX cg = it.next();
+      				 if(cg.gpxfile.equals(load.gpxfile))
+      					 {
+      						tr.showedonmap=true;
+      					 }
+      			 }
                publishProgress(tr);
               
                                }
@@ -131,6 +137,7 @@ public class TracFileListFragment extends Fragment  implements ResultsListener {
               
       }
       private GPSLocalServiceClient globalActivity;
+	
 	
       @Override
 	public void onResume() {
@@ -212,8 +219,18 @@ public class TracFileListFragment extends Fragment  implements ResultsListener {
         	 {
         		 File fileName = new File (sdDir,"OsMoDroid/"+trackFileList.get((int) acmi.id).fileName);
     			 Log.d(getClass().getSimpleName(),"filename="+fileName);
-    			 ColoredGPX load = new ColoredGPX(0,fileName,"#AAAAAA");
-    			 if (!LocalService.showedgpxList.contains(load)){
+    			 ColoredGPX load = new ColoredGPX(0,fileName,"#AAAAAA",null);
+    			 Iterator<ColoredGPX> it = LocalService.showedgpxList.iterator();
+        		 boolean exist=false;
+    			 while (it.hasNext())
+        			 {
+        				 ColoredGPX cg = it.next();
+        				 if(cg.gpxfile.equals(load.gpxfile))
+        					 {
+        						exist=true;
+        					 }
+        			 }
+    			 if (!exist){
     				 LocalService.showedgpxList.add(load);
     				 load.initPathOverlay();
     				 trackFileList.get((int) acmi.id).showedonmap=true;
@@ -223,8 +240,16 @@ public class TracFileListFragment extends Fragment  implements ResultsListener {
          if (item.getItemId()==4)
         	 {	
         		 File fileName = new File (sdDir,"OsMoDroid/"+trackFileList.get((int) acmi.id).fileName);
-        		 ColoredGPX load = new ColoredGPX(0,fileName,"#AAAAAA");
-        		 LocalService.showedgpxList.remove(load);
+        		 ColoredGPX load = new ColoredGPX(0,fileName,"#AAAAAA",null);
+        		 Iterator<ColoredGPX> it = LocalService.showedgpxList.iterator();
+        		 while (it.hasNext())
+        			 {
+        				 ColoredGPX cg = it.next();
+        				 if(cg.gpxfile.equals(load.gpxfile))
+        					 {
+        						 it.remove();
+        					 }
+        			 }
         		 trackFileList.get((int) acmi.id).showedonmap=false;
         		 trackFileAdapter.notifyDataSetChanged();
         	 }

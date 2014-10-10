@@ -10,11 +10,12 @@ public class TrackFile implements Comparable<TrackFile> {
         public String fileDate;
         public String fileSize;
         public boolean showedonmap=false;
-        
+                
         public TrackFile(String fileName, long date, long size){
                 this.fileName=fileName;
                 this.fileDate=sdf1.format(date);
                 this.fileSize=Long.toString(size/1024)+" Kb";
+                
                 
         }
 

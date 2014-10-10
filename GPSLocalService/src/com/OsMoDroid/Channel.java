@@ -172,10 +172,9 @@ public class Channel implements Serializable {
 						JSONObject jsonObject;
 						try {
 							jsonObject = tracks.getJSONObject(i);
-//							fileName.mkdirs();
-							fileName = new File(sdDir, "OsMoDroid/channelsgpx/"+u+".gpx");
+							fileName.mkdirs();
 							Log.d(getClass().getSimpleName(),"filename="+fileName);
-							recievedgpxList.add(new ColoredGPX(jsonObject.getInt("u"), fileName, jsonObject.getString("color")));
+							recievedgpxList.add(new ColoredGPX(jsonObject.getInt("u"), new File(sdDir, "OsMoDroid/channelsgpx/"+jsonObject.getString("u")+".gpx"), jsonObject.getString("color"), jsonObject.getString("url")));
 							//this.downloadgpx(jsonObject.getString("url"), jsonObject.getString("u"),jsonObject.getString("color"));
 						}
 						catch (JSONException e) {
@@ -193,7 +192,7 @@ public class Channel implements Serializable {
 					 if(cgpx.status==ColoredGPX.Statuses.EMPTY)
 					 	{
 						 cgpx.status=Statuses.DOWNLOADING;
-						 Netutil.downloadfile(gpxdownloadListener, url, cgpx);
+						 Netutil.downloadfile(gpxdownloadListener, cgpx.url, cgpx);
 					 	}	
 					 else if (cgpx.status==ColoredGPX.Statuses.DOWNLOADED)
 					 		

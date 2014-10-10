@@ -22,6 +22,7 @@ public class ColoredGPX {
 	public int u;
 	File gpxfile;
 	int color;
+	String url;
 	enum Statuses { EMPTY, DOWNLOADING, DOWNLOADED, LOADING, LOADED }
 	Statuses status=Statuses.EMPTY;
 	//PathOverlay path;
@@ -30,8 +31,9 @@ public class ColoredGPX {
 	public Path mPath = new Path();
 	Rect mLineBounds = new Rect();
 	
-	public ColoredGPX(int u,File fileName, String scolor) {
+	public ColoredGPX(int u,File fileName, String scolor, String url) {
 		gpxfile=fileName;
+		this.url=url;
 		try {
 			color= Color.parseColor(scolor);	
 		} catch (Exception e) {

@@ -2111,7 +2111,7 @@ public synchronized boolean isOnline() {
 		
 		notificationIntent.removeExtra("neednewhash");
 
-		notificationIntent.putExtra("neednewhash", true);
+		notificationIntent.putExtra("neednewhash", false);
 
 		notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP	| Intent.FLAG_ACTIVITY_SINGLE_TOP);
 		
@@ -2199,8 +2199,9 @@ public void onResultsSucceeded(APIComResult result) {
 			Toast.makeText(LocalService.this, R.string.esya_ru_notrespond , Toast.LENGTH_LONG).show();
 		}
 	}
-	if(result.Command.equals("sendid")&&!(result.Jo==null))
+	if(result.Command.equals("sendid"))
 		{
+		if(!(result.Jo==null)){	
 		if(log)Log.d(getClass().getSimpleName(),"sendid response:"+result.Jo.toString());
 		if(result.Jo.has("key"))
 			{
@@ -2215,6 +2216,16 @@ public void onResultsSucceeded(APIComResult result) {
 					e.printStackTrace();
 				}
 			}
+		}
+		else
+			{
+				 if(!OsMoDroid.gpslocalserviceclientVisible){
+					 notifywarnactivity(getString(R.string.warnhash), false);}
+					 else {
+						 warnwronghash ();
+					 }
+			}
+		
 		}
 	}
 

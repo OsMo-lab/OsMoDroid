@@ -18,6 +18,7 @@
 <string name="Sended">"Отправка: "</string>
 <string name="Adres">"Адрес: "</string>
 <string name="RepeatAuth">Сбросить авторизацию</string>
+<string name="warnhash">Could not get key from Server, check DataConnection or communicate with support</string>
 <string name="Settings">Настройки</string>
 <string name="EqualsParameters">Приравнять параметры</string>
 <string name="AgreeRepeatAuth">Подтвердите повторный запрос авторизации</string>
