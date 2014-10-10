@@ -22,6 +22,8 @@ public class ColoredGPX {
 	public int u;
 	File gpxfile;
 	int color;
+	enum Statuses { EMPTY, DOWNLOADING, DOWNLOADED, LOADING, LOADED }
+	Statuses status=Statuses.EMPTY;
 	//PathOverlay path;
 	List<Point> points = new ArrayList<Point>(3000);
 	public int mPointsPrecomputed;
@@ -46,7 +48,9 @@ public class ColoredGPX {
 //				paths.add(path);
 				FileInputStream is = new FileInputStream(this.gpxfile);
 				Netutil.InitTask initTask = new InitTask(this);
+				status=Statuses.LOADING;
 				initTask.execute(is);
+				
 				
 			} catch (FileNotFoundException e) {
 				// TODO Auto-generated catch block

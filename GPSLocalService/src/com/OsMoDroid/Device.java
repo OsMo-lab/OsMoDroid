@@ -126,6 +126,19 @@ public class Device implements Comparable<Device> , Serializable{
 	}
 
 	@Override
+	public boolean equals(Object o) {
+		
+		 if((o instanceof Device) && this.u == ((Device)o).u )  
+	        {    
+	            return true;    
+	        }  
+	        else  
+	        {  
+	            return false;  
+	        }  
+	}
+	
+	@Override
     public int compareTo(Device dev) {
             // TODO Auto-generated method stub
             return -dev.name.compareTo(this.name);

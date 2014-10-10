@@ -18,6 +18,7 @@ import org.json.JSONObject;
 import org.osmdroid.util.ResourceProxyImpl;
 import org.osmdroid.views.overlay.PathOverlay;
 
+import com.OsMoDroid.ColoredGPX.Statuses;
 import com.OsMoDroid.Netutil.InitTask;
 
 import android.graphics.Color;
@@ -53,9 +54,7 @@ public class Channel implements Serializable {
 		@Override
 		public void onResultsSucceeded(APIComResult result) {
 			Log.d(getClass().getSimpleName(),"download result="+result.load);
-			addtrack(result.load);
-		
-			
+			result.load.initPathOverlay();
 					}
 	};
 	
@@ -81,14 +80,14 @@ public class Channel implements Serializable {
 	}
 	
 	
-	public void addtrack(ColoredGPX load){
-		if (!gpxList.contains(load)){
-			gpxList.add(load);
-			load.initPathOverlay();
-			
-			Log.d(getClass().getSimpleName(),"add download result to gpxlist="+gpxList.size());
-		}
-	}
+//	public void addtrack(ColoredGPX load){
+//		if (!gpxList.contains(load)){
+//			gpxList.add(load);
+//			load.initPathOverlay();
+//			
+//			Log.d(getClass().getSimpleName(),"add download result to gpxlist="+gpxList.size());
+//		}
+//	}
 	
 //	public Channel( 
 //	 String name,
@@ -173,7 +172,7 @@ public class Channel implements Serializable {
 						JSONObject jsonObject;
 						try {
 							jsonObject = tracks.getJSONObject(i);
-							fileName.mkdirs();
+//							fileName.mkdirs();
 							fileName = new File(sdDir, "OsMoDroid/channelsgpx/"+u+".gpx");
 							Log.d(getClass().getSimpleName(),"filename="+fileName);
 							recievedgpxList.add(new ColoredGPX(jsonObject.getInt("u"), fileName, jsonObject.getString("color")));
@@ -191,10 +190,16 @@ public class Channel implements Serializable {
 				gpxList.removeAll(deletegpxList);
 				for(ColoredGPX cgpx: gpxList)
 					{
-						if(cgpx.points.size()==0)
-							{
-								
-							}
+					 if(cgpx.status==ColoredGPX.Statuses.EMPTY)
+					 	{
+						 cgpx.status=Statuses.DOWNLOADING;
+						 Netutil.downloadfile(gpxdownloadListener, url, cgpx);
+					 	}	
+					 else if (cgpx.status==ColoredGPX.Statuses.DOWNLOADED)
+					 		
+					 	{
+					 		cgpx.initPathOverlay();
+					 	}	
 					}
 				
 		}
@@ -246,7 +251,7 @@ public class Channel implements Serializable {
 	 			JSONObject jsonObject;
 				try {
 					jsonObject = tracks.getJSONObject(i);
-					this.downloadgpx(jsonObject.getString("url"), jsonObject.getString("u"),jsonObject.getString("color"));
+	//				this.downloadgpx(jsonObject.getString("url"), jsonObject.getString("u"),jsonObject.getString("color"));
 				}
 				catch (JSONException e) {
 					e.printStackTrace();
@@ -270,21 +275,21 @@ public class Channel implements Serializable {
 	}
 
 		
-	public void downloadgpx(String url, String u, String color){
-		 File sdDir = android.os.Environment.getExternalStorageDirectory();
-			 File fileName = new File (sdDir, "OsMoDroid/channelsgpx/");
-			 fileName.mkdirs();
-			 fileName = new File(sdDir, "OsMoDroid/channelsgpx/"+u+".gpx");
-			 Log.d(getClass().getSimpleName(),"filename="+fileName);
-			 ColoredGPX load = new ColoredGPX(fileName,color);
-			 if(!fileName.exists())
-			 	{
-				 Netutil.downloadfile(gpxdownloadListener, url, load);
-			 	}	else
-			 	{
-			 		addtrack(load);
-			 	}
-	}
+//	public void downloadgpx(String url, String u, String color){
+//		 File sdDir = android.os.Environment.getExternalStorageDirectory();
+//			 File fileName = new File (sdDir, "OsMoDroid/channelsgpx/");
+//			 fileName.mkdirs();
+//			 fileName = new File(sdDir, "OsMoDroid/channelsgpx/"+u+".gpx");
+//			 Log.d(getClass().getSimpleName(),"filename="+fileName);
+//			 ColoredGPX load = new ColoredGPX(fileName,color);
+//			 if(!fileName.exists())
+//			 	{
+//				 Netutil.downloadfile(gpxdownloadListener, url, load);
+//			 	}	else
+//			 	{
+//			 		addtrack(load);
+//			 	}
+//	}
 	
 	@Override
 	public String toString() {
