@@ -144,7 +144,9 @@ public class Channel implements Serializable {
 			str="";
 			for (Device dev:this.deviceList)
 				{
-					str=str+"L:"+dev.tracker_id+'=';
+					if(!dev.tracker_id.equals(OsMoDroid.settings.getString("device", ""))){
+						str=str+"L:"+dev.tracker_id+'=';
+					}
 				}
 			if(!str.equals(""))
 				{

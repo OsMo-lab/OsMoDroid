@@ -1684,7 +1684,7 @@ if (mes.from.equals(OsMoDroid.settings.getString("device", ""))){
 			}
 			
 		} else {
-			addlog("Recieve token error - shall reconnecting ");
+			addlog("Recieve token error - shall reconnecting "+ result.rawresponse);
 			setReconnectOnError();
 		}
 		
