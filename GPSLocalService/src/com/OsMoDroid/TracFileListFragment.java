@@ -87,7 +87,7 @@ public class TracFileListFragment extends Fragment  implements ResultsListener {
                                        count++;
                progress += ( (float)count / (float)fileArray.length ) * 100;
                TrackFile tr = new TrackFile(file.getName(),file.lastModified(),file.length());
-               ColoredGPX load = new ColoredGPX(0, file,"#AAAAAA",null);
+               ColoredGPX load = new ColoredGPX(0, file,"#0000FF",null);
                Iterator<ColoredGPX> it = LocalService.showedgpxList.iterator();
       		 while (it.hasNext())
       			 {
@@ -219,7 +219,7 @@ public class TracFileListFragment extends Fragment  implements ResultsListener {
         	 {
         		 File fileName = new File (sdDir,"OsMoDroid/"+trackFileList.get((int) acmi.id).fileName);
     			 Log.d(getClass().getSimpleName(),"filename="+fileName);
-    			 ColoredGPX load = new ColoredGPX(0,fileName,"#AAAAAA",null);
+    			 ColoredGPX load = new ColoredGPX(0,fileName,"#0000FF",null);
     			 Iterator<ColoredGPX> it = LocalService.showedgpxList.iterator();
         		 boolean exist=false;
     			 while (it.hasNext())
@@ -240,7 +240,7 @@ public class TracFileListFragment extends Fragment  implements ResultsListener {
          if (item.getItemId()==4)
         	 {	
         		 File fileName = new File (sdDir,"OsMoDroid/"+trackFileList.get((int) acmi.id).fileName);
-        		 ColoredGPX load = new ColoredGPX(0,fileName,"#AAAAAA",null);
+        		 ColoredGPX load = new ColoredGPX(0,fileName,"#0000FF",null);
         		 Iterator<ColoredGPX> it = LocalService.showedgpxList.iterator();
         		 while (it.hasNext())
         			 {
