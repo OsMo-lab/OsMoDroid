@@ -160,8 +160,8 @@ public class MainFragment extends Fragment implements GPSLocalServiceClient.upd 
 		SubMenu menu2 = menu.addSubMenu(Menu.NONE, 15, 20, R.string.more);
 		
 		MenuItem auth = menu2.add(0, 1, 1, R.string.RepeatAuth);
-		MenuItem mi = menu.add(0, 2, 2, R.string.Settings);
-		mi.setIcon(android.R.drawable.ic_menu_preferences);
+//		MenuItem mi = menu.add(0, 2, 2, R.string.Settings);
+//		mi.setIcon(android.R.drawable.ic_menu_preferences);
 		MenuItem mi3 = menu2.add(0, 3, 3, R.string.EqualsParameters);
 		MenuItem forcesenditem = menu.add(0, 9, 9, R.string.sendnow);
 		forcesenditem.setIcon(android.R.drawable.ic_menu_mylocation);
@@ -200,13 +200,13 @@ public class MainFragment extends Fragment implements GPSLocalServiceClient.upd 
 		globalActivity.mService.myIM.start();
 		globalActivity.mService.refresh();
 		}
-		if (item.getItemId() == 2) {
-			
-			Intent intent = new Intent();
-			intent.setClass(getActivity(),PrefActivity.class);
-			globalActivity.startActivityForResult(intent, 0);
-			
-		}
+//		if (item.getItemId() == 2) {
+//			
+//			Intent intent = new Intent();
+//			intent.setClass(getActivity(),PrefActivity.class);
+//			globalActivity.startActivityForResult(intent, 0);
+//			
+//		}
 		
 		if (item.getItemId() == 3) {
 			AlertDialog alertdialog1 = new AlertDialog.Builder(

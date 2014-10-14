@@ -44,12 +44,15 @@ public class DrawerItemClickListener implements OnItemClickListener {
 	}
 	@Override
 	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-		//selectItem(arg2);
-		LocalService.currentItemName=(String)arg0.getAdapter().getItem(arg2);
-		selectItem(LocalService.currentItemName,null);
+		Log.d(this.getClass().getSimpleName(), "Drawer onitemclick "+(String)arg0.getAdapter().getItem(arg2));
+		if(!((String)arg0.getAdapter().getItem(arg2)).equals(OsMoDroid.context.getString(R.string.settings)))
+		{
+			LocalService.currentItemName=(String)arg0.getAdapter().getItem(arg2);
+		}
+		selectItem((String)arg0.getAdapter().getItem(arg2),null);
 	}
 	public void selectItem(String name, Bundle bundle) {
-		 
+		Log.d(this.getClass().getSimpleName(), "Drawer selectItem "+name); 
         final FragmentTransaction ft = fMan.beginTransaction();
       
 //getString(R.string.tracker), getString(R.string.stat),getString(R.string.map),getString(R.string.chanals)
@@ -128,6 +131,11 @@ public class DrawerItemClickListener implements OnItemClickListener {
                ft.replace(R.id.fragment_container, trac);
                currentItem=7;
        }
+       else if(name.equals( OsMoDroid.context.getString(R.string.settings))){
+    		Intent intent = new Intent();
+			intent.setClass(activity,PrefActivity.class);
+			activity.startActivityForResult(intent, 0);
+          }
        else if(name.equals( OsMoDroid.context.getString(R.string.exit))){
     	//   android.os.Process.killProcess(android.os.Process.myPid());
     	   LocalService.currentItemName="";

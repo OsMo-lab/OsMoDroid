@@ -445,13 +445,13 @@ void showFragment(Fragment fragment, boolean backstack) {
 					    getString(R.string.tracker), getString(R.string.stat),getString(R.string.map),
 					    getString(R.string.chanals),getString(R.string.devices),
 					    getString(R.string.links),
-					    getString(R.string.notifications), getString(R.string.tracks) , getString(R.string.exit)};
+					    getString(R.string.notifications), getString(R.string.tracks) ,getString(R.string.settings) , getString(R.string.exit)};
 			if(OsMoDroid.debug){
 				 menu1 = new String[] {
 					    getString(R.string.tracker), getString(R.string.stat),getString(R.string.map),
 					    getString(R.string.chanals),getString(R.string.devices),//
 					    getString(R.string.links),
-					    getString(R.string.notifications), getString(R.string.tracks) , getString(R.string.exit), "debug"};
+					    getString(R.string.notifications), getString(R.string.tracks) ,getString(R.string.settings), getString(R.string.exit), "debug"};
 				
 			}
 			
