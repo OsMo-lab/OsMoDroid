@@ -373,6 +373,7 @@ public class ChannelsFragment extends Fragment {
 		LocalService.channelsAdapter.context=getActivity();
 		View view=inflater.inflate(R.layout.mychannels, container, false);
 		ListView lv1 = (ListView) view.findViewById(R.id.mychannelslistView);
+		lv1.setEmptyView(view.findViewById(android.R.id.empty));
 		lv1.setAdapter(LocalService.channelsAdapter);
 		registerForContextMenu(lv1);
 	    if (LocalService.channelsAdapter!=null)

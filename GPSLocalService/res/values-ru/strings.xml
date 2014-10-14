@@ -205,4 +205,7 @@
 <string name="point_name_">Имя точки:</string>
 <string name="point_create">Отправить точку на сервер</string>
 <string name="point_create_description">Укажите имя точки для отправки на сервер</string>
+<string name="empty_channels">Здесь будут группы куда вступили или создали. Нажмите меню для действий с группами</string>
+<string name="empty_devices">Здесь будут устройства . Нажмите меню для действий с устройствами</string>
+<string name="empty_links">Здесь будут ссылки . Нажмите меню для действий с ссылками</string>
 </resources>

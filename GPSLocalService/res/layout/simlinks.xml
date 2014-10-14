@@ -17,7 +17,11 @@
         <!-- Preview: listitem=@android:layout/simple_list_item_1 -->
 
     </ListView>
-
+<TextView
+        android:id="@android:id/empty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="@string/empty_links" />
   
 
 </LinearLayout>

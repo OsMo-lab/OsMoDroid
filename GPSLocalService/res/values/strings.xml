@@ -210,4 +210,7 @@
 <string name="point_name_">Point name:</string>
 <string name="point_create">Send point to server</string>
 <string name="point_create_description">Enter name for poit to send</string>
+<string name="empty_channels"> There are groups which have joined or created. Click menu for dealing with groups </string> 
+<string name="empty_devices"> There will be devices. Click menu for dealing with devices </string> 
+<string name="empty_links"> There will be links. Press menu to action link </string>
 </resources>

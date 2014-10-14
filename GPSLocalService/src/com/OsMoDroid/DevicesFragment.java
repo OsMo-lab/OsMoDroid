@@ -424,7 +424,7 @@ if(!deviceU.equals("")){
 		
 		View view=inflater.inflate(R.layout.mydevices, container, false);
 		lv1 = (ListView) view.findViewById(R.id.mydeviceslistView);
-
+		lv1.setEmptyView(view.findViewById(android.R.id.empty));
 
 
 		   //if (LocalService.deviceAdapter==null){    LocalService.deviceAdapter = new DeviceAdapter(getApplicationContext(),R.layout.deviceitem, LocalService.deviceList);}
