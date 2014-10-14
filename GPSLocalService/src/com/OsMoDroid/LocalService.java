@@ -1583,7 +1583,7 @@ public void sendid()
 
 			 LocalService.channelsDevicesAdapter.notifyDataSetChanged();
 		}
-		accuracy=Float.toString(location.getAccuracy());
+		accuracy=Integer.toString((int) location.getAccuracy());
 		if (System.currentTimeMillis()<lastgpslocationtime+pollperiod+30000 && location.getProvider().equals(LocationManager.NETWORK_PROVIDER))
 		{
 			if(log)Log.d(this.getClass().getName(),"У нас есть GPS еще");
