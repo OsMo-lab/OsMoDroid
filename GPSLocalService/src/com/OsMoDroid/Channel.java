@@ -127,9 +127,13 @@ public class Channel implements Serializable {
 						e.printStackTrace();
 					}   
 				}
+			this.localService.myIM.addlog("reciveddevicelist:"+recieveddeviceList.toString());
 			ArrayList<Device> deleteDeviceList= new ArrayList<Device>(this.deviceList);
+			this.localService.myIM.addlog("deletedevicelist:"+deleteDeviceList.toString());
 			deleteDeviceList.removeAll(recieveddeviceList);
+			this.localService.myIM.addlog("deletedevicelist:"+deleteDeviceList.toString());
 			recieveddeviceList.removeAll(this.deviceList);
+			this.localService.myIM.addlog("reciveddevicelist:"+recieveddeviceList.toString());
 			String str = "";
 			for (Device dev:deleteDeviceList)
 				{
