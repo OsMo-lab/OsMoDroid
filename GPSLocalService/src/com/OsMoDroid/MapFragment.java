@@ -92,6 +92,7 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
 		private MenuItem courserotation;
 		private MAPSurferTileSource mapSurferTileSource;
 		private BingMapTileSource bingTileSource;
+		private MAPSurferTileSource mapSurferTileSourceZ;
 		@Override
 		public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 			MenuItem traces = menu.add(0, 1, 0, R.string.showtraces);
@@ -108,6 +109,7 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
 			MenuItem mapnik = menu2.add(0, 6, 2, "Mapnik");
 			MenuItem bing = menu2.add(0, 7, 3, "Microsoft Bing");
 			MenuItem binglabels = menu2.add(0, 8, 4, "Microsoft Bing with Labels");
+			MenuItem mapsurferz = menu2.add(0, 9, 1, "MapSurfer ZOOM");
 			super.onCreateOptionsMenu(menu, inflater);
 			
 		}
@@ -156,6 +158,10 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
 				bingTileSource.setStyle(BingMapTileSource.IMAGERYSET_AERIALWITHLABELS);
 				mMapView.setTileSource(bingTileSource);
 				LocalService.selectedTileSourceInt=4;
+				break;
+			case 9:
+				mMapView.setTileSource(mapSurferTileSourceZ);
+				LocalService.selectedTileSourceInt=5;
 				break;
 			default:
 				break;
@@ -327,6 +333,7 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
 			final String[] aBaseUrl=new String[] {"http://openmapsurfer.uni-hd.de/tiles/roads/"};
 			bingTileSource = new BingMapTileSource(null);
 			mapSurferTileSource = new MAPSurferTileSource(name, string.unknown, aZoomMinLevel, aZoomMaxLevel, aTileSizePixels, aImageFilenameEnding, aBaseUrl);
+			mapSurferTileSourceZ = new MAPSurferTileSource(name, string.unknown, aZoomMinLevel, aZoomMaxLevel, aTileSizePixels*2, aImageFilenameEnding, aBaseUrl);
 			View view = inflater.inflate(R.layout.map, container, false);
 			mMapView = (MapView)view.findViewById(R.id.mapview);
 			ImageButton centerImageButton = (ImageButton)view.findViewById(R.id.imageButtonCenter);
@@ -346,7 +353,9 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
 				bingTileSource.setStyle(BingMapTileSource.IMAGERYSET_AERIALWITHLABELS);
 				mMapView.setTileSource(bingTileSource);
 				break;
-				
+			case 5:
+				mMapView.setTileSource(mapSurferTileSourceZ);
+				break;
 			default:
 				break;
 			}
