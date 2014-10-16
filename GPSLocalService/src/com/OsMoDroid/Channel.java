@@ -206,62 +206,62 @@ public class Channel implements Serializable {
 				
 		}
 	
-	public Channel(JSONObject jo, LocalService localService)
-	{
-		this.localService=localService;
-		
-		this.name=jo.optJSONObject("group").optString("name");
-		this.u=Integer.parseInt(jo.optJSONObject("group").optString("u"));
-		this.created=jo.optJSONObject("group").optString("created");
-		this.group_id=jo.optJSONObject("group").optString("group_id");
-		this.url="http://osmo.mobi/g/"+jo.optJSONObject("group").optString("url");
-		JSONArray users =jo.optJSONArray("users");
-		for (int i = 0; i < users.length(); i++) 
-			{
-	 			JSONObject jsonObject;
-				try {
-					jsonObject = users.getJSONObject(i);
-					try {
-						this.deviceList.add(new Device(jsonObject.getString("group_tracker_id"),jsonObject.getString("name"), jsonObject.getString("color") ) );
-					} catch (NumberFormatException e) {
-						Log.d(getClass().getSimpleName(),"Wrong device info");
-						e.printStackTrace();
-					}
-					Collections.sort(this.deviceList);
-				} catch (JSONException e) {
-					e.printStackTrace();
-				}   
-			}
-
-		
-	
-		 
-		 JSONArray points =jo.optJSONArray("point");
-			for (int i = 0; i < points.length(); i++) {
-		 			JSONObject jsonObject;
-					try {
-						jsonObject = points.getJSONObject(i);
-						this.pointList.add(new Point(jsonObject));
-					}
-					catch (JSONException e) {
-						e.printStackTrace();
-					}
-					
-			}
-			JSONArray tracks =jo.optJSONArray("track");
-			for (int i = 0; i < tracks.length(); i++) {
-	 			JSONObject jsonObject;
-				try {
-					jsonObject = tracks.getJSONObject(i);
-	//				this.downloadgpx(jsonObject.getString("url"), jsonObject.getString("u"),jsonObject.getString("color"));
-				}
-				catch (JSONException e) {
-					e.printStackTrace();
-				}
-				
-		}
-
-				}
+//	public Channel(JSONObject jo, LocalService localService)
+//	{
+//		this.localService=localService;
+//		
+//		this.name=jo.optJSONObject("group").optString("name");
+//		this.u=Integer.parseInt(jo.optJSONObject("group").optString("u"));
+//		this.created=jo.optJSONObject("group").optString("created");
+//		this.group_id=jo.optJSONObject("group").optString("group_id");
+//		this.url="http://osmo.mobi/g/"+jo.optJSONObject("group").optString("url");
+//		JSONArray users =jo.optJSONArray("users");
+//		for (int i = 0; i < users.length(); i++) 
+//			{
+//	 			JSONObject jsonObject;
+//				try {
+//					jsonObject = users.getJSONObject(i);
+//					try {
+//						this.deviceList.add(new Device(jsonObject.getString("group_tracker_id"),jsonObject.getString("name"), jsonObject.getString("color") ) );
+//					} catch (NumberFormatException e) {
+//						Log.d(getClass().getSimpleName(),"Wrong device info");
+//						e.printStackTrace();
+//					}
+//					Collections.sort(this.deviceList);
+//				} catch (JSONException e) {
+//					e.printStackTrace();
+//				}   
+//			}
+//
+//		
+//	
+//		 
+//		 JSONArray points =jo.optJSONArray("point");
+//			for (int i = 0; i < points.length(); i++) {
+//		 			JSONObject jsonObject;
+//					try {
+//						jsonObject = points.getJSONObject(i);
+//						this.pointList.add(new Point(jsonObject));
+//					}
+//					catch (JSONException e) {
+//						e.printStackTrace();
+//					}
+//					
+//			}
+//			JSONArray tracks =jo.optJSONArray("track");
+//			for (int i = 0; i < tracks.length(); i++) {
+//	 			JSONObject jsonObject;
+//				try {
+//					jsonObject = tracks.getJSONObject(i);
+//	//				this.downloadgpx(jsonObject.getString("url"), jsonObject.getString("u"),jsonObject.getString("color"));
+//				}
+//				catch (JSONException e) {
+//					e.printStackTrace();
+//				}
+//				
+//		}
+//
+//				}
 	
 	@Override
 	public boolean equals(Object o) {

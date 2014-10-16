@@ -1161,6 +1161,7 @@ if (mes.from.equals(OsMoDroid.settings.getString("device", ""))){
 					ch.updChannel(jo, localService);
 				}
 			}
+			 if (LocalService.channelsDevicesAdapter!=null) {LocalService.channelsDevicesAdapter.notifyDataSetChanged();}
 //			String listen="";
 ////			Channel ch = new Channel();
 ////			ch.u=jo.optInt("u");
@@ -1251,7 +1252,10 @@ if (mes.from.equals(OsMoDroid.settings.getString("device", ""))){
 				sendToServer(str);
 			}
 			
-			LocalService.channelsAdapter.notifyDataSetChanged();
+			if (LocalService.channelsAdapter!=null )
+				{
+					LocalService.channelsAdapter.notifyDataSetChanged();
+				}
 		}
 	if(c.contains("GROUP_LEAVE"))
 		{
