@@ -128,13 +128,17 @@ public class Device implements Comparable<Device> , Serializable{
 	@Override
 	public boolean equals(Object o) {
 		
-		 if((o instanceof Device) && this.u == ((Device)o).u )  
+		 if((o instanceof Device) && this.u == ((Device)o).u &&this.u!=0)  
 	        {    
 	            return true;    
 	        }  
 	        else  
 	        {  
-	            return false;  
+	        	if((o instanceof Device) &&this.u==0&&this.tracker_id.equals(((Device)o).tracker_id))
+	        	{
+	        		return true;
+	        	}
+	        	return false;  
 	        }  
 	}
 	

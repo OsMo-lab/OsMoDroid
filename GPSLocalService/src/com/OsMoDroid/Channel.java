@@ -122,17 +122,23 @@ public class Channel implements Serializable {
 							Log.d(getClass().getSimpleName(),"Wrong device info");
 							e.printStackTrace();
 						}
-						Collections.sort(this.deviceList);
+						
 					} catch (JSONException e) {
 						e.printStackTrace();
 					}   
 				}
-			this.localService.myIM.addlog("reciveddevicelist:"+recieveddeviceList.toString());
 			ArrayList<Device> deleteDeviceList= new ArrayList<Device>(this.deviceList);
+			this.localService.myIM.addlog("reciveddevicelist:"+recieveddeviceList.toString());
 			this.localService.myIM.addlog("deletedevicelist:"+deleteDeviceList.toString());
+			this.localService.myIM.addlog("this.devicelist:"+this.deviceList.toString());
 			deleteDeviceList.removeAll(recieveddeviceList);
+			this.localService.myIM.addlog("reciveddevicelist:"+recieveddeviceList.toString());
 			this.localService.myIM.addlog("deletedevicelist:"+deleteDeviceList.toString());
+			this.localService.myIM.addlog("this.devicelist:"+this.deviceList.toString());
 			recieveddeviceList.removeAll(this.deviceList);
+			this.localService.myIM.addlog("reciveddevicelist:"+recieveddeviceList.toString());
+			this.localService.myIM.addlog("deletedevicelist:"+deleteDeviceList.toString());
+			this.localService.myIM.addlog("this.devicelist:"+this.deviceList.toString());
 			this.localService.myIM.addlog("reciveddevicelist:"+recieveddeviceList.toString());
 			String str = "";
 			for (Device dev:deleteDeviceList)
@@ -144,7 +150,13 @@ public class Channel implements Serializable {
 					localService.myIM.sendToServer(str);
 				}
 			this.deviceList.addAll(recieveddeviceList);
+			this.localService.myIM.addlog("reciveddevicelist:"+recieveddeviceList.toString());
+			this.localService.myIM.addlog("deletedevicelist:"+deleteDeviceList.toString());
+			this.localService.myIM.addlog("this.devicelist:"+this.deviceList.toString());
 			this.deviceList.removeAll(deleteDeviceList);
+			this.localService.myIM.addlog("reciveddevicelist:"+recieveddeviceList.toString());
+			this.localService.myIM.addlog("deletedevicelist:"+deleteDeviceList.toString());
+			this.localService.myIM.addlog("this.devicelist:"+this.deviceList.toString());
 			str="";
 			for (Device dev:this.deviceList)
 				{
@@ -156,7 +168,7 @@ public class Channel implements Serializable {
 				{
 					localService.myIM.sendToServer(str);
 				}
-
+			Collections.sort(this.deviceList);
 			
 			 JSONArray points =jo.optJSONArray("point");
 			 this.pointList.clear();

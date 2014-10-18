@@ -1410,6 +1410,7 @@ if (mes.from.equals(OsMoDroid.settings.getString("device", ""))){
 								if(deviceToDel!=null)
 								{
 									ch.deviceList.remove(deviceToDel);
+									Collections.sort(ch.deviceList);
 								}
 							}
 							else 
@@ -1426,6 +1427,7 @@ if (mes.from.equals(OsMoDroid.settings.getString("device", ""))){
 									try {
 										ch.deviceList.add(new Device(jsonObject.getString("group_tracker_id"),jsonObject.getString("name"), jsonObject.getString("color") ) );
 										sendToServer("L:"+jsonObject.getString("group_tracker_id"));
+										Collections.sort(ch.deviceList);
 									} catch (JSONException e) {
 										StringWriter sw = new StringWriter();
 										e.printStackTrace(new PrintWriter(sw));
@@ -1465,6 +1467,7 @@ if (mes.from.equals(OsMoDroid.settings.getString("device", ""))){
 			}
 			if(LocalService.channelsDevicesAdapter!=null)
 			{
+				
 				LocalService.channelsDevicesAdapter.notifyDataSetChanged();
 			}
 			//localService.saveObject(LocalService.channelList, OsMoDroid.CHANNELLIST);
