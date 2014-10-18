@@ -3,7 +3,7 @@
 <string name="start">Запустить</string>
 <string name="stop">Остановить</string>
 <string name="serviceStatus">Состояние:</string>
-<string name="location">"Положение: "</string>
+<string name="location">"Положение: </string>
 <string name="sends">Отправка:</string>
 <string name="url">Адрес:</string>
 <string name="settings">Настройки</string>
@@ -11,14 +11,14 @@
 <string name="succes">Успешно</string>
 <string name="error">Ошибка: </string>
 <string name="Sputniki">Спутники: </string>
-<string name="GlonasFindString">" используется Глонасс"</string>
+<string name="GlonasFindString"> используется Глонасс</string>
 <string name="NoConnection">Нет соединения</string>
 <string name="Unknow">Неизвестная</string>
 <string name="NotDefined">Не определено</string>
-<string name="Sended">"Отправка: "</string>
-<string name="Adres">"Адрес: "</string>
+<string name="Sended">Отправка: </string>
+<string name="Adres">Адрес: </string>
 <string name="RepeatAuth">Сбросить авторизацию</string>
-<string name="warnhash">Could not get key from Server, check DataConnection or communicate with support</string>
+<string name="warnhash">Не удалось получить ключ от сервера. Проверьте соединение или обратитесь в поддержку</string>
 <string name="Settings">Настройки</string>
 <string name="EqualsParameters">Приравнять параметры</string>
 <string name="AgreeRepeatAuth">Подтвердите повторный запрос авторизации</string>
@@ -39,7 +39,7 @@
 <string name="SendCourseChange">Смена курса передачи:</string>
 <string name="TrackCourseChange">Смена курса трека:</string>
 <string name="ServerError">Ошибка сервера</string>
-<string name="buffer">" Буфер: "</string>
+<string name="buffer">Буфер: </string>
 <string name="request">Запрос авторизации, пожалуйста подождите...</string>
 <string name="noappcode">Не указан пароль</string>
 <string name="nokey">Авторизоваться не удалось</string>
@@ -54,7 +54,7 @@
 <string name="message">Сообщение</string>
 <string name="sendsupport">Сообщить в техническую поддержку</string>
 <string name="about">О программе</string>
-<string name="abouttext">OsMoDroid, официальный клиент OsMo\nРазработчик: Денис Фокин (c) 2012-2014\n\nИспользуя данное приложение вы принимаете Условия Использования:\nhttp://osmo.mobi/terms/\n\nОфициальный сайт OsMoDroid:\nhttp://osmodroid.com\nСправка по OsMoDroid:\nhttp://osmodroid.com/help/\n\nСправка по мониторингу:\nhttp://osmo.mobi/ \nДанные карты © OpenStreetMap www.osm.org \nТайлы карты - http://osmodroid.com/copyrights</string>
+<string name="abouttext">OsMoDroid это клиент мониторинга для Android. Используя смартфон и сервис OsMo ваши друзья и близкие всегда будут знать где вы.\nРазработчик: Денис Фокин (c) 2012-2014\n\nИспользуя данное приложение вы принимаете Условия Использования:\nhttp://osmo.mobi/terms/\n\nОфициальный сайт OsMoDroid:\nhttp://osmodroid.com\n\nИнформация о авторских правах: http://osmodroid.com/copyright.html</string>
 <string name="send">>></string>
 <string name="cancel">Отмена</string>
 <string name="speed">Скорость: км/ч</string>
@@ -144,7 +144,7 @@
 <string name="linkcopied">Ссылка скопирована в буфер обмена</string>
 <string name="Stoping">Остановка</string>
 <string name="closesession">Закрыть сессию?</string>
-<string name="loading">Loading...</string>
+<string name="loading">Загрузка...</string>
 <string name="servermessage">Сообщение от сервера</string>
 <string name="deletelink">Удалить ссылку</string>
 <string name="uploadtotrera">Загрузить в ТреРа</string>
@@ -200,12 +200,12 @@
 <string name="reset">Сбросить</string>
 <string name="where_">Запросить однократную отправку координат</string>
 <string name="this_device_">"Данное устройство "</string>
-<string name="confirm_reset_staticstic">Подтверждение сброса стаистики</string>
+<string name="confirm_reset_staticstic">Подтверждение сброса статистики</string>
 <string name="please_confirm_reset_statistic">Пожалуйста, подтвердите сброс статистики</string>
 <string name="point_name_">Имя точки:</string>
 <string name="point_create">Отправить точку на сервер</string>
 <string name="point_create_description">Укажите имя точки для отправки на сервер</string>
-<string name="empty_channels">Здесь будут группы куда вступили или создали. Нажмите меню для действий с группами</string>
-<string name="empty_devices">Здесь будут устройства . Нажмите меню для действий с устройствами</string>
-<string name="empty_links">Здесь будут ссылки . Нажмите меню для действий с ссылками</string>
+<string name="empty_channels">На данном экране вы сможете наблюдать группы в которые вы вступили. Чтобы начать использование групп, используйте контекстное меню.</string>
+<string name="empty_devices">На данном экране будет список ваших устройств и подписок на устройства. Действия с устройствами доступны в контекстном меню.</string>
+<string name="empty_links">На данном экране располагаются постоянные ссылки для мониторинга вашего устройства с сайта. Доступные действия вы можете найти в контекстном меню.</string>
 </resources>

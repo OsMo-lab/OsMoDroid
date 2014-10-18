@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" android:title="Settings">
     
-    <CheckBoxPreference android:title="Dark Theme" android:defaultValue="true" android:key="darktheme" /><EditTextPreference android:summary="Milliseconds" android:title="GPS poll period" android:key="refreshrate" android:defaultValue="1000"/><EditTextPreference android:summary="Seconds" android:title="Network timeout" android:key="timeout" android:defaultValue="30"/><PreferenceCategory android:title="Online">
+    <PreferenceCategory android:title="General">
+        <CheckBoxPreference android:title="Dark Theme" android:defaultValue="true" android:key="darktheme" />
+        <EditTextPreference android:summary="Milliseconds" android:title="GPS poll period" android:key="refreshrate" android:defaultValue="1000"/>
+        <EditTextPreference android:summary="Seconds" android:title="Network timeout" android:key="timeout" android:defaultValue="30"/>
+    </PreferenceCategory>
+    
+    <PreferenceCategory android:title="Online">
         
         <CheckBoxPreference
             android:defaultValue="true"
@@ -41,7 +47,7 @@
                                 android:inputType="number"
                                 android:key="hdop"
                                 android:numeric="integer"
-                                android:summary="Acceptable Location Accuracy (Horizontal Dilution of Precision). Location signals less accurate than this (higher numbers) will not be sent as updates. (default=30)"
+                                android:summary="Acceptable Location Accuracy (Horizontal Dilution of Precision). Location signals less accurate than this (higher numbers) will not be sent as updates."
                                 android:title="Maximum HDOP" android:defaultValue="30"/>
                             <EditTextPreference
                                 android:key="speed"
@@ -55,14 +61,6 @@
                             	android:title="Mode AND"
                             	android:defaultValue="false"
                             	android:summary="If checked, ALL conditions (speed, time, distance) must be met to send a location update. If unchecked, any condition may cause an update."/>
-                            <PreferenceScreen android:title="Identification" >
-                                <EditTextPreference
-                                    android:key="hash"
-                                    android:title="Hash"/>
-                                <EditTextPreference
-                                    android:key="n"
-                                    android:title="Check number"/>
-                            </PreferenceScreen>
                             <CheckBoxPreference
                                 android:key="usebuffer"
                                 android:title="Transfer Unsent"
@@ -127,10 +125,6 @@
                         	android:title="Mode AND"
                         	android:defaultValue="false"
                         	android:summary="If checked, ALL conditions (speed, time, distance) must be met to save a location update. If unchecked, any condition may cause an update."/>
-                        <CheckBoxPreference
-                            android:title="Load automatically on TreRa"
-                            android:key="automaticupload"
-                            android:defaultValue="false"/>
                         <EditTextPreference android:title="Memory card path" android:key="sdpath"/>
                 </PreferenceScreen>
                     

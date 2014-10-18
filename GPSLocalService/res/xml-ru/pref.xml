@@ -1,6 +1,10 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" android:title="Настройки" >
     
-    <CheckBoxPreference android:title="Dark Theme" android:defaultValue="true" android:key="darktheme" /><EditTextPreference android:summary="Миллисекунды" android:title="Период опроса GPS" android:key="refreshrate" android:defaultValue="5000"/><EditTextPreference android:summary="Секунды" android:title="Таймаут сети" android:key="timeout" android:defaultValue="30" />
+    <PreferenceCategory android:title="Основное">
+        <CheckBoxPreference android:title="Тёмная тема" android:defaultValue="true" android:key="darktheme" />
+        <EditTextPreference android:summary="Миллисекунды" android:title="Период опроса GPS" android:key="refreshrate" android:defaultValue="5000"/>
+        <EditTextPreference android:summary="Секунды" android:title="Таймаут сети" android:key="timeout" android:defaultValue="30" />
+    </PreferenceCategory>
     
     <PreferenceCategory android:title="Онлайн">
         
@@ -54,7 +58,7 @@
                             <CheckBoxPreference
                                 android:key="modeAND"
                                 android:title="Режим параметров И"
-                                android:summary="По умолчанию ИЛИ (или время, или дистанция или курс)"
+                                android:summary="Если флажок установлен, все условия (скорость, время, расстояние) должны быть выполнены, чтобы отправить местоположение. Если не отмечено, любое состояние может привести обновления"
                                 android:defaultValue="false"/>
                             <CheckBoxPreference
                                 android:key="usebuffer"
@@ -69,7 +73,7 @@
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="gpx"
-            android:summary="Треки сохраняются локально (путь настраивается)"
+            android:summary="Треки сохраняются на карте памяти по умолчанию (/sdcard/OsMoDroid/)"
             android:title="Запись трека" />
 
                 <PreferenceScreen android:title="Параметры записи" android:dependency="gpx">
@@ -118,9 +122,9 @@
                         <CheckBoxPreference
                             android:key="modeAND_gpx"
                             android:title="Режим параметров И"
-                            android:summary="По умолчанию ИЛИ (или время, или дистанция или курс)"
+                            android:summary="Если флажок установлен, все условия (скорость, время, расстояние) должны быть выполнены, чтобы отправить местоположение. Если не отмечено, любое состояние может привести обновления"
                             android:defaultValue="false"/>
-                         <EditTextPreference android:title="Путь к SDcard" android:key="sdpath" />
+                         <EditTextPreference android:title="Путь для сохранения" android:key="sdpath" />
                 </PreferenceScreen>
                     
     </PreferenceCategory>
