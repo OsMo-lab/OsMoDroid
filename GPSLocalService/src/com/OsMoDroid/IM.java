@@ -1,47 +1,121 @@
 
-package com.OsMoDroid;import java.io.BufferedReader;import java.io.BufferedWriter;
+package com.OsMoDroid;
+
+
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.StringWriter;
-import java.io.IOException;import java.io.InputStream;import java.io.InputStreamReader;import java.io.PrintWriter;import java.net.HttpURLConnection;import java.net.InetAddress;
+
+import java.io.IOException;
+
+import java.io.InputStream;
+
+import java.io.InputStreamReader;
+
+import java.io.PrintWriter;
+
+import java.net.HttpURLConnection;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
-import java.net.InetSocketAddress;import java.net.Proxy;import java.net.URL;import java.net.UnknownHostException;import java.text.SimpleDateFormat;import java.util.ArrayList;import java.util.Arrays;
+
+import java.net.InetSocketAddress;
+
+import java.net.Proxy;
+
+import java.net.URL;
+
+import java.net.UnknownHostException;
+
+import java.text.SimpleDateFormat;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Date;import java.util.Iterator;import java.util.Map.Entry;
-import org.json.JSONArray;import org.json.JSONException;import org.json.JSONObject;import org.osmdroid.util.GeoPoint;
-
+
+import java.util.Date;
+
+import java.util.Iterator;
+import java.util.Map.Entry;
+
+
+
+import org.json.JSONArray;
+
+import org.json.JSONException;
+
+import org.json.JSONObject;
+import org.osmdroid.util.GeoPoint;
+
+
+
 import com.OsMoDroid.Channel.Point;
 import com.OsMoDroid.IM.IMWriter;
-import com.OsMoDroid.Netutil.MyAsyncTask;
-import android.app.AlarmManager;
+
+import com.OsMoDroid.Netutil.MyAsyncTask;
+
+
+
+import android.app.AlarmManager;
 import android.app.AlertDialog;
-import android.app.Notification;import android.app.PendingIntent;import android.app.PendingIntent.CanceledException;import android.content.BroadcastReceiver;import android.content.SharedPreferences;
-import android.content.Context;import android.content.Intent;import android.content.IntentFilter;import android.location.LocationManager;
+import android.app.Notification;
+
+import android.app.PendingIntent;
+
+import android.app.PendingIntent.CanceledException;
+
+import android.content.BroadcastReceiver;
+import android.content.SharedPreferences;
+
+import android.content.Context;
+
+import android.content.Intent;
+
+import android.content.IntentFilter;
+
+import android.location.LocationManager;
 import android.media.MediaPlayer;
-import android.net.NetworkInfo;import android.net.Uri;
-import android.os.Bundle;import android.os.Environment;
+import android.net.NetworkInfo;
+import android.net.Uri;
+
+import android.os.Bundle;
+import android.os.Environment;
 import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.SystemClock;
-import android.os.Handler;import android.os.Message;import android.preference.PreferenceManager;
+
+import android.os.Handler;
+
+import android.os.Message;
+import android.preference.PreferenceManager;
 import android.provider.Settings.Secure;
-import android.speech.tts.TextToSpeech;
-import android.support.v4.app.NotificationCompat;import android.telephony.TelephonyManager;
-import android.util.Log;import android.widget.Toast;
-/**
+
+import android.speech.tts.TextToSpeech;
+import android.support.v4.app.NotificationCompat;
+import android.telephony.TelephonyManager;
+
+import android.util.Log;
+
+import android.widget.Toast;
+
+/**
  * @author dfokin
  *Class for work with osmo server 
  */
-public class IM implements ResultsListener {	
+public class IM implements ResultsListener {
+	
 	private IMWriter iMWriter;
-	private IMReader iMReader;	private static int RECONNECT_TIMEOUT = 1000*30;
+	private IMReader iMReader;
+	private static int RECONNECT_TIMEOUT = 1000*30;
 	private static final int KEEP_ALIVE = 1000*270;
 	private static final long ERROR_RECONNECT_TIMEOUT = 5*1000;
 	private static final String RECONNECT_INTENT = "com.osmodroid.reconnect";
@@ -51,9 +125,16 @@ public class IM implements ResultsListener {
     PendingIntent reconnectPIntent;
     PendingIntent keepAlivePIntent;
     PendingIntent getTokenTimeoutPIntent;
-	volatile protected  boolean running       = false;	Thread connectThread;	volatile private boolean gettokening=false;	Context parent;	private String token="";
-	int mestype=0;	LocalService localService;	FileOutputStream fos;
-	ObjectOutputStream output = null;	final private static SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	volatile protected  boolean running       = false;
+	Thread connectThread;
+	volatile private boolean gettokening=false;
+	Context parent;
+	private String token="";
+	int mestype=0;
+	LocalService localService;
+	FileOutputStream fos;
+	ObjectOutputStream output = null;
+	final private static SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	static String SERVER_IP;// = "osmo.mobi";
 	static int SERVERPORT;// = 5757;
 	volatile protected boolean connOpened=false;
@@ -114,12 +195,12 @@ public class IM implements ResultsListener {
 							}
 					}
 				ExecutedCommandArryaList.addAll(cl);
-				addlog("add to command order "+cl);
+				addlog("Add to command order "+cl);
 				iMWriter.handler.sendMessage(msg);	
 			}
 			else {
-				addlog("panic! handler is null ");
-				 if(log)Log.d(this.getClass().getName(), " handler is null!!!");
+				addlog("panic! handler is null");
+				if(log) Log.d(this.getClass().getName(), " handler is null!!!");
 			}
 				
 			
@@ -129,7 +210,7 @@ public class IM implements ResultsListener {
           {
         		context.unregisterReceiver( this );
         		 if(log)Log.d(this.getClass().getName(), "gettoken timeout reciever trigged");
-        		addlog("gettoken timeout reciever trigged");
+        		addlog("Get token timeout receiver trigged");
         	  	sendidtask.cancel(true);
         	  	gettokening=false;
         	  	stop();
@@ -141,7 +222,7 @@ public class IM implements ResultsListener {
 	  BroadcastReceiver reconnectReceiver = new BroadcastReceiver() {
           @Override public void onReceive( Context context, Intent _ )
           {
-        	  addlog("websocket reconnect reciever trigged");
+        	  addlog("Socket reconnect receiver trigged");
         	  localService.alertHandler.post(new Runnable()
   			{
   				
@@ -175,7 +256,7 @@ public class IM implements ResultsListener {
           @Override public void onReceive( Context context, Intent _ )
           {
               if(connOpened){
-            	  addlog("websocket sendPing");
+            	  addlog("Socket sendPing");
             	  if(log)Log.d(this.getClass().getName(), " send ping");
             	  sendToServer("P");
             	
@@ -213,7 +294,7 @@ public class IM implements ResultsListener {
 	 
       public void setkeepAliveAlarm(){
     	  if(log)Log.d(this.getClass().getName(), "void setKeepAliveAlarm");
-    	  addlog("websocket void setkeepalive");
+    	  addlog("Socket void setkeepalive");
     	  parent.registerReceiver(keepAliveReceiver, new IntentFilter(KEEPALIVE_INTENT));
     	  manager.cancel(keepAlivePIntent);
     	  manager.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime()+KEEP_ALIVE, KEEP_ALIVE, keepAlivePIntent);
@@ -221,7 +302,7 @@ public class IM implements ResultsListener {
       
       public void disablekeepAliveAlarm(){
     	  if(log)Log.d(this.getClass().getName(), "void disableKeepAliveAlarm");
-    	  addlog("websocket void disablekeepalive");
+    	  addlog("Socket void disablekeepalive");
     	  try {
 			parent.unregisterReceiver(keepAliveReceiver);
 		} catch (Exception e) {
@@ -238,7 +319,7 @@ public class IM implements ResultsListener {
 				 @Override
 				public void run()
 					{
-						addlog("websocket setReconnectAlarn");
+						addlog("Socket setReconnectAlarn");
 						
 					}
 			 });
@@ -251,7 +332,17 @@ public class IM implements ResultsListener {
 	
 	
 	
-				public void addtoDeviceChat(String message) {String u = "";			try {
+	
+
+
+
+	
+
+
+
+		public void addtoDeviceChat(String message) {
+String u = "";
+			try {
 				MyMessage mes =new MyMessage( new JSONObject(message));
 				if(log)Log.d(this.getClass().getName(), "MyMessage,from "+mes.from);
 				if(log)Log.d(this.getClass().getName(), "DeviceList= "+LocalService.deviceList);
@@ -301,13 +392,68 @@ if (mes.from.equals(OsMoDroid.settings.getString("device", ""))){
 				e.printStackTrace();
 			}
 			if (!u.equals("")){
-			Message msg = new Message();			Bundle b = new Bundle();			b.putString("deviceU", u);			msg.setData(b);			localService.alertHandler.sendMessage(msg);		}			}	private BroadcastReceiver bcr = new BroadcastReceiver() {		@Override		public void onReceive(Context context, Intent intent) {			addlog("network broadcast recive");		//	if(log)Log.d(this.getClass().getName(), "BCR"+this);		//	if(log)Log.d(this.getClass().getName(), "BCR"+this+" Intent:"+intent);			if (intent.getAction().equals(android.net.ConnectivityManager.CONNECTIVITY_ACTION)) {				Bundle extras = intent.getExtras();			//	if(log)Log.d(this.getClass().getName(), "BCR"+this+ " "+intent.getExtras());				if(extras.containsKey("networkInfo")) {					NetworkInfo netinfo = (NetworkInfo) extras.get("networkInfo");				//	if(log)Log.d(this.getClass().getName(), "BCR"+this+ " "+netinfo);				//	if(log)Log.d(this.getClass().getName(), "BCR"+this+ " "+netinfo.getType());					if(netinfo.isConnected()) {						if(log)Log.d(this.getClass().getName(), "BCR Network is connected");						if(log)Log.d(this.getClass().getName(), "Running:"+running);						// Network is connected
-						addlog("webcoket Network is connected, running="+running);						if(!running ) {							//SetAlarm();
+			Message msg = new Message();
+
+			Bundle b = new Bundle();
+
+			b.putString("deviceU", u);
+
+			msg.setData(b);
+
+			localService.alertHandler.sendMessage(msg);
+		}
+			}
+
+
+
+
+
+	private BroadcastReceiver bcr = new BroadcastReceiver() {
+
+
+
+		@Override
+
+		public void onReceive(Context context, Intent intent) {
+			addlog("Network broadcast receive");
+		//	if(log)Log.d(this.getClass().getName(), "BCR"+this);
+
+		//	if(log)Log.d(this.getClass().getName(), "BCR"+this+" Intent:"+intent);
+
+			if (intent.getAction().equals(android.net.ConnectivityManager.CONNECTIVITY_ACTION)) {
+
+				Bundle extras = intent.getExtras();
+
+			//	if(log)Log.d(this.getClass().getName(), "BCR"+this+ " "+intent.getExtras());
+
+				if(extras.containsKey("networkInfo")) {
+
+					NetworkInfo netinfo = (NetworkInfo) extras.get("networkInfo");
+
+				//	if(log)Log.d(this.getClass().getName(), "BCR"+this+ " "+netinfo);
+
+				//	if(log)Log.d(this.getClass().getName(), "BCR"+this+ " "+netinfo.getType());
+
+					if(netinfo.isConnected()) {
+						if(log)Log.d(this.getClass().getName(), "BCR Network is connected");
+						if(log)Log.d(this.getClass().getName(), "Running:"+running);
+						// Network is connected
+						addlog(" Network is connected, running="+running);
+						if(!running ) {
+							//SetAlarm();
 							start();
-							addlog("webcoket start by broadcast because no running");
-						}											}					else {						if(log)Log.d(this.getClass().getName(), "BCR Network is not connected");						if(log)Log.d(this.getClass().getName(), "Running:"+running);
-						addlog("webcoket Network is not connected, running="+running);						if (running)
-						{							addlog("webcoket stop by broadcast because running");
+							addlog("Socket start by broadcast because no running");
+						}
+						
+					}
+
+					else {
+						if(log)Log.d(this.getClass().getName(), "BCR Network is not connected");
+						if(log)Log.d(this.getClass().getName(), "Running:"+running);
+						addlog("Socket Network is not connected, running="+running);
+						if (running)
+						{
+							addlog("Socket stop by broadcast because running");
 							localService.alertHandler.post(new Runnable()
 								{
 									
@@ -320,9 +466,19 @@ if (mes.from.equals(OsMoDroid.settings.getString("device", ""))){
 								});
 							stop();
 						}
-											}				}				else if(extras.containsKey("noConnectivity")) {					if(log)Log.d(this.getClass().getName(), "BCR Network is noConnectivity");					if(log)Log.d(this.getClass().getName(), "Running:"+running);
-					addlog("webcoket Network is not connected, running="+running);					if (running)
-					{						addlog("webcoket stop by broadcast because running");
+						
+
+					}
+
+				}
+
+				else if(extras.containsKey("noConnectivity")) {
+					if(log)Log.d(this.getClass().getName(), "BCR Network is noConnectivity");
+					if(log)Log.d(this.getClass().getName(), "Running:"+running);
+					addlog("Socket Network is not connected, running="+running);
+					if (running)
+					{
+						addlog("Socket stop by broadcast because running");
 						localService.alertHandler.post(new Runnable()
 							{
 								
@@ -335,7 +491,15 @@ if (mes.from.equals(OsMoDroid.settings.getString("device", ""))){
 							});
 						stop();
 					}
-									}		    }		}	};
+					
+
+				}
+
+		    }
+
+		}
+
+	};
 	
 	
 	
@@ -357,9 +521,10 @@ if (mes.from.equals(OsMoDroid.settings.getString("device", ""))){
 	 /**
 	 * Выключает IM
 	 */
-	void close(){		sendToServer("=BYE");
+	void close(){
+		sendToServer("=BYE");
 		if(log)Log.d(this.getClass().getName(), "void IM.close");
-		addlog("webcoket void close");
+		addlog("Socket void close");
 		try {
 			parent.unregisterReceiver(bcr);
 		} catch (Exception e) {
@@ -383,11 +548,13 @@ if (mes.from.equals(OsMoDroid.settings.getString("device", ""))){
 		}
 		catch (Exception e) {
 			
-		}		stop();	};
+		}
+		stop();
+	};
 	public void gettoken()
 	
 	{
-		addlog("Start gettoket"+", key="+OsMoDroid.settings.getString("newkey", ""));
+		addlog("Start get token"+", key="+OsMoDroid.settings.getString("newkey", ""));
 		if(!gettokening){
 		gettokening=true;
 		if(log)Log.d(getClass().getSimpleName(), "http://api.osmo.mobi/prepare"+", key="+OsMoDroid.settings.getString("newkey", ""));
@@ -409,16 +576,19 @@ if (mes.from.equals(OsMoDroid.settings.getString("device", ""))){
 	        sendidtask = new Netutil.MyAsyncTask(this);
 	        
 			sendidtask.execute(params) ;
-	        Log.d(getClass().getSimpleName(), "gettoken start to execute");
+	        Log.d(getClass().getSimpleName(), "get token start to execute");
 	        parent.registerReceiver(getTokenTimeoutReceiver,new IntentFilter(GET_TOKEN_TIMEOUT_INTENT));
 	        manager.set( AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + RECONNECT_TIMEOUT, getTokenTimeoutPIntent );
 		}
 
 	}
 	
-		 void start(){		if(log)Log.d(this.getClass().getName(), "void IM.start");
-		addlog("webcoket void start");
-		running = true;		connecting=true;
+	
+	 void start(){
+		if(log)Log.d(this.getClass().getName(), "void IM.start");
+		addlog("Socket void start");
+		running = true;
+		connecting=true;
 		localService.refresh();
 	
 		iMReader=new IMReader();
@@ -469,7 +639,7 @@ if (mes.from.equals(OsMoDroid.settings.getString("device", ""))){
 										 
 										 error=wr.checkError();
 										
-										 if(log)Log.d(this.getClass().getName(), "wr write "+b.getString("write")+" error="+error);
+										 if(log)Log.d(this.getClass().getName(), "Write "+b.getString("write")+" error="+error);
 										 addlog("wr write "+b.getString("write")+" error="+error);
 										 if(error){
 											 if(running){setReconnectOnError();}
@@ -617,9 +787,10 @@ if (mes.from.equals(OsMoDroid.settings.getString("device", ""))){
 		 
 	 }
 	 
-	 void stop (){
+	 
+void stop (){
 		 if(log)Log.d(this.getClass().getName(), "void IM.stop");
-		 addlog("webcoket void stop");
+		 addlog("Socket void stop");
 		 ExecutedCommandArryaList.clear();
 		 running = false;
 		 connOpened=false;
@@ -647,9 +818,12 @@ if (mes.from.equals(OsMoDroid.settings.getString("device", ""))){
 		 }
 		 
 		 manager.cancel(getTokenTimeoutPIntent);
-		 manager.cancel(reconnectPIntent);		 
+		 manager.cancel(reconnectPIntent);
+		 
 
-			}
+		
+
+	}
 
 	 	 
 
@@ -771,7 +945,7 @@ if (mes.from.equals(OsMoDroid.settings.getString("device", ""))){
 	}
 	if(ExecutedCommandArryaList.size()==0)
 		{
-			addlog("cancel recconect alarm - no commands in order");
+			addlog("Cancel reconnect alarm - no commands in order");
 			manager.cancel(reconnectPIntent);
 		}
 	
@@ -1652,7 +1826,7 @@ if (mes.from.equals(OsMoDroid.settings.getString("device", ""))){
 		manager.cancel(getTokenTimeoutPIntent);
 		if(log)Log.d(getClass().getSimpleName(),"OnResultSucceded "+result.rawresponse);
 		if(result.Command.equals("gettoken")&&!(result.Jo==null)){
-			addlog("Recieve token "+result.Jo.toString());
+			addlog("Receive token "+result.Jo.toString());
 			if(log)Log.d(getClass().getSimpleName(),"gettoken response:"+result.Jo.toString());
 			//Toast.makeText(localService,result.Jo.optString("state")+" "+ result.Jo.optString("error_description"),5).show();
 			if(result.Jo.has("token")){
@@ -1691,8 +1865,9 @@ if (mes.from.equals(OsMoDroid.settings.getString("device", ""))){
 			}
 			
 		} else {
-			addlog("Recieve token error - shall reconnecting "+ result.rawresponse);
+			addlog("Receive token error - shall reconnecting "+ result.rawresponse);
 			setReconnectOnError();
 		}
 		
-	}}
+	}
+}

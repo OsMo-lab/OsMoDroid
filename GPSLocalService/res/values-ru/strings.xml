@@ -79,8 +79,8 @@
 <string name="createchanel">Создать группу</string>
 <string name="enterchanal">Вступить в группу</string>
 <string name="chanalname">Имя группы:</string>
-<string name="chanalcode">Код группы:</string>
-<string name="privatechanal">Частная группа</string>
+<string name="chanalcode">ID группы:</string>
+<string name="privatechanal">Приватная группа</string>
 <string name="chanalkey">Ключ группы</string>
 <string name="createchanal">Cоздать группу</string>
 <string name="noallenter">Указаны не все данные</string>
@@ -95,10 +95,8 @@
 <string name="tracker">Трекер</string>
 <string name="links">Ссылки</string>
 <string name="tracks">Треки</string>
-<string name="notifications">Оповещения</string>
+<string name="notifications">Уведомления</string>
 <string name="stat">Статистика</string>
-<string name="login">Логин на Еся.ру:</string>
-<string name="password">Пароль:</string>
 <string name="appauth">Авторизация приложения</string>
 <string name="inbuffer">&quot;В буфере: &quot;</string>
 <string name="authpleasewait">Запрос авторизации, Подождите пожалуйста...</string>
@@ -173,7 +171,7 @@
 <string name="copychID">Скопировать ID</string>
 <string name="shareID">Поделится ID</string>
 <string name="needauthtocreategroup">Для создания групп, необходимо авторизоваться</string>
-<string name="name">Наименование</string>
+<string name="name">Имя</string>
 <string name="shareid">Поделиться TrackerID</string>
 <string name="copytrackerid">Копировать TrackerID</string>
 <string name="color_dialog_title">Выбор цвета для устройства</string>
