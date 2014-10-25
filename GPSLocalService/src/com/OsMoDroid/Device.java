@@ -8,6 +8,7 @@ import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.overlay.PathOverlay;
 
+import android.graphics.Color;
 import android.util.Log;
 
 public class Device implements Comparable<Device> , Serializable{
@@ -24,7 +25,7 @@ public class Device implements Comparable<Device> , Serializable{
 	public int state=0;
 	public String uid;
 	public String speed="";
-	public String color="#AAAAAA";
+	public int color=Color.RED;
 	public String ch;
 	public boolean subscribed=false;
 	public long updatated=0;
@@ -114,7 +115,11 @@ public class Device implements Comparable<Device> , Serializable{
 	public Device(String trid, String name, String color) {
 		this.name=name;
 		this.tracker_id=trid;
-		this.color=color;
+		try {
+			this.color=Color.parseColor(color);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override

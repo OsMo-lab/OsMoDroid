@@ -81,6 +81,7 @@ import android.content.Context;
 import android.content.Intent;
 
 import android.content.IntentFilter;
+import android.graphics.Color;
 
 import android.location.LocationManager;
 import android.media.MediaPlayer;
@@ -1229,7 +1230,12 @@ void stop (){
 						if(jsonObject.has("data")){
 							if (jsonObject.optJSONObject("data")!=null&&!jsonObject.optJSONObject("data").optString("color").equals("")){
 								String color = jsonObject.optJSONObject("data").optString("color");
-								dev.color=color;
+								try {
+									dev.color=Color.parseColor(color);
+								} catch (Exception e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
 								if(log)Log.d(this.getClass().getName(), "detected color "+color);
 							}
 						}
@@ -1272,7 +1278,12 @@ void stop (){
 					if(jsonObject.has("data")){
 						if (jsonObject.optJSONObject("data")!=null&&!jsonObject.optJSONObject("data").optString("color").equals("")){
 							String color = jsonObject.optJSONObject("data").optString("color");
-							newdev.color=color;
+							try {
+								newdev.color=Color.parseColor(color);
+							} catch (Exception e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
 							if(log)Log.d(this.getClass().getName(), "detected color "+color);
 						}
 					}

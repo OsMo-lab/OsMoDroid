@@ -77,8 +77,8 @@ public class DeviceAdapter extends ArrayAdapter<Device> {
 		        
 		        try
 					{
-						deviceName.setTextColor(Color.parseColor(device.color));
-						deviceWhere.setTextColor(Color.parseColor(device.color));
+						deviceName.setTextColor(device.color);
+						deviceWhere.setTextColor(device.color);
 					} catch (Exception e)
 					{
 						// TODO Auto-generated catch block

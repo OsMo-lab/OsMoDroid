@@ -91,7 +91,7 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
 			 if(OsMoDroid.settings.getBoolean("traces", true)){
 			 if(dev.devicePath.size()>2)
 			 	{
-				 pathpaint.setColor(Color.parseColor( dev.color));
+				 pathpaint.setColor( dev.color);
 				 Path path = new Path();
 				 pj.toPixels((GeoPoint) dev.devicePath.get(0), scrPoint);
 				 path.moveTo(scrPoint.x, scrPoint.y);
@@ -123,7 +123,7 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
 						}
 					canvas.drawText(dev.name, scrPoint.x, scrPoint.y-10, paint);
 					canvas.drawText(dev.speed, scrPoint.x,scrPoint.y-2*10, paint);
-					paint.setColor(Color.parseColor(dev.color));
+					paint.setColor(dev.color);
 					canvas.drawCircle(scrPoint.x, scrPoint.y, 10, paint);
 					canvas.restore();
 				 }
@@ -142,7 +142,7 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
 				 if(OsMoDroid.settings.getBoolean("traces", true)){
 				 if(dev.devicePath.size()>2)
 				 	{
-					 pathpaint.setColor(Color.parseColor( dev.color));
+					 pathpaint.setColor( dev.color);
 					 Path path = new Path();
 					 pj.toPixels((GeoPoint) dev.devicePath.get(0), scrPoint);
 					 path.moveTo(scrPoint.x, scrPoint.y);
@@ -174,7 +174,7 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
 							}
 				        canvas.drawText(dev.name, scrPoint.x, scrPoint.y-10, paint);
 						canvas.drawText(dev.speed, scrPoint.x,scrPoint.y-2*10, paint);
-						paint.setColor(Color.parseColor(dev.color));
+						paint.setColor(dev.color);
 						canvas.drawCircle(scrPoint.x, scrPoint.y, 10, paint);
 						canvas.restore();
 					 }

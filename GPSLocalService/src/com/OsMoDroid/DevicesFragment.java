@@ -145,7 +145,7 @@ if(!deviceU.equals("")){
 		
 		@Override
 		public void onClick(Object tag, int color) {
-			LocalService.deviceList.get((int) acmi.id).color="#"+Integer.toHexString(color);
+			LocalService.deviceList.get((int) acmi.id).color=color;
 			JSONObject jo = new JSONObject();
 			JSONObject jodata = new JSONObject();
 			try
@@ -169,7 +169,7 @@ if(!deviceU.equals("")){
 		}
 	};
 	 
-	 ColorDialog dialog = new ColorDialog(globalActivity, false, getView(), Color.parseColor(LocalService.deviceList.get((int) acmi.id).color), cl,  R.drawable.wheel);
+	 ColorDialog dialog = new ColorDialog(globalActivity, false, getView(), LocalService.deviceList.get((int) acmi.id).color, cl,  R.drawable.wheel);
 		dialog.show();
  }
  if (item.getItemId() == 8) {
