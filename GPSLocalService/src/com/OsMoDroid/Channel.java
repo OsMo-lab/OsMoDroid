@@ -71,7 +71,7 @@ public class Channel implements Serializable {
 		u=json.getInt("u");
 		lat=Float.parseFloat(json.getString("lat"));
 		lon=Float.parseFloat(json.getString("lon"));
-		description=json.getString("description");
+		description=json.optString("description");
 		color=json.optString("color");
 		name=json.getString("name");
 		}

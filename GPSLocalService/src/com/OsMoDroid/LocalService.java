@@ -1392,7 +1392,7 @@ public void sendid()
         OsMoDroid.editor.commit();
         
         firstgpsbeepedon=false;
-    
+        buffer.clear();
         
         
 		if (OsMoDroid.settings.getBoolean("playsound", false)){

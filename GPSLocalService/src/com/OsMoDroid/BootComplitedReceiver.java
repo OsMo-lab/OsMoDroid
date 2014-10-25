@@ -27,25 +27,30 @@ public class BootComplitedReceiver extends BroadcastReceiver {
 				{
 					if (settings.getBoolean("usesms", true))
 						{
-							Object[] pduArray = (Object[]) recievedIntent.getExtras().get("pdus");
-						    SmsMessage[] messages = new SmsMessage[pduArray.length];
-						    for (int i = 0; i < pduArray.length; i++)
-						    	{
-						    		messages[i] = SmsMessage.createFromPdu((byte[]) pduArray[i]);
-						    	}
-						    StringBuilder bodyText = new StringBuilder();
-						    for (int i = 0; i < messages.length; i++)
-						    	{
-						    		bodyText.append(messages[i].getMessageBody());
-						    	}
-						    String body = bodyText.toString();
-						    if(body.length()>5&&body.startsWith("OSMO "))
-						    	{
-						    		Intent is = new Intent(context, LocalService.class);
-						    		is.putExtra("SMS", body.substring(5));
-						    		context.startService(is);
-						    		abortBroadcast();
-						    	}
+							try {
+								Object[] pduArray = (Object[]) recievedIntent.getExtras().get("pdus");
+								SmsMessage[] messages = new SmsMessage[pduArray.length];
+								for (int i = 0; i < pduArray.length; i++)
+									{
+										messages[i] = SmsMessage.createFromPdu((byte[]) pduArray[i]);
+									}
+								StringBuilder bodyText = new StringBuilder();
+								for (int i = 0; i < messages.length; i++)
+									{
+										bodyText.append(messages[i].getMessageBody());
+									}
+								String body = bodyText.toString();
+								if(body.length()>5&&body.startsWith("OSMO "))
+									{
+										Intent is = new Intent(context, LocalService.class);
+										is.putExtra("SMS", body.substring(5));
+										context.startService(is);
+										abortBroadcast();
+									}
+							} catch (Exception e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
 						}
 			}
 		}

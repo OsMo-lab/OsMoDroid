@@ -1546,7 +1546,7 @@ void stop (){
 				if(ch.group_id.equals(c.substring(c.indexOf(":")+1, c.length())))
 				{
 					 JSONArray users =jo.optJSONArray("users");
-					 JSONArray points =jo.optJSONArray("points");
+					 JSONArray points =jo.optJSONArray("point");
 					 if(points!=null){
 						 for (int i = 0; i < points.length(); i++) 
 							 {
