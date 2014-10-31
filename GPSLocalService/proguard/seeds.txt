@@ -230,6 +230,9 @@ android.support.v4.app.BackStackState$1: android.support.v4.app.BackStackState c
 android.support.v4.app.BackStackState$1: android.support.v4.app.BackStackState[] newArray(int)
 android.support.v4.app.BackStackState$1: java.lang.Object[] newArray(int)
 android.support.v4.app.BackStackState$1: java.lang.Object createFromParcel(android.os.Parcel)
+android.support.v4.app.BundleUtil
+android.support.v4.app.BundleUtil: BundleUtil()
+android.support.v4.app.BundleUtil: android.os.Bundle[] getBundleArrayFromBundle(android.os.Bundle,java.lang.String)
 android.support.v4.app.DialogFragment
 android.support.v4.app.DialogFragment: int STYLE_NORMAL
 android.support.v4.app.DialogFragment: int STYLE_NO_TITLE
@@ -275,6 +278,7 @@ android.support.v4.app.DialogFragment: void onStart()
 android.support.v4.app.DialogFragment: void onSaveInstanceState(android.os.Bundle)
 android.support.v4.app.DialogFragment: void onStop()
 android.support.v4.app.DialogFragment: void onDestroyView()
+android.support.v4.app.DialogFragment$DialogStyle
 android.support.v4.app.Fragment
 android.support.v4.app.Fragment: android.support.v4.util.SimpleArrayMap sClassMap
 android.support.v4.app.Fragment: int INITIALIZING
@@ -868,6 +872,28 @@ android.support.v4.app.FragmentTransaction: android.support.v4.app.FragmentTrans
 android.support.v4.app.FragmentTransaction: android.support.v4.app.FragmentTransaction setBreadCrumbShortTitle(java.lang.CharSequence)
 android.support.v4.app.FragmentTransaction: int commit()
 android.support.v4.app.FragmentTransaction: int commitAllowingStateLoss()
+android.support.v4.app.FragmentTransaction$Transit
+android.support.v4.app.INotificationSideChannel
+android.support.v4.app.INotificationSideChannel: void notify(java.lang.String,int,java.lang.String,android.app.Notification)
+android.support.v4.app.INotificationSideChannel: void cancel(java.lang.String,int,java.lang.String)
+android.support.v4.app.INotificationSideChannel: void cancelAll(java.lang.String)
+android.support.v4.app.INotificationSideChannel$Stub
+android.support.v4.app.INotificationSideChannel$Stub: java.lang.String DESCRIPTOR
+android.support.v4.app.INotificationSideChannel$Stub: int TRANSACTION_notify
+android.support.v4.app.INotificationSideChannel$Stub: int TRANSACTION_cancel
+android.support.v4.app.INotificationSideChannel$Stub: int TRANSACTION_cancelAll
+android.support.v4.app.INotificationSideChannel$Stub: INotificationSideChannel$Stub()
+android.support.v4.app.INotificationSideChannel$Stub: android.support.v4.app.INotificationSideChannel asInterface(android.os.IBinder)
+android.support.v4.app.INotificationSideChannel$Stub: android.os.IBinder asBinder()
+android.support.v4.app.INotificationSideChannel$Stub: boolean onTransact(int,android.os.Parcel,android.os.Parcel,int)
+android.support.v4.app.INotificationSideChannel$Stub$Proxy
+android.support.v4.app.INotificationSideChannel$Stub$Proxy: android.os.IBinder mRemote
+android.support.v4.app.INotificationSideChannel$Stub$Proxy: INotificationSideChannel$Stub$Proxy(android.os.IBinder)
+android.support.v4.app.INotificationSideChannel$Stub$Proxy: android.os.IBinder asBinder()
+android.support.v4.app.INotificationSideChannel$Stub$Proxy: java.lang.String getInterfaceDescriptor()
+android.support.v4.app.INotificationSideChannel$Stub$Proxy: void notify(java.lang.String,int,java.lang.String,android.app.Notification)
+android.support.v4.app.INotificationSideChannel$Stub$Proxy: void cancel(java.lang.String,int,java.lang.String)
+android.support.v4.app.INotificationSideChannel$Stub$Proxy: void cancelAll(java.lang.String)
 android.support.v4.app.ListFragment
 android.support.v4.app.ListFragment: int INTERNAL_EMPTY_ID
 android.support.v4.app.ListFragment: int INTERNAL_PROGRESS_CONTAINER_ID
@@ -1021,22 +1047,119 @@ android.support.v4.app.NoSaveStateFrameLayout: android.view.ViewGroup wrap(andro
 android.support.v4.app.NoSaveStateFrameLayout: NoSaveStateFrameLayout(android.content.Context)
 android.support.v4.app.NoSaveStateFrameLayout: void dispatchSaveInstanceState(android.util.SparseArray)
 android.support.v4.app.NoSaveStateFrameLayout: void dispatchRestoreInstanceState(android.util.SparseArray)
+android.support.v4.app.NotificationBuilderWithActions
+android.support.v4.app.NotificationBuilderWithActions: void addAction(android.support.v4.app.NotificationCompatBase$Action)
+android.support.v4.app.NotificationBuilderWithBuilderAccessor
+android.support.v4.app.NotificationBuilderWithBuilderAccessor: android.app.Notification$Builder getBuilder()
 android.support.v4.app.NotificationCompat
+android.support.v4.app.NotificationCompat: int DEFAULT_ALL
+android.support.v4.app.NotificationCompat: int DEFAULT_SOUND
+android.support.v4.app.NotificationCompat: int DEFAULT_VIBRATE
+android.support.v4.app.NotificationCompat: int DEFAULT_LIGHTS
+android.support.v4.app.NotificationCompat: int STREAM_DEFAULT
+android.support.v4.app.NotificationCompat: int FLAG_SHOW_LIGHTS
+android.support.v4.app.NotificationCompat: int FLAG_ONGOING_EVENT
+android.support.v4.app.NotificationCompat: int FLAG_INSISTENT
+android.support.v4.app.NotificationCompat: int FLAG_ONLY_ALERT_ONCE
+android.support.v4.app.NotificationCompat: int FLAG_AUTO_CANCEL
+android.support.v4.app.NotificationCompat: int FLAG_NO_CLEAR
+android.support.v4.app.NotificationCompat: int FLAG_FOREGROUND_SERVICE
 android.support.v4.app.NotificationCompat: int FLAG_HIGH_PRIORITY
+android.support.v4.app.NotificationCompat: int FLAG_LOCAL_ONLY
+android.support.v4.app.NotificationCompat: int FLAG_GROUP_SUMMARY
 android.support.v4.app.NotificationCompat: int PRIORITY_DEFAULT
 android.support.v4.app.NotificationCompat: int PRIORITY_LOW
 android.support.v4.app.NotificationCompat: int PRIORITY_MIN
 android.support.v4.app.NotificationCompat: int PRIORITY_HIGH
 android.support.v4.app.NotificationCompat: int PRIORITY_MAX
+android.support.v4.app.NotificationCompat: java.lang.String EXTRA_TITLE
+android.support.v4.app.NotificationCompat: java.lang.String EXTRA_TITLE_BIG
+android.support.v4.app.NotificationCompat: java.lang.String EXTRA_TEXT
+android.support.v4.app.NotificationCompat: java.lang.String EXTRA_SUB_TEXT
+android.support.v4.app.NotificationCompat: java.lang.String EXTRA_INFO_TEXT
+android.support.v4.app.NotificationCompat: java.lang.String EXTRA_SUMMARY_TEXT
+android.support.v4.app.NotificationCompat: java.lang.String EXTRA_SMALL_ICON
+android.support.v4.app.NotificationCompat: java.lang.String EXTRA_LARGE_ICON
+android.support.v4.app.NotificationCompat: java.lang.String EXTRA_LARGE_ICON_BIG
+android.support.v4.app.NotificationCompat: java.lang.String EXTRA_PROGRESS
+android.support.v4.app.NotificationCompat: java.lang.String EXTRA_PROGRESS_MAX
+android.support.v4.app.NotificationCompat: java.lang.String EXTRA_PROGRESS_INDETERMINATE
+android.support.v4.app.NotificationCompat: java.lang.String EXTRA_SHOW_CHRONOMETER
+android.support.v4.app.NotificationCompat: java.lang.String EXTRA_PICTURE
+android.support.v4.app.NotificationCompat: java.lang.String EXTRA_TEXT_LINES
+android.support.v4.app.NotificationCompat: java.lang.String EXTRA_PEOPLE
 android.support.v4.app.NotificationCompat: android.support.v4.app.NotificationCompat$NotificationCompatImpl IMPL
 android.support.v4.app.NotificationCompat: NotificationCompat()
-android.support.v4.app.NotificationCompat: android.support.v4.app.NotificationCompat$NotificationCompatImpl access$000()
+android.support.v4.app.NotificationCompat: void addActionsToBuilder(android.support.v4.app.NotificationBuilderWithActions,java.util.ArrayList)
+android.support.v4.app.NotificationCompat: void addStyleToBuilderJellybean(android.support.v4.app.NotificationBuilderWithBuilderAccessor,android.support.v4.app.NotificationCompat$Style)
+android.support.v4.app.NotificationCompat: android.app.Notification[] getNotificationArrayFromBundle(android.os.Bundle,java.lang.String)
+android.support.v4.app.NotificationCompat: android.os.Bundle getExtras(android.app.Notification)
+android.support.v4.app.NotificationCompat: int getActionCount(android.app.Notification)
+android.support.v4.app.NotificationCompat: android.support.v4.app.NotificationCompat$Action getAction(android.app.Notification,int)
+android.support.v4.app.NotificationCompat: boolean getLocalOnly(android.app.Notification)
+android.support.v4.app.NotificationCompat: java.lang.String getGroup(android.app.Notification)
+android.support.v4.app.NotificationCompat: boolean isGroupSummary(android.app.Notification)
+android.support.v4.app.NotificationCompat: java.lang.String getSortKey(android.app.Notification)
+android.support.v4.app.NotificationCompat: void access$000(android.support.v4.app.NotificationBuilderWithActions,java.util.ArrayList)
+android.support.v4.app.NotificationCompat: void access$100(android.support.v4.app.NotificationBuilderWithBuilderAccessor,android.support.v4.app.NotificationCompat$Style)
+android.support.v4.app.NotificationCompat: android.support.v4.app.NotificationCompat$NotificationCompatImpl access$200()
+android.support.v4.app.NotificationCompat: android.app.Notification[] access$500(android.os.Bundle,java.lang.String)
 android.support.v4.app.NotificationCompat: void <clinit>()
+android.support.v4.app.NotificationCompat$1
 android.support.v4.app.NotificationCompat$Action
+android.support.v4.app.NotificationCompat$Action: android.os.Bundle mExtras
+android.support.v4.app.NotificationCompat$Action: android.support.v4.app.RemoteInput[] mRemoteInputs
 android.support.v4.app.NotificationCompat$Action: int icon
 android.support.v4.app.NotificationCompat$Action: java.lang.CharSequence title
 android.support.v4.app.NotificationCompat$Action: android.app.PendingIntent actionIntent
+android.support.v4.app.NotificationCompat$Action: android.support.v4.app.NotificationCompatBase$Action$Factory FACTORY
 android.support.v4.app.NotificationCompat$Action: NotificationCompat$Action(int,java.lang.CharSequence,android.app.PendingIntent)
+android.support.v4.app.NotificationCompat$Action: NotificationCompat$Action(int,java.lang.CharSequence,android.app.PendingIntent,android.os.Bundle,android.support.v4.app.RemoteInput[])
+android.support.v4.app.NotificationCompat$Action: int getIcon()
+android.support.v4.app.NotificationCompat$Action: java.lang.CharSequence getTitle()
+android.support.v4.app.NotificationCompat$Action: android.app.PendingIntent getActionIntent()
+android.support.v4.app.NotificationCompat$Action: android.os.Bundle getExtras()
+android.support.v4.app.NotificationCompat$Action: android.support.v4.app.RemoteInput[] getRemoteInputs()
+android.support.v4.app.NotificationCompat$Action: android.support.v4.app.RemoteInputCompatBase$RemoteInput[] getRemoteInputs()
+android.support.v4.app.NotificationCompat$Action: android.os.Bundle access$300(android.support.v4.app.NotificationCompat$Action)
+android.support.v4.app.NotificationCompat$Action: NotificationCompat$Action(int,java.lang.CharSequence,android.app.PendingIntent,android.os.Bundle,android.support.v4.app.RemoteInput[],android.support.v4.app.NotificationCompat$1)
+android.support.v4.app.NotificationCompat$Action: void <clinit>()
+android.support.v4.app.NotificationCompat$Action$1
+android.support.v4.app.NotificationCompat$Action$1: NotificationCompat$Action$1()
+android.support.v4.app.NotificationCompat$Action$1: android.support.v4.app.NotificationCompat$Action build(int,java.lang.CharSequence,android.app.PendingIntent,android.os.Bundle,android.support.v4.app.RemoteInputCompatBase$RemoteInput[])
+android.support.v4.app.NotificationCompat$Action$1: android.support.v4.app.NotificationCompat$Action[] newArray(int)
+android.support.v4.app.NotificationCompat$Action$1: android.support.v4.app.NotificationCompatBase$Action[] newArray(int)
+android.support.v4.app.NotificationCompat$Action$1: android.support.v4.app.NotificationCompatBase$Action build(int,java.lang.CharSequence,android.app.PendingIntent,android.os.Bundle,android.support.v4.app.RemoteInputCompatBase$RemoteInput[])
+android.support.v4.app.NotificationCompat$Action$Builder
+android.support.v4.app.NotificationCompat$Action$Builder: int mIcon
+android.support.v4.app.NotificationCompat$Action$Builder: java.lang.CharSequence mTitle
+android.support.v4.app.NotificationCompat$Action$Builder: android.app.PendingIntent mIntent
+android.support.v4.app.NotificationCompat$Action$Builder: android.os.Bundle mExtras
+android.support.v4.app.NotificationCompat$Action$Builder: java.util.ArrayList mRemoteInputs
+android.support.v4.app.NotificationCompat$Action$Builder: NotificationCompat$Action$Builder(int,java.lang.CharSequence,android.app.PendingIntent)
+android.support.v4.app.NotificationCompat$Action$Builder: NotificationCompat$Action$Builder(android.support.v4.app.NotificationCompat$Action)
+android.support.v4.app.NotificationCompat$Action$Builder: NotificationCompat$Action$Builder(int,java.lang.CharSequence,android.app.PendingIntent,android.os.Bundle)
+android.support.v4.app.NotificationCompat$Action$Builder: android.support.v4.app.NotificationCompat$Action$Builder addExtras(android.os.Bundle)
+android.support.v4.app.NotificationCompat$Action$Builder: android.os.Bundle getExtras()
+android.support.v4.app.NotificationCompat$Action$Builder: android.support.v4.app.NotificationCompat$Action$Builder addRemoteInput(android.support.v4.app.RemoteInput)
+android.support.v4.app.NotificationCompat$Action$Builder: android.support.v4.app.NotificationCompat$Action$Builder extend(android.support.v4.app.NotificationCompat$Action$Extender)
+android.support.v4.app.NotificationCompat$Action$Builder: android.support.v4.app.NotificationCompat$Action build()
+android.support.v4.app.NotificationCompat$Action$Extender
+android.support.v4.app.NotificationCompat$Action$Extender: android.support.v4.app.NotificationCompat$Action$Builder extend(android.support.v4.app.NotificationCompat$Action$Builder)
+android.support.v4.app.NotificationCompat$Action$WearableExtender
+android.support.v4.app.NotificationCompat$Action$WearableExtender: java.lang.String EXTRA_WEARABLE_EXTENSIONS
+android.support.v4.app.NotificationCompat$Action$WearableExtender: java.lang.String KEY_FLAGS
+android.support.v4.app.NotificationCompat$Action$WearableExtender: int FLAG_AVAILABLE_OFFLINE
+android.support.v4.app.NotificationCompat$Action$WearableExtender: int DEFAULT_FLAGS
+android.support.v4.app.NotificationCompat$Action$WearableExtender: int mFlags
+android.support.v4.app.NotificationCompat$Action$WearableExtender: NotificationCompat$Action$WearableExtender()
+android.support.v4.app.NotificationCompat$Action$WearableExtender: NotificationCompat$Action$WearableExtender(android.support.v4.app.NotificationCompat$Action)
+android.support.v4.app.NotificationCompat$Action$WearableExtender: android.support.v4.app.NotificationCompat$Action$Builder extend(android.support.v4.app.NotificationCompat$Action$Builder)
+android.support.v4.app.NotificationCompat$Action$WearableExtender: android.support.v4.app.NotificationCompat$Action$WearableExtender clone()
+android.support.v4.app.NotificationCompat$Action$WearableExtender: android.support.v4.app.NotificationCompat$Action$WearableExtender setAvailableOffline(boolean)
+android.support.v4.app.NotificationCompat$Action$WearableExtender: boolean isAvailableOffline()
+android.support.v4.app.NotificationCompat$Action$WearableExtender: void setFlag(int,boolean)
+android.support.v4.app.NotificationCompat$Action$WearableExtender: java.lang.Object clone()
 android.support.v4.app.NotificationCompat$BigPictureStyle
 android.support.v4.app.NotificationCompat$BigPictureStyle: android.graphics.Bitmap mPicture
 android.support.v4.app.NotificationCompat$BigPictureStyle: android.graphics.Bitmap mBigLargeIcon
@@ -1071,7 +1194,12 @@ android.support.v4.app.NotificationCompat$Builder: java.lang.CharSequence mSubTe
 android.support.v4.app.NotificationCompat$Builder: int mProgressMax
 android.support.v4.app.NotificationCompat$Builder: int mProgress
 android.support.v4.app.NotificationCompat$Builder: boolean mProgressIndeterminate
+android.support.v4.app.NotificationCompat$Builder: java.lang.String mGroupKey
+android.support.v4.app.NotificationCompat$Builder: boolean mGroupSummary
+android.support.v4.app.NotificationCompat$Builder: java.lang.String mSortKey
 android.support.v4.app.NotificationCompat$Builder: java.util.ArrayList mActions
+android.support.v4.app.NotificationCompat$Builder: boolean mLocalOnly
+android.support.v4.app.NotificationCompat$Builder: android.os.Bundle mExtras
 android.support.v4.app.NotificationCompat$Builder: android.app.Notification mNotification
 android.support.v4.app.NotificationCompat$Builder: NotificationCompat$Builder(android.content.Context)
 android.support.v4.app.NotificationCompat$Builder: android.support.v4.app.NotificationCompat$Builder setWhen(long)
@@ -1098,13 +1226,24 @@ android.support.v4.app.NotificationCompat$Builder: android.support.v4.app.Notifi
 android.support.v4.app.NotificationCompat$Builder: android.support.v4.app.NotificationCompat$Builder setOngoing(boolean)
 android.support.v4.app.NotificationCompat$Builder: android.support.v4.app.NotificationCompat$Builder setOnlyAlertOnce(boolean)
 android.support.v4.app.NotificationCompat$Builder: android.support.v4.app.NotificationCompat$Builder setAutoCancel(boolean)
+android.support.v4.app.NotificationCompat$Builder: android.support.v4.app.NotificationCompat$Builder setLocalOnly(boolean)
 android.support.v4.app.NotificationCompat$Builder: android.support.v4.app.NotificationCompat$Builder setDefaults(int)
 android.support.v4.app.NotificationCompat$Builder: void setFlag(int,boolean)
 android.support.v4.app.NotificationCompat$Builder: android.support.v4.app.NotificationCompat$Builder setPriority(int)
+android.support.v4.app.NotificationCompat$Builder: android.support.v4.app.NotificationCompat$Builder setGroup(java.lang.String)
+android.support.v4.app.NotificationCompat$Builder: android.support.v4.app.NotificationCompat$Builder setGroupSummary(boolean)
+android.support.v4.app.NotificationCompat$Builder: android.support.v4.app.NotificationCompat$Builder setSortKey(java.lang.String)
+android.support.v4.app.NotificationCompat$Builder: android.support.v4.app.NotificationCompat$Builder addExtras(android.os.Bundle)
+android.support.v4.app.NotificationCompat$Builder: android.support.v4.app.NotificationCompat$Builder setExtras(android.os.Bundle)
+android.support.v4.app.NotificationCompat$Builder: android.os.Bundle getExtras()
 android.support.v4.app.NotificationCompat$Builder: android.support.v4.app.NotificationCompat$Builder addAction(int,java.lang.CharSequence,android.app.PendingIntent)
+android.support.v4.app.NotificationCompat$Builder: android.support.v4.app.NotificationCompat$Builder addAction(android.support.v4.app.NotificationCompat$Action)
 android.support.v4.app.NotificationCompat$Builder: android.support.v4.app.NotificationCompat$Builder setStyle(android.support.v4.app.NotificationCompat$Style)
+android.support.v4.app.NotificationCompat$Builder: android.support.v4.app.NotificationCompat$Builder extend(android.support.v4.app.NotificationCompat$Extender)
 android.support.v4.app.NotificationCompat$Builder: android.app.Notification getNotification()
 android.support.v4.app.NotificationCompat$Builder: android.app.Notification build()
+android.support.v4.app.NotificationCompat$Extender
+android.support.v4.app.NotificationCompat$Extender: android.support.v4.app.NotificationCompat$Builder extend(android.support.v4.app.NotificationCompat$Builder)
 android.support.v4.app.NotificationCompat$InboxStyle
 android.support.v4.app.NotificationCompat$InboxStyle: java.util.ArrayList mTexts
 android.support.v4.app.NotificationCompat$InboxStyle: NotificationCompat$InboxStyle()
@@ -1114,9 +1253,37 @@ android.support.v4.app.NotificationCompat$InboxStyle: android.support.v4.app.Not
 android.support.v4.app.NotificationCompat$InboxStyle: android.support.v4.app.NotificationCompat$InboxStyle addLine(java.lang.CharSequence)
 android.support.v4.app.NotificationCompat$NotificationCompatImpl
 android.support.v4.app.NotificationCompat$NotificationCompatImpl: android.app.Notification build(android.support.v4.app.NotificationCompat$Builder)
+android.support.v4.app.NotificationCompat$NotificationCompatImpl: android.os.Bundle getExtras(android.app.Notification)
+android.support.v4.app.NotificationCompat$NotificationCompatImpl: int getActionCount(android.app.Notification)
+android.support.v4.app.NotificationCompat$NotificationCompatImpl: android.support.v4.app.NotificationCompat$Action getAction(android.app.Notification,int)
+android.support.v4.app.NotificationCompat$NotificationCompatImpl: android.support.v4.app.NotificationCompat$Action[] getActionsFromParcelableArrayList(java.util.ArrayList)
+android.support.v4.app.NotificationCompat$NotificationCompatImpl: java.util.ArrayList getParcelableArrayListForActions(android.support.v4.app.NotificationCompat$Action[])
+android.support.v4.app.NotificationCompat$NotificationCompatImpl: boolean getLocalOnly(android.app.Notification)
+android.support.v4.app.NotificationCompat$NotificationCompatImpl: java.lang.String getGroup(android.app.Notification)
+android.support.v4.app.NotificationCompat$NotificationCompatImpl: boolean isGroupSummary(android.app.Notification)
+android.support.v4.app.NotificationCompat$NotificationCompatImpl: java.lang.String getSortKey(android.app.Notification)
+android.support.v4.app.NotificationCompat$NotificationCompatImplApi20
+android.support.v4.app.NotificationCompat$NotificationCompatImplApi20: NotificationCompat$NotificationCompatImplApi20()
+android.support.v4.app.NotificationCompat$NotificationCompatImplApi20: android.app.Notification build(android.support.v4.app.NotificationCompat$Builder)
+android.support.v4.app.NotificationCompat$NotificationCompatImplApi20: android.support.v4.app.NotificationCompat$Action getAction(android.app.Notification,int)
+android.support.v4.app.NotificationCompat$NotificationCompatImplApi20: android.support.v4.app.NotificationCompat$Action[] getActionsFromParcelableArrayList(java.util.ArrayList)
+android.support.v4.app.NotificationCompat$NotificationCompatImplApi20: java.util.ArrayList getParcelableArrayListForActions(android.support.v4.app.NotificationCompat$Action[])
+android.support.v4.app.NotificationCompat$NotificationCompatImplApi20: boolean getLocalOnly(android.app.Notification)
+android.support.v4.app.NotificationCompat$NotificationCompatImplApi20: java.lang.String getGroup(android.app.Notification)
+android.support.v4.app.NotificationCompat$NotificationCompatImplApi20: boolean isGroupSummary(android.app.Notification)
+android.support.v4.app.NotificationCompat$NotificationCompatImplApi20: java.lang.String getSortKey(android.app.Notification)
 android.support.v4.app.NotificationCompat$NotificationCompatImplBase
 android.support.v4.app.NotificationCompat$NotificationCompatImplBase: NotificationCompat$NotificationCompatImplBase()
 android.support.v4.app.NotificationCompat$NotificationCompatImplBase: android.app.Notification build(android.support.v4.app.NotificationCompat$Builder)
+android.support.v4.app.NotificationCompat$NotificationCompatImplBase: android.os.Bundle getExtras(android.app.Notification)
+android.support.v4.app.NotificationCompat$NotificationCompatImplBase: int getActionCount(android.app.Notification)
+android.support.v4.app.NotificationCompat$NotificationCompatImplBase: android.support.v4.app.NotificationCompat$Action getAction(android.app.Notification,int)
+android.support.v4.app.NotificationCompat$NotificationCompatImplBase: android.support.v4.app.NotificationCompat$Action[] getActionsFromParcelableArrayList(java.util.ArrayList)
+android.support.v4.app.NotificationCompat$NotificationCompatImplBase: java.util.ArrayList getParcelableArrayListForActions(android.support.v4.app.NotificationCompat$Action[])
+android.support.v4.app.NotificationCompat$NotificationCompatImplBase: boolean getLocalOnly(android.app.Notification)
+android.support.v4.app.NotificationCompat$NotificationCompatImplBase: java.lang.String getGroup(android.app.Notification)
+android.support.v4.app.NotificationCompat$NotificationCompatImplBase: boolean isGroupSummary(android.app.Notification)
+android.support.v4.app.NotificationCompat$NotificationCompatImplBase: java.lang.String getSortKey(android.app.Notification)
 android.support.v4.app.NotificationCompat$NotificationCompatImplGingerbread
 android.support.v4.app.NotificationCompat$NotificationCompatImplGingerbread: NotificationCompat$NotificationCompatImplGingerbread()
 android.support.v4.app.NotificationCompat$NotificationCompatImplGingerbread: android.app.Notification build(android.support.v4.app.NotificationCompat$Builder)
@@ -1129,6 +1296,25 @@ android.support.v4.app.NotificationCompat$NotificationCompatImplIceCreamSandwich
 android.support.v4.app.NotificationCompat$NotificationCompatImplJellybean
 android.support.v4.app.NotificationCompat$NotificationCompatImplJellybean: NotificationCompat$NotificationCompatImplJellybean()
 android.support.v4.app.NotificationCompat$NotificationCompatImplJellybean: android.app.Notification build(android.support.v4.app.NotificationCompat$Builder)
+android.support.v4.app.NotificationCompat$NotificationCompatImplJellybean: android.os.Bundle getExtras(android.app.Notification)
+android.support.v4.app.NotificationCompat$NotificationCompatImplJellybean: int getActionCount(android.app.Notification)
+android.support.v4.app.NotificationCompat$NotificationCompatImplJellybean: android.support.v4.app.NotificationCompat$Action getAction(android.app.Notification,int)
+android.support.v4.app.NotificationCompat$NotificationCompatImplJellybean: android.support.v4.app.NotificationCompat$Action[] getActionsFromParcelableArrayList(java.util.ArrayList)
+android.support.v4.app.NotificationCompat$NotificationCompatImplJellybean: java.util.ArrayList getParcelableArrayListForActions(android.support.v4.app.NotificationCompat$Action[])
+android.support.v4.app.NotificationCompat$NotificationCompatImplJellybean: boolean getLocalOnly(android.app.Notification)
+android.support.v4.app.NotificationCompat$NotificationCompatImplJellybean: java.lang.String getGroup(android.app.Notification)
+android.support.v4.app.NotificationCompat$NotificationCompatImplJellybean: boolean isGroupSummary(android.app.Notification)
+android.support.v4.app.NotificationCompat$NotificationCompatImplJellybean: java.lang.String getSortKey(android.app.Notification)
+android.support.v4.app.NotificationCompat$NotificationCompatImplKitKat
+android.support.v4.app.NotificationCompat$NotificationCompatImplKitKat: NotificationCompat$NotificationCompatImplKitKat()
+android.support.v4.app.NotificationCompat$NotificationCompatImplKitKat: android.app.Notification build(android.support.v4.app.NotificationCompat$Builder)
+android.support.v4.app.NotificationCompat$NotificationCompatImplKitKat: android.os.Bundle getExtras(android.app.Notification)
+android.support.v4.app.NotificationCompat$NotificationCompatImplKitKat: int getActionCount(android.app.Notification)
+android.support.v4.app.NotificationCompat$NotificationCompatImplKitKat: android.support.v4.app.NotificationCompat$Action getAction(android.app.Notification,int)
+android.support.v4.app.NotificationCompat$NotificationCompatImplKitKat: boolean getLocalOnly(android.app.Notification)
+android.support.v4.app.NotificationCompat$NotificationCompatImplKitKat: java.lang.String getGroup(android.app.Notification)
+android.support.v4.app.NotificationCompat$NotificationCompatImplKitKat: boolean isGroupSummary(android.app.Notification)
+android.support.v4.app.NotificationCompat$NotificationCompatImplKitKat: java.lang.String getSortKey(android.app.Notification)
 android.support.v4.app.NotificationCompat$Style
 android.support.v4.app.NotificationCompat$Style: android.support.v4.app.NotificationCompat$Builder mBuilder
 android.support.v4.app.NotificationCompat$Style: java.lang.CharSequence mBigContentTitle
@@ -1137,6 +1323,119 @@ android.support.v4.app.NotificationCompat$Style: boolean mSummaryTextSet
 android.support.v4.app.NotificationCompat$Style: NotificationCompat$Style()
 android.support.v4.app.NotificationCompat$Style: void setBuilder(android.support.v4.app.NotificationCompat$Builder)
 android.support.v4.app.NotificationCompat$Style: android.app.Notification build()
+android.support.v4.app.NotificationCompat$WearableExtender
+android.support.v4.app.NotificationCompat$WearableExtender: int UNSET_ACTION_INDEX
+android.support.v4.app.NotificationCompat$WearableExtender: int SIZE_DEFAULT
+android.support.v4.app.NotificationCompat$WearableExtender: int SIZE_XSMALL
+android.support.v4.app.NotificationCompat$WearableExtender: int SIZE_SMALL
+android.support.v4.app.NotificationCompat$WearableExtender: int SIZE_MEDIUM
+android.support.v4.app.NotificationCompat$WearableExtender: int SIZE_LARGE
+android.support.v4.app.NotificationCompat$WearableExtender: int SIZE_FULL_SCREEN
+android.support.v4.app.NotificationCompat$WearableExtender: java.lang.String EXTRA_WEARABLE_EXTENSIONS
+android.support.v4.app.NotificationCompat$WearableExtender: java.lang.String KEY_ACTIONS
+android.support.v4.app.NotificationCompat$WearableExtender: java.lang.String KEY_FLAGS
+android.support.v4.app.NotificationCompat$WearableExtender: java.lang.String KEY_DISPLAY_INTENT
+android.support.v4.app.NotificationCompat$WearableExtender: java.lang.String KEY_PAGES
+android.support.v4.app.NotificationCompat$WearableExtender: java.lang.String KEY_BACKGROUND
+android.support.v4.app.NotificationCompat$WearableExtender: java.lang.String KEY_CONTENT_ICON
+android.support.v4.app.NotificationCompat$WearableExtender: java.lang.String KEY_CONTENT_ICON_GRAVITY
+android.support.v4.app.NotificationCompat$WearableExtender: java.lang.String KEY_CONTENT_ACTION_INDEX
+android.support.v4.app.NotificationCompat$WearableExtender: java.lang.String KEY_CUSTOM_SIZE_PRESET
+android.support.v4.app.NotificationCompat$WearableExtender: java.lang.String KEY_CUSTOM_CONTENT_HEIGHT
+android.support.v4.app.NotificationCompat$WearableExtender: java.lang.String KEY_GRAVITY
+android.support.v4.app.NotificationCompat$WearableExtender: int FLAG_CONTENT_INTENT_AVAILABLE_OFFLINE
+android.support.v4.app.NotificationCompat$WearableExtender: int FLAG_HINT_HIDE_ICON
+android.support.v4.app.NotificationCompat$WearableExtender: int FLAG_HINT_SHOW_BACKGROUND_ONLY
+android.support.v4.app.NotificationCompat$WearableExtender: int FLAG_START_SCROLL_BOTTOM
+android.support.v4.app.NotificationCompat$WearableExtender: int DEFAULT_FLAGS
+android.support.v4.app.NotificationCompat$WearableExtender: int DEFAULT_CONTENT_ICON_GRAVITY
+android.support.v4.app.NotificationCompat$WearableExtender: int DEFAULT_GRAVITY
+android.support.v4.app.NotificationCompat$WearableExtender: java.util.ArrayList mActions
+android.support.v4.app.NotificationCompat$WearableExtender: int mFlags
+android.support.v4.app.NotificationCompat$WearableExtender: android.app.PendingIntent mDisplayIntent
+android.support.v4.app.NotificationCompat$WearableExtender: java.util.ArrayList mPages
+android.support.v4.app.NotificationCompat$WearableExtender: android.graphics.Bitmap mBackground
+android.support.v4.app.NotificationCompat$WearableExtender: int mContentIcon
+android.support.v4.app.NotificationCompat$WearableExtender: int mContentIconGravity
+android.support.v4.app.NotificationCompat$WearableExtender: int mContentActionIndex
+android.support.v4.app.NotificationCompat$WearableExtender: int mCustomSizePreset
+android.support.v4.app.NotificationCompat$WearableExtender: int mCustomContentHeight
+android.support.v4.app.NotificationCompat$WearableExtender: int mGravity
+android.support.v4.app.NotificationCompat$WearableExtender: NotificationCompat$WearableExtender()
+android.support.v4.app.NotificationCompat$WearableExtender: NotificationCompat$WearableExtender(android.app.Notification)
+android.support.v4.app.NotificationCompat$WearableExtender: android.support.v4.app.NotificationCompat$Builder extend(android.support.v4.app.NotificationCompat$Builder)
+android.support.v4.app.NotificationCompat$WearableExtender: android.support.v4.app.NotificationCompat$WearableExtender clone()
+android.support.v4.app.NotificationCompat$WearableExtender: android.support.v4.app.NotificationCompat$WearableExtender addAction(android.support.v4.app.NotificationCompat$Action)
+android.support.v4.app.NotificationCompat$WearableExtender: android.support.v4.app.NotificationCompat$WearableExtender addActions(java.util.List)
+android.support.v4.app.NotificationCompat$WearableExtender: android.support.v4.app.NotificationCompat$WearableExtender clearActions()
+android.support.v4.app.NotificationCompat$WearableExtender: java.util.List getActions()
+android.support.v4.app.NotificationCompat$WearableExtender: android.support.v4.app.NotificationCompat$WearableExtender setDisplayIntent(android.app.PendingIntent)
+android.support.v4.app.NotificationCompat$WearableExtender: android.app.PendingIntent getDisplayIntent()
+android.support.v4.app.NotificationCompat$WearableExtender: android.support.v4.app.NotificationCompat$WearableExtender addPage(android.app.Notification)
+android.support.v4.app.NotificationCompat$WearableExtender: android.support.v4.app.NotificationCompat$WearableExtender addPages(java.util.List)
+android.support.v4.app.NotificationCompat$WearableExtender: android.support.v4.app.NotificationCompat$WearableExtender clearPages()
+android.support.v4.app.NotificationCompat$WearableExtender: java.util.List getPages()
+android.support.v4.app.NotificationCompat$WearableExtender: android.support.v4.app.NotificationCompat$WearableExtender setBackground(android.graphics.Bitmap)
+android.support.v4.app.NotificationCompat$WearableExtender: android.graphics.Bitmap getBackground()
+android.support.v4.app.NotificationCompat$WearableExtender: android.support.v4.app.NotificationCompat$WearableExtender setContentIcon(int)
+android.support.v4.app.NotificationCompat$WearableExtender: int getContentIcon()
+android.support.v4.app.NotificationCompat$WearableExtender: android.support.v4.app.NotificationCompat$WearableExtender setContentIconGravity(int)
+android.support.v4.app.NotificationCompat$WearableExtender: int getContentIconGravity()
+android.support.v4.app.NotificationCompat$WearableExtender: android.support.v4.app.NotificationCompat$WearableExtender setContentAction(int)
+android.support.v4.app.NotificationCompat$WearableExtender: int getContentAction()
+android.support.v4.app.NotificationCompat$WearableExtender: android.support.v4.app.NotificationCompat$WearableExtender setGravity(int)
+android.support.v4.app.NotificationCompat$WearableExtender: int getGravity()
+android.support.v4.app.NotificationCompat$WearableExtender: android.support.v4.app.NotificationCompat$WearableExtender setCustomSizePreset(int)
+android.support.v4.app.NotificationCompat$WearableExtender: int getCustomSizePreset()
+android.support.v4.app.NotificationCompat$WearableExtender: android.support.v4.app.NotificationCompat$WearableExtender setCustomContentHeight(int)
+android.support.v4.app.NotificationCompat$WearableExtender: int getCustomContentHeight()
+android.support.v4.app.NotificationCompat$WearableExtender: android.support.v4.app.NotificationCompat$WearableExtender setStartScrollBottom(boolean)
+android.support.v4.app.NotificationCompat$WearableExtender: boolean getStartScrollBottom()
+android.support.v4.app.NotificationCompat$WearableExtender: android.support.v4.app.NotificationCompat$WearableExtender setContentIntentAvailableOffline(boolean)
+android.support.v4.app.NotificationCompat$WearableExtender: boolean getContentIntentAvailableOffline()
+android.support.v4.app.NotificationCompat$WearableExtender: android.support.v4.app.NotificationCompat$WearableExtender setHintHideIcon(boolean)
+android.support.v4.app.NotificationCompat$WearableExtender: boolean getHintHideIcon()
+android.support.v4.app.NotificationCompat$WearableExtender: android.support.v4.app.NotificationCompat$WearableExtender setHintShowBackgroundOnly(boolean)
+android.support.v4.app.NotificationCompat$WearableExtender: boolean getHintShowBackgroundOnly()
+android.support.v4.app.NotificationCompat$WearableExtender: void setFlag(int,boolean)
+android.support.v4.app.NotificationCompat$WearableExtender: java.lang.Object clone()
+android.support.v4.app.NotificationCompatApi20
+android.support.v4.app.NotificationCompatApi20: NotificationCompatApi20()
+android.support.v4.app.NotificationCompatApi20: android.support.v4.app.NotificationCompatBase$Action getAction(android.app.Notification,int,android.support.v4.app.NotificationCompatBase$Action$Factory,android.support.v4.app.RemoteInputCompatBase$RemoteInput$Factory)
+android.support.v4.app.NotificationCompatApi20: android.support.v4.app.NotificationCompatBase$Action getActionCompatFromAction(android.app.Notification$Action,android.support.v4.app.NotificationCompatBase$Action$Factory,android.support.v4.app.RemoteInputCompatBase$RemoteInput$Factory)
+android.support.v4.app.NotificationCompatApi20: android.app.Notification$Action getActionFromActionCompat(android.support.v4.app.NotificationCompatBase$Action)
+android.support.v4.app.NotificationCompatApi20: android.support.v4.app.NotificationCompatBase$Action[] getActionsFromParcelableArrayList(java.util.ArrayList,android.support.v4.app.NotificationCompatBase$Action$Factory,android.support.v4.app.RemoteInputCompatBase$RemoteInput$Factory)
+android.support.v4.app.NotificationCompatApi20: java.util.ArrayList getParcelableArrayListForActions(android.support.v4.app.NotificationCompatBase$Action[])
+android.support.v4.app.NotificationCompatApi20: boolean getLocalOnly(android.app.Notification)
+android.support.v4.app.NotificationCompatApi20: java.lang.String getGroup(android.app.Notification)
+android.support.v4.app.NotificationCompatApi20: boolean isGroupSummary(android.app.Notification)
+android.support.v4.app.NotificationCompatApi20: java.lang.String getSortKey(android.app.Notification)
+android.support.v4.app.NotificationCompatApi20$Builder
+android.support.v4.app.NotificationCompatApi20$Builder: android.app.Notification$Builder b
+android.support.v4.app.NotificationCompatApi20$Builder: NotificationCompatApi20$Builder(android.content.Context,android.app.Notification,java.lang.CharSequence,java.lang.CharSequence,java.lang.CharSequence,android.widget.RemoteViews,int,android.app.PendingIntent,android.app.PendingIntent,android.graphics.Bitmap,int,int,boolean,boolean,int,java.lang.CharSequence,boolean,android.os.Bundle,java.lang.String,boolean,java.lang.String)
+android.support.v4.app.NotificationCompatApi20$Builder: void addAction(android.support.v4.app.NotificationCompatBase$Action)
+android.support.v4.app.NotificationCompatApi20$Builder: android.app.Notification$Builder getBuilder()
+android.support.v4.app.NotificationCompatApi20$Builder: android.app.Notification build()
+android.support.v4.app.NotificationCompatBase
+android.support.v4.app.NotificationCompatBase: NotificationCompatBase()
+android.support.v4.app.NotificationCompatBase$Action
+android.support.v4.app.NotificationCompatBase$Action: NotificationCompatBase$Action()
+android.support.v4.app.NotificationCompatBase$Action: int getIcon()
+android.support.v4.app.NotificationCompatBase$Action: java.lang.CharSequence getTitle()
+android.support.v4.app.NotificationCompatBase$Action: android.app.PendingIntent getActionIntent()
+android.support.v4.app.NotificationCompatBase$Action: android.os.Bundle getExtras()
+android.support.v4.app.NotificationCompatBase$Action: android.support.v4.app.RemoteInputCompatBase$RemoteInput[] getRemoteInputs()
+android.support.v4.app.NotificationCompatBase$Action$Factory
+android.support.v4.app.NotificationCompatBase$Action$Factory: android.support.v4.app.NotificationCompatBase$Action build(int,java.lang.CharSequence,android.app.PendingIntent,android.os.Bundle,android.support.v4.app.RemoteInputCompatBase$RemoteInput[])
+android.support.v4.app.NotificationCompatBase$Action$Factory: android.support.v4.app.NotificationCompatBase$Action[] newArray(int)
+android.support.v4.app.NotificationCompatExtras
+android.support.v4.app.NotificationCompatExtras: java.lang.String EXTRA_LOCAL_ONLY
+android.support.v4.app.NotificationCompatExtras: java.lang.String EXTRA_GROUP_KEY
+android.support.v4.app.NotificationCompatExtras: java.lang.String EXTRA_GROUP_SUMMARY
+android.support.v4.app.NotificationCompatExtras: java.lang.String EXTRA_SORT_KEY
+android.support.v4.app.NotificationCompatExtras: java.lang.String EXTRA_ACTION_EXTRAS
+android.support.v4.app.NotificationCompatExtras: java.lang.String EXTRA_REMOTE_INPUTS
+android.support.v4.app.NotificationCompatExtras: NotificationCompatExtras()
 android.support.v4.app.NotificationCompatGingerbread
 android.support.v4.app.NotificationCompatGingerbread: NotificationCompatGingerbread()
 android.support.v4.app.NotificationCompatGingerbread: android.app.Notification add(android.app.Notification,android.content.Context,java.lang.CharSequence,java.lang.CharSequence,android.app.PendingIntent,android.app.PendingIntent)
@@ -1147,13 +1446,285 @@ android.support.v4.app.NotificationCompatIceCreamSandwich
 android.support.v4.app.NotificationCompatIceCreamSandwich: NotificationCompatIceCreamSandwich()
 android.support.v4.app.NotificationCompatIceCreamSandwich: android.app.Notification add(android.content.Context,android.app.Notification,java.lang.CharSequence,java.lang.CharSequence,java.lang.CharSequence,android.widget.RemoteViews,int,android.app.PendingIntent,android.app.PendingIntent,android.graphics.Bitmap,int,int,boolean)
 android.support.v4.app.NotificationCompatJellybean
-android.support.v4.app.NotificationCompatJellybean: android.app.Notification$Builder b
-android.support.v4.app.NotificationCompatJellybean: NotificationCompatJellybean(android.content.Context,android.app.Notification,java.lang.CharSequence,java.lang.CharSequence,java.lang.CharSequence,android.widget.RemoteViews,int,android.app.PendingIntent,android.app.PendingIntent,android.graphics.Bitmap,int,int,boolean,boolean,int,java.lang.CharSequence)
-android.support.v4.app.NotificationCompatJellybean: void addAction(int,java.lang.CharSequence,android.app.PendingIntent)
-android.support.v4.app.NotificationCompatJellybean: void addBigTextStyle(java.lang.CharSequence,boolean,java.lang.CharSequence,java.lang.CharSequence)
-android.support.v4.app.NotificationCompatJellybean: void addBigPictureStyle(java.lang.CharSequence,boolean,java.lang.CharSequence,android.graphics.Bitmap,android.graphics.Bitmap,boolean)
-android.support.v4.app.NotificationCompatJellybean: void addInboxStyle(java.lang.CharSequence,boolean,java.lang.CharSequence,java.util.ArrayList)
-android.support.v4.app.NotificationCompatJellybean: android.app.Notification build()
+android.support.v4.app.NotificationCompatJellybean: java.lang.String TAG
+android.support.v4.app.NotificationCompatJellybean: java.lang.String EXTRA_LOCAL_ONLY
+android.support.v4.app.NotificationCompatJellybean: java.lang.String EXTRA_ACTION_EXTRAS
+android.support.v4.app.NotificationCompatJellybean: java.lang.String EXTRA_REMOTE_INPUTS
+android.support.v4.app.NotificationCompatJellybean: java.lang.String EXTRA_GROUP_KEY
+android.support.v4.app.NotificationCompatJellybean: java.lang.String EXTRA_GROUP_SUMMARY
+android.support.v4.app.NotificationCompatJellybean: java.lang.String EXTRA_SORT_KEY
+android.support.v4.app.NotificationCompatJellybean: java.lang.String EXTRA_USE_SIDE_CHANNEL
+android.support.v4.app.NotificationCompatJellybean: java.lang.String KEY_ICON
+android.support.v4.app.NotificationCompatJellybean: java.lang.String KEY_TITLE
+android.support.v4.app.NotificationCompatJellybean: java.lang.String KEY_ACTION_INTENT
+android.support.v4.app.NotificationCompatJellybean: java.lang.String KEY_EXTRAS
+android.support.v4.app.NotificationCompatJellybean: java.lang.String KEY_REMOTE_INPUTS
+android.support.v4.app.NotificationCompatJellybean: java.lang.Object sExtrasLock
+android.support.v4.app.NotificationCompatJellybean: java.lang.reflect.Field sExtrasField
+android.support.v4.app.NotificationCompatJellybean: boolean sExtrasFieldAccessFailed
+android.support.v4.app.NotificationCompatJellybean: java.lang.Object sActionsLock
+android.support.v4.app.NotificationCompatJellybean: java.lang.Class sActionClass
+android.support.v4.app.NotificationCompatJellybean: java.lang.reflect.Field sActionsField
+android.support.v4.app.NotificationCompatJellybean: java.lang.reflect.Field sActionIconField
+android.support.v4.app.NotificationCompatJellybean: java.lang.reflect.Field sActionTitleField
+android.support.v4.app.NotificationCompatJellybean: java.lang.reflect.Field sActionIntentField
+android.support.v4.app.NotificationCompatJellybean: boolean sActionsAccessFailed
+android.support.v4.app.NotificationCompatJellybean: NotificationCompatJellybean()
+android.support.v4.app.NotificationCompatJellybean: void addBigTextStyle(android.support.v4.app.NotificationBuilderWithBuilderAccessor,java.lang.CharSequence,boolean,java.lang.CharSequence,java.lang.CharSequence)
+android.support.v4.app.NotificationCompatJellybean: void addBigPictureStyle(android.support.v4.app.NotificationBuilderWithBuilderAccessor,java.lang.CharSequence,boolean,java.lang.CharSequence,android.graphics.Bitmap,android.graphics.Bitmap,boolean)
+android.support.v4.app.NotificationCompatJellybean: void addInboxStyle(android.support.v4.app.NotificationBuilderWithBuilderAccessor,java.lang.CharSequence,boolean,java.lang.CharSequence,java.util.ArrayList)
+android.support.v4.app.NotificationCompatJellybean: android.util.SparseArray buildActionExtrasMap(java.util.List)
+android.support.v4.app.NotificationCompatJellybean: android.os.Bundle getExtras(android.app.Notification)
+android.support.v4.app.NotificationCompatJellybean: android.support.v4.app.NotificationCompatBase$Action readAction(android.support.v4.app.NotificationCompatBase$Action$Factory,android.support.v4.app.RemoteInputCompatBase$RemoteInput$Factory,int,java.lang.CharSequence,android.app.PendingIntent,android.os.Bundle)
+android.support.v4.app.NotificationCompatJellybean: android.os.Bundle writeActionAndGetExtras(android.app.Notification$Builder,android.support.v4.app.NotificationCompatBase$Action)
+android.support.v4.app.NotificationCompatJellybean: int getActionCount(android.app.Notification)
+android.support.v4.app.NotificationCompatJellybean: android.support.v4.app.NotificationCompatBase$Action getAction(android.app.Notification,int,android.support.v4.app.NotificationCompatBase$Action$Factory,android.support.v4.app.RemoteInputCompatBase$RemoteInput$Factory)
+android.support.v4.app.NotificationCompatJellybean: java.lang.Object[] getActionObjectsLocked(android.app.Notification)
+android.support.v4.app.NotificationCompatJellybean: boolean ensureActionReflectionReadyLocked()
+android.support.v4.app.NotificationCompatJellybean: android.support.v4.app.NotificationCompatBase$Action[] getActionsFromParcelableArrayList(java.util.ArrayList,android.support.v4.app.NotificationCompatBase$Action$Factory,android.support.v4.app.RemoteInputCompatBase$RemoteInput$Factory)
+android.support.v4.app.NotificationCompatJellybean: android.support.v4.app.NotificationCompatBase$Action getActionFromBundle(android.os.Bundle,android.support.v4.app.NotificationCompatBase$Action$Factory,android.support.v4.app.RemoteInputCompatBase$RemoteInput$Factory)
+android.support.v4.app.NotificationCompatJellybean: java.util.ArrayList getParcelableArrayListForActions(android.support.v4.app.NotificationCompatBase$Action[])
+android.support.v4.app.NotificationCompatJellybean: android.os.Bundle getBundleForAction(android.support.v4.app.NotificationCompatBase$Action)
+android.support.v4.app.NotificationCompatJellybean: boolean getLocalOnly(android.app.Notification)
+android.support.v4.app.NotificationCompatJellybean: java.lang.String getGroup(android.app.Notification)
+android.support.v4.app.NotificationCompatJellybean: boolean isGroupSummary(android.app.Notification)
+android.support.v4.app.NotificationCompatJellybean: java.lang.String getSortKey(android.app.Notification)
+android.support.v4.app.NotificationCompatJellybean: void <clinit>()
+android.support.v4.app.NotificationCompatJellybean$Builder
+android.support.v4.app.NotificationCompatJellybean$Builder: android.app.Notification$Builder b
+android.support.v4.app.NotificationCompatJellybean$Builder: android.os.Bundle mExtras
+android.support.v4.app.NotificationCompatJellybean$Builder: java.util.List mActionExtrasList
+android.support.v4.app.NotificationCompatJellybean$Builder: NotificationCompatJellybean$Builder(android.content.Context,android.app.Notification,java.lang.CharSequence,java.lang.CharSequence,java.lang.CharSequence,android.widget.RemoteViews,int,android.app.PendingIntent,android.app.PendingIntent,android.graphics.Bitmap,int,int,boolean,boolean,int,java.lang.CharSequence,boolean,android.os.Bundle,java.lang.String,boolean,java.lang.String)
+android.support.v4.app.NotificationCompatJellybean$Builder: void addAction(android.support.v4.app.NotificationCompatBase$Action)
+android.support.v4.app.NotificationCompatJellybean$Builder: android.app.Notification$Builder getBuilder()
+android.support.v4.app.NotificationCompatJellybean$Builder: android.app.Notification build()
+android.support.v4.app.NotificationCompatKitKat
+android.support.v4.app.NotificationCompatKitKat: NotificationCompatKitKat()
+android.support.v4.app.NotificationCompatKitKat: android.os.Bundle getExtras(android.app.Notification)
+android.support.v4.app.NotificationCompatKitKat: int getActionCount(android.app.Notification)
+android.support.v4.app.NotificationCompatKitKat: android.support.v4.app.NotificationCompatBase$Action getAction(android.app.Notification,int,android.support.v4.app.NotificationCompatBase$Action$Factory,android.support.v4.app.RemoteInputCompatBase$RemoteInput$Factory)
+android.support.v4.app.NotificationCompatKitKat: boolean getLocalOnly(android.app.Notification)
+android.support.v4.app.NotificationCompatKitKat: java.lang.String getGroup(android.app.Notification)
+android.support.v4.app.NotificationCompatKitKat: boolean isGroupSummary(android.app.Notification)
+android.support.v4.app.NotificationCompatKitKat: java.lang.String getSortKey(android.app.Notification)
+android.support.v4.app.NotificationCompatKitKat$Builder
+android.support.v4.app.NotificationCompatKitKat$Builder: android.app.Notification$Builder b
+android.support.v4.app.NotificationCompatKitKat$Builder: android.os.Bundle mExtras
+android.support.v4.app.NotificationCompatKitKat$Builder: java.util.List mActionExtrasList
+android.support.v4.app.NotificationCompatKitKat$Builder: NotificationCompatKitKat$Builder(android.content.Context,android.app.Notification,java.lang.CharSequence,java.lang.CharSequence,java.lang.CharSequence,android.widget.RemoteViews,int,android.app.PendingIntent,android.app.PendingIntent,android.graphics.Bitmap,int,int,boolean,boolean,int,java.lang.CharSequence,boolean,android.os.Bundle,java.lang.String,boolean,java.lang.String)
+android.support.v4.app.NotificationCompatKitKat$Builder: void addAction(android.support.v4.app.NotificationCompatBase$Action)
+android.support.v4.app.NotificationCompatKitKat$Builder: android.app.Notification$Builder getBuilder()
+android.support.v4.app.NotificationCompatKitKat$Builder: android.app.Notification build()
+android.support.v4.app.NotificationCompatSideChannelService
+android.support.v4.app.NotificationCompatSideChannelService: int BUILD_VERSION_CODE_KITKAT_WATCH
+android.support.v4.app.NotificationCompatSideChannelService: NotificationCompatSideChannelService()
+android.support.v4.app.NotificationCompatSideChannelService: android.os.IBinder onBind(android.content.Intent)
+android.support.v4.app.NotificationCompatSideChannelService: void notify(java.lang.String,int,java.lang.String,android.app.Notification)
+android.support.v4.app.NotificationCompatSideChannelService: void cancel(java.lang.String,int,java.lang.String)
+android.support.v4.app.NotificationCompatSideChannelService: void cancelAll(java.lang.String)
+android.support.v4.app.NotificationCompatSideChannelService: void checkPermission(int,java.lang.String)
+android.support.v4.app.NotificationCompatSideChannelService: void access$100(android.support.v4.app.NotificationCompatSideChannelService,int,java.lang.String)
+android.support.v4.app.NotificationCompatSideChannelService$1
+android.support.v4.app.NotificationCompatSideChannelService$NotificationSideChannelStub
+android.support.v4.app.NotificationCompatSideChannelService$NotificationSideChannelStub: android.support.v4.app.NotificationCompatSideChannelService this$0
+android.support.v4.app.NotificationCompatSideChannelService$NotificationSideChannelStub: NotificationCompatSideChannelService$NotificationSideChannelStub(android.support.v4.app.NotificationCompatSideChannelService)
+android.support.v4.app.NotificationCompatSideChannelService$NotificationSideChannelStub: void notify(java.lang.String,int,java.lang.String,android.app.Notification)
+android.support.v4.app.NotificationCompatSideChannelService$NotificationSideChannelStub: void cancel(java.lang.String,int,java.lang.String)
+android.support.v4.app.NotificationCompatSideChannelService$NotificationSideChannelStub: void cancelAll(java.lang.String)
+android.support.v4.app.NotificationCompatSideChannelService$NotificationSideChannelStub: NotificationCompatSideChannelService$NotificationSideChannelStub(android.support.v4.app.NotificationCompatSideChannelService,android.support.v4.app.NotificationCompatSideChannelService$1)
+android.support.v4.app.NotificationManagerCompat
+android.support.v4.app.NotificationManagerCompat: java.lang.String TAG
+android.support.v4.app.NotificationManagerCompat: java.lang.String EXTRA_USE_SIDE_CHANNEL
+android.support.v4.app.NotificationManagerCompat: java.lang.String ACTION_BIND_SIDE_CHANNEL
+android.support.v4.app.NotificationManagerCompat: int SIDE_CHANNEL_RETRY_BASE_INTERVAL_MS
+android.support.v4.app.NotificationManagerCompat: int SIDE_CHANNEL_RETRY_MAX_COUNT
+android.support.v4.app.NotificationManagerCompat: java.lang.String SETTING_ENABLED_NOTIFICATION_LISTENERS
+android.support.v4.app.NotificationManagerCompat: int SIDE_CHANNEL_BIND_FLAGS
+android.support.v4.app.NotificationManagerCompat: java.lang.Object sEnabledNotificationListenersLock
+android.support.v4.app.NotificationManagerCompat: java.lang.String sEnabledNotificationListeners
+android.support.v4.app.NotificationManagerCompat: java.util.Set sEnabledNotificationListenerPackages
+android.support.v4.app.NotificationManagerCompat: android.content.Context mContext
+android.support.v4.app.NotificationManagerCompat: android.app.NotificationManager mNotificationManager
+android.support.v4.app.NotificationManagerCompat: java.lang.Object sLock
+android.support.v4.app.NotificationManagerCompat: android.support.v4.app.NotificationManagerCompat$SideChannelManager sSideChannelManager
+android.support.v4.app.NotificationManagerCompat: android.support.v4.app.NotificationManagerCompat$Impl IMPL
+android.support.v4.app.NotificationManagerCompat: android.support.v4.app.NotificationManagerCompat from(android.content.Context)
+android.support.v4.app.NotificationManagerCompat: NotificationManagerCompat(android.content.Context)
+android.support.v4.app.NotificationManagerCompat: void cancel(int)
+android.support.v4.app.NotificationManagerCompat: void cancel(java.lang.String,int)
+android.support.v4.app.NotificationManagerCompat: void cancelAll()
+android.support.v4.app.NotificationManagerCompat: void notify(int,android.app.Notification)
+android.support.v4.app.NotificationManagerCompat: void notify(java.lang.String,int,android.app.Notification)
+android.support.v4.app.NotificationManagerCompat: java.util.Set getEnabledListenerPackages(android.content.Context)
+android.support.v4.app.NotificationManagerCompat: boolean useSideChannelForNotification(android.app.Notification)
+android.support.v4.app.NotificationManagerCompat: void pushSideChannelQueue(android.support.v4.app.NotificationManagerCompat$Task)
+android.support.v4.app.NotificationManagerCompat: int access$000()
+android.support.v4.app.NotificationManagerCompat: void <clinit>()
+android.support.v4.app.NotificationManagerCompat$CancelTask
+android.support.v4.app.NotificationManagerCompat$CancelTask: java.lang.String packageName
+android.support.v4.app.NotificationManagerCompat$CancelTask: int id
+android.support.v4.app.NotificationManagerCompat$CancelTask: java.lang.String tag
+android.support.v4.app.NotificationManagerCompat$CancelTask: boolean all
+android.support.v4.app.NotificationManagerCompat$CancelTask: NotificationManagerCompat$CancelTask(java.lang.String)
+android.support.v4.app.NotificationManagerCompat$CancelTask: NotificationManagerCompat$CancelTask(java.lang.String,int,java.lang.String)
+android.support.v4.app.NotificationManagerCompat$CancelTask: void send(android.support.v4.app.INotificationSideChannel)
+android.support.v4.app.NotificationManagerCompat$CancelTask: java.lang.String toString()
+android.support.v4.app.NotificationManagerCompat$Impl
+android.support.v4.app.NotificationManagerCompat$Impl: void cancelNotification(android.app.NotificationManager,java.lang.String,int)
+android.support.v4.app.NotificationManagerCompat$Impl: void postNotification(android.app.NotificationManager,java.lang.String,int,android.app.Notification)
+android.support.v4.app.NotificationManagerCompat$Impl: int getSideChannelBindFlags()
+android.support.v4.app.NotificationManagerCompat$ImplBase
+android.support.v4.app.NotificationManagerCompat$ImplBase: NotificationManagerCompat$ImplBase()
+android.support.v4.app.NotificationManagerCompat$ImplBase: void cancelNotification(android.app.NotificationManager,java.lang.String,int)
+android.support.v4.app.NotificationManagerCompat$ImplBase: void postNotification(android.app.NotificationManager,java.lang.String,int,android.app.Notification)
+android.support.v4.app.NotificationManagerCompat$ImplBase: int getSideChannelBindFlags()
+android.support.v4.app.NotificationManagerCompat$ImplEclair
+android.support.v4.app.NotificationManagerCompat$ImplEclair: NotificationManagerCompat$ImplEclair()
+android.support.v4.app.NotificationManagerCompat$ImplEclair: void cancelNotification(android.app.NotificationManager,java.lang.String,int)
+android.support.v4.app.NotificationManagerCompat$ImplEclair: void postNotification(android.app.NotificationManager,java.lang.String,int,android.app.Notification)
+android.support.v4.app.NotificationManagerCompat$ImplIceCreamSandwich
+android.support.v4.app.NotificationManagerCompat$ImplIceCreamSandwich: NotificationManagerCompat$ImplIceCreamSandwich()
+android.support.v4.app.NotificationManagerCompat$ImplIceCreamSandwich: int getSideChannelBindFlags()
+android.support.v4.app.NotificationManagerCompat$NotifyTask
+android.support.v4.app.NotificationManagerCompat$NotifyTask: java.lang.String packageName
+android.support.v4.app.NotificationManagerCompat$NotifyTask: int id
+android.support.v4.app.NotificationManagerCompat$NotifyTask: java.lang.String tag
+android.support.v4.app.NotificationManagerCompat$NotifyTask: android.app.Notification notif
+android.support.v4.app.NotificationManagerCompat$NotifyTask: NotificationManagerCompat$NotifyTask(java.lang.String,int,java.lang.String,android.app.Notification)
+android.support.v4.app.NotificationManagerCompat$NotifyTask: void send(android.support.v4.app.INotificationSideChannel)
+android.support.v4.app.NotificationManagerCompat$NotifyTask: java.lang.String toString()
+android.support.v4.app.NotificationManagerCompat$ServiceConnectedEvent
+android.support.v4.app.NotificationManagerCompat$ServiceConnectedEvent: android.content.ComponentName componentName
+android.support.v4.app.NotificationManagerCompat$ServiceConnectedEvent: android.os.IBinder iBinder
+android.support.v4.app.NotificationManagerCompat$ServiceConnectedEvent: NotificationManagerCompat$ServiceConnectedEvent(android.content.ComponentName,android.os.IBinder)
+android.support.v4.app.NotificationManagerCompat$SideChannelManager
+android.support.v4.app.NotificationManagerCompat$SideChannelManager: int MSG_QUEUE_TASK
+android.support.v4.app.NotificationManagerCompat$SideChannelManager: int MSG_SERVICE_CONNECTED
+android.support.v4.app.NotificationManagerCompat$SideChannelManager: int MSG_SERVICE_DISCONNECTED
+android.support.v4.app.NotificationManagerCompat$SideChannelManager: int MSG_RETRY_LISTENER_QUEUE
+android.support.v4.app.NotificationManagerCompat$SideChannelManager: java.lang.String KEY_BINDER
+android.support.v4.app.NotificationManagerCompat$SideChannelManager: android.content.Context mContext
+android.support.v4.app.NotificationManagerCompat$SideChannelManager: android.os.HandlerThread mHandlerThread
+android.support.v4.app.NotificationManagerCompat$SideChannelManager: android.os.Handler mHandler
+android.support.v4.app.NotificationManagerCompat$SideChannelManager: java.util.Map mRecordMap
+android.support.v4.app.NotificationManagerCompat$SideChannelManager: java.util.Set mCachedEnabledPackages
+android.support.v4.app.NotificationManagerCompat$SideChannelManager: NotificationManagerCompat$SideChannelManager(android.content.Context)
+android.support.v4.app.NotificationManagerCompat$SideChannelManager: void queueTask(android.support.v4.app.NotificationManagerCompat$Task)
+android.support.v4.app.NotificationManagerCompat$SideChannelManager: boolean handleMessage(android.os.Message)
+android.support.v4.app.NotificationManagerCompat$SideChannelManager: void handleQueueTask(android.support.v4.app.NotificationManagerCompat$Task)
+android.support.v4.app.NotificationManagerCompat$SideChannelManager: void handleServiceConnected(android.content.ComponentName,android.os.IBinder)
+android.support.v4.app.NotificationManagerCompat$SideChannelManager: void handleServiceDisconnected(android.content.ComponentName)
+android.support.v4.app.NotificationManagerCompat$SideChannelManager: void handleRetryListenerQueue(android.content.ComponentName)
+android.support.v4.app.NotificationManagerCompat$SideChannelManager: void onServiceConnected(android.content.ComponentName,android.os.IBinder)
+android.support.v4.app.NotificationManagerCompat$SideChannelManager: void onServiceDisconnected(android.content.ComponentName)
+android.support.v4.app.NotificationManagerCompat$SideChannelManager: void updateListenerMap()
+android.support.v4.app.NotificationManagerCompat$SideChannelManager: boolean ensureServiceBound(android.support.v4.app.NotificationManagerCompat$SideChannelManager$ListenerRecord)
+android.support.v4.app.NotificationManagerCompat$SideChannelManager: void ensureServiceUnbound(android.support.v4.app.NotificationManagerCompat$SideChannelManager$ListenerRecord)
+android.support.v4.app.NotificationManagerCompat$SideChannelManager: void scheduleListenerRetry(android.support.v4.app.NotificationManagerCompat$SideChannelManager$ListenerRecord)
+android.support.v4.app.NotificationManagerCompat$SideChannelManager: void processListenerQueue(android.support.v4.app.NotificationManagerCompat$SideChannelManager$ListenerRecord)
+android.support.v4.app.NotificationManagerCompat$SideChannelManager$ListenerRecord
+android.support.v4.app.NotificationManagerCompat$SideChannelManager$ListenerRecord: android.content.ComponentName componentName
+android.support.v4.app.NotificationManagerCompat$SideChannelManager$ListenerRecord: boolean bound
+android.support.v4.app.NotificationManagerCompat$SideChannelManager$ListenerRecord: android.support.v4.app.INotificationSideChannel service
+android.support.v4.app.NotificationManagerCompat$SideChannelManager$ListenerRecord: java.util.LinkedList taskQueue
+android.support.v4.app.NotificationManagerCompat$SideChannelManager$ListenerRecord: int retryCount
+android.support.v4.app.NotificationManagerCompat$SideChannelManager$ListenerRecord: NotificationManagerCompat$SideChannelManager$ListenerRecord(android.content.ComponentName)
+android.support.v4.app.NotificationManagerCompat$Task
+android.support.v4.app.NotificationManagerCompat$Task: void send(android.support.v4.app.INotificationSideChannel)
+android.support.v4.app.NotificationManagerCompatEclair
+android.support.v4.app.NotificationManagerCompatEclair: NotificationManagerCompatEclair()
+android.support.v4.app.NotificationManagerCompatEclair: void cancelNotification(android.app.NotificationManager,java.lang.String,int)
+android.support.v4.app.NotificationManagerCompatEclair: void postNotification(android.app.NotificationManager,java.lang.String,int,android.app.Notification)
+android.support.v4.app.NotificationManagerCompatIceCreamSandwich
+android.support.v4.app.NotificationManagerCompatIceCreamSandwich: int SIDE_CHANNEL_BIND_FLAGS
+android.support.v4.app.NotificationManagerCompatIceCreamSandwich: NotificationManagerCompatIceCreamSandwich()
+android.support.v4.app.RemoteInput
+android.support.v4.app.RemoteInput: java.lang.String TAG
+android.support.v4.app.RemoteInput: java.lang.String RESULTS_CLIP_LABEL
+android.support.v4.app.RemoteInput: java.lang.String EXTRA_RESULTS_DATA
+android.support.v4.app.RemoteInput: java.lang.String mResultKey
+android.support.v4.app.RemoteInput: java.lang.CharSequence mLabel
+android.support.v4.app.RemoteInput: java.lang.CharSequence[] mChoices
+android.support.v4.app.RemoteInput: boolean mAllowFreeFormInput
+android.support.v4.app.RemoteInput: android.os.Bundle mExtras
+android.support.v4.app.RemoteInput: android.support.v4.app.RemoteInput$Impl IMPL
+android.support.v4.app.RemoteInput: android.support.v4.app.RemoteInputCompatBase$RemoteInput$Factory FACTORY
+android.support.v4.app.RemoteInput: RemoteInput(java.lang.String,java.lang.CharSequence,java.lang.CharSequence[],boolean,android.os.Bundle)
+android.support.v4.app.RemoteInput: java.lang.String getResultKey()
+android.support.v4.app.RemoteInput: java.lang.CharSequence getLabel()
+android.support.v4.app.RemoteInput: java.lang.CharSequence[] getChoices()
+android.support.v4.app.RemoteInput: boolean getAllowFreeFormInput()
+android.support.v4.app.RemoteInput: android.os.Bundle getExtras()
+android.support.v4.app.RemoteInput: android.os.Bundle getResultsFromIntent(android.content.Intent)
+android.support.v4.app.RemoteInput: void addResultsToIntent(android.support.v4.app.RemoteInput[],android.content.Intent,android.os.Bundle)
+android.support.v4.app.RemoteInput: void <clinit>()
+android.support.v4.app.RemoteInput$1
+android.support.v4.app.RemoteInput$1: RemoteInput$1()
+android.support.v4.app.RemoteInput$1: android.support.v4.app.RemoteInput build(java.lang.String,java.lang.CharSequence,java.lang.CharSequence[],boolean,android.os.Bundle)
+android.support.v4.app.RemoteInput$1: android.support.v4.app.RemoteInput[] newArray(int)
+android.support.v4.app.RemoteInput$1: android.support.v4.app.RemoteInputCompatBase$RemoteInput[] newArray(int)
+android.support.v4.app.RemoteInput$1: android.support.v4.app.RemoteInputCompatBase$RemoteInput build(java.lang.String,java.lang.CharSequence,java.lang.CharSequence[],boolean,android.os.Bundle)
+android.support.v4.app.RemoteInput$Builder
+android.support.v4.app.RemoteInput$Builder: java.lang.String mResultKey
+android.support.v4.app.RemoteInput$Builder: java.lang.CharSequence mLabel
+android.support.v4.app.RemoteInput$Builder: java.lang.CharSequence[] mChoices
+android.support.v4.app.RemoteInput$Builder: boolean mAllowFreeFormInput
+android.support.v4.app.RemoteInput$Builder: android.os.Bundle mExtras
+android.support.v4.app.RemoteInput$Builder: RemoteInput$Builder(java.lang.String)
+android.support.v4.app.RemoteInput$Builder: android.support.v4.app.RemoteInput$Builder setLabel(java.lang.CharSequence)
+android.support.v4.app.RemoteInput$Builder: android.support.v4.app.RemoteInput$Builder setChoices(java.lang.CharSequence[])
+android.support.v4.app.RemoteInput$Builder: android.support.v4.app.RemoteInput$Builder setAllowFreeFormInput(boolean)
+android.support.v4.app.RemoteInput$Builder: android.support.v4.app.RemoteInput$Builder addExtras(android.os.Bundle)
+android.support.v4.app.RemoteInput$Builder: android.os.Bundle getExtras()
+android.support.v4.app.RemoteInput$Builder: android.support.v4.app.RemoteInput build()
+android.support.v4.app.RemoteInput$Impl
+android.support.v4.app.RemoteInput$Impl: android.os.Bundle getResultsFromIntent(android.content.Intent)
+android.support.v4.app.RemoteInput$Impl: void addResultsToIntent(android.support.v4.app.RemoteInput[],android.content.Intent,android.os.Bundle)
+android.support.v4.app.RemoteInput$ImplApi20
+android.support.v4.app.RemoteInput$ImplApi20: RemoteInput$ImplApi20()
+android.support.v4.app.RemoteInput$ImplApi20: android.os.Bundle getResultsFromIntent(android.content.Intent)
+android.support.v4.app.RemoteInput$ImplApi20: void addResultsToIntent(android.support.v4.app.RemoteInput[],android.content.Intent,android.os.Bundle)
+android.support.v4.app.RemoteInput$ImplBase
+android.support.v4.app.RemoteInput$ImplBase: RemoteInput$ImplBase()
+android.support.v4.app.RemoteInput$ImplBase: android.os.Bundle getResultsFromIntent(android.content.Intent)
+android.support.v4.app.RemoteInput$ImplBase: void addResultsToIntent(android.support.v4.app.RemoteInput[],android.content.Intent,android.os.Bundle)
+android.support.v4.app.RemoteInput$ImplJellybean
+android.support.v4.app.RemoteInput$ImplJellybean: RemoteInput$ImplJellybean()
+android.support.v4.app.RemoteInput$ImplJellybean: android.os.Bundle getResultsFromIntent(android.content.Intent)
+android.support.v4.app.RemoteInput$ImplJellybean: void addResultsToIntent(android.support.v4.app.RemoteInput[],android.content.Intent,android.os.Bundle)
+android.support.v4.app.RemoteInputCompatApi20
+android.support.v4.app.RemoteInputCompatApi20: RemoteInputCompatApi20()
+android.support.v4.app.RemoteInputCompatApi20: android.support.v4.app.RemoteInputCompatBase$RemoteInput[] toCompat(android.app.RemoteInput[],android.support.v4.app.RemoteInputCompatBase$RemoteInput$Factory)
+android.support.v4.app.RemoteInputCompatApi20: android.app.RemoteInput[] fromCompat(android.support.v4.app.RemoteInputCompatBase$RemoteInput[])
+android.support.v4.app.RemoteInputCompatApi20: android.os.Bundle getResultsFromIntent(android.content.Intent)
+android.support.v4.app.RemoteInputCompatApi20: void addResultsToIntent(android.support.v4.app.RemoteInputCompatBase$RemoteInput[],android.content.Intent,android.os.Bundle)
+android.support.v4.app.RemoteInputCompatBase
+android.support.v4.app.RemoteInputCompatBase: RemoteInputCompatBase()
+android.support.v4.app.RemoteInputCompatBase$RemoteInput
+android.support.v4.app.RemoteInputCompatBase$RemoteInput: RemoteInputCompatBase$RemoteInput()
+android.support.v4.app.RemoteInputCompatBase$RemoteInput: java.lang.String getResultKey()
+android.support.v4.app.RemoteInputCompatBase$RemoteInput: java.lang.CharSequence getLabel()
+android.support.v4.app.RemoteInputCompatBase$RemoteInput: java.lang.CharSequence[] getChoices()
+android.support.v4.app.RemoteInputCompatBase$RemoteInput: boolean getAllowFreeFormInput()
+android.support.v4.app.RemoteInputCompatBase$RemoteInput: android.os.Bundle getExtras()
+android.support.v4.app.RemoteInputCompatBase$RemoteInput$Factory
+android.support.v4.app.RemoteInputCompatBase$RemoteInput$Factory: android.support.v4.app.RemoteInputCompatBase$RemoteInput build(java.lang.String,java.lang.CharSequence,java.lang.CharSequence[],boolean,android.os.Bundle)
+android.support.v4.app.RemoteInputCompatBase$RemoteInput$Factory: android.support.v4.app.RemoteInputCompatBase$RemoteInput[] newArray(int)
+android.support.v4.app.RemoteInputCompatJellybean
+android.support.v4.app.RemoteInputCompatJellybean: java.lang.String RESULTS_CLIP_LABEL
+android.support.v4.app.RemoteInputCompatJellybean: java.lang.String EXTRA_RESULTS_DATA
+android.support.v4.app.RemoteInputCompatJellybean: java.lang.String KEY_RESULT_KEY
+android.support.v4.app.RemoteInputCompatJellybean: java.lang.String KEY_LABEL
+android.support.v4.app.RemoteInputCompatJellybean: java.lang.String KEY_CHOICES
+android.support.v4.app.RemoteInputCompatJellybean: java.lang.String KEY_ALLOW_FREE_FORM_INPUT
+android.support.v4.app.RemoteInputCompatJellybean: java.lang.String KEY_EXTRAS
+android.support.v4.app.RemoteInputCompatJellybean: RemoteInputCompatJellybean()
+android.support.v4.app.RemoteInputCompatJellybean: android.support.v4.app.RemoteInputCompatBase$RemoteInput fromBundle(android.os.Bundle,android.support.v4.app.RemoteInputCompatBase$RemoteInput$Factory)
+android.support.v4.app.RemoteInputCompatJellybean: android.os.Bundle toBundle(android.support.v4.app.RemoteInputCompatBase$RemoteInput)
+android.support.v4.app.RemoteInputCompatJellybean: android.support.v4.app.RemoteInputCompatBase$RemoteInput[] fromBundleArray(android.os.Bundle[],android.support.v4.app.RemoteInputCompatBase$RemoteInput$Factory)
+android.support.v4.app.RemoteInputCompatJellybean: android.os.Bundle[] toBundleArray(android.support.v4.app.RemoteInputCompatBase$RemoteInput[])
+android.support.v4.app.RemoteInputCompatJellybean: android.os.Bundle getResultsFromIntent(android.content.Intent)
+android.support.v4.app.RemoteInputCompatJellybean: void addResultsToIntent(android.support.v4.app.RemoteInputCompatBase$RemoteInput[],android.content.Intent,android.os.Bundle)
 android.support.v4.app.ServiceCompat
 android.support.v4.app.ServiceCompat: int START_STICKY
 android.support.v4.app.ServiceCompat: ServiceCompat()
@@ -1354,7 +1925,6 @@ android.support.v4.widget.SlidingPaneLayout$SavedState
 android.support.v4.widget.SlidingPaneLayout$SavedState: android.os.Parcelable$Creator CREATOR
 android.support.v4.widget.SwipeRefreshLayout
 android.support.v7.app.ActionBarActivity
-android.support.v7.app.ActionBarActivity: ActionBarActivity()
 android.support.v7.internal.view.menu.ActionMenuItemView
 android.support.v7.internal.view.menu.ActionMenuItemView: ActionMenuItemView(android.content.Context)
 android.support.v7.internal.view.menu.ActionMenuItemView: ActionMenuItemView(android.content.Context,android.util.AttributeSet)
@@ -1414,33 +1984,6 @@ android.support.v7.widget.SearchView$SearchAutoComplete
 android.support.v7.widget.SearchView$SearchAutoComplete: SearchView$SearchAutoComplete(android.content.Context)
 android.support.v7.widget.SearchView$SearchAutoComplete: SearchView$SearchAutoComplete(android.content.Context,android.util.AttributeSet)
 android.support.v7.widget.SearchView$SearchAutoComplete: SearchView$SearchAutoComplete(android.content.Context,android.util.AttributeSet,int)
-com.OsMoDroid.AboutActivity
-com.OsMoDroid.AboutActivity: AboutActivity()
-com.OsMoDroid.AuthActivity
-com.OsMoDroid.AuthActivity: AuthActivity()
-com.OsMoDroid.BootComplitedReceiver
-com.OsMoDroid.BootComplitedReceiver: BootComplitedReceiver()
-com.OsMoDroid.ChannelDevicesFragment
-com.OsMoDroid.ChannelsFragment
-com.OsMoDroid.DebugFragment
-com.OsMoDroid.DeviceChatFragment
-com.OsMoDroid.DevicesFragment
-com.OsMoDroid.GPSLocalServiceClient
-com.OsMoDroid.GPSLocalServiceClient: GPSLocalServiceClient()
-com.OsMoDroid.LocalService
-com.OsMoDroid.LocalService: LocalService()
-com.OsMoDroid.MainFragment
-com.OsMoDroid.MapFragment
-com.OsMoDroid.NotifFragment
-com.OsMoDroid.OsMoDroid
-com.OsMoDroid.OsMoDroid: OsMoDroid()
-com.OsMoDroid.PrefActivity
-com.OsMoDroid.PrefActivity: PrefActivity()
-com.OsMoDroid.SimLinksFragment
-com.OsMoDroid.StatFragment
-com.OsMoDroid.TracFileListFragment
-com.OsMoDroid.WarnActivity
-com.OsMoDroid.WarnActivity: WarnActivity()
 org.osmdroid.ResourceProxy$bitmap: org.osmdroid.ResourceProxy$bitmap[] values()
 org.osmdroid.ResourceProxy$bitmap: org.osmdroid.ResourceProxy$bitmap valueOf(java.lang.String)
 org.osmdroid.ResourceProxy$string: org.osmdroid.ResourceProxy$string[] values()

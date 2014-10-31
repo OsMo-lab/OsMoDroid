@@ -210,7 +210,7 @@ Manual en OsMoDroid: http://osmodroid.com/help/</string>
 <string name="monitoring_off">Monitoreo off</string>
 <string name="kilometers">kilometros</string>
 <string name="reset">Reset</string>
-<string name="where_">?Donde?</string>
+<string name="where_">Donde?</string>
 <string name="this_device_">"Este dispositivo "</string>
 <string name="confirm_reset_staticstic">Confirmar reset de estadísticas</string>
 <string name="please_confirm_reset_statistic">Por favor confirme el reset de las estadísticas</string>
