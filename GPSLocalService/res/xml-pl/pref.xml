@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen android:title="Główne"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="Główne">
+        <CheckBoxPreference android:title="Ciemny motyw" android:key="darktheme" android:defaultValue="true" />
+        <EditTextPreference android:title="Interwał odczytu GPS" android:key="refreshrate" android:summary="Milisekundy" android:defaultValue="5000" />
+        <EditTextPreference android:title="Timeout sieci" android:key="timeout" android:summary="Sekundy" android:defaultValue="30" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="Online">
+        <CheckBoxPreference android:title="Monitoring online" android:key="live" android:defaultValue="true" />
+        <PreferenceScreen android:title="Parametry monitoringu" android:dependency="live">
+            <EditTextPreference android:numeric="integer" android:digits="0123456789" android:title="Częstotliwość wysyłania" android:key="period" android:summary="Milisekundy. Czas pomiędzy wysyłaniem danych" android:defaultValue="5000" android:inputType="number" />
+            <EditTextPreference android:numeric="integer" android:digits="0123456789" android:title="Odległość wysyłania" android:key="distance" android:summary="Metry. Minimalna odległość pomiędzy wysyłaniem danych" android:defaultValue="0" android:inputType="number" />
+            <EditTextPreference android:numeric="integer" android:digits="0123456789" android:title="Próg kursu" android:key="bearing" android:summary="Stopnie. Próg azymutu pomiędzy bieżącym i poprzednim punktem, gdzie azymut się zmienił" android:defaultValue="0" android:inputType="number" />
+            <EditTextPreference android:digits="0123456789" android:title="Minimalna prędkość reakcji na kurs" android:key="speedbearing" android:summary="km/h. Jeśli prędkość jest niższa, to parametr `zboczenie z kursu` nie jest uwzględniany" android:defaultValue="0" android:inputType="number" />
+            <EditTextPreference android:numeric="integer" android:digits="0123456789" android:title="Maximum HDOP" android:key="hdop" android:summary="Metry. Akceptowalna dokładność lokalizacji (Horizontal Dilution Of Precision)Jeśli wartość jest większa, to dane nie są wysyłane" android:defaultValue="30" android:inputType="number" />
+            <EditTextPreference android:digits="0123456789" android:title="Minimalna prędkość wysyłania" android:key="speed" android:summary="km/h. Jeśli prędkość jest niższa, to dane nie są wysyłane" android:defaultValue="0" android:inputType="number" />
+            <CheckBoxPreference android:title="Tryb parametrów I" android:key="modeAND" android:summary="Jeśli znacznik jest ustawiony, wszystkie warunki (prędkość, czas, odległość) powinny zostać spełnione, żeby wysłać lokalizację. Jeśli nie ustawiono, każdy stan może spowodować aktualizację" android:defaultValue="false" />
+            <CheckBoxPreference android:title="Przekazywać nie wysłane" android:key="usebuffer" android:summary="Rekomendowane, jeśli połączenie z internetem jest niestabilne. Może zwiększyć zużycie danych." android:defaultValue="false" />
+        </PreferenceScreen>
+    </PreferenceCategory>
+    <PreferenceCategory android:title="Offline">
+        <CheckBoxPreference android:title="Zapisuj ścieżki GPS" android:key="gpx" android:summary="Ścieżki są zapisywane domyślnie na karcie pamięci (/sdcard/OsMoDroid/)" android:defaultValue="false" />
+        <PreferenceScreen android:title="Parametry zapisywania" android:dependency="gpx">
+            <EditTextPreference android:numeric="integer" android:digits="0123456789" android:title="Częstotliwość zapisu" android:key="period_gpx" android:summary="Milisekundy. Czas pomiędzy zapisem punktów" android:defaultValue="1000" android:inputType="number" />
+            <EditTextPreference android:numeric="integer" android:digits="0123456789" android:title="Odległość zapisu" android:key="distance_gpx" android:summary="Metry. Minimalna odległość pomiędzy zapisem punktów" android:defaultValue="0" android:inputType="number" />
+            <EditTextPreference android:numeric="integer" android:digits="0123456789" android:title="Próg kursu" android:key="bearing_gpx" android:summary="Stopnie. Próg azymutu pomiędzy bieżacym i poprzednim punktem, gdzie azymut się zmienił" android:defaultValue="0" android:inputType="number" />
+            <EditTextPreference android:digits="0123456789" android:title="Minimalna prędkość reakcji na kurs" android:key="speedbearing_gpx" android:summary="km/h. Jeśli prędkość jest niższa, to parametr `zboczenie z kursu` nie jest uwzględniany" android:defaultValue="0" android:inputType="number" />
+            <EditTextPreference android:numeric="integer" android:digits="0123456789" android:title="Maximum HDOP" android:key="hdop_gpx" android:summary="Metry. Akceptowalna dokładność lokalizacji (Horizontal Dilution Of Precision). Jeśli wartość jest większa, to punkt nie jest zapisywany" android:defaultValue="15" android:inputType="number" />
+            <EditTextPreference android:numeric="integer" android:digits="0123456789" android:title="Minimalna prędkość zapisu" android:key="speed_gpx" android:summary="km/h. Jeśli prędkość jest niższa, to punkt nie jest zapisywany" android:defaultValue="0" android:inputType="number" />
+            <CheckBoxPreference android:title="Tryb parametrów I" android:key="modeAND_gpx" android:summary="Jeśli znacznik jest ustawiony, wszystkie warunki (prędkość, czas, odległość) powinny zostać spełnione, żeby wysłać lokalizację. Jeśli nie ustawiono, każdy stan może spowodować aktualizację" android:defaultValue="false" />
+            <EditTextPreference android:title="Ścieżka zapisu" android:key="sdpath" />
+        </PreferenceScreen>
+    </PreferenceCategory>
+    <PreferenceCategory android:title="Dodatkowe">
+        <PreferenceScreen android:title="Powiadomienia">
+            <CheckBoxPreference android:title="Wibracja przy zerwaniu połączenia z internetem albo GPS" android:key="vibrate" android:defaultValue="false" />
+            <EditTextPreference android:numeric="integer" android:digits="0123456789" android:title="Czas wibracji" android:key="vibratetime" android:summary="Milisekundy" android:defaultValue="500" android:inputType="number" />
+            <CheckBoxPreference android:title="Dźwięk przy utracie połączenia z internetem albo GPS" android:key="playsound" android:defaultValue="false" />
+            <EditTextPreference android:numeric="integer" android:digits="0123456789" android:title="Okres określania braku połaczenia z GPS" android:key="notifyperiod" android:summary="Milisekundy" android:defaultValue="60000" android:inputType="number" />
+            <CheckBoxPreference android:title="Dźwięk podczas wysyłania" android:key="sendsound" android:defaultValue="false" />
+            <CheckBoxPreference android:title="Powiadomienie bezdźwiekowe" android:key="silentnotify" android:defaultValue="false" />
+            <CheckBoxPreference android:title="Powiadom o online" android:key="onlinenotify" android:summary="Powiadomienie o zmianie statusu online Twoich urządzeń" android:defaultValue="false" />
+            <CheckBoxPreference android:title="Powiadom o monitoringu" android:key="statenotify" android:summary="Powiadomienie o zmianie statusu monitoringu Twoich urządzeń" android:defaultValue="false" />
+            <CheckBoxPreference android:title="Alarm" android:key="usealarm" android:summary="Reaguje na przemieszczenie telefonu w przestrzeni" android:defaultValue="false" />
+            <EditTextPreference android:title="Czułość" android:key="sensivity" android:summary="Przyśpieszenie dla aktywacji alarmu" android:defaultValue="2" />
+            <CheckBoxPreference android:title="Powiadomienia głosowe" android:key="usetts" android:summary="Wykorzystywany jest text-to-speech" android:defaultValue="false" />
+            <PreferenceCategory android:title="Ustawienia TTS" android:dependency="usetts">
+                <CheckBoxPreference android:title="Wypowiadaj bieżącą prędkość" android:key="ttsspeed" />
+                <CheckBoxPreference android:title="Wypowiadaj średnią prędkość" android:key="ttsavgspeed" />
+                <CheckBoxPreference android:title="Wypowiadaj zdalne polecenia" android:key="ttsremote" />
+            </PreferenceCategory>
+        </PreferenceScreen>
+        <CheckBoxPreference android:title="Nie gasić ekranu" android:key="usewake" android:summary="Zwiększa zużycie baterii" android:defaultValue="false" />
+        <CheckBoxPreference android:title="GPS" android:key="usegps" android:summary="Określanie lokalizacji na podstawie GPS" android:defaultValue="true" />
+        <CheckBoxPreference android:title="Sieci komórkowe" android:key="usenetwork" android:summary="Określanie lokalizacji na podstawie sieci komórkowych i Wi-Fi (dodatkowe zużycie danych)" android:defaultValue="true" />
+        <CheckBoxPreference android:title="Аutostart w tle" android:key="autostart" android:summary="Autostart w tle po włączeniu telefonu" android:defaultValue="false" />
+    </PreferenceCategory>
+</PreferenceScreen>
