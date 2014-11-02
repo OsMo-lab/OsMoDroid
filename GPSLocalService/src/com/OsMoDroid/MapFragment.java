@@ -8,11 +8,18 @@ import org.osmdroid.api.IMapController;
 import org.osmdroid.events.MapListener;
 import org.osmdroid.events.ScrollEvent;
 import org.osmdroid.events.ZoomEvent;
+import org.osmdroid.tileprovider.IRegisterReceiver;
 import org.osmdroid.tileprovider.MapTile;
+import org.osmdroid.tileprovider.MapTileProviderBasic;
+import org.osmdroid.tileprovider.constants.OpenStreetMapTileProviderConstants;
+import org.osmdroid.tileprovider.modules.INetworkAvailablityCheck;
+import org.osmdroid.tileprovider.modules.MapTileFilesystemProvider;
+import org.osmdroid.tileprovider.modules.NetworkAvailabliltyCheck;
 import org.osmdroid.tileprovider.tilesource.ITileSource;
 import org.osmdroid.tileprovider.tilesource.OnlineTileSourceBase;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.tileprovider.tilesource.XYTileSource;
+import org.osmdroid.tileprovider.util.SimpleRegisterReceiver;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.util.ResourceProxyImpl;
 import org.osmdroid.views.MapView;
@@ -58,6 +65,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.RadioGroup.LayoutParams;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -93,6 +102,7 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
 		private MAPSurferTileSource mapSurferTileSource;
 		private BingMapTileSource bingTileSource;
 		private MAPSurferTileSource mapSurferTileSourceZ;
+		private ITileSource sputnikTileSource;
 		@Override
 		public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 			MenuItem traces = menu.add(0, 1, 0, R.string.showtraces);
@@ -110,6 +120,7 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
 			MenuItem bing = menu2.add(0, 7, 3, "Microsoft Bing");
 			MenuItem binglabels = menu2.add(0, 8, 4, "Microsoft Bing with Labels");
 			MenuItem mapsurferz = menu2.add(0, 9, 1, "MapSurfer ZOOM");
+			MenuItem sputnik = menu2.add(0, 10, 1, "Sputnik");
 			super.onCreateOptionsMenu(menu, inflater);
 			
 		}
@@ -163,6 +174,10 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
 				mMapView.setTileSource(mapSurferTileSourceZ);
 				LocalService.selectedTileSourceInt=5;
 				break;
+			case 10:
+				mMapView.setTileSource(sputnikTileSource);
+				LocalService.selectedTileSourceInt=6;
+				break;	
 			default:
 				break;
 			}
@@ -236,7 +251,49 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
 			
 		}
 }
+	class SputnikTileSource extends OnlineTileSourceBase {
 
+		SputnikTileSource(String aName, string aResourceId, int aZoomMinLevel,
+                        int aZoomMaxLevel, int aTileSizePixels,
+                        String aImageFilenameEnding, String... aBaseUrl) {
+                super(aName, aResourceId, aZoomMinLevel, aZoomMaxLevel,
+                                aTileSizePixels, aImageFilenameEnding, aBaseUrl);
+        }
+		@Override
+		public String getTileURLString(MapTile aTile) {
+		//	x=710&y=381&z=10
+			return getBaseUrl() + aTile.getZoomLevel()+'/'+aTile.getX() +'/' + aTile.getY()+".png" ;
+			
+		}
+}
+
+public class CustomTileProvider extends MapTileProviderBasic {
+
+    public CustomTileProvider(Context pContext) {
+        this(new SimpleRegisterReceiver(pContext), new NetworkAvailabliltyCheck(pContext),
+                TileSourceFactory.DEFAULT_TILE_SOURCE);
+    }
+
+    public CustomTileProvider(IRegisterReceiver pRegisterReceiver, INetworkAvailablityCheck aNetworkAvailablityCheck,
+            ITileSource pTileSource) {
+        super(pRegisterReceiver, aNetworkAvailablityCheck, pTileSource);
+
+        mTileProviderList.set(0, new CustomMapTileFilesystemProvider(pRegisterReceiver, pTileSource));
+    }
+
+    @Override
+    public void setTileSource(ITileSource aTileSource) {
+        super.setTileSource(aTileSource);
+    }
+}
+
+public class CustomMapTileFilesystemProvider extends MapTileFilesystemProvider {
+
+    public CustomMapTileFilesystemProvider(IRegisterReceiver pRegisterReceiver, ITileSource pTileSource) {
+        super(pRegisterReceiver, pTileSource, OpenStreetMapTileProviderConstants.ONE_DAY * 30);
+    }
+
+}
 
 
 	@Override
@@ -323,6 +380,7 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 			//SherlockFragmentActivity context = getSherlockActivity();
+			
 			Log.d(getClass().getSimpleName(), "map oncreateview");
 			mResourceProxy = new ResourceProxyImpl(inflater.getContext().getApplicationContext());
 			final String name = "MapSurfer";
@@ -331,11 +389,27 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
 			final int aTileSizePixels=256;
 			final String aImageFilenameEnding = ".png";
 			final String[] aBaseUrl=new String[] {"http://openmapsurfer.uni-hd.de/tiles/roads/"};
+			final String[] sputnikURL = new String[] {"http://b.tiles.maps.sputnik.ru/"};
 			bingTileSource = new BingMapTileSource(null);
+			sputnikTileSource = new SputnikTileSource("Sputnik", string.unknown, aZoomMinLevel, aZoomMaxLevel, aTileSizePixels, aImageFilenameEnding,sputnikURL);
 			mapSurferTileSource = new MAPSurferTileSource(name, string.unknown, aZoomMinLevel, aZoomMaxLevel, aTileSizePixels, aImageFilenameEnding, aBaseUrl);
 			mapSurferTileSourceZ = new MAPSurferTileSource(name, string.unknown, aZoomMinLevel, aZoomMaxLevel, aTileSizePixels*2, aImageFilenameEnding, aBaseUrl);
 			View view = inflater.inflate(R.layout.map, container, false);
-			mMapView = (MapView)view.findViewById(R.id.mapview);
+			RelativeLayout rl = (RelativeLayout)view.findViewById(R.id.relative);
+			//mMapView = (MapView)view.findViewById(R.id.mapview);
+			CustomTileProvider customTileProvider = new CustomTileProvider(getActivity());
+			
+			mMapView = new MapView(getActivity(), 256, mResourceProxy, customTileProvider);
+			//<!--         android:layout_width="fill_parent" -->
+			//<!--         android:layout_height="fill_parent" -->
+			//<!--         android:layout_alignParentLeft="true" -->
+			//<!--         android:layout_alignParentTop="true" > -->
+			RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.FILL_PARENT	, RelativeLayout.LayoutParams.FILL_PARENT);
+			lp.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+			lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+			mMapView.setLayoutParams(lp);
+			rl.addView(mMapView,0);
+			
 			ImageButton centerImageButton = (ImageButton)view.findViewById(R.id.imageButtonCenter);
 			Button rotateButton = (Button)view.findViewById(R.id.buttonRotate);
 			switch (LocalService.selectedTileSourceInt) {
@@ -355,6 +429,9 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
 				break;
 			case 5:
 				mMapView.setTileSource(mapSurferTileSourceZ);
+				break;
+			case 6:
+				mMapView.setTileSource(sputnikTileSource);
 				break;
 			default:
 				break;

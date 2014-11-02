@@ -153,11 +153,12 @@ public class DrawerItemClickListener implements OnItemClickListener {
         
        
         
-        fMan.popBackStack();
+       
         //ft.addToBackStack("").commit();
         //GPSLocalServiceClient.mDrawerList.setItemChecked(currentItem, true);
         try
 			{
+        	 fMan.popBackStack();
 				ft.commit();
 			} catch (IllegalStateException e)
 			{

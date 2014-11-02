@@ -796,6 +796,7 @@ void stop (){
 		 running = false;
 		 connOpened=false;
 		 authed=false;
+		 connecting=false;
 		 localService.alertHandler.post(new Runnable()
 	  			{
 	  				
@@ -820,7 +821,7 @@ void stop (){
 		 
 		 manager.cancel(getTokenTimeoutPIntent);
 		 manager.cancel(reconnectPIntent);
-		 
+		 localService.refresh();
 
 		
 
@@ -1845,13 +1846,19 @@ void stop (){
 					token=result.Jo.getString("token");
 					workservername=result.Jo.optString("address").substring(0, result.Jo.optString("address").indexOf(':'));
 					workserverint=Integer.parseInt(result.Jo.optString("address").substring( result.Jo.optString("address").indexOf(':')+1));
-					connectThread.start();
+					
+					try {
+						connectThread.start();
+					} catch (IllegalThreadStateException e) {
+						setReconnectOnError();
+						e.printStackTrace();
+					}
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			} else {
-				if(result.Jo.has("error")&&result.Jo.optInt("error")==100){
+				if(result.Jo.optInt("error")==100){
 				localService.alertHandler.post(new Runnable()
 					{
 						
