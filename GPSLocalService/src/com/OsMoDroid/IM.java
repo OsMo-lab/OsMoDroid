@@ -142,6 +142,7 @@ public class IM implements ResultsListener {
 	volatile protected boolean connecting=false;
 	final boolean  log=true;
 	public Socket socket;
+	int socketRetryInt=0;
 	private String poll="";
 	volatile public boolean authed=false;
 	public BufferedReader rd;
@@ -751,6 +752,7 @@ if (mes.from.equals(OsMoDroid.settings.getString("device", ""))){
 					
 					 //addlog("TCP_NODELAY="+Boolean.toString(socket.getTcpNoDelay()));
 					socket.connect(sockAddr, 5000);
+					socketRetryInt=0;
 					 connOpened=true;
 					 connecting=false;
 					 
@@ -770,6 +772,7 @@ if (mes.from.equals(OsMoDroid.settings.getString("device", ""))){
 					 
 					 
 				 } catch (final Exception e1) {
+					 socketRetryInt++;
 					 e1.printStackTrace();
 					 connecting=false;
 					 setReconnectOnError();
@@ -777,10 +780,13 @@ if (mes.from.equals(OsMoDroid.settings.getString("device", ""))){
 						 @Override
 						public void run()
 							{
-								 addlog("could no conenct to socket"+e1.getMessage());
+								 addlog("could no conenct to socket "+socketRetryInt+e1.getMessage());
 								 							}
 					 });
-					 
+					 if(socketRetryInt>3)
+					 {
+						 localService.notifywarnactivity(localService.getString(R.string.checkfirewall), false);
+					 }
 					
 				 }
 								
