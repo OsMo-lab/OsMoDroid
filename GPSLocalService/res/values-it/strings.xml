@@ -100,7 +100,6 @@ Manual en OsMoDroid: http://osmodroid.com/help/</string>
 <string name="binddevice">Emparejar dispositivo</string>
 <string name="hash">Hash:</string>
 <string name="controlnumber">Código de confirmación:</string>
-<string name="bindapp">Conectar app</string>
 <string name="esya_ru_notrespond">OsMoDroid no puede acceder al servidor</string>
 <string name="tracker">Rastreador</string>
 <string name="links">Enlaces</string>

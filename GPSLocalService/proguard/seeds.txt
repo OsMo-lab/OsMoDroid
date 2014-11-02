@@ -1925,6 +1925,7 @@ android.support.v4.widget.SlidingPaneLayout$SavedState
 android.support.v4.widget.SlidingPaneLayout$SavedState: android.os.Parcelable$Creator CREATOR
 android.support.v4.widget.SwipeRefreshLayout
 android.support.v7.app.ActionBarActivity
+android.support.v7.app.ActionBarActivity: ActionBarActivity()
 android.support.v7.internal.view.menu.ActionMenuItemView
 android.support.v7.internal.view.menu.ActionMenuItemView: ActionMenuItemView(android.content.Context)
 android.support.v7.internal.view.menu.ActionMenuItemView: ActionMenuItemView(android.content.Context,android.util.AttributeSet)
@@ -1984,6 +1985,35 @@ android.support.v7.widget.SearchView$SearchAutoComplete
 android.support.v7.widget.SearchView$SearchAutoComplete: SearchView$SearchAutoComplete(android.content.Context)
 android.support.v7.widget.SearchView$SearchAutoComplete: SearchView$SearchAutoComplete(android.content.Context,android.util.AttributeSet)
 android.support.v7.widget.SearchView$SearchAutoComplete: SearchView$SearchAutoComplete(android.content.Context,android.util.AttributeSet,int)
+com.OsMoDroid.AboutActivity
+com.OsMoDroid.AboutActivity: AboutActivity()
+com.OsMoDroid.AuthActivity
+com.OsMoDroid.AuthActivity: AuthActivity()
+com.OsMoDroid.BootComplitedReceiver
+com.OsMoDroid.BootComplitedReceiver: BootComplitedReceiver()
+com.OsMoDroid.ChannelDevicesFragment
+com.OsMoDroid.ChannelsFragment
+com.OsMoDroid.ColoredGPX$Statuses: com.OsMoDroid.ColoredGPX$Statuses[] values()
+com.OsMoDroid.ColoredGPX$Statuses: com.OsMoDroid.ColoredGPX$Statuses valueOf(java.lang.String)
+com.OsMoDroid.DebugFragment
+com.OsMoDroid.DeviceChatFragment
+com.OsMoDroid.DevicesFragment
+com.OsMoDroid.GPSLocalServiceClient
+com.OsMoDroid.GPSLocalServiceClient: GPSLocalServiceClient()
+com.OsMoDroid.LocalService
+com.OsMoDroid.LocalService: LocalService()
+com.OsMoDroid.MainFragment
+com.OsMoDroid.MapFragment
+com.OsMoDroid.NotifFragment
+com.OsMoDroid.OsMoDroid
+com.OsMoDroid.OsMoDroid: OsMoDroid()
+com.OsMoDroid.PrefActivity
+com.OsMoDroid.PrefActivity: PrefActivity()
+com.OsMoDroid.SimLinksFragment
+com.OsMoDroid.StatFragment
+com.OsMoDroid.TracFileListFragment
+com.OsMoDroid.WarnActivity
+com.OsMoDroid.WarnActivity: WarnActivity()
 org.osmdroid.ResourceProxy$bitmap: org.osmdroid.ResourceProxy$bitmap[] values()
 org.osmdroid.ResourceProxy$bitmap: org.osmdroid.ResourceProxy$bitmap valueOf(java.lang.String)
 org.osmdroid.ResourceProxy$string: org.osmdroid.ResourceProxy$string[] values()
@@ -1998,12 +2028,6 @@ org.osmdroid.util.GeoPoint: android.os.Parcelable$Creator CREATOR
 org.osmdroid.views.MapControllerOld$AnimationType: org.osmdroid.views.MapControllerOld$AnimationType[] values()
 org.osmdroid.views.MapControllerOld$AnimationType: org.osmdroid.views.MapControllerOld$AnimationType valueOf(java.lang.String)
 org.osmdroid.views.MapView
-org.osmdroid.views.MapView: MapView(android.content.Context,int,org.osmdroid.ResourceProxy,org.osmdroid.tileprovider.MapTileProviderBase,android.os.Handler,android.util.AttributeSet)
-org.osmdroid.views.MapView: MapView(android.content.Context,android.util.AttributeSet)
-org.osmdroid.views.MapView: MapView(android.content.Context,int)
-org.osmdroid.views.MapView: MapView(android.content.Context,int,org.osmdroid.ResourceProxy)
-org.osmdroid.views.MapView: MapView(android.content.Context,int,org.osmdroid.ResourceProxy,org.osmdroid.tileprovider.MapTileProviderBase)
-org.osmdroid.views.MapView: MapView(android.content.Context,int,org.osmdroid.ResourceProxy,org.osmdroid.tileprovider.MapTileProviderBase,android.os.Handler)
 org.osmdroid.views.overlay.ItemizedOverlayControlView
 org.osmdroid.views.overlay.OverlayItem$HotspotPlace: org.osmdroid.views.overlay.OverlayItem$HotspotPlace[] values()
 org.osmdroid.views.overlay.OverlayItem$HotspotPlace: org.osmdroid.views.overlay.OverlayItem$HotspotPlace valueOf(java.lang.String)

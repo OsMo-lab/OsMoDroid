@@ -371,7 +371,7 @@ if(!deviceU.equals("")){
 
 			AlertDialog alertdialog3 = new AlertDialog.Builder(
 					getActivity())
-					.setTitle(R.string.bindapp)
+					.setTitle(R.string.binddevice)
 					.setView(layout)
 					.setPositiveButton(R.string.yes,
 							new DialogInterface.OnClickListener() {
