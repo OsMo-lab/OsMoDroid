@@ -205,8 +205,9 @@
   <string name="please_confirm_reset_statistic">Por favor confirme el reset de las estadísticas</string>
   <string name="point_name_">Nombre del punto:</string>
   <string name="point_create">Enviar punto al servidor</string>
-  <string name="point_create_description">Introduzca el nombre del punto a enviar</string>
+  <string name="point_create_description">Introduce el nombre del punto a enviar</string>
   <string name="empty_channels">En esta pantalla, puede observar el grupo al que a entrado. Para empezar a usar grupos, use el menú contextual.</string>
   <string name="empty_devices">En esta pantalla hay una lista de sus dispositivos, y suscripciones a sus dispositivos. Las acciones disponibles con sus dispositivos están en el menú contextual.</string>
   <string name="empty_links">En esta pantalla hay una referencia permanente para monitorear su dispositivo desde la web. Las acciones disponibles se pueden encontrar en el menú contextual.</string>
+  <string name="checkfirewall">No se ha podido conectar al servidor de seguimiento por su puerto. Compruebe que da total acceso a OsMoDroid por su firewall. También puede ser debido a una conexión de datos mala.</string>
 </resources>
