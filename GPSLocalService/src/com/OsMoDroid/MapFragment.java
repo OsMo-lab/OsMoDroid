@@ -572,8 +572,10 @@ public class CustomMapTileFilesystemProvider extends MapTileFilesystemProvider {
                  if (LocationManager.GPS_PROVIDER.equals(provider)
                                  || LocationManager.NETWORK_PROVIDER.equals(provider)) {
                          result = true;
-                         LocalService.myManager.requestLocationUpdates(provider, 0,
-                                         0, this);
+                         if(LocalService.myManager!=null)
+                         {
+                        	 LocalService.myManager.requestLocationUpdates(provider, 0,0, this);
+                         }
                  }
          }
          return result;

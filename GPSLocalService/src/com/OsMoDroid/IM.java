@@ -783,8 +783,8 @@ if (mes.from.equals(OsMoDroid.settings.getString("device", ""))){
 								 addlog("could no conenct to socket "+socketRetryInt+e1.getMessage());
 								 							}
 					 });
-					 if(socketRetryInt>3)
-					 {
+					 if(socketRetryInt>3&&OsMoDroid.settings.getBoolean("understand", false))
+					 {	
 						 localService.notifywarnactivity(localService.getString(R.string.checkfirewall), false);
 					 }
 					
