@@ -785,7 +785,7 @@ if (mes.from.equals(OsMoDroid.settings.getString("device", ""))){
 					 });
 					 if(socketRetryInt>3&&OsMoDroid.settings.getBoolean("understand", false))
 					 {	
-						 localService.notifywarnactivity(localService.getString(R.string.checkfirewall), false);
+						 localService.notifywarnactivity(localService.getString(R.string.checkfirewall), true);
 					 }
 					
 				 }
