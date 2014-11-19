@@ -1064,7 +1064,7 @@ void stop (){
 		sendBytes=0;
 		recievedBytes=0;
 		needopensession=false;
-		OsMoDroid.editor.putString("viewurl","http://osmo.mobi/u/"+jo.optString("url"));
+		OsMoDroid.editor.putString("viewurl","https://osmo.mobi/u/"+jo.optString("url"));
 		OsMoDroid.editor.commit();
 		localService.refresh();
 	}
@@ -1480,7 +1480,7 @@ void stop (){
 					jsonObject = ja.getJSONObject(i);
 					PermLink pl = new PermLink();
 					pl.u=jsonObject.getInt("u");
-					pl.url="http://osmo.mobi/u/"+jsonObject.optString("url");
+					pl.url="https://osmo.mobi/u/"+jsonObject.optString("url");
 					LocalService.simlimkslist.add(pl);
 				} catch (JSONException e) {
 					StringWriter sw = new StringWriter();
@@ -1524,7 +1524,7 @@ void stop (){
 		PermLink pl = new PermLink();
 		try {
 			pl.u=jo.getInt("u");
-			pl.url="http://osmo.mobi/u/"+jo.getString("url");
+			pl.url="https://osmo.mobi/u/"+jo.getString("url");
 			LocalService.simlimkslist.add(pl);
 			if(LocalService.simlinksadapter!=null)
 			{
