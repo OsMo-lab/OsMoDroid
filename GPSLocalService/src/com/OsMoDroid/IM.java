@@ -417,7 +417,7 @@ if (mes.from.equals(OsMoDroid.settings.getString("device", ""))){
 		@Override
 
 		public void onReceive(Context context, Intent intent) {
-			addlog("Network broadcast receive");
+			addlog("Network broadcast receive:");
 		//	if(log)Log.d(this.getClass().getName(), "BCR"+this);
 
 		//	if(log)Log.d(this.getClass().getName(), "BCR"+this+" Intent:"+intent);
@@ -425,7 +425,11 @@ if (mes.from.equals(OsMoDroid.settings.getString("device", ""))){
 			if (intent.getAction().equals(android.net.ConnectivityManager.CONNECTIVITY_ACTION)) {
 
 				Bundle extras = intent.getExtras();
-
+				for (String key : extras.keySet()) {
+				    Object value = extras.get(key);
+				    addlog( String.format("%s %s (%s)", key,  
+				        value.toString(), value.getClass().getName()));
+				}
 			//	if(log)Log.d(this.getClass().getName(), "BCR"+this+ " "+intent.getExtras());
 
 				if(extras.containsKey("networkInfo")) {
