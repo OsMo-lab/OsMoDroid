@@ -29,6 +29,7 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,20 +49,28 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
 	MapView map;
 	private RotationGestureDetector mRotationDetector;
 	private float currentAngle=0f;
+	int ten;
+	int twenty;
 	public ChannelsOverlay(ResourceProxy pResourceProxy, MapView map) {
 		super(pResourceProxy);
+		this.map=map;
+		mRotationDetector = new RotationGestureDetector(this);
 		// mScale = OsMoDroid.context.getResources().getDisplayMetrics().density;
 		pathpaint = new Paint();
 		pathpaint.setStyle(Style.STROKE);
-		pathpaint.setStrokeWidth(10);
 		pathpaint.setAlpha(128);
 		pathpaint.setAntiAlias(true);
 		pathpaint.setStrokeCap(Cap.ROUND);
 		pathpaint.setStrokeJoin(Join.ROUND);
-		this.map=map;
-		mRotationDetector = new RotationGestureDetector(this);
+		
 
 		// TODO Auto-generated constructor stub
+	}
+	
+	int getSP(int px)
+	{
+		return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, px, map.getResources().getDisplayMetrics());
+		
 	}
 	
 	@Override
@@ -77,6 +86,9 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
 
 	@Override
 	protected void draw(Canvas canvas, MapView mapView, boolean shadow) {
+		ten=getSP(OsMoDroid.settings.getInt("pointsize", 8));
+		twenty=getSP(OsMoDroid.settings.getInt("pointsize", 8)*2);
+		pathpaint.setStrokeWidth(OsMoDroid.settings.getInt("pointsize", 8));
 		if(shadow){return;}
 		final BoundingBoxE6 theBoundingBox = mapView.getBoundingBox();
 		final Projection pj = mapView.getProjection();
@@ -111,7 +123,7 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
 					pj.toPixels(new GeoPoint(dev.lat, dev.lon), scrPoint);
 					paint.setDither(true);
 					paint.setAntiAlias(true);
-					paint.setTextSize(22f);
+					paint.setTextSize(twenty);
 					paint.setTypeface(Typeface.DEFAULT_BOLD);
 					paint.setTextAlign(Paint.Align.CENTER);
 					paint.setColor(Color.parseColor("#013220"));
@@ -121,10 +133,10 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
 						{
 							paint.setColor(Color.parseColor("#F0FFFF"));
 						}
-					canvas.drawText(dev.name, scrPoint.x, scrPoint.y-10, paint);
-					canvas.drawText(dev.speed, scrPoint.x,scrPoint.y-2*10, paint);
+					canvas.drawText(dev.name, scrPoint.x, scrPoint.y-ten, paint);
+					canvas.drawText(dev.speed, scrPoint.x,scrPoint.y-twenty, paint);
 					paint.setColor(dev.color);
-					canvas.drawCircle(scrPoint.x, scrPoint.y, 10, paint);
+					canvas.drawCircle(scrPoint.x, scrPoint.y, ten, paint);
 					canvas.restore();
 				 }
 				}
@@ -172,10 +184,10 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
 							{
 								paint.setColor(Color.parseColor("#F0FFFF"));
 							}
-				        canvas.drawText(dev.name, scrPoint.x, scrPoint.y-10, paint);
-						canvas.drawText(dev.speed, scrPoint.x,scrPoint.y-2*10, paint);
+				        canvas.drawText(dev.name, scrPoint.x, scrPoint.y-ten, paint);
+						canvas.drawText(dev.speed, scrPoint.x,scrPoint.y-twenty, paint);
 						paint.setColor(dev.color);
-						canvas.drawCircle(scrPoint.x, scrPoint.y, 10, paint);
+						canvas.drawCircle(scrPoint.x, scrPoint.y, ten, paint);
 						canvas.restore();
 					 }
 					}
@@ -192,13 +204,13 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
 					paint.setColor(Color.parseColor("#013220"));
 					canvas.save();
 			        canvas.rotate(-mapView.getMapOrientation(), scrPoint.x, scrPoint.y);
-					canvas.drawText(p.name, scrPoint.x, scrPoint.y-10, paint);
+					canvas.drawText(p.name, scrPoint.x, scrPoint.y-getSP(10), paint);
 					try {
 						paint.setColor(Color.parseColor(p.color));
 					} catch (Exception e) {
 						paint.setColor(Color.RED);
 					}
-					canvas.drawRect(scrPoint.x-10, scrPoint.y-10, scrPoint.x+10, scrPoint.y+10, paint);
+					canvas.drawRect(scrPoint.x-ten, scrPoint.y-ten, scrPoint.x+ten, scrPoint.y+ten, paint);
 					canvas.restore();
 				 }
 			}

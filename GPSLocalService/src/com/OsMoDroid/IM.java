@@ -527,21 +527,41 @@ if (mes.from.equals(OsMoDroid.settings.getString("device", ""))){
 		addlog("Start get token"+", key="+OsMoDroid.settings.getString("newkey", ""));
 		if(!gettokening){
 		gettokening=true;
-		if(log)Log.d(getClass().getSimpleName(), "https://api.osmo.mobi/prepare"+", key="+OsMoDroid.settings.getString("newkey", ""));
+		
 		APIcomParams params = null;    
 		//APIcomParams params = new APIcomParams("https://api.osmo.mobi/prepare","key="+OsMoDroid.settings.getString("newkey", "")+"&protocol=1","gettoken");
 		//{"android_id":"660d7b862282066f","android_model":"HTC One S","imei":"0","android_product":"htc_europe","client":"OsmAnd~ 1.8.3","osmand":"OsmAnd~ 1.8.3"}
-	        if(OsMoDroid.settings.getString("p", "").equals("")){
-	        	params = new APIcomParams("https://api.osmo.mobi/prepare?key="+OsMoDroid.settings.getString("newkey", "")
+	        if(OsMoDroid.settings.getString("p", "").equals(""))
+	        {
+	        	if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) 
+	        	{
+	        	     	params = new APIcomParams("https://api.osmo.mobi/prepare?key="+OsMoDroid.settings.getString("newkey", "")
 	        			+"&protocol=1"+"&app=OsMoDroid"+"&version="+localService.getversion()
 	        			,"","gettoken");
+	        	}
+	        	else
+	        	{
+	        		params = new APIcomParams("http://api.osmo.mobi/prepare?key="+OsMoDroid.settings.getString("newkey", "")
+		        			+"&protocol=1"+"&app=OsMoDroid"+"&version="+localService.getversion()
+		        			,"","gettoken");
+	        	}
 	        }
 	        else
 	        {
-	        	params = new APIcomParams("https://api.osmo.mobi/prepare?key="+OsMoDroid.settings.getString("newkey", "")
+	        	if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) 
+	        	{
+	        			params = new APIcomParams("https://api.osmo.mobi/prepare?key="+OsMoDroid.settings.getString("newkey", "")
 	        			+"&protocol=1&auth="+OsMoDroid.settings.getString("p", "")
 	        			+"&app=OsMoDroid"+"&version="+localService.getversion()
-	        			,"","gettoken");	
+	        			,"","gettoken");
+	        	}
+	        	else
+	        	{
+	        		params = new APIcomParams("http://api.osmo.mobi/prepare?key="+OsMoDroid.settings.getString("newkey", "")
+		        			+"&protocol=1&auth="+OsMoDroid.settings.getString("p", "")
+		        			+"&app=OsMoDroid"+"&version="+localService.getversion()
+		        			,"","gettoken");
+	        	}
 	        }
 	        sendidtask = new Netutil.MyAsyncTask(this);
 	        

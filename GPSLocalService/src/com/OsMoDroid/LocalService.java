@@ -1217,12 +1217,22 @@ public void sendid()
 	if(IMEI==null){
 		IMEI="unknown";
 	}
-	Log.d(getClass().getSimpleName(), "https://api.osmo.mobi/auth "+"android="+version+"&android_id="+androidID+"&imei="+IMEI);
+	if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB)
+	{
         APIcomParams params = new APIcomParams("https://api.osmo.mobi/auth","android="+version+"&android_id="+androidID+"&imei="+IMEI+"&android_model="+getDeviceName()
     			+"&android_product"+android.os.Build.PRODUCT,"sendid"); 
         MyAsyncTask sendidtask = new Netutil.MyAsyncTask(this);
         sendidtask.execute(params) ;
         Log.d(getClass().getSimpleName(), "sendidtask start to execute");
+	}
+	else
+	{
+		APIcomParams params = new APIcomParams("http://api.osmo.mobi/auth","android="+version+"&android_id="+androidID+"&imei="+IMEI+"&android_model="+getDeviceName()
+    			+"&android_product"+android.os.Build.PRODUCT,"sendid"); 
+        MyAsyncTask sendidtask = new Netutil.MyAsyncTask(this);
+        sendidtask.execute(params) ;
+        Log.d(getClass().getSimpleName(), "sendidtask start to execute");
+	}
 
 }
 

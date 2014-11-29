@@ -2,6 +2,8 @@ package com.OsMoDroid;
 
 import java.util.ArrayList;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.osmdroid.ResourceProxy;
 import org.osmdroid.ResourceProxy.string;
 import org.osmdroid.api.IMapController;
@@ -36,7 +38,9 @@ import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences.Editor;
 import android.graphics.Bitmap;
@@ -66,7 +70,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.RadioGroup.LayoutParams;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -121,6 +128,7 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
 			MenuItem binglabels = menu2.add(0, 8, 4, "Microsoft Bing with Labels");
 			MenuItem mapsurferz = menu2.add(0, 9, 1, "MapSurfer ZOOM");
 			MenuItem sputnik = menu2.add(0, 10, 1, "Sputnik");
+			menu.add(0,11,1,R.string.size_of_point);
 			super.onCreateOptionsMenu(menu, inflater);
 			
 		}
@@ -178,6 +186,35 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
 				mMapView.setTileSource(sputnikTileSource);
 				LocalService.selectedTileSourceInt=6;
 				break;	
+			case 11:
+				 
+					  LinearLayout layout = new LinearLayout(getActivity());
+					  layout.setOrientation(LinearLayout.VERTICAL);
+					  final SeekBar  input = new SeekBar(getActivity());
+					  input.setMax(30);
+					  input.setProgress(OsMoDroid.settings.getInt("pointsize", 8));
+					  layout.addView(input);
+					  AlertDialog alertdialog3 = new AlertDialog.Builder(getActivity())
+								.setTitle(R.string.size_of_point)
+								.setView(layout)
+								.setPositiveButton(R.string.yes,
+										new DialogInterface.OnClickListener() {
+											public void onClick(DialogInterface dialog,	int whichButton) {
+												
+													OsMoDroid.editor.putInt("pointsize", input.getProgress());
+													OsMoDroid.editor.commit();
+													mMapView.invalidate();
+												
+											}
+										})
+								.setNegativeButton(R.string.cancel,	new DialogInterface.OnClickListener()
+								{
+									public void onClick(DialogInterface dialog, int whichButton) 
+									{
+												}
+										}).create();
+						alertdialog3.show();
+				break;
 			default:
 				break;
 			}

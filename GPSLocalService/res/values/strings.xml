@@ -210,4 +210,5 @@
 <string name="empty_links">On this screen has a permanent reference for monitoring your device from the site. Available actions can be found in the context menu.</string>
 <string name="understand">OK, Do not report bad connections more</string>
 <string name="checkfirewall">Could not connect to tracker server by it port. Check what you allow OsMoDroid full access in you firewall. Also it could because bad data connection quality.</string>
+<string name="size_of_point">Size of point</string>
 </resources>
