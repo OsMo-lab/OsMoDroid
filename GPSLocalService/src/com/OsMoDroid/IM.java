@@ -85,6 +85,7 @@ import android.graphics.Color;
 
 import android.location.LocationManager;
 import android.media.MediaPlayer;
+import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 
@@ -431,16 +432,17 @@ if (mes.from.equals(OsMoDroid.settings.getString("device", ""))){
 				        value.toString(), value.getClass().getName()));
 				}
 			//	if(log)Log.d(this.getClass().getName(), "BCR"+this+ " "+intent.getExtras());
+				            
+			
 
-				if(extras.containsKey("networkInfo")) {
-
-					NetworkInfo netinfo = (NetworkInfo) extras.get("networkInfo");
+				//	NetworkInfo netinfo = (NetworkInfo) extras.get("networkInfo");
 
 				//	if(log)Log.d(this.getClass().getName(), "BCR"+this+ " "+netinfo);
 
 				//	if(log)Log.d(this.getClass().getName(), "BCR"+this+ " "+netinfo.getType());
 
-					if(netinfo.isConnected()) {
+					if(localService.isOnline())
+					{
 						if(log)Log.d(this.getClass().getName(), "BCR Network is connected");
 						if(log)Log.d(this.getClass().getName(), "Running:"+running);
 						// Network is connected
@@ -453,59 +455,21 @@ if (mes.from.equals(OsMoDroid.settings.getString("device", ""))){
 						
 					}
 
-					else {
+					else 
+					{
 						if(log)Log.d(this.getClass().getName(), "BCR Network is not connected");
 						if(log)Log.d(this.getClass().getName(), "Running:"+running);
 						addlog("Socket Network is not connected, running="+running);
 						if (running)
 						{
 							addlog("Socket stop by broadcast because running");
-							localService.alertHandler.post(new Runnable()
-								{
-									
-									@Override
-									public void run()
-										{
-											if(log)Log.d(this.getClass().getName(), "void IM.stop");
-											localService.internetnotify(false);
-										}
-								});
+							localService.internetnotify(false);
 							stop();
 						}
-						
-
 					}
-
 				}
-
-				else if(extras.containsKey("noConnectivity")) {
-					if(log)Log.d(this.getClass().getName(), "BCR Network is noConnectivity");
-					if(log)Log.d(this.getClass().getName(), "Running:"+running);
-					addlog("Socket Network is not connected, running="+running);
-					if (running)
-					{
-						addlog("Socket stop by broadcast because running");
-						localService.alertHandler.post(new Runnable()
-							{
-								
-								@Override
-								public void run()
-									{
-										if(log)Log.d(this.getClass().getName(), "void IM.stop");
-										localService.internetnotify(false);
-									}
-							});
-						stop();
-					}
-					
-
-				}
-
-		    }
-
-		}
-
-	};
+			}
+		};
 	
 	
 	
