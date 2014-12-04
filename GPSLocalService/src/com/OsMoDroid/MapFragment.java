@@ -110,6 +110,7 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
 		private BingMapTileSource bingTileSource;
 		private MAPSurferTileSource mapSurferTileSourceZ;
 		private ITileSource sputnikTileSource;
+		private ChannelsOverlay choverlay;
 		@Override
 		public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 			MenuItem traces = menu.add(0, 1, 0, R.string.showtraces);
@@ -549,7 +550,7 @@ public class CustomMapTileFilesystemProvider extends MapTileFilesystemProvider {
 		});
            		
 			CompassOverlay compas = new CompassOverlay(getActivity(), mMapView);
-			ChannelsOverlay choverlay = new ChannelsOverlay(mResourceProxy, mMapView);
+			choverlay = new ChannelsOverlay(mResourceProxy, mMapView, this);
 			mMapView.getOverlays().add(choverlay);
 			mMapView.getOverlays().add(compas);
 			compas.enableCompass();
@@ -564,7 +565,10 @@ public class CustomMapTileFilesystemProvider extends MapTileFilesystemProvider {
 	@Override
 	public void onDeviceChange(Device dev) {
 		 Log.d(getClass().getSimpleName(), "ondevicechange");
-		 
+		 if(choverlay!=null&&dev.u==choverlay.followdev)
+			 {
+				 mController.setCenter(new GeoPoint(dev.lat, dev.lon));
+			 }
 		 mMapView.invalidate();
 			
 	}

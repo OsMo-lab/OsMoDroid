@@ -399,6 +399,7 @@ public  class LocalService extends Service implements LocationListener,GpsStatus
 	boolean where=false;
 	static int selectedTileSourceInt=6;
 	//boolean connecting=false;
+	
 	     
 		static String formatInterval(final long l)
 	    {

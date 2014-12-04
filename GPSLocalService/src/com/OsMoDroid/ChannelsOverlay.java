@@ -29,6 +29,7 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.provider.Settings.Global;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
@@ -39,6 +40,7 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class ChannelsOverlay extends Overlay implements RotationGestureDetector.RotationListener {
 	//private final float mScale;
@@ -46,14 +48,18 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
 	private Paint pathpaint;
 	private final Point mTempPoint1 = new Point();
 	private final Point mTempPoint2 = new Point();
+	private final Point mCurScreenCoords = new Point();
 	MapView map;
 	private RotationGestureDetector mRotationDetector;
 	private float currentAngle=0f;
 	int ten;
 	int twenty;
-	public ChannelsOverlay(ResourceProxy pResourceProxy, MapView map) {
+	private MapFragment mapFragment;
+	int followdev;
+	public ChannelsOverlay(ResourceProxy pResourceProxy, MapView map, MapFragment mapFragment) {
 		super(pResourceProxy);
 		this.map=map;
+		this.mapFragment=mapFragment;
 		mRotationDetector = new RotationGestureDetector(this);
 		// mScale = OsMoDroid.context.getResources().getDisplayMetrics().density;
 		pathpaint = new Paint();
@@ -369,6 +375,66 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
 						});
 				alertdialog1.show();
 			return super.onLongPress(e, mapView);
+		}
+
+	@Override
+	public boolean onSingleTapConfirmed(MotionEvent e, MapView mapView)
+		{
+			final Projection pj = mapView.getProjection();
+			final Rect screenRect = pj.getIntrinsicScreenRect();
+			final int size = LocalService.deviceList.size();
+			for (Channel ch :LocalService.channelList)
+				{
+					for(Device dev:ch.deviceList)
+						{
+							pj.toPixels(new GeoPoint(dev.lat, dev.lon), mCurScreenCoords);
+							if (mCurScreenCoords.x<=(e.getX()+2*ten) && mCurScreenCoords.x>=(e.getX()-2*ten) 
+									&& mCurScreenCoords.y<=(e.getY()+ten)&&mCurScreenCoords.y>=(e.getY()-ten))
+					 
+								{
+									
+									if (followdev!=dev.u)
+										{
+											Toast.makeText(mapView.getContext(),"Follow " + dev.name, Toast.LENGTH_SHORT).show();
+											followdev=dev.u;
+										}
+									else
+										{
+											Toast.makeText(mapView.getContext(),"No Follow " + dev.name, Toast.LENGTH_SHORT).show();
+											followdev=-1;
+										}
+									return true;
+								}
+						}
+				}
+			for (int i = 0; i < size; i++) {
+				final Device dev = LocalService.deviceList.get(i);
+				if (dev.lat == 0f) {
+					continue;
+				}
+
+				pj.toPixels(new GeoPoint(dev.lat, dev.lon), mCurScreenCoords);
+				if (mCurScreenCoords.x<=(e.getX()+2*ten) && mCurScreenCoords.x>=(e.getX()-2*ten) 
+						&& mCurScreenCoords.y<=(e.getY()+ten)&&mCurScreenCoords.y>=(e.getY()-ten))
+		 
+					{
+						
+						if (followdev!=dev.u)
+							{
+								Toast.makeText(mapView.getContext(),"Follow " + dev.name, Toast.LENGTH_SHORT).show();
+								followdev=dev.u;
+							}
+						else
+							{
+								Toast.makeText(mapView.getContext(),"No Follow " + dev.name, Toast.LENGTH_SHORT).show();
+								followdev=-1;
+							}
+						return true;
+					}
+				}
+			
+
+			return super.onSingleTapConfirmed(e, mapView);
 		}
 
 
