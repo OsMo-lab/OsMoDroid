@@ -194,6 +194,35 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
 					  final SeekBar  input = new SeekBar(getActivity());
 					  input.setMax(30);
 					  input.setProgress(OsMoDroid.settings.getInt("pointsize", 8));
+					  input.setOnSeekBarChangeListener( new SeekBar.OnSeekBarChangeListener()
+						{
+							
+							
+							
+							@Override
+							public void onProgressChanged(SeekBar seekBar, int progress,
+									boolean fromUser)
+								{
+									OsMoDroid.editor.putInt("pointsize", input.getProgress());
+									OsMoDroid.editor.commit();
+									mMapView.invalidate();
+									
+								}
+
+							@Override
+							public void onStartTrackingTouch(SeekBar seekBar)
+								{
+									// TODO Auto-generated method stub
+									
+								}
+
+							@Override
+							public void onStopTrackingTouch(SeekBar seekBar)
+								{
+									// TODO Auto-generated method stub
+									
+								}
+						});
 					  layout.addView(input);
 					  AlertDialog alertdialog3 = new AlertDialog.Builder(getActivity())
 								.setTitle(R.string.size_of_point)

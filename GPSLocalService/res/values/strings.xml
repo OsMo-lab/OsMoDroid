@@ -211,4 +211,6 @@
 <string name="understand">OK, Do not report bad connections more</string>
 <string name="checkfirewall">Could not connect to tracker server by it port. Check what you allow OsMoDroid full access in you firewall. Also it could because bad data connection quality.</string>
 <string name="size_of_point">Size of point</string>
+<string name="follow_">"Follow "</string>
+<string name="no_follow_">"No Follow "</string>
 </resources>

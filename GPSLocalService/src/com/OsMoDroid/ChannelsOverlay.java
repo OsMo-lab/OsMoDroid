@@ -55,7 +55,7 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
 	int ten;
 	int twenty;
 	private MapFragment mapFragment;
-	int followdev;
+	int followdev=-1;
 	public ChannelsOverlay(ResourceProxy pResourceProxy, MapView map, MapFragment mapFragment) {
 		super(pResourceProxy);
 		this.map=map;
@@ -143,6 +143,11 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
 					canvas.drawText(dev.speed, scrPoint.x,scrPoint.y-twenty, paint);
 					paint.setColor(dev.color);
 					canvas.drawCircle(scrPoint.x, scrPoint.y, ten, paint);
+					if(dev.u==followdev)
+						{	
+							paint.setColor(Color.RED);
+							canvas.drawCircle(scrPoint.x, scrPoint.y, ten/3, paint);
+						}
 					canvas.restore();
 				 }
 				}
@@ -180,7 +185,7 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
 						pj.toPixels(new GeoPoint(dev.lat, dev.lon), scrPoint);
 						paint.setDither(true);
 						paint.setAntiAlias(true);
-						paint.setTextSize(22f);
+						paint.setTextSize(twenty);
 						paint.setTypeface(Typeface.DEFAULT_BOLD);
 						paint.setTextAlign(Paint.Align.CENTER);
 						paint.setColor(Color.parseColor("#013220"));
@@ -194,6 +199,11 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
 						canvas.drawText(dev.speed, scrPoint.x,scrPoint.y-twenty, paint);
 						paint.setColor(dev.color);
 						canvas.drawCircle(scrPoint.x, scrPoint.y, ten, paint);
+						if(dev.u==followdev)
+							{	
+								paint.setColor(Color.RED);
+								canvas.drawCircle(scrPoint.x, scrPoint.y, ten/3, paint);
+							}
 						canvas.restore();
 					 }
 					}
@@ -202,15 +212,15 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
 				if (theBoundingBox.contains(new GeoPoint(p.lat, p.lon))) 
 				 {
 					pj.toPixels(new GeoPoint(p.lat, p.lon), scrPoint);
-				  	paint.setDither(true);
+					paint.setDither(true);
 					paint.setAntiAlias(true);
-					paint.setTextSize(22f);
+					paint.setTextSize(twenty);
 					paint.setTypeface(Typeface.DEFAULT_BOLD);
 					paint.setTextAlign(Paint.Align.CENTER);
 					paint.setColor(Color.parseColor("#013220"));
 					canvas.save();
 			        canvas.rotate(-mapView.getMapOrientation(), scrPoint.x, scrPoint.y);
-					canvas.drawText(p.name, scrPoint.x, scrPoint.y-getSP(10), paint);
+					canvas.drawText(p.name, scrPoint.x, scrPoint.y-ten, paint);
 					try {
 						paint.setColor(Color.parseColor(p.color));
 					} catch (Exception e) {
@@ -395,14 +405,15 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
 									
 									if (followdev!=dev.u)
 										{
-											Toast.makeText(mapView.getContext(),"Follow " + dev.name, Toast.LENGTH_SHORT).show();
+											Toast.makeText(mapView.getContext(),map.getContext().getString(R.string.follow_) + dev.name, Toast.LENGTH_SHORT).show();
 											followdev=dev.u;
 										}
 									else
 										{
-											Toast.makeText(mapView.getContext(),"No Follow " + dev.name, Toast.LENGTH_SHORT).show();
+											Toast.makeText(mapView.getContext(),map.getContext().getString(R.string.no_follow_) + dev.name, Toast.LENGTH_SHORT).show();
 											followdev=-1;
 										}
+									mapView.invalidate();
 									return true;
 								}
 						}
@@ -421,19 +432,20 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
 						
 						if (followdev!=dev.u)
 							{
-								Toast.makeText(mapView.getContext(),"Follow " + dev.name, Toast.LENGTH_SHORT).show();
+								Toast.makeText(mapView.getContext(),R.string.follow_ + dev.name, Toast.LENGTH_SHORT).show();
 								followdev=dev.u;
 							}
 						else
 							{
-								Toast.makeText(mapView.getContext(),"No Follow " + dev.name, Toast.LENGTH_SHORT).show();
+								Toast.makeText(mapView.getContext(),R.string.no_follow_ + dev.name, Toast.LENGTH_SHORT).show();
 								followdev=-1;
 							}
+						mapView.invalidate();
 						return true;
 					}
 				}
 			
-
+			
 			return super.onSingleTapConfirmed(e, mapView);
 		}
 
