@@ -638,18 +638,19 @@ public class CustomMapTileFilesystemProvider extends MapTileFilesystemProvider {
 	public boolean startLocationProvider(IMyLocationConsumer locationConsumer) {
 		 myLocationConumer=locationConsumer;
          boolean result = false;
-         for (final String provider : LocalService.myManager.getProviders(true)) {
-                 if (LocationManager.GPS_PROVIDER.equals(provider)
-                                 || LocationManager.NETWORK_PROVIDER.equals(provider)) {
-                         result = true;
-                         if(LocalService.myManager!=null)
-                         {
-                        	 LocalService.myManager.requestLocationUpdates(provider, 0,0, this);
-                         }
-                 }
-         }
+         if(LocalService.myManager!=null)
+         	{
+        	 for (final String provider : LocalService.myManager.getProviders(true)) 
+         		{
+        		 	if (LocationManager.GPS_PROVIDER.equals(provider)|| LocationManager.NETWORK_PROVIDER.equals(provider))
+        		 		{
+        		 			result = true;
+                	 		LocalService.myManager.requestLocationUpdates(provider, 0,0, this);
+                 		}
+         		}
+         	}
          return result;
-
+         
 		
 	}
 
