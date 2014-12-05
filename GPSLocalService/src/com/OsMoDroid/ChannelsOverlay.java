@@ -56,7 +56,7 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
 	int twenty;
 	private MapFragment mapFragment;
 	int followdev=-1;
-	public ChannelsOverlay(ResourceProxy pResourceProxy, MapView map, MapFragment mapFragment) {
+	public ChannelsOverlay(ResourceProxy pResourceProxy, MapView map) {
 		super(pResourceProxy);
 		this.map=map;
 		this.mapFragment=mapFragment;
@@ -101,7 +101,7 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
         final Point scrPoint = new Point();
         for(ColoredGPX gpx : LocalService.showedgpxList)
         	{
-        		drawGPX(canvas, pj, gpx);
+        		drawGPX(canvas, pj, gpx , theBoundingBox, scrPoint, mapView);
         	}
         for(Device dev:LocalService.deviceList)
 		{
@@ -156,7 +156,7 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
 			for (ColoredGPX gpx :ch.gpxList)
 				{
 				
-				drawGPX(canvas, pj, gpx);
+				drawGPX(canvas, pj, gpx, theBoundingBox , scrPoint , mapView);
 			}
 			
 			for(Device dev:ch.deviceList)
@@ -235,7 +235,7 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
 		
 	}
 
-	private void drawGPX(Canvas canvas, final Projection pj, ColoredGPX gpx)
+	private void drawGPX(Canvas canvas, final Projection pj, ColoredGPX gpx, BoundingBoxE6 theBoundingBox, Point scrPoint, MapView mapView)
 		{
 			int size=gpx.points.size();
 			if(size>2)
@@ -317,6 +317,28 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
 //							path.moveTo(scrPoint.x, scrPoint.y);
 //				 		}
 //				 	canvas.drawPath(path, pathpaint);
+			}
+			for(Channel.Point p: gpx.waypoints){
+				if (theBoundingBox.contains(new GeoPoint(p.lat, p.lon))) 
+				 {
+					pj.toPixels(new GeoPoint(p.lat, p.lon), scrPoint);
+					paint.setDither(true);
+					paint.setAntiAlias(true);
+					paint.setTextSize(twenty);
+					paint.setTypeface(Typeface.DEFAULT_BOLD);
+					paint.setTextAlign(Paint.Align.CENTER);
+					paint.setColor(Color.parseColor("#013220"));
+					canvas.save();
+			        canvas.rotate(-mapView.getMapOrientation(), scrPoint.x, scrPoint.y);
+					//canvas.drawText(p.name, scrPoint.x, scrPoint.y-ten, paint);
+					try {
+						paint.setColor(gpx.color);
+					} catch (Exception e) {
+						paint.setColor(Color.RED);
+					}
+					canvas.drawRect(scrPoint.x-ten, scrPoint.y-ten, scrPoint.x+ten, scrPoint.y+ten, paint);
+					canvas.restore();
+				 }
 			}
 		}
 
@@ -415,6 +437,19 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
 										}
 									mapView.invalidate();
 									return true;
+								}
+						}
+					for (ColoredGPX cg : ch.gpxList)
+						{
+							for (Channel.Point p : cg.waypoints)
+								{
+									pj.toPixels(new GeoPoint(p.lat, p.lon), mCurScreenCoords);
+									if (mCurScreenCoords.x<=(e.getX()+2*ten) && mCurScreenCoords.x>=(e.getX()-2*ten) 
+											&& mCurScreenCoords.y<=(e.getY()+ten)&&mCurScreenCoords.y>=(e.getY()-ten))
+							 
+										{
+											Toast.makeText(mapView.getContext(),p.name, Toast.LENGTH_SHORT).show();
+										}
 								}
 						}
 				}

@@ -579,7 +579,7 @@ public class CustomMapTileFilesystemProvider extends MapTileFilesystemProvider {
 		});
            		
 			CompassOverlay compas = new CompassOverlay(getActivity(), mMapView);
-			choverlay = new ChannelsOverlay(mResourceProxy, mMapView, this);
+			choverlay = new ChannelsOverlay(mResourceProxy, mMapView);
 			mMapView.getOverlays().add(choverlay);
 			mMapView.getOverlays().add(compas);
 			compas.enableCompass();

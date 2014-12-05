@@ -28,6 +28,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.OsMoDroid.ColoredGPX.Statuses;
+
 import com.OsMoDroid.R;
 public class Netutil {
 		public static class MyAsyncTask extends AsyncTask<APIcomParams, Void, APIComResult> {		private Context mContext; 		ResultsListener listener;	    HttpURLConnection con;	    InputStream in;	    ProgressDialog dialog;   	    MyAsyncTask(ResultsListener listener, Context context) 	    	{	    		this.listener = listener;	    		mContext = context;	    	} 	    MyAsyncTask(ResultsListener listener)	    	{ 	    		this.listener = listener;	    	}		protected void onPreExecute() {			if (!(mContext==null))				{					Log.d(this.getClass().getName(),"Dialog context="+mContext.toString());
@@ -64,12 +65,32 @@ public class Netutil {
 	public static String bytesToHex(byte[] b) {		char hexDigit[] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9','a', 'b', 'c', 'd', 'e', 'f' };		StringBuffer buf = new StringBuffer();		for (int j = 0; j < b.length; j++) {			buf.append(hexDigit[(b[j] >> 4) & 0x0f]);			buf.append(hexDigit[b[j] & 0x0f]);		}		return buf.toString();	}
 
 	public static String SHA1(String text) {		MessageDigest md;		byte[] sha1hash = new byte[40];		try {			md = MessageDigest.getInstance("SHA-1");			sha1hash = md.digest(text.getBytes());		} catch (Exception e) {			e.printStackTrace();		}		return bytesToHex(sha1hash);
-	}	public static List<Point> getGPXPoints(InputStream gpxFile)    {        List<Point> points = new ArrayList<Point>(3000);        try        {            /* split document into xml elements */            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();            DocumentBuilder builder = dbFactory.newDocumentBuilder();            InputStream is = gpxFile;            Document dom = builder.parse(is);            Element root = dom.getDocumentElement();            NodeList nodes = root.getElementsByTagName("trkpt");            /* store points in each node */                        for(int i = 0; i < nodes.getLength(); i++)            {                Node item = nodes.item(i);                NamedNodeMap attrs = item.getAttributes();                NodeList props = item.getChildNodes();                GeoPoint pt = new GeoPoint(Double.parseDouble(attrs.getNamedItem("lat").getNodeValue()), Double.parseDouble(attrs.getNamedItem("lon").getNodeValue()));                points.add(new Point(pt.getLatitudeE6(), pt.getLongitudeE6()));
+	}	public static List<Point> getGPXPoints(InputStream gpxFile, ArrayList<Channel.Point> wpList)    {        List<Point> points = new ArrayList<Point>(3000);        try        {            /* split document into xml elements */            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();            DocumentBuilder builder = dbFactory.newDocumentBuilder();            InputStream is = gpxFile;            Document dom = builder.parse(is);            Element root = dom.getDocumentElement();            NodeList nodes = root.getElementsByTagName("trkpt");                        /* store points in each node */                        for(int i = 0; i < nodes.getLength(); i++)            {                Node item = nodes.item(i);                NamedNodeMap attrs = item.getAttributes();                GeoPoint pt = new GeoPoint(Double.parseDouble(attrs.getNamedItem("lat").getNodeValue()), Double.parseDouble(attrs.getNamedItem("lon").getNodeValue()));                points.add(new Point(pt.getLatitudeE6(), pt.getLongitudeE6()));
+            }
+            NodeList wpnodes = root.getElementsByTagName("wpt");
+            
+            /* store points in each node */
+            
+            for(int i = 0; i < wpnodes.getLength(); i++)
+            {
+                Node item = wpnodes.item(i);
+                NamedNodeMap attrs = item.getAttributes();
+                Channel.Point wp = new Channel.Point();
+                wp.lat=(float) Double.parseDouble(attrs.getNamedItem("lat").getNodeValue());
+                wp.lon=(float)	Double.parseDouble(attrs.getNamedItem("lon").getNodeValue()); 
+                Element element = (Element)item;
+                Element w = (Element) element.getElementsByTagName("name").item(0);
+                wp.name=w.getTextContent();
+                if(wp.name==null)
+                	{
+                		wp.name="";
+                	}
+                wpList.add(wp);
             }            is.close();        }catch(FileNotFoundException e){            e.printStackTrace();        }catch (IOException e) {            e.printStackTrace();        }catch(ParserConfigurationException e){            e.printStackTrace();        }catch (SAXException e) {            e.printStackTrace();        }catch (org.w3c.dom.DOMException e)
         	{
         		e.printStackTrace();
         	}        return points;    }	public static class InitTask extends AsyncTask<InputStream, Void, List<Point>>{		ColoredGPX cg;
-				public InitTask(ColoredGPX cg) {			this.cg=cg;
+		ArrayList<Channel.Point> wp = new ArrayList<Channel.Point>(100);		public InitTask(ColoredGPX cg) {			this.cg=cg;
 				}				@Override
 		protected void onPreExecute()
 			{
@@ -78,13 +99,16 @@ public class Netutil {
 			}
 
 		@Override		protected void onPostExecute(List<Point> result) {			Log.d(this.getClass().getName(), "InitTask onpostexecute numpoints="+result.size());			cg.points.addAll(result);
+			cg.waypoints.addAll(wp);
 			cg.status=Statuses.LOADED;			if(OsMoDroid.activity!=null&&OsMoDroid.activity.drawClickListener.map!=null&&OsMoDroid.activity.drawClickListener.map.mResourceProxy!=null){
 				Log.d(this.getClass().getName(), "InitTask onpostexecute call map by app");
 				OsMoDroid.activity.drawClickListener.map.onDeviceChange(null);
 			}
 			else {
 				Log.d(this.getClass().getName(), "InitTask onpostexecute null map");
-			}			super.onPostExecute(result);		}		@Override		protected List<Point> doInBackground(InputStream... params) {			if(cg.points.size()==0){			return getGPXPoints(params[0]);}			return new ArrayList<Point>();		}			}	public synchronized static String unescape (String s)
+			}			super.onPostExecute(result);		}		@Override		protected List<Point> doInBackground(InputStream... params) {			if(cg.points.size()==0)
+				{					return getGPXPoints(params[0],wp);
+				}			return new ArrayList<Point>();		}			}	public synchronized static String unescape (String s)
 	{
 	    while (true)
 	    {

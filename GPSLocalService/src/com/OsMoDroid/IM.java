@@ -1556,7 +1556,7 @@ void stop (){
 												}
 											}
 										if(!exist){
-											ch.pointList.add(ch.new Point(jsonObject));
+											ch.pointList.add(new Point(jsonObject));
 											LocalService.devlistener.onChannelListChange();
 										}
 									} catch (JSONException e)

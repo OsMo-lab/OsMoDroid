@@ -60,21 +60,26 @@ public class Channel implements Serializable {
 	};
 	
 	public boolean chatconnected=false;
-	class Point {
+	static class Point {
 		int u;
 		float lat;
 		float lon;
 		String name;
 		String description; 
 		String color;
-		Point(JSONObject json) throws JSONException{
-		u=json.getInt("u");
-		lat=Float.parseFloat(json.getString("lat"));
-		lon=Float.parseFloat(json.getString("lon"));
-		description=json.optString("description");
-		color=json.optString("color");
-		name=json.getString("name");
+		Point()
+		{
+			
 		}
+		Point(JSONObject json) throws JSONException
+			{
+				u=json.getInt("u");
+				lat=Float.parseFloat(json.getString("lat"));
+				lon=Float.parseFloat(json.getString("lon"));
+				description=json.optString("description");
+				color=json.optString("color");
+				name=json.getString("name");
+			}
 	}
 	public Channel(){
 		
