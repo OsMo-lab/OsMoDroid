@@ -3,7 +3,8 @@
     package="com.OsMoDroid"
     android:versionCode="228"
     android:versionName="2.0.28" android:installLocation="auto">
-    <uses-sdk android:minSdkVersion="5"  />
+    <uses-sdk android:minSdkVersion="5"
+        android:targetSdkVersion="19"  />
 	<uses-feature android:name="android.hardware.camera" android:required="false" />
 	<uses-feature android:name="android.hardware.microphone" android:required="false"/>
   	<uses-feature android:name="android.hardware.camera.autofocus" android:required="false"/>

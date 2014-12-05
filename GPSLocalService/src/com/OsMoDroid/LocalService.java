@@ -1,8 +1,4 @@
-
 package com.OsMoDroid;
-
-
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -75,6 +71,7 @@ import android.provider.Settings.Secure;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.TextToSpeech.OnInitListener;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationCompat.Action;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.Display;
@@ -379,7 +376,7 @@ public  class LocalService extends Service implements LocationListener,GpsStatus
     private int alarmStreamId=0;
     private int count=0;
     private int countFix=0;
-	Notification notification;
+	//Notification notification;
 	PendingIntent osmodroidLaunchIntent;
 	private String strVersionName;
 	private String androidver;
@@ -399,6 +396,7 @@ public  class LocalService extends Service implements LocationListener,GpsStatus
 	boolean where=false;
 	static int selectedTileSourceInt=6;
 	//boolean connecting=false;
+	NotificationCompat.Builder foregroundnotificationBuilder = new NotificationCompat.Builder(this);
 	
 	     
 		static String formatInterval(final long l)
@@ -592,16 +590,6 @@ public void stopcomand()
 			return sendcounter;
 		}
 
-		void invokeMethod(Method method, Object[] args) {
-		    try {
-		        method.invoke(this, args);
-		    } catch (InvocationTargetException e) {
-		        // Should not happen.
-		    } catch (IllegalAccessException e) {
-		    	// Should not happen.
-		    }
-
-		}
 	@Override
 	public void onCreate() {
 		super.onCreate();
@@ -750,10 +738,7 @@ public void stopcomand()
 				sendingbuffer.clear();
 				String time = sdf3.format(new Date(System.currentTimeMillis()));
 				sendresult = time + " " +  getString(R.string.error);
-				if (notification!=null){
-					notification.setLatestEventInfo(getApplicationContext(), "OsMoDroid", "Отправлено:"+sendcounter+" Записано:"+writecounter, osmodroidLaunchIntent);
-					mNotificationManager.notify(OSMODROID_ID, notification);
-					}
+				updateNotification(-1);
 				refresh();
 			}
 		}
@@ -1008,6 +993,10 @@ OsMoDroid.settings.edit().putBoolean("ondestroy", false).commit();
         				stopServiceWork(true);
         			}
         	}
+        if(intent!=null&&intent.hasExtra("ACTION")&&intent.getStringExtra("ACTION").equals("STOP"))
+        	{
+        		stopServiceWork(true);
+        	}
     }
 	
 	public void applyPreference(){
@@ -1030,155 +1019,83 @@ OsMoDroid.settings.edit().putBoolean("ondestroy", false).commit();
 	}
 	
 
-	public void startServiceWork (){
-		if(!paused){
-		firstsend=true;
-
-		avgspeed=0;
-
-		maxspeed=0;
-		intKM=0;
-		workdistance=0;
-
-		timeperiod=0;
-
-		workmilli=0;
-
-		buffercounter=0;
-
-		 buffersb.setLength(0);
-
-		 lastbuffersb.setLength(0);
-
-		 sendedsb.setLength(0);
-
-		 lcounter=0;
-
-		 scounter=0;
-
-		 sendcounter=0;
-
-		 sended=true;
-
-		 traceList.clear();
-		 sending="";
-		
-		ReadPref();
-
-		//sendbuffer="";
-
-		if (OsMoDroid.settings.getBoolean("playsound", false)){
-			 soundPool.play(startsound, 1f, 1f, 1, 0, 1f);
-		}
-
-		
-
-		manageGPSFixAlarm();
-
-		
-
-		boolean crtfile = false;
-
-		if (gpx) {
-
-			openGPX();
-
-
-
-			}
-		
-		}
-		setPause(false);
-		
-requestLocationUpdates();
-
-
-
-int icon = R.drawable.eye;
-CharSequence tickerText = getString(R.string.monitoringstarted); //getString(R.string.Working);
-long when = System.currentTimeMillis();
-notification = new Notification(icon, tickerText, when);
-Intent notificationIntent = new Intent(this, GPSLocalServiceClient.class);
-notificationIntent.setAction(Intent.ACTION_MAIN);
-notificationIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-osmodroidLaunchIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
-notification.setLatestEventInfo(getApplicationContext(), "OsMoDroid", getString(R.string.monitoringactive), osmodroidLaunchIntent);
-
-
-
-mStartForegroundArgs[0]= OSMODROID_ID;
-
-mStartForegroundArgs[1]= notification;
-
-Method mStartForeground;
-
-final Class<?>[] mStartForegroundSignature = new Class[] {
-
-	    int.class, Notification.class};
-
-try {
-
-		mStartForeground = getClass().getMethod("startForeground",
-
-                mStartForegroundSignature);
-
-			    } catch (Exception e) {
-
-      mStartForeground =  null;
-
-    }
-
-if (mStartForeground == null){
-
-//setForeground(true);
-
-mNotificationManager.notify(OSMODROID_ID, notification);
-
-
-
-} else
-
-{
-
-invokeMethod(mStartForeground, mStartForegroundArgs);
-
-}
-
-
-
-
-
-
-
-setstarted(true);
-
-if (live){
-	if (myIM!=null&&myIM.authed){
-	myIM.sendToServer("TRACKER_SESSION_OPEN");
-	myIM.needopensession=true;
-	myIM.needclosesession=false;
-	}else
+	public void startServiceWork ()
 		{
-			myIM.needopensession=true;
-			myIM.needclosesession=false;
-		}
-	//trackerIM.start();
-	
-//String[] params = {"http://a.t.esya.ru/?act=session_start&hash="+OsMoDroid.settings.getString("hash", "")+"&n="+OsMoDroid.settings.getString("n", "")+"&ttl="+OsMoDroid.settings.getString("session_ttl", "30"),"false","","session_start"};
-//APIcomParams params = new APIcomParams("http://a.t.esya.ru/?act=session_start&hash="+OsMoDroid.settings.getString("hash", "")+"&n="+OsMoDroid.settings.getString("n", "")+"&ttl="+OsMoDroid.settings.getString("session_ttl", "30"),null,"session_start"); 
-//new Netutil.MyAsyncTask(this).execute(params);
+		if(!paused)
+			{
+				firstsend=true;
+				avgspeed=0;
+				maxspeed=0;
+				intKM=0;
+				workdistance=0;
+				timeperiod=0;
+				workmilli=0;
+				buffercounter=0;
+				buffersb.setLength(0);
+				lastbuffersb.setLength(0);
+				sendedsb.setLength(0);
+				lcounter=0;
+				scounter=0;
+				sendcounter=0;
+				sended=true;
+				traceList.clear();
+				sending="";
+				ReadPref();
+				if (OsMoDroid.settings.getBoolean("playsound", false))
+					{
+						soundPool.play(startsound, 1f, 1f, 1, 0, 1f);
+					}
+				manageGPSFixAlarm();
+				boolean crtfile = false;
+				if (gpx)
+					{
+						openGPX();
+					}
+			}
+		setPause(false);
+		requestLocationUpdates();
+		int icon = R.drawable.eye;
+		CharSequence tickerText = getString(R.string.monitoringstarted); //getString(R.string.Working);
+		long when = System.currentTimeMillis();
+		Intent notificationIntent = new Intent(this, GPSLocalServiceClient.class);
+		notificationIntent.setAction(Intent.ACTION_MAIN);
+		notificationIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+		osmodroidLaunchIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+		foregroundnotificationBuilder.setWhen(System.currentTimeMillis());
+		foregroundnotificationBuilder.setContentText(tickerText);
+		foregroundnotificationBuilder.setContentTitle( "OsMoDroid");
+		foregroundnotificationBuilder.setSmallIcon(icon);
+	   	foregroundnotificationBuilder.setContentIntent(osmodroidLaunchIntent);
+	   	Intent is = new Intent(this, LocalService.class);
+		is.putExtra("ACTION", "STOP");
+		PendingIntent stop = PendingIntent.getService(this, 0, is, 0);
+	   	foregroundnotificationBuilder.addAction(new Action(android.R.drawable.ic_delete, getString(R.string.stop_monitoring), stop));
+	   	Notification notification = foregroundnotificationBuilder.build();
 
-}
+	   	//notification = new Notification(icon, tickerText, when);
+	   	//notification.setLatestEventInfo(getApplicationContext(), "OsMoDroid", getString(R.string.monitoringactive), osmodroidLaunchIntent);
+	   	startForeground(OSMODROID_ID, notification);
+	   	setstarted(true);
 
+		if (live)
+			{
+				if (myIM!=null&&myIM.authed)
+					{
+						myIM.sendToServer("TRACKER_SESSION_OPEN");
+						myIM.needopensession=true;
+						myIM.needclosesession=false;
+					}
+				else
+					{
+						myIM.needopensession=true;
+						myIM.needclosesession=false;
+					}
+			}
 		if(log)Log.d(getClass().getSimpleName(), "notify:"+notification.toString());
-
 		if(tts!=null&&OsMoDroid.settings.getBoolean("usetts", false))
 			{
 				tts.speak(getString(R.string.letsgo), TextToSpeech.QUEUE_ADD, null);
 			}
-
-
-
 	}
 
 
@@ -1436,52 +1353,13 @@ public void sendid()
 			}
 
 
-			if (myManager!=null){
-
-			myManager.removeUpdates(this);}
-			
+			if (myManager!=null)
+				{
+					myManager.removeUpdates(this);
+				}
 			setstarted(false);
-
-			mStopForegroundArgs[0]= Boolean.TRUE;
-
-			Method mStopForeground;
-
-			final Class<?>[] mStopForegroundSignature = new Class[] {boolean.class};
-
-			try {
-
-					mStopForeground = getClass().getMethod("stopForeground",
-
-			                mStopForegroundSignature);
-
-						    } catch (Exception e) {
-
-			      mStopForeground =  null;
-
-			    }
-
-			if (mStopForeground == null){
-
-			mNotificationManager.cancel(OSMODROID_ID);
-
-			//setForeground(false);
-
-
-
-			} else
-
-			{
-
-				mNotificationManager.cancel(OSMODROID_ID);
-
-				invokeMethod(mStopForeground, mStopForegroundArgs);
-
-			}
-
-
-
-
-	}
+			stopForeground(true);
+		}
 
 
 
@@ -2346,6 +2224,20 @@ Object loadObject(String filename, Class type){
 	return null;
 	
 }
+
+
+void updateNotification(int icon)
+	{
+		if (foregroundnotificationBuilder!=null)
+			{
+				foregroundnotificationBuilder.setContentText(getString(R.string.Sendcount)+sendcounter+' '+getString(R.string.writen)+writecounter);
+				if(icon!=-1)
+					{
+						foregroundnotificationBuilder.setSmallIcon(icon);
+					}
+				mNotificationManager.notify(OSMODROID_ID, foregroundnotificationBuilder.build());
+			}
+	}
 
 }
 
