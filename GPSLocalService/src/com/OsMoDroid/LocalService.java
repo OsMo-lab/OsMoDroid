@@ -396,7 +396,7 @@ public  class LocalService extends Service implements LocationListener,GpsStatus
 	boolean where=false;
 	static int selectedTileSourceInt=6;
 	//boolean connecting=false;
-	NotificationCompat.Builder foregroundnotificationBuilder = new NotificationCompat.Builder(this);
+	NotificationCompat.Builder foregroundnotificationBuilder;
 	
 	     
 		static String formatInterval(final long l)
@@ -1061,6 +1061,7 @@ OsMoDroid.settings.edit().putBoolean("ondestroy", false).commit();
 		notificationIntent.setAction(Intent.ACTION_MAIN);
 		notificationIntent.addCategory(Intent.CATEGORY_LAUNCHER);
 		osmodroidLaunchIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+		foregroundnotificationBuilder = new NotificationCompat.Builder(this);
 		foregroundnotificationBuilder.setWhen(System.currentTimeMillis());
 		foregroundnotificationBuilder.setContentText(tickerText);
 		foregroundnotificationBuilder.setContentTitle( "OsMoDroid");
