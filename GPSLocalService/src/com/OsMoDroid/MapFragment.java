@@ -6,6 +6,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.osmdroid.ResourceProxy;
 import org.osmdroid.ResourceProxy.string;
+import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.api.IMapController;
 import org.osmdroid.events.MapListener;
 import org.osmdroid.events.ScrollEvent;
@@ -125,6 +126,7 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
 			MenuItem binglabels = menu2.add(0, 8, 4, "Microsoft Bing with Labels");
 			MenuItem adjdpi = menu.add(0, 9, 1, R.string.adjust_to_dpi);
 			adjdpi.setCheckable(true);
+			adjdpi.setChecked(OsMoDroid.settings.getBoolean("adjust_to_dpi", true));
 			MenuItem sputnik = menu2.add(0, 10, 1, "Sputnik");
 			menu.add(0,11,1,R.string.size_of_point);
 			super.onCreateOptionsMenu(menu, inflater);
@@ -180,8 +182,11 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
 				item.setChecked(!item.isChecked());
 				OsMoDroid.editor.putBoolean("adjust_to_dpi", item.isChecked());
 				OsMoDroid.editor.commit();
+				IGeoPoint g = mMapView.getMapCenter();
 				mMapView.setTilesScaledToDpi(item.isChecked());
 				mMapView.invalidate();
+				mController.setCenter(g);
+				
 				break;
 			case 10:
 				mMapView.setTileSource(sputnikTileSource);
