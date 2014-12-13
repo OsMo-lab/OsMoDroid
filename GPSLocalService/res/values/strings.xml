@@ -213,4 +213,5 @@
 <string name="size_of_point">Size of point</string>
 <string name="follow_">"Follow "</string>
 <string name="no_follow_">"No Follow "</string>
+<string name="adjust_to_dpi">Adjust to DPI</string>
 </resources>

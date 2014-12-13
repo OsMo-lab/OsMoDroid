@@ -210,4 +210,5 @@
 <string name="size_of_point">Размер точек</string>
 <string name="follow_">"Слежу за "</string>
 <string name="no_follow_">"не слежу за "</string>
+<string name="adjust_to_dpi">Увеличение(для HD экранов) </string>
 </resources>

@@ -1,4 +1,5 @@
 package com.OsMoDroid;
+import android.os.Build;
 import android.view.MotionEvent;
 
 public class RotationGestureDetector {
@@ -24,8 +25,16 @@ public class RotationGestureDetector {
         public void onTouch(MotionEvent e) {
                 if (e.getPointerCount() != 2)
                         return;
-
-                if ((e.getAction() & MotionEvent.ACTION_MASK) == MotionEvent.ACTION_POINTER_DOWN) {
+                int action = 0;
+                if(Build.VERSION.SDK_INT < 8  )
+                	{
+                    	action=( e.getAction() & MotionEvent.ACTION_MASK);
+                	}
+                	else
+                	{
+                		action=e.getActionMasked();
+                	}
+                if (action == MotionEvent.ACTION_POINTER_DOWN) {
                         mRotation = rotation(e);
                 }
 

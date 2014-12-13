@@ -99,16 +99,12 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
 		private MyLocationNewOverlay myLoc;
 		private PathOverlay myTracePathOverlay;
 		private GPSLocalServiceClient globalActivity;
-		//private View view;
 		boolean rotate=false;
-		//private Context context;
-		//ArrayList<PathOverlay> paths = new ArrayList<PathOverlay>();
 		private IMyLocationConsumer myLocationConumer;
 		private long lastgpslocation=0;
 		private MenuItem courserotation;
 		private MAPSurferTileSource mapSurferTileSource;
 		private BingMapTileSource bingTileSource;
-		private MAPSurferTileSource mapSurferTileSourceZ;
 		private ITileSource sputnikTileSource;
 		private ChannelsOverlay choverlay;
 		@Override
@@ -127,7 +123,8 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
 			MenuItem mapnik = menu2.add(0, 6, 2, "Mapnik");
 			MenuItem bing = menu2.add(0, 7, 3, "Microsoft Bing");
 			MenuItem binglabels = menu2.add(0, 8, 4, "Microsoft Bing with Labels");
-			MenuItem mapsurferz = menu2.add(0, 9, 1, "MapSurfer ZOOM");
+			MenuItem adjdpi = menu.add(0, 9, 1, R.string.adjust_to_dpi);
+			adjdpi.setCheckable(true);
 			MenuItem sputnik = menu2.add(0, 10, 1, "Sputnik");
 			menu.add(0,11,1,R.string.size_of_point);
 			super.onCreateOptionsMenu(menu, inflater);
@@ -180,8 +177,11 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
 				LocalService.selectedTileSourceInt=4;
 				break;
 			case 9:
-				mMapView.setTileSource(mapSurferTileSourceZ);
-				LocalService.selectedTileSourceInt=5;
+				item.setChecked(!item.isChecked());
+				OsMoDroid.editor.putBoolean("adjust_to_dpi", item.isChecked());
+				OsMoDroid.editor.commit();
+				mMapView.setTilesScaledToDpi(item.isChecked());
+				mMapView.invalidate();
 				break;
 			case 10:
 				mMapView.setTileSource(sputnikTileSource);
@@ -343,7 +343,7 @@ public class CustomTileProvider extends MapTileProviderBasic {
 
     public CustomTileProvider(IRegisterReceiver pRegisterReceiver, INetworkAvailablityCheck aNetworkAvailablityCheck,
             ITileSource pTileSource) {
-        super(pRegisterReceiver, aNetworkAvailablityCheck, pTileSource);
+        super(pRegisterReceiver, aNetworkAvailablityCheck, pTileSource, getActivity());
 
         mTileProviderList.set(0, new CustomMapTileFilesystemProvider(pRegisterReceiver, pTileSource));
     }
@@ -446,8 +446,6 @@ public class CustomMapTileFilesystemProvider extends MapTileFilesystemProvider {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-			//SherlockFragmentActivity context = getSherlockActivity();
-			
 			Log.d(getClass().getSimpleName(), "map oncreateview");
 			mResourceProxy = new ResourceProxyImpl(inflater.getContext().getApplicationContext());
 			final String name = "MapSurfer";
@@ -460,23 +458,17 @@ public class CustomMapTileFilesystemProvider extends MapTileFilesystemProvider {
 			bingTileSource = new BingMapTileSource(null);
 			sputnikTileSource = new SputnikTileSource("Sputnik", string.unknown, aZoomMinLevel, aZoomMaxLevel, aTileSizePixels, aImageFilenameEnding,sputnikURL);
 			mapSurferTileSource = new MAPSurferTileSource(name, string.unknown, aZoomMinLevel, aZoomMaxLevel, aTileSizePixels, aImageFilenameEnding, aBaseUrl);
-			mapSurferTileSourceZ = new MAPSurferTileSource(name, string.unknown, aZoomMinLevel, aZoomMaxLevel, aTileSizePixels*2, aImageFilenameEnding, aBaseUrl);
 			View view = inflater.inflate(R.layout.map, container, false);
 			RelativeLayout rl = (RelativeLayout)view.findViewById(R.id.relative);
-			//mMapView = (MapView)view.findViewById(R.id.mapview);
 			CustomTileProvider customTileProvider = new CustomTileProvider(getActivity());
-			
 			mMapView = new MapView(getActivity(), 256, mResourceProxy, customTileProvider);
-			//<!--         android:layout_width="fill_parent" -->
-			//<!--         android:layout_height="fill_parent" -->
-			//<!--         android:layout_alignParentLeft="true" -->
-			//<!--         android:layout_alignParentTop="true" > -->
 			RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.FILL_PARENT	, RelativeLayout.LayoutParams.FILL_PARENT);
 			lp.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
 			lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
 			mMapView.setLayoutParams(lp);
+			mMapView.setTilesScaledToDpi(OsMoDroid.settings.getBoolean("adjust_to_dpi", true));
+			mMapView.setTilesScaledToDpi(true);
 			rl.addView(mMapView,0);
-			
 			ImageButton centerImageButton = (ImageButton)view.findViewById(R.id.imageButtonCenter);
 			Button rotateButton = (Button)view.findViewById(R.id.buttonRotate);
 			switch (LocalService.selectedTileSourceInt) {
@@ -493,9 +485,6 @@ public class CustomMapTileFilesystemProvider extends MapTileFilesystemProvider {
 			case 4:
 				bingTileSource.setStyle(BingMapTileSource.IMAGERYSET_AERIALWITHLABELS);
 				mMapView.setTileSource(bingTileSource);
-				break;
-			case 5:
-				mMapView.setTileSource(mapSurferTileSourceZ);
 				break;
 			case 6:
 				mMapView.setTileSource(sputnikTileSource);
@@ -545,10 +534,6 @@ public class CustomMapTileFilesystemProvider extends MapTileFilesystemProvider {
             		        }
             		    }
             		);
-            	
-            	//mController.setCenter(new GeoPoint(OsMoDroid.settings.getInt("centerlat", 0), OsMoDroid.settings.getInt("centerlon", 0)));
-            	
-            	
             } 
             else
             {
@@ -677,9 +662,6 @@ public class CustomMapTileFilesystemProvider extends MapTileFilesystemProvider {
 		if(location.getProvider().equals(LocationManager.GPS_PROVIDER)){
 			lastgpslocation=System.currentTimeMillis();
 		} 
-		//Log.d(getClass().getSimpleName(), "onlocchange mapfrag rotate="+rotate);
-		//Log.d(getClass().getSimpleName(), "onlocchange mapfrag bearing="+Float.toString(location.getBearing()));
-		//Log.d(getClass().getSimpleName(), "onlocchange mapfrag hasbearing="+location.hasBearing());
 		if (myLocationConumer != null){
 			if(location.getProvider().equals(LocationManager.NETWORK_PROVIDER)){
 				if(System.currentTimeMillis()>lastgpslocation+30000){
