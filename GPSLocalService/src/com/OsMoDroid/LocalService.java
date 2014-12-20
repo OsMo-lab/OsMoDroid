@@ -1864,6 +1864,7 @@ private void sendlocation (Location location){
 	//T|L53.1:30.3S2A4H2B23
 	  
 	if (myIM!=null&&myIM.authed&&sending.equals("")){
+		
 		if(log)Log.d(this.getClass().getName(), "Отправка:"+myIM.authed +" s "+sending);
 		if((location.getSpeed()*3.6)>=6)
 			{
@@ -1889,13 +1890,15 @@ private void sendlocation (Location location){
 				+"A" + df1.format( location.getAltitude())
 				+"H" + df1.format( location.getAccuracy());
 			}
+		myIM.addlog("Send:AUTHED="+myIM.authed+" Sending:"+sending);
 		myIM.sendToServer(sending);		
-		
+		myIM.addlog("Sendaf:AUTHED="+myIM.authed+" Sending:"+sending);
 					
 		if(log)Log.d(this.getClass().getName(), "GPS websocket sendlocation");
 	} else
 		{
 			if(log)Log.d(this.getClass().getName(), "Отправка не пошла: "+myIM.authed +" s "+sending);
+			myIM.addlog("Send not executed:AUTHED="+myIM.authed+" Sending:"+sending);
 			if(usebuffer)
 			{
 			buffer.add("T|L"+df6.format( location.getLatitude()) +":"+ df6.format(location.getLongitude())
