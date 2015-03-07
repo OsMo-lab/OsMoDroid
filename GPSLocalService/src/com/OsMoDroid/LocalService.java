@@ -1139,7 +1139,7 @@ public void sendid()
 	if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB)
 	{
         APIcomParams params = new APIcomParams("https://api.osmo.mobi/auth","android="+version+"&android_id="+androidID+"&imei="+IMEI+"&android_model="+getDeviceName()
-    			+"&android_product"+android.os.Build.PRODUCT,"sendid"); 
+    			+"&android_product="+android.os.Build.PRODUCT,"sendid"); 
         MyAsyncTask sendidtask = new Netutil.MyAsyncTask(this);
         sendidtask.execute(params) ;
         Log.d(getClass().getSimpleName(), "sendidtask start to execute");
@@ -1147,7 +1147,7 @@ public void sendid()
 	else
 	{
 		APIcomParams params = new APIcomParams("http://api.osmo.mobi/auth","android="+version+"&android_id="+androidID+"&imei="+IMEI+"&android_model="+getDeviceName()
-    			+"&android_product"+android.os.Build.PRODUCT,"sendid"); 
+    			+"&android_product="+android.os.Build.PRODUCT,"sendid"); 
         MyAsyncTask sendidtask = new Netutil.MyAsyncTask(this);
         sendidtask.execute(params) ;
         Log.d(getClass().getSimpleName(), "sendidtask start to execute");
@@ -1871,24 +1871,36 @@ private void sendlocation (Location location){
 				sending=
 				"T|L"+df6.format( location.getLatitude()) +":"+ df6.format(location.getLongitude())
 				+"S" + df1.format( location.getSpeed())
-				+"A" + df1.format( location.getAltitude())
-				+"H" + df1.format( location.getAccuracy())
+				+"A" + df0.format( location.getAltitude())
+				+"H" + df0.format( location.getAccuracy())
 				+"C" + df0.format( location.getBearing());
+				if(usebuffer)
+					{
+					sending=sending+"T" + location.getTime()/1000;
+					}
 			}
 		if((location.getSpeed()*3.6)<6)
 			{
 				sending=
 				"T|L"+df6.format( location.getLatitude()) +":"+ df6.format(location.getLongitude())
 				+"S" + df1.format( location.getSpeed())
-				+"A" + df1.format( location.getAltitude())
-				+"H" + df1.format( location.getAccuracy());
+				+"A" + df0.format( location.getAltitude())
+				+"H" + df0.format( location.getAccuracy());
+				if(usebuffer)
+				{
+				sending=sending+"T" + location.getTime()/1000;
+				}
 			}
 		if((location.getSpeed()*3.6)<=1)
 			{
 				sending=
 				"T|L"+df6.format( location.getLatitude()) +":"+ df6.format(location.getLongitude())
-				+"A" + df1.format( location.getAltitude())
-				+"H" + df1.format( location.getAccuracy());
+				+"A" + df0.format( location.getAltitude())
+				+"H" + df0.format( location.getAccuracy());
+				if(usebuffer)
+				{
+				sending=sending+"T" + location.getTime()/1000;
+				}
 			}
 		myIM.addlog("Send:AUTHED="+myIM.authed+" Sending:"+sending);
 		myIM.sendToServer(sending);		
@@ -1903,8 +1915,8 @@ private void sendlocation (Location location){
 			{
 			buffer.add("T|L"+df6.format( location.getLatitude()) +":"+ df6.format(location.getLongitude())
 					+"S" + df1.format( location.getSpeed())
-					+"A" + df1.format( location.getAltitude())
-					+"H" + df1.format( location.getAccuracy())
+					+"A" + df0.format( location.getAltitude())
+					+"H" + df0.format( location.getAccuracy())
 					+"C" + df0.format( location.getBearing())
 					+"T" + location.getTime()/1000
 					);

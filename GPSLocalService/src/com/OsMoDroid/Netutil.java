@@ -80,7 +80,10 @@ public class Netutil {
                 wp.lon=(float)	Double.parseDouble(attrs.getNamedItem("lon").getNodeValue()); 
                 Element element = (Element)item;
                 Element w = (Element) element.getElementsByTagName("name").item(0);
-                wp.name=w.getTextContent();
+                if(w!=null)
+                	{
+                		wp.name=w.getNodeValue();
+                	}
                 if(wp.name==null)
                 	{
                 		wp.name="";
@@ -100,9 +103,9 @@ public class Netutil {
 
 		@Override		protected void onPostExecute(List<Point> result) {			Log.d(this.getClass().getName(), "InitTask onpostexecute numpoints="+result.size());			cg.points.addAll(result);
 			cg.waypoints.addAll(wp);
-			cg.status=Statuses.LOADED;			if(OsMoDroid.activity!=null&&OsMoDroid.activity.drawClickListener.map!=null&&OsMoDroid.activity.drawClickListener.map.mResourceProxy!=null){
+			cg.status=Statuses.LOADED;			if(OsMoDroid.activity!=null&&OsMoDroid.activity.drawClickListener.map!=null&&OsMoDroid.activity.drawClickListener.map.mMapView!=null){
 				Log.d(this.getClass().getName(), "InitTask onpostexecute call map by app");
-				OsMoDroid.activity.drawClickListener.map.onDeviceChange(null);
+				OsMoDroid.activity.drawClickListener.map.mMapView.invalidate();
 			}
 			else {
 				Log.d(this.getClass().getName(), "InitTask onpostexecute null map");
