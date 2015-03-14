@@ -82,7 +82,14 @@ public class Netutil {
                 Element w = (Element) element.getElementsByTagName("name").item(0);
                 if(w!=null)
                 	{
-                		wp.name=w.getNodeValue();
+                		NodeList nl =w.getChildNodes();
+                		for (int k=0;k<nl.getLength();k++)
+                		{
+                			if(nl.item(k).getNodeValue()!=null)
+                			{
+                				wp.name += nl.item(k).getNodeValue();
+                			}
+                		}
                 	}
                 if(wp.name==null)
                 	{
