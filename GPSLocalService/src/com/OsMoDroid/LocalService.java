@@ -485,7 +485,7 @@ public synchronized void refresh(){
 	in.putExtra("connecting", myIM.connecting);
 	}
 	in.putExtra("motd", motd);
-	in.putExtra("traffic", Long.toString((myIM.sendBytes+myIM.recievedBytes)/1024)+dot.getDecimalSeparator() +Long.toString((myIM.sendBytes+myIM.recievedBytes)%1000)+"KB");
+	in.putExtra("traffic", Long.toString((myIM.sendBytes+myIM.recievedBytes)/1024)+dot.getDecimalSeparator() +Long.toString((myIM.sendBytes+myIM.recievedBytes)%1000)+"KB "+myIM.connectcount+"|"+myIM.erorconenctcount);
 	
 	sendBroadcast(in);
 

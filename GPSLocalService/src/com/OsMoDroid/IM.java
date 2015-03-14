@@ -150,6 +150,8 @@ public class IM implements ResultsListener {
 	public PrintWriter wr;
 	long sendBytes=0;
 	long recievedBytes=0;
+	long connectcount=0;
+	long erorconenctcount=0;
 	volatile public boolean needopensession=false;
 	volatile public boolean needclosesession=false;
 	private Thread readerThread;
@@ -722,6 +724,7 @@ if (mes.from.equals(OsMoDroid.settings.getString("device", ""))){
 		public void run()
 			{
 				SocketAddress sockAddr;
+				connectcount++;
 				 try {
 					 if(workservername.equals(""))
 						 {
@@ -760,6 +763,7 @@ if (mes.from.equals(OsMoDroid.settings.getString("device", ""))){
 					 
 					 
 				 } catch (final Exception e1) {
+					 erorconenctcount++;
 					 socketRetryInt++;
 					 e1.printStackTrace();
 					 connecting=false;
@@ -1051,6 +1055,8 @@ void stop (){
 		localService.sessionstarted=true;
 		sendBytes=0;
 		recievedBytes=0;
+		connectcount=0;
+		erorconenctcount=0;
 		needopensession=false;
 		OsMoDroid.editor.putString("viewurl","https://osmo.mobi/u/"+jo.optString("url"));
 		OsMoDroid.editor.commit();
