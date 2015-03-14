@@ -69,6 +69,8 @@ public class Channel implements Serializable {
 		String color;
 		Point()
 		{
+			name="";
+			description="";
 			
 		}
 		Point(JSONObject json) throws JSONException
