@@ -1504,7 +1504,9 @@ public void sendid()
 		}
 		if (location.getSpeed()>=speed_gpx/3.6 && (int)location.getAccuracy()<hdop_gpx && prevlocation_spd!=null )
 		{
-			workdistance=workdistance+location.distanceTo(prevlocation_spd);
+			GeoPoint curGeoPoint = new GeoPoint(location);
+			GeoPoint prevGeoPoint = new GeoPoint(prevlocation_spd);
+			workdistance=workdistance+curGeoPoint.distanceTo(prevGeoPoint);//location.distanceTo(prevlocation_spd);
 			if (OsMoDroid.settings.getBoolean("ttsavgspeed", false)&&OsMoDroid.settings.getBoolean("usetts", false)&&tts!=null && !tts.isSpeaking() &&((int)workdistance)/1000>intKM )
 				{
 					intKM=(int)workdistance/1000;
