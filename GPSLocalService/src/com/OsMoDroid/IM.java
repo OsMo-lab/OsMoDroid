@@ -538,13 +538,17 @@ if (mes.from.equals(OsMoDroid.settings.getString("device", ""))){
 	        	if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) 
 	        	{
 	        	     	params = new APIcomParams("https://api.osmo.mobi/init?device="+OsMoDroid.settings.getString("newkey", "")
-	        			+"&protocol=2"+"&app=VA3h_va2j44fva"+"&version="+localService.getversion()
+	        			//+"&protocol=2"
+	        	     	+"&app=VA3h_va2j44fva"
+	        			//+"&version="+localService.getversion()
 	        			,"","gettoken");
 	        	}
 	        	else
 	        	{
 	        		params = new APIcomParams("http://api.osmo.mobi/init?device="+OsMoDroid.settings.getString("newkey", "")
-		        			+"&protocol=2"+"&app=VA3h_va2j44fva"+"&version="+localService.getversion()
+		        			//+"&protocol=2"
+	        				+"&app=VA3h_va2j44fva"
+		        			//+"&version="+localService.getversion()
 		        			,"","gettoken");
 	        	}
 	        }
@@ -553,15 +557,19 @@ if (mes.from.equals(OsMoDroid.settings.getString("device", ""))){
 	        	if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) 
 	        	{
 	        			params = new APIcomParams("https://api.osmo.mobi/init?device="+OsMoDroid.settings.getString("newkey", "")
-	        			+"&protocol=1&auth="+OsMoDroid.settings.getString("p", "")
-	        			+"&app=VA3h_va2j44fva"+"&version="+localService.getversion()
+	        			//+"&protocol=1"
+	        			+"&user="+OsMoDroid.settings.getString("p", "")
+	        			+"&app=VA3h_va2j44fva"
+	        			//+"&version="+localService.getversion()
 	        			,"","gettoken");
 	        	}
 	        	else
 	        	{
 	        		params = new APIcomParams("http://api.osmo.mobi/init?device="+OsMoDroid.settings.getString("newkey", "")
-		        			+"&protocol=1&auth="+OsMoDroid.settings.getString("p", "")
-		        			+"&app=VA3h_va2j44fva"+"&version="+localService.getversion()
+		        			//+"&protocol=1"
+	        				+"&user="+OsMoDroid.settings.getString("p", "")
+		        			+"&app=VA3h_va2j44fva"
+	        				//+"&version="+localService.getversion()
 		        			,"","gettoken");
 	        	}
 	        }
@@ -759,7 +767,8 @@ if (mes.from.equals(OsMoDroid.settings.getString("device", ""))){
 					 setReconnectAlarm();
 					 rd = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 					 wr =new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF8"),true);
-					  readerThread.start();
+					 readerThread.start();
+					 sendToServer( "INIT|"+token);
 					 
 					 
 				 } catch (final Exception e1) {
@@ -976,7 +985,9 @@ void stop (){
 	if(c.contains("NEED_TOKEN")){
 		sendToServer( "TOKEN|"+token);
 	}
-	
+	if(c.equals("INIT")){
+		sendToServer( "MD");
+	}
 	
 	if(c.equals("TOKEN")){
 		if(!jo.has("error")){
