@@ -171,11 +171,11 @@
                             <EditTextPreference
                                 android:title= "Sensibilità"
                                 android:summary= "Accelerazione per attivare l'allarme"
-                                android:key= "sensivity" android:defaultValue= "2"/><CheckBoxPreference android:key="usetts" android:summary="Use text-to-speech" android:title="Speak Speed" android:defaultValue="false" /><PreferenceCategory android:dependency="usetts" android:title="TTS Settings">
+                                android:key= "sensivity" android:defaultValue= "2"/><CheckBoxPreference android:key="usetts" android:summary="Use text-to-speech" android:title="Speak Speed" android:defaultValue="false" /><PreferenceCategory android:dependency="usetts" android:title="@string/tts_settings">
                                 <CheckBoxPreference android:title="Проговаривать текущую скорость" android:key="ttsspeed"/>
                                 <CheckBoxPreference android:title="Проговаривать среднюю скорость" android:key="ttsavgspeed"/>
                                 <CheckBoxPreference android:title="Проговаривать удаленные команды" android:key="ttsremote"/>
-                            </PreferenceCategory><CheckBoxPreference android:title="Speak current speed" android:key="ttsspeed"/><CheckBoxPreference android:title="Speak average speed" android:key="ttsavgspeed"/><CheckBoxPreference android:title="Speak remote comands" android:key="ttsremote"/>
+                            </PreferenceCategory><CheckBoxPreference android:title="@string/speak_current_speed" android:key="ttsspeed"/><CheckBoxPreference android:title="@string/speak_average_speed" android:key="ttsavgspeed"/><CheckBoxPreference android:title="Speak remote comands" android:key="ttsremote"/>
 
                     </PreferenceScreen>
 
