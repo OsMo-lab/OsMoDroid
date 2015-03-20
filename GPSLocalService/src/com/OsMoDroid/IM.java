@@ -537,14 +537,14 @@ if (mes.from.equals(OsMoDroid.settings.getString("device", ""))){
 	        {
 	        	if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) 
 	        	{
-	        	     	params = new APIcomParams("https://api.osmo.mobi/prepare?key="+OsMoDroid.settings.getString("newkey", "")
-	        			+"&protocol=1"+"&app=OsMoDroid"+"&version="+localService.getversion()
+	        	     	params = new APIcomParams("https://api.osmo.mobi/init?device="+OsMoDroid.settings.getString("newkey", "")
+	        			+"&protocol=2"+"&app=VA3h_va2j44fva"+"&version="+localService.getversion()
 	        			,"","gettoken");
 	        	}
 	        	else
 	        	{
-	        		params = new APIcomParams("http://api.osmo.mobi/prepare?key="+OsMoDroid.settings.getString("newkey", "")
-		        			+"&protocol=1"+"&app=OsMoDroid"+"&version="+localService.getversion()
+	        		params = new APIcomParams("http://api.osmo.mobi/init?device="+OsMoDroid.settings.getString("newkey", "")
+		        			+"&protocol=2"+"&app=VA3h_va2j44fva"+"&version="+localService.getversion()
 		        			,"","gettoken");
 	        	}
 	        }
@@ -552,16 +552,16 @@ if (mes.from.equals(OsMoDroid.settings.getString("device", ""))){
 	        {
 	        	if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) 
 	        	{
-	        			params = new APIcomParams("https://api.osmo.mobi/prepare?key="+OsMoDroid.settings.getString("newkey", "")
+	        			params = new APIcomParams("https://api.osmo.mobi/init?device="+OsMoDroid.settings.getString("newkey", "")
 	        			+"&protocol=1&auth="+OsMoDroid.settings.getString("p", "")
-	        			+"&app=OsMoDroid"+"&version="+localService.getversion()
+	        			+"&app=VA3h_va2j44fva"+"&version="+localService.getversion()
 	        			,"","gettoken");
 	        	}
 	        	else
 	        	{
-	        		params = new APIcomParams("http://api.osmo.mobi/prepare?key="+OsMoDroid.settings.getString("newkey", "")
+	        		params = new APIcomParams("http://api.osmo.mobi/init?device="+OsMoDroid.settings.getString("newkey", "")
 		        			+"&protocol=1&auth="+OsMoDroid.settings.getString("p", "")
-		        			+"&app=OsMoDroid"+"&version="+localService.getversion()
+		        			+"&app=VA3h_va2j44fva"+"&version="+localService.getversion()
 		        			,"","gettoken");
 	        	}
 	        }
