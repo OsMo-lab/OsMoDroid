@@ -2020,11 +2020,12 @@ org.osmdroid.ResourceProxy$string: org.osmdroid.ResourceProxy$string[] values()
 org.osmdroid.ResourceProxy$string: org.osmdroid.ResourceProxy$string valueOf(java.lang.String)
 org.osmdroid.api.Marker$Anchor: org.osmdroid.api.Marker$Anchor[] values()
 org.osmdroid.api.Marker$Anchor: org.osmdroid.api.Marker$Anchor valueOf(java.lang.String)
-org.osmdroid.contributor.util.RecordedGeoPoint
 org.osmdroid.util.BoundingBoxE6
 org.osmdroid.util.BoundingBoxE6: android.os.Parcelable$Creator CREATOR
 org.osmdroid.util.GeoPoint
 org.osmdroid.util.GeoPoint: android.os.Parcelable$Creator CREATOR
+org.osmdroid.views.MapController$ReplayType: org.osmdroid.views.MapController$ReplayType[] values()
+org.osmdroid.views.MapController$ReplayType: org.osmdroid.views.MapController$ReplayType valueOf(java.lang.String)
 org.osmdroid.views.MapControllerOld$AnimationType: org.osmdroid.views.MapControllerOld$AnimationType[] values()
 org.osmdroid.views.MapControllerOld$AnimationType: org.osmdroid.views.MapControllerOld$AnimationType valueOf(java.lang.String)
 org.osmdroid.views.MapView

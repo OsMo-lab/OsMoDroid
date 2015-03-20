@@ -724,7 +724,7 @@ public void stopcomand()
 //			Log.d(this.getClass().getName(), "devicelist is not empty");
 //			deviceList.addAll(loaded);
 //			}
-	myIM = new IM("osmo.mobi", 3245, this){
+	myIM = new IM("osmo.mobi", 4245, this){
 		
 		@Override
 		void ondisconnect(){
