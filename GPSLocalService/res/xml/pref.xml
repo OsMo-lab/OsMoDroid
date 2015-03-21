@@ -3,7 +3,7 @@
     
     <PreferenceCategory android:title="General">
         <CheckBoxPreference android:title="Dark Theme" android:defaultValue="true" android:key="darktheme" />
-        <EditTextPreference android:summary="Milliseconds" android:title="GPS poll period" android:key="refreshrate" android:defaultValue="1000"/>
+        <EditTextPreference android:summary="@string/milliseconds" android:title="GPS poll period" android:key="refreshrate" android:defaultValue="1000"/>
         <EditTextPreference android:summary="Seconds" android:title="Network timeout" android:key="timeout" android:defaultValue="30"/>
     </PreferenceCategory>
     
@@ -14,213 +14,213 @@
             android:key="live"
             android:title="Live Monitoring"/>
 
-                    <PreferenceScreen android:title="Monitoring settings" android:dependency="live">
+                    <PreferenceScreen android:title="@string/monitoring_settings" android:dependency="live">
                             <EditTextPreference
                                 android:digits="0123456789"
                                 android:inputType="number"
                                 android:key="period"
                                 android:numeric="integer"
-                                android:summary="Milliseconds - How often to send location"
-                                android:title="Send Frequency" android:defaultValue="5000"/>
+                                android:summary="@string/milliseconds_how_often_to_send_location"
+                                android:title="@string/send_frequency" android:defaultValue="5000"/>
                             <EditTextPreference
                                 android:digits="0123456789"
                                 android:inputType="number"
                                 android:key="distance"
                                 android:numeric="integer"
-                                android:summary="Meters - Must move at least this far to send location update"
-                                android:title="Send Distance" android:defaultValue="0"/>
+                                android:summary="@string/meters_must_move_at_least_this_far_to_send_location_update"
+                                android:title="@string/send_distance" android:defaultValue="0"/>
                             <EditTextPreference
                                 android:digits="0123456789"
                                 android:inputType="number"
                                 android:key="bearing"
                                 android:numeric="integer"
-                                android:summary="Degrees"
-                                android:title="Course Deviation" android:defaultValue="0"/>
+                                android:summary="@string/degrees"
+                                android:title="@string/course_deviation" android:defaultValue="0"/>
                             <EditTextPreference
                                 android:digits="0123456789"
                                 android:inputType="number"
                                 android:key="speedbearing"
-                                android:summary="Kilometers Per Hour"
-                                android:title="Speed Trigger For Course Deviation" android:defaultValue="5" />
+                                android:summary="@string/kilometers_per_hour"
+                                android:title="@string/speed_trigger_for_course_deviation" android:defaultValue="5" />
                             <EditTextPreference
                                 android:digits="0123456789"
                                 android:inputType="number"
                                 android:key="hdop"
                                 android:numeric="integer"
-                                android:summary="Acceptable Location Accuracy (Horizontal Dilution of Precision). Location signals less accurate than this (higher numbers) will not be sent as updates."
-                                android:title="Maximum HDOP" android:defaultValue="30"/>
+                                android:summary="@string/acceptable_location_accuracy_horizontal_dilution_of_precision_location_signals_less_accurate_than_this_higher_numbers_will_not_be_sent_as_updates_"
+                                android:title="@string/maximum_hdop" android:defaultValue="30"/>
                             <EditTextPreference
                                 android:key="speed"
-                                android:title="Minimum Send Speed"
-                                android:summary="Kilometers Per Hour"
+                                android:title="@string/minimum_send_speed"
+                                android:summary="@string/kilometers_per_hour"
                                 android:digits="0123456789"
                                 android:inputType="number"
                                 android:defaultValue="0"/>
                             <CheckBoxPreference
                             	android:key="modeAND"
-                            	android:title="Mode AND"
+                            	android:title="@string/mode_and"
                             	android:defaultValue="false"
-                            	android:summary="If checked, ALL conditions (speed, time, distance) must be met to send a location update. If unchecked, any condition may cause an update."/>
+                            	android:summary="@string/if_checked_all_conditions_speed_time_distance_must_be_met_to_send_a_location_update_if_unchecked_any_condition_may_cause_an_update_"/>
                             <CheckBoxPreference
                                 android:key="usebuffer"
-                                android:title="Transfer Unsent"
-                                android:summary="Useful with unstable Internet connections. May use more data."
+                                android:title="@string/transfer_unsent"
+                                android:summary="@string/useful_with_unstable_internet_connections_may_use_more_data_"
                                 android:defaultValue="false"/>
                     </PreferenceScreen>
     </PreferenceCategory>
     
-    <PreferenceCategory android:title="Offline">
+    <PreferenceCategory android:title="@string/offline">
 
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="gpx"
-            android:summary="Recorded tracks are stored on the memory card by default (/sdcard/OsMoDroid/)"
-            android:title="Record Track"/>
+            android:summary="@string/recorded_tracks_are_stored_on_the_memory_card_by_default_sdcard_osmodroid_"
+            android:title="@string/record_track"/>
 
-                <PreferenceScreen android:title="Record settings" android:dependency="gpx">
+                <PreferenceScreen android:title="@string/record_settings" android:dependency="gpx">
                         <EditTextPreference
                             android:digits="0123456789"
                             android:inputType="number"
                             android:key="period_gpx"
                             android:numeric="integer"
-                            android:summary="Milliseconds - How often to save location"
-                            android:title="Send Frequency" android:defaultValue="1000"/>
+                            android:summary="@string/milliseconds_how_often_to_save_location"
+                            android:title="@string/send_frequency" android:defaultValue="1000"/>
                         <EditTextPreference
                             android:digits="0123456789"
                             android:inputType="number"
                             android:key="distance_gpx"
                             android:numeric="integer"
-                            android:summary="Meters - Must move at least this far to save new location"
-                            android:title="Send Distance" android:defaultValue="0"/>
+                            android:summary="@string/meters_must_move_at_least_this_far_to_save_new_location"
+                            android:title="@string/send_distance" android:defaultValue="0"/>
                         <EditTextPreference
                             android:digits="0123456789"
                             android:inputType="number"
                             android:key="bearing_gpx"
                             android:numeric="integer"
-                            android:summary="Degrees"
-                            android:title="Course Deviation" android:defaultValue="0"/>
+                            android:summary="@string/degrees"
+                            android:title="@string/course_deviation" android:defaultValue="0"/>
                         <EditTextPreference
                             android:digits="0123456789"
                             android:inputType="number"
                             android:key="speedbearing_gpx"
-                            android:summary="Kilometers Per Hour"
-                            android:title="Speed Trigger for Course Deviation" android:defaultValue="0"/>
+                            android:summary="@string/kilometers_per_hour"
+                            android:title="@string/speed_trigger_for_course_deviation" android:defaultValue="0"/>
                         <EditTextPreference
                             android:digits="0123456789"
                             android:inputType="number"
                             android:key="hdop_gpx"
                             android:numeric="integer"
-                            android:summary="Meters"
-                            android:title="Acceptable Location Accuracy" android:defaultValue="30"/>
+                            android:summary="@string/meters"
+                            android:title="@string/acceptable_location_accuracy" android:defaultValue="30"/>
                         <EditTextPreference
                             android:digits="0123456789"
                             android:inputType="number"
                             android:key="speed_gpx"
                             android:numeric="integer"
-                            android:summary="Kilometers Per Hour"
-                            android:title="Minimum Speed To Save​"
+                            android:summary="@string/kilometers_per_hour"
+                            android:title="@string/minimum_speed_to_save_"
                             android:defaultValue="0"/>
                         <CheckBoxPreference
                         	android:key="modeAND_gpx"
-                        	android:title="Mode AND"
+                        	android:title="@string/mode_and"
                         	android:defaultValue="false"
-                        	android:summary="If checked, ALL conditions (speed, time, distance) must be met to save a location update. If unchecked, any condition may cause an update."/>
-                        <EditTextPreference android:title="Memory card path" android:key="sdpath"/>
+                        	android:summary="@string/if_checked_all_conditions_speed_time_distance_must_be_met_to_save_a_location_update_if_unchecked_any_condition_may_cause_an_update_"/>
+                        <EditTextPreference android:title="@string/memory_card_path" android:key="sdpath"/>
                 </PreferenceScreen>
                     
     </PreferenceCategory>
     
-    <PreferenceCategory android:title="More">
+    <PreferenceCategory android:title="@string/more">
 
-                    <PreferenceScreen android:title="Notification" >
+                    <PreferenceScreen android:title="@string/notification" >
                             <CheckBoxPreference
                                 android:key="vibrate"
-                                android:title="Vibrate on Signal Loss"
-                                android:summary="Vibrate when Internet or GPS signal is lost"
+                                android:title="@string/vibrate_on_signal_loss"
+                                android:summary="@string/vibrate_when_internet_or_gps_signal_is_lost"
                                 android:defaultValue="false"/>
                             <EditTextPreference
                                 android:digits="0123456789"
                                 android:inputType="number"
                                 android:key="vibratetime"
                                 android:numeric="integer"
-                                android:summary="Milliseconds"
-                                android:title="Vibration Time Interval"
+                                android:summary="@string/milliseconds"
+                                android:title="@string/vibration_time_interval"
                                 android:defaultValue="500"/>
                             <CheckBoxPreference
                                 android:key="playsound"
-                                android:title="Sound on Signal Loss"
-                                android:summary="Play a sound when Internet or GPS signal is lost"
+                                android:title="@string/sound_on_signal_loss"
+                                android:summary="@string/play_a_sound_when_internet_or_gps_signal_is_lost"
                                 android:defaultValue="false"/>
                             <EditTextPreference
                                 android:digits="0123456789"
                                 android:inputType="number"
                                 android:key="notifyperiod"
                                 android:numeric="integer"
-                                android:summary="Milliseconds"
-                                android:title="Period of GPS Unavailability"
+                                android:summary="@string/milliseconds"
+                                android:title="@string/period_of_gps_unavailability"
                                 android:defaultValue="60000"/>
                             <CheckBoxPreference
                                 android:key="sendsound"
-                                android:title="Sound When Sending"
-                                android:summary ="Play a sound when sending each location update"
+                                android:title="@string/sound_when_sending"
+                                android:summary ="@string/play_a_sound_when_sending_each_location_update"
                                 android:defaultValue="false"/>
                             
                             <CheckBoxPreference
                                 android:key="silentnotify"
-                                android:title="Disable Notification"
-                                android:summary="Do not use Android Notifications"
+                                android:title="@string/disable_notification"
+                                android:summary="@string/do_not_use_android_notifications"
                                 android:defaultValue="false"/>
                             <CheckBoxPreference
                                 android:key="onlinenotify"
-                                android:title="Alert On Online"
+                                android:title="@string/alert_on_online"
                                 android:defaultValue="false"
-                                android:summary="Notify when a data connection is established"/>
+                                android:summary="@string/notify_when_a_data_connection_is_established"/>
                             <CheckBoxPreference
                                 android:key="statenotify"
-                                android:title="Notify with monitoring"
+                                android:title="@string/notify_with_monitoring"
                                 android:defaultValue="false"
-                                android:summary="status notification for monitoring your devices"/>
+                                android:summary="@string/status_notification_for_monitoring_your_devices"/>
                             <CheckBoxPreference
-                                android:summary="Alarm when device acceleration exceeds a threshold"
+                                android:summary="@string/alarm_when_device_acceleration_exceeds_a_threshold"
                                 android:key="usealarm"
-                                android:title="Acceleration Alarm"
+                                android:title="@string/acceleration_alarm"
                                 android:defaultValue="false"/>
                             <EditTextPreference
-                                android:title="Sensitivity"
-                                android:summary="Acceleration to activate the alarm"
+                                android:title="@string/sensitivity"
+                                android:summary="@string/acceleration_to_activate_the_alarm"
                                 android:key="sensivity"
                                 android:defaultValue="2"/>
                             <CheckBoxPreference
                             	android:key="usetts"
-                            	android:summary="Enable speech options"
-                            	android:title="Use text-to-speech (TTS)"
+                            	android:summary="@string/enable_speech_options"
+                            	android:title="@string/use_text_to_speech_tts_"
                             	android:defaultValue="false" />
-                            <PreferenceCategory android:dependency="usetts" android:title="TTS Settings">
-                                <CheckBoxPreference android:title="Speak current speed" android:key="ttsspeed"/>
-                                <CheckBoxPreference android:title="Speak average speed" android:key="ttsavgspeed"/>
-                                <CheckBoxPreference android:title="Speak remote commands" android:key="ttsremote"/>
+                            <PreferenceCategory android:dependency="usetts" android:title="@string/tts_settings">
+                                <CheckBoxPreference android:title="@string/speak_current_speed" android:key="ttsspeed"/>
+                                <CheckBoxPreference android:title="@string/speak_average_speed" android:key="ttsavgspeed"/>
+                                <CheckBoxPreference android:title="@string/speak_remote_commands" android:key="ttsremote"/>
                             </PreferenceCategory>
                     </PreferenceScreen>
 
         <CheckBoxPreference
             android:key="usewake"
-            android:summary="Increases battery consumption"
-            android:title="Keep Screen On"
+            android:summary="@string/increases_battery_consumption"
+            android:title="@string/keep_screen_on"
             android:defaultValue="false"/>
         <CheckBoxPreference
             android:key="usegps"
-            android:summary="Determine location by GPS. Provides best accuracy, but uses more battery."
-            android:title="Use GPS"
+            android:summary="@string/determine_location_by_gps_provides_best_accuracy_but_uses_more_battery_"
+            android:title="@string/use_gps"
             android:defaultValue="true"/>
         <CheckBoxPreference
             android:key="usenetwork"
-            android:summary="Determine location by cellular networks and WiFi. Not very accurate, but easier on battery."
-            android:title="Use Mobile Networks"
+            android:summary="@string/determine_location_by_cellular_networks_and_wifi_not_very_accurate_but_easier_on_battery_"
+            android:title="@string/use_mobile_networks"
             android:defaultValue="true"/>
         <CheckBoxPreference
             android:key="autostart"
-            android:summary="Launch background service when the phone starts up."
-            android:title="Startup at boot"
+            android:summary="@string/launch_background_service_when_the_phone_starts_up_"
+            android:title="@string/startup_at_boot"
             android:defaultValue="false"/>
         
     </PreferenceCategory>
