@@ -1082,7 +1082,7 @@ OsMoDroid.settings.edit().putBoolean("ondestroy", false).commit();
 			{
 				if (myIM!=null&&myIM.authed)
 					{
-						myIM.sendToServer("TRACKER_SESSION_OPEN");
+						myIM.sendToServer("TO");
 						myIM.needopensession=true;
 						myIM.needclosesession=false;
 					}
@@ -1335,7 +1335,7 @@ public void sendid()
                     //APIcomParams params = new APIcomParams("http://a.t.esya.ru/?act=session_stop&hash="+OsMoDroid.settings.getString("hash", "")+"&n="+OsMoDroid.settings.getString("n", "")+"&ttl="+OsMoDroid.settings.getString("session_ttl", "30"),null,"session_stop");
                     //new Netutil.MyAsyncTask(this).execute(params);
 			if(myIM.authed){
-				myIM.sendToServer("TRACKER_SESSION_CLOSE");
+				myIM.sendToServer("TC");
 				myIM.needclosesession=true;
 				myIM.needopensession=false;
 			}

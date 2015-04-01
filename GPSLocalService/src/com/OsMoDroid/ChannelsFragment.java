@@ -333,7 +333,7 @@ public class ChannelsFragment extends Fragment {
 									 canalid = Uri.encode(input.getText().toString());
 									if (!(canalid.equals("")))
 									{
-										globalActivity.mService.myIM.sendToServer("GROUP_JOIN:"+canalid+"|"+(input2.getText().toString()));
+										globalActivity.mService.myIM.sendToServer("GE:"+canalid+"|"+(input2.getText().toString()));
 									} else {
 											Toast.makeText(
 											globalActivity,
@@ -355,7 +355,7 @@ public class ChannelsFragment extends Fragment {
         	}
         if (item.getItemId() == 3) 
         	{
-        		globalActivity.mService.myIM.sendToServer("GROUP_GET_ALL");
+        		globalActivity.mService.myIM.sendToServer("GROUP");
         	}
         return super.onOptionsItemSelected(item);
 	}

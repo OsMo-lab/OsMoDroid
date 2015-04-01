@@ -33,7 +33,7 @@ public class Channel implements Serializable {
 	public String name;
 	public String description;
 	public String myNameInGroup;
-	public String general_id;
+	//public String general_id;
 	public int u;
 	public String created;
 	public String group_id;
@@ -110,11 +110,11 @@ public class Channel implements Serializable {
 	public void updChannel(JSONObject jo, LocalService localService)
 		{
 			this.localService=localService;
-			this.name=jo.optJSONObject("group").optString("name");
-			this.u=Integer.parseInt(jo.optJSONObject("group").optString("u"));
-			this.created=jo.optJSONObject("group").optString("created");
-			this.group_id=jo.optJSONObject("group").optString("group_id");
-			this.url="http://osmo.mobi/g/"+jo.optJSONObject("group").optString("url");
+			this.name=jo.optString("name");
+			this.u=jo.optInt("u");
+			this.created=jo.optString("created");
+			this.group_id=jo.optString("id");
+			this.url="http://osmo.mobi/g/"+jo.optString("url");
 
 			JSONArray users =jo.optJSONArray("users");
 			ArrayList<Device> recieveddeviceList= new ArrayList<Device>();
@@ -124,7 +124,7 @@ public class Channel implements Serializable {
 					try {
 						jsonObject = users.getJSONObject(i);
 						try {
-							recieveddeviceList.add(new Device(jsonObject.getString("group_tracker_id"),jsonObject.getString("name"), jsonObject.getString("color") ) );
+							recieveddeviceList.add(new Device(jsonObject.getInt("device"),jsonObject.getString("name"), jsonObject.getString("color") ) );
 						} catch (NumberFormatException e) {
 							Log.d(getClass().getSimpleName(),"Wrong device info");
 							e.printStackTrace();
@@ -147,15 +147,7 @@ public class Channel implements Serializable {
 			this.localService.myIM.addlog("deletedevicelist:"+deleteDeviceList.toString());
 			this.localService.myIM.addlog("this.devicelist:"+this.deviceList.toString());
 			this.localService.myIM.addlog("reciveddevicelist:"+recieveddeviceList.toString());
-			String str = "";
-			for (Device dev:deleteDeviceList)
-				{
-					str=str+"UL:"+dev.tracker_id+'=';
-				}
-			if(!str.equals(""))
-				{
-					localService.myIM.sendToServer(str);
-				}
+			
 			this.deviceList.addAll(recieveddeviceList);
 			this.localService.myIM.addlog("reciveddevicelist:"+recieveddeviceList.toString());
 			this.localService.myIM.addlog("deletedevicelist:"+deleteDeviceList.toString());
@@ -164,20 +156,12 @@ public class Channel implements Serializable {
 			this.localService.myIM.addlog("reciveddevicelist:"+recieveddeviceList.toString());
 			this.localService.myIM.addlog("deletedevicelist:"+deleteDeviceList.toString());
 			this.localService.myIM.addlog("this.devicelist:"+this.deviceList.toString());
-			str="";
-			for (Device dev:this.deviceList)
-				{
-					if(!dev.tracker_id.equals(OsMoDroid.settings.getString("device", ""))){
-						str=str+"L:"+dev.tracker_id+'=';
-					}
-				}
-			if(!str.equals(""))
-				{
-					localService.myIM.sendToServer(str);
-				}
+			
 			Collections.sort(this.deviceList);
 			
 			 JSONArray points =jo.optJSONArray("point");
+			 if(points!=null)
+			 {
 			 this.pointList.clear();
 				for (int i = 0; i < points.length(); i++)
 					{
@@ -190,8 +174,9 @@ public class Channel implements Serializable {
 							e.printStackTrace();
 						}
 					}
-				
+			 }
 				JSONArray tracks =jo.optJSONArray("track");
+				if(tracks!=null){
 				ArrayList<ColoredGPX> recievedgpxList = new ArrayList<ColoredGPX>();
 				for (int i = 0; i < tracks.length(); i++)
 					{
@@ -226,7 +211,7 @@ public class Channel implements Serializable {
 					 		cgpx.initPathOverlay();
 					 	}	
 					}
-				
+				}
 		}
 	
 //	public Channel(JSONObject jo, LocalService localService)

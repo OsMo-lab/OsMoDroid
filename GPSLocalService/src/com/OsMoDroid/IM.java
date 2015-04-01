@@ -985,71 +985,76 @@ void stop (){
 	if(c.contains("NEED_TOKEN")){
 		sendToServer( "TOKEN|"+token);
 	}
-	if(c.equals("INIT")){
-		sendToServer( "MD");
-	}
+//	if(c.equals("INIT")){
+//		sendToServer( "MD");
+//		sendToServer( "DEVICE");
+//		sendToServer( "GROUP");
+//	}
 	
-	if(c.equals("TOKEN")){
+	if(c.equals("INIT")){
 		if(!jo.has("error")){
-			OsMoDroid.editor.putString("device", jo.optString("group_tracker_id"));
-			OsMoDroid.editor.putString("tracker_id", jo.optString("tracker_id"));
+			OsMoDroid.editor.putString("device", jo.optString("id"));
+			OsMoDroid.editor.putString("tracker_id", jo.optString("id"));
 			OsMoDroid.editor.commit();
 			authed=true;
-			if(!jo.optString("poll").equals(""))
-				{
-					sendToServer("L:"+jo.optString("poll"));
-					poll=jo.optString("poll");
-				}
+//			if(!jo.optString("poll").equals(""))
+//				{
+//					sendToServer("L:"+jo.optString("poll"));
+//					poll=jo.optString("poll");
+//				}
 			if(needopensession){
-				sendToServer("TRACKER_SESSION_OPEN");
+				sendToServer("TO");
 			}
 			if(needclosesession){
-				sendToServer("TRACKER_SESSION_CLOSE");
+				sendToServer("TC");
 			}
-			if(OsMoDroid.gpslocalserviceclientVisible){
-				sendToServer("MOTD");
-			}
+			
 			if(LocalService.channelList.isEmpty())
 			{
-			sendToServer("GROUP_GET_ALL");
+			sendToServer("GROUP");
 			}
-			else
-				{	
-					String str="";
-					for (Channel ch : LocalService.channelList)
-					{
-						str=str+"GROUP_CONNECT:"+ch.group_id+'=';
-					}
-					if(!str.equals(""))
-						{
-							sendToServer(str);
-						}
-				}
+//			else
+//				{	
+//					String str="";
+//					for (Channel ch : LocalService.channelList)
+//					{
+//						str=str+"GROUP_CONNECT:"+ch.group_id+'=';
+//					}
+//					if(!str.equals(""))
+//						{
+//							sendToServer(str);
+//						}
+//				}
 			
 			if(LocalService.deviceList.isEmpty()){
-				sendToServer("DEVICE_GET_ALL");
+				sendToServer("DEVICE");
 			}
-			else
-				{
-					String listen = "";
-					for (Device dev : LocalService.deviceList){
-						if(!dev.tracker_id.equals(OsMoDroid.settings.getString("tracker_id", "")))
-						{
-							listen=listen+("L:"+dev.tracker_id)+"=";
-						}
-						
-					}
-					if(!listen.equals(""))
-						{
-							sendToServer(listen);
-						}
-				}
+//			else
+//				{
+//					String listen = "";
+//					for (Device dev : LocalService.deviceList){
+//						if(!dev.tracker_id.equals(OsMoDroid.settings.getString("tracker_id", "")))
+//						{
+//							listen=listen+("L:"+dev.tracker_id)+"=";
+//						}
+//						
+//					}
+//					if(!listen.equals(""))
+//						{
+//							sendToServer(listen);
+//						}
+//				}
 			
 			setkeepAliveAlarm();
 			
 			
 			
 			localService.internetnotify(true);
+			if(OsMoDroid.gpslocalserviceclientVisible){
+				sendToServer("MD=PD=PG");
+				//sendToServer("PD");
+				//sendToServer("PG");
+			}
 			
 		}
 		localService.refresh();
@@ -1062,7 +1067,7 @@ void stop (){
 		sendToServer("GROUP_JOIN:"+jo.optString("group_id")+"|"+OsMoDroid.settings.getString("u", "Creator"));
 	}
 	
-	if(c.equals("TRACKER_SESSION_OPEN")){
+	if(c.equals("TO")){
 		localService.sessionstarted=true;
 		sendBytes=0;
 		recievedBytes=0;
@@ -1074,7 +1079,7 @@ void stop (){
 		localService.refresh();
 	}
 	else
-		if(c.equals("TRACKER_SESSION_CLOSE")){
+		if(c.equals("TC")){
 			localService.sessionstarted=false;
 			needclosesession=false;
 			OsMoDroid.editor.putString("viewurl","");
@@ -1221,8 +1226,7 @@ void stop (){
 		
 	}
 	
-	if(c.contains("DEVICE_GET_ALL")){
-		String str="";
+	if(c.contains("DEVICE")){
 		Iterator<Device> i = LocalService.deviceList.iterator();
 		while (i.hasNext()) {
 		   Device dev = i.next(); // must be called before you can call i.remove()
@@ -1234,7 +1238,7 @@ void stop (){
 					if(dev.u==jsonObject.optInt("u")){
 						exist=true;
 						dev.name=jsonObject.optString("name");
-						dev.tracker_id=jsonObject.optString("tracker_id");
+						dev.tracker_id=jsonObject.optString("id");
 						dev.subscribed=jsonObject.has("subscribe");
 						dev.u=jsonObject.optInt("u");
 						dev.online=jsonObject.optInt("online");
@@ -1252,12 +1256,6 @@ void stop (){
 							}
 						}
 					}
-					
-//					LocalService.deviceList.add(dev);
-//					if(!dev.tracker_id.equals(OsMoDroid.settings.getString("tracker_id", ""))){
-//					str="=L:"+dev.tracker_id;
-//					}
-					
 								}
 				catch (Exception e) {
 					e.printStackTrace();
@@ -1271,7 +1269,6 @@ void stop (){
 		}
 		   if(!exist){
 			   i.remove();
-			   str=str+"=UL:"+dev.tracker_id;
 		   }
 		   
 		}
@@ -1282,7 +1279,7 @@ void stop (){
 					boolean exist=false;
 					Device newdev = new Device();
 					newdev.name=jsonObject.optString("name");
-					newdev.tracker_id=jsonObject.optString("tracker_id");
+					newdev.tracker_id=jsonObject.optString("id");
 					newdev.subscribed=jsonObject.has("subscribe");
 					newdev.u=jsonObject.optInt("u");
 					newdev.online=jsonObject.optInt("online");
@@ -1307,7 +1304,7 @@ void stop (){
 					if(!exist){
 					LocalService.deviceList.add(newdev);
 					if(!newdev.tracker_id.equals(OsMoDroid.settings.getString("tracker_id", ""))){
-					str=str+"=L:"+newdev.tracker_id;
+					
 					}
 					}
 								}
@@ -1321,10 +1318,7 @@ void stop (){
 				
 				
 		}
-			if(!str.equals(""))
-			{
-				sendToServer(str);
-			}
+			
 			Collections.sort(LocalService.deviceList);
 			int mypos=-1;
 			for (Device dev : LocalService.deviceList){
@@ -1404,25 +1398,28 @@ void stop (){
 		}
 		//localService.saveObject(LocalService.channelList, OsMoDroid.CHANNELLIST);
 		}
-	if(c.contains("GROUP_GET_ALL"))
+	if(c.contains("GROUP"))
 	{
 		//LocalService.channelList.clear();
+//		GROUP|[{"u":"2","nick":"IAMSUPERVISOR","url":"test","joined":"2015-03-27 21:57:41","name":"Group for testing","description":"Be careful when using the group, your location is available to everyone in it.","active":"1","policy":"No special rules","users":[{"u":"16304","device":"25527","name":"Vshcherb","connected":"1427322775","color":"#58e000"}],"id":"TESTALL","ch":"testall"}]
+
 		ArrayList<Channel> recievedChannelList=new ArrayList<Channel>();
 		ArrayList<Channel> deleteChannelList=new ArrayList<Channel>(LocalService.channelList); 
-		String str="";
+		
 			for (int i = 0; i < ja.length(); i++) {
 
 				try {
 					jsonObject = ja.getJSONObject(i);
-					if(!jsonObject.getString("group_id").equals("null")&&!jsonObject.getString("u").equals("null"))
+					if(!jsonObject.getString("id").equals("null")&&!jsonObject.getString("u").equals("null"))
 					{
 						Channel ch= new Channel();
-						ch.u=jsonObject.getInt("u");
-						ch.name=jsonObject.getString("name");
-						ch.description=jsonObject.getString("description");
-						ch.myNameInGroup=jsonObject.getString("nick");
-						ch.general_id=jsonObject.getString("general_id");
-						ch.group_id=jsonObject.getString("group_id");
+						ch.updChannel(jsonObject, localService);
+						//ch.u=jsonObject.getInt("u");
+						//ch.name=jsonObject.getString("name");
+						//ch.description=jsonObject.getString("description");
+						//ch.myNameInGroup=jsonObject.getString("nick");
+						//ch.general_id=jsonObject.getString("general_id");
+						//ch.group_id=jsonObject.getString("id");
 						recievedChannelList.add(ch);
 						//LocalService.channelList.add(ch);
 						//str =str+"=GROUP_CONNECT:"+jsonObject.getString("group_id"); 
@@ -1440,19 +1437,13 @@ void stop (){
 			recievedChannelList.removeAll(LocalService.channelList);
 			LocalService.channelList.addAll(recievedChannelList);
 			LocalService.channelList.removeAll(deleteChannelList);
-			for (Channel ch: LocalService.channelList)
-			{
-				str =str+"GROUP_CONNECT:"+ch.group_id+"=";
-			}
-			if(!str.equals(""))
-			{
-				sendToServer(str);
-			}
+			
 			
 			if (LocalService.channelsAdapter!=null )
 				{
 					LocalService.channelsAdapter.notifyDataSetChanged();
 				}
+			sendToServer("PG");
 		}
 	if(c.contains("GROUP_LEAVE"))
 		{
@@ -1476,7 +1467,7 @@ void stop (){
 		}
 	// recive LINK_GET_ALL|[{"u":"962","uid":"0","device":"7665","url":"LAvP1jaqPaJtvs4jfGWeC5el","general_id":"k4bMooJU9AFam8fproUX","from":"0000-00-00 00:00:00","to":"0000-00-00 00:00:00","created":"2014-08-14 23:39:11","limit":"-1","until":"0","active":"1"},{"u":"963","uid":"0","device":"7665","url":"gZ012cpDOrL1gGT0tjQMFu2G","general_id":"uqupQcQ2pC8H820LAX4S","from":"0000-00-00 00:00:00","to":"0000-00-00 00:00:00","created":"2014-08-14 23:57:39","limit":"-1","until":"0","active":"1"},{"u":"964","uid":"0","device":"7665","url":"u3KO0mEDmTrKmLhFU1COh6Lk","general_id":"pRICSHb7UXsTeCkTcaf2","from":"0000-00-00 00:00:00","to":"0000-00-00 00:00:00","created":"2014-08-14 23:59:04","limit":"-1","until":"0","active":"1"},{"u":"965","uid":"0","device":"7665","url":"xikg52FsZhUaGK9u9sKKPY4u","general_id":"PVRbAiIhLhXzGnCfA62G","from":"0000-00-00 00:00:00","to":"0000-00-00 00:00:00","created":"2014-08-14 23:59:06","limit":"-1","until":"0","active":"1"},{"u":"966","uid":"0","device":"7665","url":"UiGxNaKc19UpCvq2CFuk6xhl","general_id":"Ir86ShJU1qxdQxMWWMG0","from":"0000-00-00 00:00:00","to":"0000-00-00 00:00:00","created":"2014-08-14 23:59:07","limit":"-1","until":"0","active":"1"},{"u":"967","uid":"0","device":"7665","url":"AM3tXlP5U59B7KuTgjJ8QSr1","general_id":"tai6egJmMFyZMLtEdszU","from":"0000-00-00 00:00:00","to":"0000-00-00 00:00:00","created":"2014-08-14 23:59:07","limit":"-1","until":"0","active":"1"}]
 
-	if(c.equals("LINK_GET_ALL"))
+	if(c.equals("LINK"))
 	{
 		LocalService.simlimkslist.clear();
 		for (int i = 0; i < ja.length(); i++) {
@@ -1622,7 +1613,7 @@ void stop (){
 								if(!exist&&!jsonObject.opt("group_tracker_id").equals(OsMoDroid.settings.getString("device", "")))
 								{
 									try {
-										ch.deviceList.add(new Device(jsonObject.getString("group_tracker_id"),jsonObject.getString("name"), jsonObject.getString("color") ) );
+										ch.deviceList.add(new Device(jsonObject.getInt("u"),jsonObject.getString("name"), jsonObject.getString("color") ) );
 										sendToServer("L:"+jsonObject.getString("group_tracker_id"));
 										Collections.sort(ch.deviceList);
 									} catch (JSONException e) {
@@ -1727,36 +1718,65 @@ void stop (){
 						}
 				}		
 			}	
-		
+//		Example: D:412|L59.778999:30.348632S0A125H12C235
+//
+//		Example: G:742|["25800|L53.737626:17.512402S0.5","25797|L53.73763:17.512342S0"]	
 	//LT:fI8qCrlvw6j0dEKZtB9h|L59.252465:30.324515S20.3A124.3H2.5C235
-	if(c.length()>2&&c.substring(0, 2).contains("LT"))
-		
-		{
-		for (Channel ch : LocalService.channelList)
+		if(c.length()>1&&c.substring(0, 1).contains("G"))
 			{
-			for (final Device dev : ch.deviceList){
-			updateCoordinates(c, d, dev);
-				}
+				for (Channel ch : LocalService.channelList)
+					{
+					if (Integer.parseInt(c.substring(c.indexOf(":")+1), c.length()) == ch.u)
+						{
+							
+						for (int n = 0; n < ja.length(); n++) 
+						{
+						try {
+							for (final Device dev : ch.deviceList)
+								{
+								if(Integer.parseInt(ja.getString(n).substring(0, ja.getString(n).indexOf("|")))==dev.u)
+								{
+									updateCoordinates( ja.getString(n).substring( ja.getString(n).indexOf("|")+1), dev);
+								}
+								
+								}
+
+						} catch (JSONException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}	
+						}
+//						for (final Device dev : ch.deviceList)
+//								{
+//								updateCoordinates(c, d, dev);
+//								}
+						}
+					
+						
+					}
+				if (LocalService.channelsDevicesAdapter!=null&&LocalService.currentChannel!=null)
+					{
+						if(log)Log.d(this.getClass().getName(), "Adapter:"+ LocalService.channelsDevicesAdapter.toString());
+						LocalService.channelsDevicesAdapter.notifyDataSetChanged();
+					}
 			}
-		for (Device dev: LocalService.deviceList)
-		{
-			updateCoordinates(c, d, dev);
-		}
+		if(c.length()>1&&c.substring(0, 1).contains("D"))
+			{
+				for (Device dev: LocalService.deviceList)
+					{	
+						updateCoordinates( d, dev);
+					}
 		if (LocalService.deviceAdapter!=null)
 			{
 				LocalService.deviceAdapter.notifyDataSetChanged();
 			}
-		if (LocalService.channelsDevicesAdapter!=null&&LocalService.currentChannel!=null)
-		{
-			 if(log)Log.d(this.getClass().getName(), "Adapter:"+ LocalService.channelsDevicesAdapter.toString());
-			 LocalService.channelsDevicesAdapter.notifyDataSetChanged();
-		}
+		
 		}
 
 	
 	}
-	private void updateCoordinates(String c, String d, final Device dev) {
-		if (c.substring(c.indexOf(":")+1, c.length()).equals(dev.tracker_id)){
+	private void updateCoordinates( String d, final Device dev) {
+	//	if (Integer.parseInt(c.substring(c.indexOf(":")+1), c.length()) == dev.u){
 			
 			dev.lat=Float.parseFloat(d.substring(d.indexOf("L")+1, d.indexOf(":")));
 			for (int i = d.indexOf(":")+1; i <= d.length(); i++) {
@@ -1769,9 +1789,9 @@ void stop (){
 				}
 			
 			}
-			for (int i = d.indexOf("S")+1; i <= d.length(); i++) {
-				if(!Character.isDigit(d.charAt(i))){
-					if(!Character.toString(d.charAt(i)).equals(".")){
+			for (int i = d.indexOf("S")+1; i <= d.length()-1; i++) {
+				if(!Character.isDigit(d.charAt(i))||i==(d.length()-1)){
+					if(!Character.toString(d.charAt(i)).equals(".")||i==(d.length()-1)){
 						dev.speed=LocalService.df0.format((((Float.parseFloat(d.substring(d.indexOf("S")+1, i))*3.6))));
 						break;
 					}
@@ -1784,16 +1804,16 @@ void stop (){
 					
 					@Override
 					public void run() {
-						if(LocalService.devlistener!=null)
-						{
 						dev.devicePath.add(new GeoPoint(dev.lat, dev.lon));
-						LocalService.devlistener.onDeviceChange(dev);
-						}
+						if(LocalService.devlistener!=null)
+							{
+								LocalService.devlistener.onDeviceChange(dev);
+							}
 					}
 				});
 				
 				
-			}
+			//}
 	}
 
 	void ondisconnect(){
@@ -1852,7 +1872,7 @@ void stop (){
 			addlog("Receive token "+result.Jo.toString());
 			if(log)Log.d(getClass().getSimpleName(),"gettoken response:"+result.Jo.toString());
 			//Toast.makeText(localService,result.Jo.optString("state")+" "+ result.Jo.optString("error_description"),5).show();
-			if(result.Jo.has("token")){
+			if(result.Jo.has("token")&&!result.Jo.optString("token").equals("false")){
 				try {
 					token=result.Jo.getString("token");
 					workservername=result.Jo.optString("address").substring(0, result.Jo.optString("address").indexOf(':'));
@@ -1869,7 +1889,7 @@ void stop (){
 					e.printStackTrace();
 				}
 			} else {
-				if(result.Jo.optInt("error")==100){
+				if(result.Jo.optInt("error")==100||result.Jo.optString("token").equals("false")){
 				localService.alertHandler.post(new Runnable()
 					{
 						

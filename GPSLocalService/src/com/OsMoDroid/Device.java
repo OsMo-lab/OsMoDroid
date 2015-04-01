@@ -112,9 +112,9 @@ public class Device implements Comparable<Device> , Serializable{
 //		 this.online=online;
 //	}
 
-	public Device(String trid, String name, String color) {
+	public Device(int trid, String name, String color) {
 		this.name=name;
-		this.tracker_id=trid;
+		this.u=trid;
 		try {
 			this.color=Color.parseColor(color);
 		} catch (Exception e) {
