@@ -115,7 +115,7 @@ public class Channel implements Serializable {
 			this.created=jo.optString("created");
 			this.group_id=jo.optString("id");
 			this.url="http://osmo.mobi/g/"+jo.optString("url");
-
+			this.myNameInGroup=jo.optString("nick");
 			JSONArray users =jo.optJSONArray("users");
 			ArrayList<Device> recieveddeviceList= new ArrayList<Device>();
 			for (int i = 0; i < users.length(); i++) 

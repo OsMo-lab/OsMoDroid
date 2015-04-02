@@ -38,12 +38,12 @@ public class AuthActivity extends Activity {
 			@Override
 			public void onPageStarted(WebView view, String url, Bitmap favicon) {
 				Log.d(getClass().getSimpleName(), "open url = "+url);
-				if(url.contains("z.osmo.mobi"))
+				if(url.contains("api.osmo.mobi/rd"))
 				{
 					
 						Uri uri = Uri.parse(url);
-						String u = uri.getQueryParameter("u");
-						String p = uri.getQueryParameter("p");
+						String u = uri.getQueryParameter("nick");
+						String p = uri.getQueryParameter("user");
 						Log.d(getClass().getSimpleName(), "u = "+u + " p="+p);
 						OsMoDroid.editor.putString("p", p);
 						OsMoDroid.editor.putString("u", u);
@@ -61,7 +61,7 @@ public class AuthActivity extends Activity {
 			}
 		   
 		});
-		webView.loadUrl("http://osmo.mobi/signin?type=z");
+		webView.loadUrl("https://osmo.mobi/signin?type=m");
  
 	}
 

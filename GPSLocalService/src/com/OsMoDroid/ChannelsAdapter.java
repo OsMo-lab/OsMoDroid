@@ -50,7 +50,7 @@ public class ChannelsAdapter extends ArrayAdapter<Channel> {
 		        tg.setTag(position);
 		        if (channel.name!=null)
 		        	{   
-		        		channelName.setText(channel.name+':'+channel.myNameInGroup);
+		        		channelName.setText(channel.name+'('+channel.myNameInGroup+')');
 		        	}
 		        else 
 		        	{

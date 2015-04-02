@@ -29,6 +29,7 @@ public class OsMoDroid extends Application {
 	public static Context context;
 	public static Editor editor;
 	public static boolean debug=true;
+	public static final String app_code = "VA3h_va2j44fva";
 	
 
 	@Override

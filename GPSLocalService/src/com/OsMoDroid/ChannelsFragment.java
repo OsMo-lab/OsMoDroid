@@ -154,8 +154,8 @@ public class ChannelsFragment extends Fragment {
 			  return true;
 		  }
 		  if (item.getItemId() == 6) {
-			  globalActivity.mService.myIM.sendToServer("GROUP_DISCONNECT:"+LocalService.channelList.get((int) acmi.id).group_id);
-			  globalActivity.mService.myIM.sendToServer("GROUP_LEAVE:"+LocalService.channelList.get((int) acmi.id).group_id);
+			  //globalActivity.mService.myIM.sendToServer("GROUP_DISCONNECT:"+LocalService.channelList.get((int) acmi.id).group_id);
+			  globalActivity.mService.myIM.sendToServer("GL:"+LocalService.channelList.get((int) acmi.id).group_id);
 			  return true;
 		  }
 		  

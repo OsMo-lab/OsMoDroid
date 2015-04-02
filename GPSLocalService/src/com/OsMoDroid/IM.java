@@ -539,7 +539,7 @@ if (mes.from.equals(OsMoDroid.settings.getString("device", ""))){
 	        	{
 	        	     	params = new APIcomParams("https://api.osmo.mobi/init?device="+OsMoDroid.settings.getString("newkey", "")
 	        			//+"&protocol=2"
-	        	     	+"&app=VA3h_va2j44fva"
+	        	     	+"&app="+OsMoDroid.app_code
 	        			//+"&version="+localService.getversion()
 	        			,"","gettoken");
 	        	}
@@ -547,7 +547,7 @@ if (mes.from.equals(OsMoDroid.settings.getString("device", ""))){
 	        	{
 	        		params = new APIcomParams("http://api.osmo.mobi/init?device="+OsMoDroid.settings.getString("newkey", "")
 		        			//+"&protocol=2"
-	        				+"&app=VA3h_va2j44fva"
+	        				+"&app="+OsMoDroid.app_code
 		        			//+"&version="+localService.getversion()
 		        			,"","gettoken");
 	        	}
@@ -559,7 +559,7 @@ if (mes.from.equals(OsMoDroid.settings.getString("device", ""))){
 	        			params = new APIcomParams("https://api.osmo.mobi/init?device="+OsMoDroid.settings.getString("newkey", "")
 	        			//+"&protocol=1"
 	        			+"&user="+OsMoDroid.settings.getString("p", "")
-	        			+"&app=VA3h_va2j44fva"
+	        			+"&app="+OsMoDroid.app_code
 	        			//+"&version="+localService.getversion()
 	        			,"","gettoken");
 	        	}
@@ -568,7 +568,7 @@ if (mes.from.equals(OsMoDroid.settings.getString("device", ""))){
 	        		params = new APIcomParams("http://api.osmo.mobi/init?device="+OsMoDroid.settings.getString("newkey", "")
 		        			//+"&protocol=1"
 	        				+"&user="+OsMoDroid.settings.getString("p", "")
-		        			+"&app=VA3h_va2j44fva"
+		        			+"&app="+OsMoDroid.app_code+"&dinosaur=yes"
 	        				//+"&version="+localService.getversion()
 		        			,"","gettoken");
 	        	}
@@ -1061,10 +1061,10 @@ void stop (){
 	}
 	//GROUP_CREATE|{"u":247,"group_id":"IEIFLWQGHSQRBG","name":"Meps","policy":"","description":null}
 
-	if(c.equals("GROUP_CREATE"))
+	if(c.equals("GC"))
 	{
 		
-		sendToServer("GROUP_JOIN:"+jo.optString("group_id")+"|"+OsMoDroid.settings.getString("u", "Creator"));
+		sendToServer("GE:"+jo.optString("group_id")+"|"+OsMoDroid.settings.getString("u", "Creator"));
 	}
 	
 	if(c.equals("TO")){
@@ -1194,8 +1194,8 @@ void stop (){
 		OsMoDroid.editor.commit();
 		localService.refresh();
 	}
-	if(c.contains("GROUP_JOIN")){
-		sendToServer("GROUP_GET_ALL");
+	if(c.contains("GE")){
+		sendToServer("GROUP");
 	}
 	if(c.contains("SUBSCRIBE")&&!c.contains("UNSUBSCRIBE")){
 		sendToServer("DEVICE_GET_ALL");
@@ -1445,7 +1445,7 @@ void stop (){
 				}
 			sendToServer("PG");
 		}
-	if(c.contains("GROUP_LEAVE"))
+	if(c.contains("GL"))
 		{
 			Channel chToDel=null;
 			for(Channel ch:LocalService.channelList)
@@ -1722,11 +1722,11 @@ void stop (){
 //
 //		Example: G:742|["25800|L53.737626:17.512402S0.5","25797|L53.73763:17.512342S0"]	
 	//LT:fI8qCrlvw6j0dEKZtB9h|L59.252465:30.324515S20.3A124.3H2.5C235
-		if(c.length()>1&&c.substring(0, 1).contains("G"))
+		if(c.length()>2&&c.substring(0, 2).contains("G:"))
 			{
 				for (Channel ch : LocalService.channelList)
 					{
-					if (Integer.parseInt(c.substring(c.indexOf(":")+1), c.length()) == ch.u)
+					if (Integer.parseInt(c.substring(c.indexOf(":")+1, c.length())) == ch.u)
 						{
 							
 						for (int n = 0; n < ja.length(); n++) 
@@ -1760,11 +1760,14 @@ void stop (){
 						LocalService.channelsDevicesAdapter.notifyDataSetChanged();
 					}
 			}
-		if(c.length()>1&&c.substring(0, 1).contains("D"))
+		if(c.length()>2&&c.substring(0, 2).contains("D:"))
 			{
 				for (Device dev: LocalService.deviceList)
 					{	
-						updateCoordinates( d, dev);
+						if (Integer.parseInt(c.substring(c.indexOf(":")+1, c.length())) == dev.u)
+							{
+								updateCoordinates( d, dev);
+							}
 					}
 		if (LocalService.deviceAdapter!=null)
 			{
@@ -1889,7 +1892,7 @@ void stop (){
 					e.printStackTrace();
 				}
 			} else {
-				if(result.Jo.optInt("error")==100||result.Jo.optString("token").equals("false")){
+				if(result.Jo.optInt("error")==10||result.Jo.optString("token").equals("false")){
 				localService.alertHandler.post(new Runnable()
 					{
 						

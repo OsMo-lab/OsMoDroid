@@ -1138,16 +1138,14 @@ public void sendid()
 	}
 	if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB)
 	{
-        APIcomParams params = new APIcomParams("https://api.osmo.mobi/auth","android="+version+"&android_id="+androidID+"&imei="+IMEI+"&android_model="+getDeviceName()
-    			+"&android_product="+android.os.Build.PRODUCT,"sendid"); 
+		APIcomParams params = new APIcomParams("https://api.osmo.mobi/new","platform="+getDeviceName()+version+android.os.Build.PRODUCT+"&app="+OsMoDroid.app_code+"&id="+androidID+"&imei="+IMEI,"sendid"); 
         MyAsyncTask sendidtask = new Netutil.MyAsyncTask(this);
         sendidtask.execute(params) ;
         Log.d(getClass().getSimpleName(), "sendidtask start to execute");
 	}
 	else
 	{
-		APIcomParams params = new APIcomParams("http://api.osmo.mobi/auth","android="+version+"&android_id="+androidID+"&imei="+IMEI+"&android_model="+getDeviceName()
-    			+"&android_product="+android.os.Build.PRODUCT,"sendid"); 
+		APIcomParams params = new APIcomParams("http://api.osmo.mobi/new","platform="+getDeviceName()+version+android.os.Build.PRODUCT+"&app="+OsMoDroid.app_code+"&id="+androidID+"&imei="+IMEI+"&dinosaur=yes","sendid"); 
         MyAsyncTask sendidtask = new Netutil.MyAsyncTask(this);
         sendidtask.execute(params) ;
         Log.d(getClass().getSimpleName(), "sendidtask start to execute");
@@ -2110,11 +2108,11 @@ public void onResultsSucceeded(APIComResult result) {
 		{
 		if(!(result.Jo==null)){	
 		if(log)Log.d(getClass().getSimpleName(),"sendid response:"+result.Jo.toString());
-		if(result.Jo.has("key"))
+		if(result.Jo.has("device"))
 			{
 			try 
 				{
-					OsMoDroid.editor.putString("newkey", result.Jo.getString("key"));
+					OsMoDroid.editor.putString("newkey", result.Jo.getString("device"));
 					OsMoDroid.editor.commit();
 					myIM.start();
 				} 
