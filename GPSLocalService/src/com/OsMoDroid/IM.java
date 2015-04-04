@@ -1351,6 +1351,14 @@ void stop (){
 					jsonObject = ja.getJSONObject(i);
 					if(!jsonObject.getString("id").equals("null")&&!jsonObject.getString("u").equals("null"))
 						{
+							for(Channel ch : LocalService.channelList)
+							{
+								if(ch.u==Integer.parseInt(jsonObject.optString("u")))
+								{
+									ch.updChannel(jsonObject, localService);
+								}
+							}
+						
 							Channel ch= new Channel();
 							ch.updChannel(jsonObject, localService);
 							recievedChannelList.add(ch);
@@ -1369,6 +1377,10 @@ void stop (){
 				{
 					LocalService.channelsAdapter.notifyDataSetChanged();
 				}
+			if (LocalService.channelsDevicesAdapter!=null)
+			{
+				LocalService.channelsDevicesAdapter.notifyDataSetChanged();
+			}
 			sendToServer("PG");
 	}
 	if(command.equals("GL"))
@@ -1457,7 +1469,7 @@ void stop (){
 	}
 //GP:MT|{"users":[{"name":"Dddddd","group_tracker_id":"WSlRasAgyD","color":"#ff9900"}]}
 		//GP:MT|{"users":[{"name":"Dddddd","group_tracker_id":"WSlRasAgyD","deleted":"yes"}]}
-		if (command.equals("GP"))
+		if (command.equals("GPFFFF"))
 		{
 			for (Channel ch : LocalService.channelList)
 			{
