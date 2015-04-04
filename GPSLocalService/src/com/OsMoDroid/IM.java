@@ -1457,11 +1457,11 @@ void stop (){
 	}
 //GP:MT|{"users":[{"name":"Dddddd","group_tracker_id":"WSlRasAgyD","color":"#ff9900"}]}
 		//GP:MT|{"users":[{"name":"Dddddd","group_tracker_id":"WSlRasAgyD","deleted":"yes"}]}
-		if (command.contains("GP:"))
+		if (command.equals("GP"))
 		{
 			for (Channel ch : LocalService.channelList)
 			{
-				if(ch.group_id.equals(command.substring(command.indexOf(":")+1, command.length())))
+				if(ch.u==Integer.parseInt(param))
 				{
 					 JSONArray users =jo.optJSONArray("users");
 					 JSONArray points =jo.optJSONArray("point");
@@ -1504,9 +1504,8 @@ void stop (){
 							{
 								Device deviceToDel = null;
 								for (Device dev : ch.deviceList){
-									if(dev.tracker_id.equals(jsonObject.opt("group_tracker_id"))&&!jsonObject.opt("group_tracker_id").equals(OsMoDroid.settings.getString("device", "")))
+									if(dev.u==jsonObject.optInt("u"))
 									{
-										sendToServer("UL:"+dev.tracker_id);
 										deviceToDel=dev;
 									}
 								}
@@ -1520,16 +1519,15 @@ void stop (){
 							{
 								boolean exist=false;
 								for (Device dev : ch.deviceList){
-									if(dev.tracker_id.equals(jsonObject.opt("group_tracker_id")))
+									if(dev.u==jsonObject.optInt("u"))
 									{
 										exist=true;
 									}
 								}
-								if(!exist&&!jsonObject.opt("group_tracker_id").equals(OsMoDroid.settings.getString("device", "")))
+								if(!exist)
 								{
 									try {
 										ch.deviceList.add(new Device(jsonObject.getInt("u"),jsonObject.getString("name"), jsonObject.getString("color") ) );
-										sendToServer("L:"+jsonObject.getString("group_tracker_id"));
 										Collections.sort(ch.deviceList);
 									} catch (JSONException e) {
 										writeException(e);
@@ -1648,7 +1646,7 @@ void stop (){
 							}
 						}
 					}
-				if (LocalService.channelsDevicesAdapter!=null&&LocalService.currentChannel!=null)
+				if (LocalService.channelsDevicesAdapter!=null)
 					{
 						if(log)Log.d(this.getClass().getName(), "Adapter:"+ LocalService.channelsDevicesAdapter.toString());
 						LocalService.channelsDevicesAdapter.notifyDataSetChanged();
@@ -1695,7 +1693,7 @@ void stop (){
 			for (int i = d.indexOf("S")+1; i <= d.length()-1; i++) {
 				if(!Character.isDigit(d.charAt(i))||i==(d.length()-1)){
 					if(!Character.toString(d.charAt(i)).equals(".")||i==(d.length()-1)){
-						dev.speed=LocalService.df0.format((((Float.parseFloat(d.substring(d.indexOf("S")+1, i))*3.6))));
+						dev.speed=LocalService.df0.format((((Float.parseFloat(d.substring(d.indexOf("S")+1, i+1))*3.6))));
 						break;
 					}
 				}
