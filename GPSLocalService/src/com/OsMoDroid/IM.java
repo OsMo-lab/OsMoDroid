@@ -1469,7 +1469,7 @@ void stop (){
 	}
 //GP:MT|{"users":[{"name":"Dddddd","group_tracker_id":"WSlRasAgyD","color":"#ff9900"}]}
 		//GP:MT|{"users":[{"name":"Dddddd","group_tracker_id":"WSlRasAgyD","deleted":"yes"}]}
-		if (command.equals("GPFFFF"))
+		if (command.equals("GP"))
 		{
 			for (Channel ch : LocalService.channelList)
 			{
