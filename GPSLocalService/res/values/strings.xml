@@ -274,4 +274,10 @@
 <string name="use_mobile_networks">Use Mobile Networks</string>
 <string name="launch_background_service_when_the_phone_starts_up_">Launch background service when the phone starts up.</string>
 <string name="startup_at_boot">Startup at boot</string>
+<string name="general">General</string>
+<string name="dark_theme">Dark Theme</string>
+<string name="gps_poll_period">GPS poll period</string>
+<string name="seconds">Seconds</string>
+<string name="network_timeout">Network timeout</string>
+<string name="live_monitoring">Live Monitoring</string>
 </resources>
