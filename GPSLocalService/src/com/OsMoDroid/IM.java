@@ -1507,10 +1507,10 @@ void stop (){
 					 			
 								try {
 									jsonObject = users.getJSONObject(i);
-									if(jsonObject.getString("group_tracker_id").equals(OsMoDroid.settings.getString("device", "")))
-										{
-											ch.myNameInGroup=jsonObject.getString("name");
-										}
+//									if(jsonObject.getString("group_tracker_id").equals(OsMoDroid.settings.getString("device", "")))
+//										{
+//											ch.myNameInGroup=jsonObject.getString("name");
+//										}
 						try {
 							if(jsonObject.has("deleted"))
 							{
