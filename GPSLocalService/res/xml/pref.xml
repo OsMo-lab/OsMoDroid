@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" android:title="Settings">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" android:title="@string/settings">
     
-    <PreferenceCategory android:title="General">
-        <CheckBoxPreference android:title="Dark Theme" android:defaultValue="true" android:key="darktheme" />
-        <EditTextPreference android:summary="@string/milliseconds" android:title="GPS poll period" android:key="refreshrate" android:defaultValue="1000"/>
-        <EditTextPreference android:summary="Seconds" android:title="Network timeout" android:key="timeout" android:defaultValue="30"/>
+    <PreferenceCategory android:title="@string/general">
+        <CheckBoxPreference android:title="@string/dark_theme" android:defaultValue="true" android:key="darktheme" />
+        <EditTextPreference android:summary="@string/milliseconds" android:title="@string/gps_poll_period" android:key="refreshrate" android:defaultValue="1000"/>
+        <EditTextPreference android:summary="@string/seconds" android:title="@string/network_timeout" android:key="timeout" android:defaultValue="30"/>
     </PreferenceCategory>
     
-    <PreferenceCategory android:title="Online">
+    <PreferenceCategory android:title="@string/online">
         
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="live"
-            android:title="Live Monitoring"/>
+            android:title="@string/live_monitoring"/>
 
                     <PreferenceScreen android:title="@string/monitoring_settings" android:dependency="live">
                             <EditTextPreference
