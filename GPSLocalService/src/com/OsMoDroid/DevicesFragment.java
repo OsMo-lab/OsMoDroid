@@ -79,7 +79,7 @@ if(!deviceU.equals("")){
 		  final AdapterContextMenuInfo acmi = (AdapterContextMenuInfo) item.getMenuInfo();
 		  if(acmi!=null){subacmi=acmi;}
 		  if (item.getItemId() == 1) {
-			  globalActivity.mService.myIM.sendToServer("UNSUBSCRIBE:"+LocalService.deviceAdapter.getItem(acmi.position).tracker_id);
+			  globalActivity.mService.myIM.sendToServer("DSD:"+LocalService.deviceAdapter.getItem(acmi.position).tracker_id);
 		    }
 
 
@@ -160,11 +160,11 @@ if(!deviceU.equals("")){
 				}
 			
 			if(LocalService.deviceList.get((int) acmi.id).subscribed){
-			globalActivity.mService.myIM.sendToServer("SUBSCRIBE_SET|"+jo.toString());
+			globalActivity.mService.myIM.sendToServer("DSS|"+jo.toString());
 			}
 			else
 				{
-					globalActivity.mService.myIM.sendToServer("DEVICE_SET|"+jo.toString());
+					globalActivity.mService.myIM.sendToServer("DS|"+jo.toString());
 				}
 		}
 	};
@@ -174,11 +174,11 @@ if(!deviceU.equals("")){
  }
  if (item.getItemId() == 8) {
 	 //REMOTE_CONTROL:[tracker_id]|DESTROY_DEVICE
-	 LocalService.myIM.sendToServer("REMOTE_CONTROL:"+ LocalService.deviceList.get((int) subacmi.id).tracker_id+"|"+"TRACKER_SESSION_START");
+	 LocalService.myIM.sendToServer("SRC:"+ LocalService.deviceList.get((int) subacmi.id).tracker_id+"|"+"TRACKER_SESSION_START");
  }
  if (item.getItemId() == 9) {
 	 //REMOTE_CONTROL:[tracker_id]|DESTROY_DEVICE
-	 globalActivity.mService.myIM.sendToServer("REMOTE_CONTROL:"+ LocalService.deviceList.get((int) subacmi.id).tracker_id+"|"+"TRACKER_SESSION_STOP");
+	 globalActivity.mService.myIM.sendToServer("SRC:"+ LocalService.deviceList.get((int) subacmi.id).tracker_id+"|"+"TRACKER_SESSION_STOP");
  }
  
  if (item.getItemId() == 10) {
@@ -203,7 +203,7 @@ if(!deviceU.equals("")){
 								 
 								if (!( inputhash.getText().toString().equals(""))) {
 									//REMOTE_CONTROL|TTS:Привет жена)
-									globalActivity.mService.myIM.sendToServer("REMOTE_CONTROL:"+ LocalService.deviceList.get((int) subacmi.id).tracker_id+"|"+"TTS:"+inputhash.getText().toString());
+									globalActivity.mService.myIM.sendToServer("SRC:"+ LocalService.deviceList.get((int) subacmi.id).tracker_id+"|"+"TTS:"+inputhash.getText().toString());
 								} 
 							}
 						})
@@ -223,23 +223,23 @@ if(!deviceU.equals("")){
  }
  if (item.getItemId() == 11) 
 	 {
-		 globalActivity.mService.myIM.sendToServer("REMOTE_CONTROL:"+ LocalService.deviceList.get((int) subacmi.id).tracker_id+"|"+"ALARM_ON");
+		 globalActivity.mService.myIM.sendToServer("SRC:"+ LocalService.deviceList.get((int) subacmi.id).tracker_id+"|"+"ALARM_ON");
 	 }
  if (item.getItemId() == 12) 
 	 {
-		 globalActivity.mService.myIM.sendToServer("REMOTE_CONTROL:"+ LocalService.deviceList.get((int) subacmi.id).tracker_id+"|"+"ALARM_OFF");
+		 globalActivity.mService.myIM.sendToServer("SRC:"+ LocalService.deviceList.get((int) subacmi.id).tracker_id+"|"+"ALARM_OFF");
 	 }
  if (item.getItemId() == 13) 
 	 {
-		 globalActivity.mService.myIM.sendToServer("REMOTE_CONTROL:"+ LocalService.deviceList.get((int) subacmi.id).tracker_id+"|"+"SIGNAL_ON");
+		 globalActivity.mService.myIM.sendToServer("SRC:"+ LocalService.deviceList.get((int) subacmi.id).tracker_id+"|"+"SIGNAL_ON");
 	 }
  if (item.getItemId() == 14) 
 	 {
-		 globalActivity.mService.myIM.sendToServer("REMOTE_CONTROL:"+ LocalService.deviceList.get((int) subacmi.id).tracker_id+"|"+"SIGNAL_OFF");
+		 globalActivity.mService.myIM.sendToServer("SRC:"+ LocalService.deviceList.get((int) subacmi.id).tracker_id+"|"+"SIGNAL_OFF");
 	 }
  if (item.getItemId() == 15) 
 	 {
-		 globalActivity.mService.myIM.sendToServer("REMOTE_CONTROL:"+ LocalService.deviceList.get((int) subacmi.id).tracker_id+"|"+"WHERE");
+		 globalActivity.mService.myIM.sendToServer("SRC:"+ LocalService.deviceList.get((int) subacmi.id).tracker_id+"|"+"WHERE");
 	 }
 	    
 		return super.onContextItemSelected(item);
@@ -383,8 +383,8 @@ if(!deviceU.equals("")){
 										dev.name=inputhash.getText().toString();
 										dev.tracker_id=inputN.getText().toString();
 										//LocalService.deviceList.add(dev);
-										//globalActivity.mService.myIM.sendToServer("LN:"+dev.tracker_id);
-										globalActivity.mService.myIM.sendToServer("SUBSCRIBE:"+dev.tracker_id+"|"+(dev.name));
+										//globalActivity.mService.myIM.("LN:"+dev.tracker_id);
+										globalActivity.mService.myIM.sendToServer("DSA:"+dev.tracker_id+"|"+(dev.name));
 //										if(LocalService.deviceAdapter!=null)
 //										{
 //											LocalService.deviceAdapter.notifyDataSetChanged();
@@ -409,7 +409,7 @@ if(!deviceU.equals("")){
 
 		}
 		if (item.getItemId() == 2) {
-			globalActivity.mService.myIM.sendToServer("DEVICE_GET_ALL");
+			globalActivity.mService.myIM.sendToServer("DEVICE");
 		}
 		
 		return super.onOptionsItemSelected(item);

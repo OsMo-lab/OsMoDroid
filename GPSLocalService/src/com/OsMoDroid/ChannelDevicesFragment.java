@@ -172,7 +172,8 @@ public class ChannelDevicesFragment extends Fragment implements ResultsListener 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		if (item.getItemId()==3){
-			globalActivity.mService.myIM.sendToServer("GROUP_CONNECT:"+LocalService.currentChannel.group_id);
+			//globalActivity.mService.myIM.sendToServer("GROUP_CONNECT:"+LocalService.currentChannel.group_id);
+			globalActivity.mService.myIM.sendToServer("GROUP");
 		}
 		return super.onOptionsItemSelected(item);
 	}

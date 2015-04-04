@@ -53,18 +53,18 @@ public class SimLinksFragment extends Fragment {
 //		postjson.put("random", "1");
 //		postjson.put("until", "-1");
 		//Netutil.newapicommand((ResultsListener)SimLinksFragment.this,getSherlockActivity(), "om_link_add","json="+postjson.toString());
-		globalActivity.mService.myIM.sendToServer("LINK_ADD");
+		globalActivity.mService.myIM.sendToServer("LNKA");
 		
 	}
 	
 	void reflinks()
 	{
-		globalActivity.mService.myIM.sendToServer("LINK_GET_ALL");
+		globalActivity.mService.myIM.sendToServer("LINK");
 	}	
 
 	void dellink(int u)
 	{
-		globalActivity.mService.myIM.sendToServer("LINK_DEL:"+u);
+		globalActivity.mService.myIM.sendToServer("LNKD:"+u);
 	}
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View view=inflater.inflate(R.layout.simlinks, container, false);

@@ -70,9 +70,16 @@ public class ChannelsAdapter extends ArrayAdapter<Channel> {
 		public void onClick(View v) {
 			((ToggleButton) v).toggle();
 			 Channel channel = getItem((Integer)v.getTag());
-			 String boolglobalsend =channel.send ? "0" : "1";
+			 
 			//Netutil.newapicommand((ResultsListener)localservice,context, "om_device_channel_active:"+OsMoDroid.settings.getString("device", "")+","+channel.u+","+boolglobalsend);
-
+			 if(channel.send)
+			 	{
+				 localservice.myIM.sendToServer("GD:"+channel.u);
+			 	}
+			 else
+			 	{	
+				 localservice.myIM.sendToServer("GA:"+channel.u);
+			 	}
 				
 								}
 							};

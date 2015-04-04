@@ -45,7 +45,7 @@ public class Channel implements Serializable {
 	public boolean connected=false;
 	public boolean send=false;
 	LocalService localService;
-	boolean active;
+	
 	//MapFragment map;
 	 File sdDir = android.os.Environment.getExternalStorageDirectory();
 	 File fileName = new File (sdDir, "OsMoDroid/channelsgpx/");
@@ -116,6 +116,16 @@ public class Channel implements Serializable {
 			this.group_id=jo.optString("id");
 			this.url="http://osmo.mobi/g/"+jo.optString("url");
 			this.myNameInGroup=jo.optString("nick");
+			if(jo.optInt("active")==1) 
+			{
+				this.send=true;
+			}
+			else
+			{
+				this.send=false;
+			}
+				
+			
 			JSONArray users =jo.optJSONArray("users");
 			ArrayList<Device> recieveddeviceList= new ArrayList<Device>();
 			for (int i = 0; i < users.length(); i++) 

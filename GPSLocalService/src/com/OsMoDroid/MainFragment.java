@@ -140,12 +140,12 @@ public class MainFragment extends Fragment implements GPSLocalServiceClient.upd 
 		Button auth = (Button) getView().findViewById(R.id.authButton);
 		
 		if (OsMoDroid.settings.getString("p", "").equals("")){
-		globalsendToggle.setVisibility(View.GONE);
+		//globalsendToggle.setVisibility(View.GONE);
 		auth.setVisibility(View.VISIBLE);
 		}
 		else {
 			auth.setVisibility(View.GONE);
-			globalsendToggle.setVisibility(View.GONE);
+			//globalsendToggle.setVisibility(View.GONE);
 		}
 		
 		
@@ -393,12 +393,12 @@ public class MainFragment extends Fragment implements GPSLocalServiceClient.upd 
 				}
 			});
 			if (OsMoDroid.settings.getString("p", "").equals("")){
-			globalsendToggle.setVisibility(View.GONE);
+			//globalsendToggle.setVisibility(View.GONE);
 			auth.setVisibility(View.VISIBLE);
 			}
 			else {
 				auth.setVisibility(View.GONE);
-				globalsendToggle.setVisibility(View.GONE);
+				//globalsendToggle.setVisibility(View.GONE);
 			}
 //			Button pause = (Button) view.findViewById(R.id.pauseButton);
 //			pause.setEnabled(true);
@@ -603,10 +603,18 @@ else {
 								final ToggleButton globalsendToggle = (ToggleButton) view.findViewById(R.id.toggleButton1);
 								globalsendToggle.setOnClickListener(new OnClickListener() {
 									
-									public void onClick(View v) {
-globalsendToggle.toggle();
-String boolglobalsend =intent.getBooleanExtra("globalsend", false) ? "0" : "1";
-Netutil.newapicommand((ResultsListener)globalActivity.mService,(Context)globalActivity, "om_device_channel_active:"+OsMoDroid.settings.getString("device", "")+",0,"+boolglobalsend);
+									public void onClick(View v) 
+									{
+										globalsendToggle.toggle();
+										Boolean boolglobalsend =intent.getBooleanExtra("globalsend", false);
+										if (boolglobalsend)
+										{
+											globalActivity.mService.myIM.sendToServer("GDA");
+										}
+										else
+										{
+											globalActivity.mService.myIM.sendToServer("GAA");
+										}
 
 									}
 								});
