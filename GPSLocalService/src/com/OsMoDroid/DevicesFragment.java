@@ -174,11 +174,11 @@ if(!deviceU.equals("")){
  }
  if (item.getItemId() == 8) {
 	 //REMOTE_CONTROL:[tracker_id]|DESTROY_DEVICE
-	 LocalService.myIM.sendToServer("SRC:"+ LocalService.deviceList.get((int) subacmi.id).tracker_id+"|"+"TRACKER_SESSION_START");
+	 LocalService.myIM.sendToServer("SRC:"+ LocalService.deviceList.get((int) subacmi.id).u+"|"+OsMoDroid.TRACKER_SESSION_START);
  }
  if (item.getItemId() == 9) {
 	 //REMOTE_CONTROL:[tracker_id]|DESTROY_DEVICE
-	 globalActivity.mService.myIM.sendToServer("SRC:"+ LocalService.deviceList.get((int) subacmi.id).tracker_id+"|"+"TRACKER_SESSION_STOP");
+	 globalActivity.mService.myIM.sendToServer("SRC:"+ LocalService.deviceList.get((int) subacmi.id).u+"|"+OsMoDroid.TRACKER_SESSION_STOP);
  }
  
  if (item.getItemId() == 10) {
@@ -203,7 +203,7 @@ if(!deviceU.equals("")){
 								 
 								if (!( inputhash.getText().toString().equals(""))) {
 									//REMOTE_CONTROL|TTS:Привет жена)
-									globalActivity.mService.myIM.sendToServer("SRC:"+ LocalService.deviceList.get((int) subacmi.id).tracker_id+"|"+"TTS:"+inputhash.getText().toString());
+									globalActivity.mService.myIM.sendToServer("SRC:"+ LocalService.deviceList.get((int) subacmi.id).u+"|"+"TTS:"+inputhash.getText().toString());
 								} 
 							}
 						})
@@ -223,23 +223,23 @@ if(!deviceU.equals("")){
  }
  if (item.getItemId() == 11) 
 	 {
-		 globalActivity.mService.myIM.sendToServer("SRC:"+ LocalService.deviceList.get((int) subacmi.id).tracker_id+"|"+"ALARM_ON");
+		 globalActivity.mService.myIM.sendToServer("SRC:"+ LocalService.deviceList.get((int) subacmi.id).u+"|"+"ALARM_ON");
 	 }
  if (item.getItemId() == 12) 
 	 {
-		 globalActivity.mService.myIM.sendToServer("SRC:"+ LocalService.deviceList.get((int) subacmi.id).tracker_id+"|"+"ALARM_OFF");
+		 globalActivity.mService.myIM.sendToServer("SRC:"+ LocalService.deviceList.get((int) subacmi.id).u+"|"+"ALARM_OFF");
 	 }
  if (item.getItemId() == 13) 
 	 {
-		 globalActivity.mService.myIM.sendToServer("SRC:"+ LocalService.deviceList.get((int) subacmi.id).tracker_id+"|"+"SIGNAL_ON");
+		 globalActivity.mService.myIM.sendToServer("SRC:"+ LocalService.deviceList.get((int) subacmi.id).u+"|"+"SIGNAL_ON");
 	 }
  if (item.getItemId() == 14) 
 	 {
-		 globalActivity.mService.myIM.sendToServer("SRC:"+ LocalService.deviceList.get((int) subacmi.id).tracker_id+"|"+"SIGNAL_OFF");
+		 globalActivity.mService.myIM.sendToServer("SRC:"+ LocalService.deviceList.get((int) subacmi.id).u+"|"+"SIGNAL_OFF");
 	 }
  if (item.getItemId() == 15) 
 	 {
-		 globalActivity.mService.myIM.sendToServer("SRC:"+ LocalService.deviceList.get((int) subacmi.id).tracker_id+"|"+"WHERE");
+		 globalActivity.mService.myIM.sendToServer("SRC:"+ LocalService.deviceList.get((int) subacmi.id).u+"|"+"WHERE");
 	 }
 	    
 		return super.onContextItemSelected(item);
@@ -270,7 +270,7 @@ if(!deviceU.equals("")){
 		if(LocalService.deviceAdapter.getItem(acmi.position).subscribed){
 		 menu.add(0, 1, 8, R.string.delete).setIcon(android.R.drawable.ic_menu_delete);
 		}
-		SubMenu menu2 = menu.addSubMenu(Menu.NONE, 15, 20, R.string.remote_commands);
+		SubMenu menu2 = menu.addSubMenu(Menu.NONE, 100, 20, R.string.remote_commands);
 		MenuItem start =menu2.add(0, 8, 8, R.string.start_monitoring);
 		MenuItem stop =menu2.add(0, 9, 9, R.string.stop_monitoring);
 		MenuItem sendTTS =menu2.add(0, 10, 10, R.string.send_tts);

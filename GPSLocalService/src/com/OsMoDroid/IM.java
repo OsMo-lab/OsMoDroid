@@ -936,22 +936,21 @@ void stop (){
 	try
 		{
 			command = toParse.substring(0, toParse.indexOf('|'));
-			if(command.indexOf(':')!=-1)
-			{
-				param = command.substring(command.indexOf(':')+1);
-				command = command.substring(0, command.indexOf(':'));
-							}
-			addict = toParse.substring(toParse.indexOf('|')+1);
 		} catch (Exception e1)
 		{
 			command=toParse;
-			
 		}
+	if(command.indexOf(':')!=-1)
+	{
+		param = command.substring(command.indexOf(':')+1);
+		command = command.substring(0, command.indexOf(':'));
+					}
+	addict = toParse.substring(toParse.indexOf('|')+1);
 	Iterator<String> comIter = ExecutedCommandArryaList.iterator();
 	while (comIter.hasNext()) {
 	   String str = comIter.next();
 	   if(log)Log.d(this.getClass().getName(), "ExecutedListItem: "+str);
-	   if(str.equals(command))
+	   if(str.equals(command+':'+param)||str.equals(command))
 		   {
 		   comIter.remove();
 		   if(log)Log.d(this.getClass().getName(), "ExecutedListItem removed: "+str);
@@ -959,6 +958,8 @@ void stop (){
 		   }
 	   
 	}
+	if(log)Log.d(this.getClass().getName(), "ExecuteLsit="+ExecutedCommandArryaList.toString());
+	   addlog("ExecuteLsit="+ExecutedCommandArryaList.toString());
 	if(ExecutedCommandArryaList.size()==0)
 		{
 			addlog("Cancel reconnect alarm - no commands in order");
@@ -1140,10 +1141,10 @@ void stop (){
 		{
 			sendToServer("PP");
 		}
-		if(param.equals("TRACKER_SESSION_START")){
+		if(param.equals(OsMoDroid.TRACKER_SESSION_START)){
 			localService.startServiceWork();
 		}
-		if(param.equals("TRACKER_SESSION_STOP")){
+		if(param.equals(OsMoDroid.TRACKER_SESSION_STOP)){
 			localService.stopServiceWork(true);
 		}
 		if(param.contains("TTS:")){

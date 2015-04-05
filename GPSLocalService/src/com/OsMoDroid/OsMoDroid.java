@@ -30,6 +30,8 @@ public class OsMoDroid extends Application {
 	public static Editor editor;
 	public static boolean debug=true;
 	public static final String app_code = "VA3h_va2j44fva";
+	public static final String TRACKER_SESSION_START = "11";
+	static final String TRACKER_SESSION_STOP = "12";
 	
 
 	@Override
