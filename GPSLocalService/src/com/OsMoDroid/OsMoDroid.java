@@ -30,8 +30,22 @@ public class OsMoDroid extends Application {
 	public static Editor editor;
 	public static boolean debug=true;
 	public static final String app_code = "VA3h_va2j44fva";
-	public static final String TRACKER_SESSION_START = "11";
-	static final String TRACKER_SESSION_STOP = "12";
+	public static final String TRACKER_BATTERY_INFO = "11";
+	public static final String TRACKER_SATELLITES_INFO = "13";
+	public static final String TRACKER_SYSTEM_INFO = "14";
+	public static final String TRACKER_WIFI_INFO = "20";
+	public static final String TRACKER_WIFI_ON = "21";
+	public static final String TRACKER_WIFI_OFF = "22";
+	public static final String TRACKER_VIBRATE = "41";
+	public static final String TRACKER_EXIT = "42";
+	public static final String TRACKER_SESSION_START = "01";
+	public static final String TRACKER_SESSION_STOP = "02";
+	public static final String TTS = "TTS";
+	public static final String WHERE = "12";
+	public static final String SIGNAL_OFF = "32";
+	public static final String SIGNAL_ON = "31";
+	public static final String ALARM_OFF = "34";
+	public static final String ALARM_ON = "33";
 	
 
 	@Override

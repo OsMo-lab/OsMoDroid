@@ -911,7 +911,7 @@ void stop (){
 	}
 
 	
-	synchronized void parseEx (String toParse){
+	synchronized void parseEx (String toParse) throws JSONException{
 		//addlog("recieve "+toParse);
 		
 		if(log)Log.d(this.getClass().getName(), "recive "+toParse);
@@ -1057,6 +1057,8 @@ void stop (){
 		{
 			LocalService.channelsAdapter.notifyDataSetChanged();
 		}
+		if(log)Log.d(getClass().getSimpleName(), "write group list to file");
+		localService.saveObject(LocalService.channelList, OsMoDroid.CHANNELLIST);
 	}
 	if(command.equals("GD"))
 	{
@@ -1071,6 +1073,8 @@ void stop (){
 		{
 			LocalService.channelsAdapter.notifyDataSetChanged();
 		}
+		if(log)Log.d(getClass().getSimpleName(), "write group list to file");
+		localService.saveObject(LocalService.channelList, OsMoDroid.CHANNELLIST);
 	}
 	
 	//GROUP_CREATE|{"u":247,"group_id":"IEIFLWQGHSQRBG","name":"Meps","policy":"","description":null}
@@ -1147,26 +1151,83 @@ void stop (){
 		if(param.equals(OsMoDroid.TRACKER_SESSION_STOP)){
 			localService.stopServiceWork(true);
 		}
-		if(param.contains("TTS:")){
+		if(param.equals(OsMoDroid.TTS)){
 			if(OsMoDroid.settings.getBoolean("ttsremote", false)&&localService.tts!=null){localService.tts.speak(addict , TextToSpeech.QUEUE_ADD, null);}
 		}
-		if(param.equals("ALARM_ON"))
+		if(param.equals(OsMoDroid.ALARM_ON))
 			{
 				localService.playAlarmOn();
 			}
-		if(param.equals("ALARM_OFF"))
+		if(param.equals(OsMoDroid.ALARM_OFF))
 			{
 				localService.playAlarmOff();
 			}
-		if(param.equals("SIGNAL_ON"))
+		if(param.equals(OsMoDroid.SIGNAL_ON))
 			{
 				localService.enableSignalisation();
 			}
-		if(param.equals("SIGNAL_OFF"))
+		if(param.equals(OsMoDroid.SIGNAL_OFF))
 			{
 				localService.disableSignalisation();
 			}
-		if(param.equals("WHERE"))
+		if(param.equals(OsMoDroid.TRACKER_BATTERY_INFO))
+			{
+				try
+					{
+						localService.batteryinfo(localService);
+					} catch (JSONException e)
+					{
+						e.printStackTrace();
+					}
+			}
+		if(param.equals(OsMoDroid.TRACKER_SATELLITES_INFO))
+			{
+				try
+					{
+						localService.satelliteinfo(localService);
+					} catch (JSONException e)
+					{
+						e.printStackTrace();
+					}
+			}
+		if(param.equals(OsMoDroid.TRACKER_SYSTEM_INFO))
+			{
+				try
+					{
+						localService.systeminfo(localService);
+					} catch (JSONException e)
+					{
+						e.printStackTrace();
+					}
+			}
+		if(param.equals(OsMoDroid.TRACKER_WIFI_INFO))
+			{
+				try
+					{
+						localService.wifiinfo(localService);
+					} catch (JSONException e)
+					{
+						e.printStackTrace();
+					}
+			}
+		if(param.equals(OsMoDroid.TRACKER_WIFI_OFF))
+			{
+				localService.wifioff(localService);
+			}
+		if(param.equals(OsMoDroid.TRACKER_WIFI_ON))
+			{
+				localService.wifion(localService);
+			}
+		if(param.equals(OsMoDroid.TRACKER_VIBRATE))
+			{
+				localService.vibrate(localService,3000);
+			}
+		if(param.equals(OsMoDroid.TRACKER_EXIT))
+			{
+				localService.stopSelf();
+				System.exit(0);
+			}
+		if(param.equals(OsMoDroid.WHERE))
 			{
 				localService.where=true;
 				if (!localService.state){
@@ -1337,7 +1398,8 @@ void stop (){
 				LocalService.deviceAdapter.notifyDataSetChanged();
 			
 			}
-			
+					if(log)Log.d(getClass().getSimpleName(), "write device list to file");
+					localService.saveObject(LocalService.deviceList, OsMoDroid.DEVLIST);
 						
 	}
 	
@@ -1382,6 +1444,8 @@ void stop (){
 			{
 				LocalService.channelsDevicesAdapter.notifyDataSetChanged();
 			}
+			if(log)Log.d(getClass().getSimpleName(), "write group list to file");
+			localService.saveObject(LocalService.channelList, OsMoDroid.CHANNELLIST);
 			sendToServer("PG");
 	}
 	if(command.equals("GL"))
@@ -1403,6 +1467,8 @@ void stop (){
 				{
 					LocalService.channelsAdapter.notifyDataSetChanged();
 				}
+			if(log)Log.d(getClass().getSimpleName(), "write group list to file");
+			localService.saveObject(LocalService.channelList, OsMoDroid.CHANNELLIST);
 		}
 	if(command.equals("LINK"))
 	{
@@ -1569,6 +1635,8 @@ void stop (){
 				
 				LocalService.channelsDevicesAdapter.notifyDataSetChanged();
 			}
+			if(log)Log.d(getClass().getSimpleName(), "write group list to file");
+			localService.saveObject(LocalService.channelList, OsMoDroid.CHANNELLIST);
 		}
 		if (command.equals("LD"))
 			{
@@ -1626,7 +1694,9 @@ void stop (){
 										LocalService.deviceAdapter.notifyDataSetChanged();
 									}
 						}
-				}		
+				}
+				if(log)Log.d(getClass().getSimpleName(), "write device list to file");
+				localService.saveObject(LocalService.deviceList, OsMoDroid.DEVLIST);
 			}	
 //		Example: D:412|L59.778999:30.348632S0A125H12C235
 //
@@ -1664,6 +1734,8 @@ void stop (){
 						if(log)Log.d(this.getClass().getName(), "Adapter:"+ LocalService.channelsDevicesAdapter.toString());
 						LocalService.channelsDevicesAdapter.notifyDataSetChanged();
 					}
+				if(log)Log.d(getClass().getSimpleName(), "write group list to file");
+				localService.saveObject(LocalService.channelList, OsMoDroid.CHANNELLIST);
 			}
 		if(command.equals("D"))
 			{
@@ -1674,10 +1746,12 @@ void stop (){
 								updateCoordinates( addict, dev);
 							}
 					}
-		if (LocalService.deviceAdapter!=null)
-			{
-				LocalService.deviceAdapter.notifyDataSetChanged();
-			}
+				if (LocalService.deviceAdapter!=null)
+					{
+						LocalService.deviceAdapter.notifyDataSetChanged();
+					}
+				if(log)Log.d(getClass().getSimpleName(), "write group list to file");
+				localService.saveObject(LocalService.deviceList, OsMoDroid.DEVLIST);
 		
 		}
 

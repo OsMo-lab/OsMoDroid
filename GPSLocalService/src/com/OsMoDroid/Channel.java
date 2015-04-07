@@ -29,7 +29,7 @@ import android.util.Log;
 
 public class Channel implements Serializable {
 	
-	public ArrayList<ColoredGPX> gpxList = new ArrayList<ColoredGPX>();
+	transient public ArrayList<ColoredGPX> gpxList = new ArrayList<ColoredGPX>();
 	public String name;
 	public String description;
 	public String myNameInGroup;
@@ -41,16 +41,16 @@ public class Channel implements Serializable {
 	public List<Device> deviceList= new ArrayList<Device>();
 	public List<ChannelChatMessage> messagesstringList= new ArrayList<ChannelChatMessage>();
 	//public List<PathOverlay> paths = new ArrayList<PathOverlay>();
-	ArrayList<Point> pointList= new ArrayList<Channel.Point>();
+	transient ArrayList<Point> pointList= new ArrayList<Channel.Point>();
 	public boolean connected=false;
 	public boolean send=false;
-	LocalService localService;
+	transient LocalService localService;
 	
 	//MapFragment map;
 	 File sdDir = android.os.Environment.getExternalStorageDirectory();
 	 File fileName = new File (sdDir, "OsMoDroid/channelsgpx/");
 	
-	ResultsListener gpxdownloadListener = new ResultsListener() {
+	 transient ResultsListener gpxdownloadListener = new ResultsListener() {
 	
 		@Override
 		public void onResultsSucceeded(APIComResult result) {

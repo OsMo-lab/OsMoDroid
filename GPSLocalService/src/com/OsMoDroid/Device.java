@@ -29,7 +29,7 @@ public class Device implements Comparable<Device> , Serializable{
 	public String ch;
 	public boolean subscribed=false;
 	public long updatated=0;
-	public List<IGeoPoint> devicePath= new ArrayList<IGeoPoint>();
+	transient public List<IGeoPoint> devicePath= new ArrayList<IGeoPoint>();
 	//public PathOverlay p;
 	public Device(){
 		

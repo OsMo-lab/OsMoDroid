@@ -699,31 +699,21 @@ public void stopcomand()
 		pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
 		in = new Intent("OsMoDroid");
 		mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-///////////////////////
-		
-//sockaddr = new InetSocketAddress("esya.ru", 2145);
-///////////////////////
-		
-//			if(log)Log.d(this.getClass().getName(), "try sendid");
-//			if(OsMoDroid.settings.getString("newkey", "").equals(""))
-//				{
-//						sendid();
-//				}
-//			if(!OsMoDroid.settings.getBoolean("ondestroy", false))
-//			{
-//				List<Channel> loaded=(List<Channel>) loadObject(OsMoDroid.CHANNELLIST, channelList.getClass());
-//				if (loaded!=null)
-//				{
-//				Log.d(this.getClass().getName(), "channelList is not empty");
-//				channelList.addAll(loaded);
-//				}
-//			}
-//			List<Device> loaded=(List<Device>) loadObject(OsMoDroid.DEVLIST, deviceList.getClass());
-//			if (loaded!=null)
-//			{
-//			Log.d(this.getClass().getName(), "devicelist is not empty");
-//			deviceList.addAll(loaded);
-//			}
+			if(!OsMoDroid.settings.getBoolean("ondestroy", false))
+			{
+				List<Channel> loaded=(List<Channel>) loadObject(OsMoDroid.CHANNELLIST, channelList.getClass());
+				if (loaded!=null)
+				{
+				Log.d(this.getClass().getName(), "channelList is not empty");
+				channelList.addAll(loaded);
+				}
+			}
+			List<Device> loaded=(List<Device>) loadObject(OsMoDroid.DEVLIST, deviceList.getClass());
+			if (loaded!=null)
+			{
+			Log.d(this.getClass().getName(), "devicelist is not empty");
+			deviceList.addAll(loaded);
+			}
 	myIM = new IM("osmo.mobi", 4245, this){
 		
 		@Override
@@ -752,7 +742,7 @@ OsMoDroid.settings.edit().putBoolean("ondestroy", false).commit();
 	}
 
 	void Pong(Context context) throws JSONException{
-            Netutil.newapicommand((ResultsListener)context, "om_device_pong:"+OsMoDroid.settings.getString("device", "")+","+Long.toString(System.currentTimeMillis()));
+		myIM.sendToServer("RCR|1");
 	}
 
 	void batteryinfo(Context context) throws JSONException{
@@ -761,7 +751,7 @@ OsMoDroid.settings.edit().putBoolean("ondestroy", false).commit();
             postjson.put("temperature", temperature);
             postjson.put("voltage", voltage);
             postjson.put("plugged", plugged);
-            Netutil.newapicommand((ResultsListener)context, "om_device_pong:"+OsMoDroid.settings.getString("device", "")+","+Long.toString(System.currentTimeMillis()), "json="+postjson.toString());
+            myIM.sendToServer("RCR|"+postjson.toString());
 	}
 	private String capitalize(String s) {
 		  if (s == null || s.length() == 0) {
@@ -793,7 +783,7 @@ OsMoDroid.settings.edit().putBoolean("ondestroy", false).commit();
         postjson.put("androidversion", androidver);
         postjson.put("devicename", getDeviceName());
         postjson.put("display", Integer.toString(width)+"x"+Integer.toString(height));
-        Netutil.newapicommand((ResultsListener)context, "om_device_pong:"+OsMoDroid.settings.getString("device", "")+","+Long.toString(System.currentTimeMillis()), "json="+postjson.toString());
+        myIM.sendToServer("RCR|"+postjson.toString());
 }
 	
 	void vibrate (Context context,long milliseconds) {
@@ -806,7 +796,7 @@ OsMoDroid.settings.edit().putBoolean("ondestroy", false).commit();
         postjson.put("view", count);
         postjson.put("active", countFix);
         postjson.put("accuracy", accuracy);
-        Netutil.newapicommand((ResultsListener)context, "om_device_pong:"+OsMoDroid.settings.getString("device", "")+","+Long.toString(System.currentTimeMillis()), "json="+postjson.toString());
+        myIM.sendToServer("RCR|"+postjson.toString());
 }
 	
 	void getpreferences(Context context) throws JSONException{
@@ -835,18 +825,18 @@ OsMoDroid.settings.edit().putBoolean("ondestroy", false).commit();
         postjson.put("usewake",usewake); 
         postjson.put("notifyperiod",notifyperiod); 
         postjson.put("sendsound",sendsound); 
-        Netutil.newapicommand((ResultsListener)context, "om_device_pong:"+OsMoDroid.settings.getString("device", "")+","+Long.toString(System.currentTimeMillis()), "json="+postjson.toString());
+        myIM.sendToServer("RCR|"+postjson.toString());
 }
 
 	void wifion(Context context) {
 		WifiManager wifi = (WifiManager) getSystemService(Context.WIFI_SERVICE);
 		wifi.setWifiEnabled(true);
-        Netutil.newapicommand((ResultsListener)context, "om_device_pong:"+OsMoDroid.settings.getString("device", "")+","+Long.toString(System.currentTimeMillis()));
+		 myIM.sendToServer("RCR|1");
 	}
 	void wifioff(Context context) {
 		WifiManager wifi = (WifiManager) getSystemService(Context.WIFI_SERVICE);
 		wifi.setWifiEnabled(false);
-        Netutil.newapicommand((ResultsListener)context, "om_device_pong:"+OsMoDroid.settings.getString("device", "")+","+Long.toString(System.currentTimeMillis()));
+		myIM.sendToServer("RCR|1");
 	}
 	
 	void wifiinfo(Context context) throws JSONException {
@@ -868,7 +858,7 @@ OsMoDroid.settings.edit().putBoolean("ondestroy", false).commit();
 		{
 			postjson.put("state", "noconnect");
 		}
-	         Netutil.newapicommand((ResultsListener)context, "om_device_pong:"+OsMoDroid.settings.getString("device", "")+","+Long.toString(System.currentTimeMillis()), "json="+postjson.toString());
+	         myIM.sendToServer("RCR|"+postjson.toString());
 	}
 	
 	

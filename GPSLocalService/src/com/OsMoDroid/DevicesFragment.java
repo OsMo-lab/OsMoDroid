@@ -223,23 +223,23 @@ if(!deviceU.equals("")){
  }
  if (item.getItemId() == 11) 
 	 {
-		 globalActivity.mService.myIM.sendToServer("SRC:"+ LocalService.deviceList.get((int) subacmi.id).u+"|"+"ALARM_ON");
+		 globalActivity.mService.myIM.sendToServer("SRC:"+ LocalService.deviceList.get((int) subacmi.id).u+"|"+OsMoDroid.ALARM_ON);
 	 }
  if (item.getItemId() == 12) 
 	 {
-		 globalActivity.mService.myIM.sendToServer("SRC:"+ LocalService.deviceList.get((int) subacmi.id).u+"|"+"ALARM_OFF");
+		 globalActivity.mService.myIM.sendToServer("SRC:"+ LocalService.deviceList.get((int) subacmi.id).u+"|"+OsMoDroid.ALARM_OFF);
 	 }
  if (item.getItemId() == 13) 
 	 {
-		 globalActivity.mService.myIM.sendToServer("SRC:"+ LocalService.deviceList.get((int) subacmi.id).u+"|"+"SIGNAL_ON");
+		 globalActivity.mService.myIM.sendToServer("SRC:"+ LocalService.deviceList.get((int) subacmi.id).u+"|"+OsMoDroid.SIGNAL_ON);
 	 }
  if (item.getItemId() == 14) 
 	 {
-		 globalActivity.mService.myIM.sendToServer("SRC:"+ LocalService.deviceList.get((int) subacmi.id).u+"|"+"SIGNAL_OFF");
+		 globalActivity.mService.myIM.sendToServer("SRC:"+ LocalService.deviceList.get((int) subacmi.id).u+"|"+OsMoDroid.SIGNAL_OFF);
 	 }
  if (item.getItemId() == 15) 
 	 {
-		 globalActivity.mService.myIM.sendToServer("SRC:"+ LocalService.deviceList.get((int) subacmi.id).u+"|"+"WHERE");
+		 globalActivity.mService.myIM.sendToServer("SRC:"+ LocalService.deviceList.get((int) subacmi.id).u+"|"+OsMoDroid.WHERE);
 	 }
 	    
 		return super.onContextItemSelected(item);
