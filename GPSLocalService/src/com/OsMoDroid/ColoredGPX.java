@@ -3,6 +3,7 @@ package com.OsMoDroid;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,7 +19,7 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.util.Log;
 
-public class ColoredGPX {
+public class ColoredGPX implements Serializable {
 	public int u;
 	File gpxfile;
 	int color;

@@ -909,6 +909,9 @@ OsMoDroid.settings.edit().putBoolean("ondestroy", false).commit();
 		mNotificationManager.cancelAll();
 		OsMoDroid.settings.edit().remove("globalsend").commit();
 		OsMoDroid.settings.edit().putBoolean("ondestroy", true).commit();
+		deleteFile(OsMoDroid.CHANNELLIST);
+		deleteFile(OsMoDroid.DEVLIST);
+		deleteFile(OsMoDroid.NOTIFIESFILENAME);
 		super.onDestroy();
 		System.exit(0);
 	}

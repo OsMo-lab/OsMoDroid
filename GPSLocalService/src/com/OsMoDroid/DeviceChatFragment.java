@@ -56,7 +56,7 @@ public class DeviceChatFragment extends Fragment implements ResultsListener {
 	Device getDeviceByU (int u){
 		Log.d(this.getClass().getSimpleName(), " LocalService.deviceList="+ LocalService.deviceList.toString());
 		for (Device dev : LocalService.deviceList){
-			if (dev.tracker_id.equals(u)){
+			if (dev.u==u){
 				return dev;
 			}
 		}
@@ -78,7 +78,7 @@ public class DeviceChatFragment extends Fragment implements ResultsListener {
 	}
 	String getMyApp (){
 		for (Device dev:LocalService.deviceList ){
-			if (dev.tracker_id.equals(OsMoDroid.settings.getString("device", "-1"))){
+			if (dev.u == OsMoDroid.settings.getInt("device", -1)){
 				return dev.app;
 			}
 		}
@@ -111,8 +111,7 @@ public class DeviceChatFragment extends Fragment implements ResultsListener {
 		
 	}
 	void getDeviceInfo() {
-		String u =getDeviceByU(deviceU).tracker_id;
-		t.add( Netutil.newapicommand((ResultsListener)DeviceChatFragment.this,globalActivity, "om_device_message_get:"+OsMoDroid.settings.getString("device", "")+","+u));
+		globalActivity.mService.myIM.sendToServer("IM:"+getDeviceByU(deviceU).u);
 	}
 	@Override
 	public void onDetach() {
@@ -168,7 +167,7 @@ public class DeviceChatFragment extends Fragment implements ResultsListener {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		
 		if (item.getItemId()==2){
-			t.add(Netutil.newapicommand((ResultsListener)DeviceChatFragment.this,globalActivity, "om_device_message_get:"+OsMoDroid.settings.getString("device", "")+","+getDeviceByU(deviceU).tracker_id));
+			globalActivity.mService.myIM.sendToServer("IM:"+getDeviceByU(deviceU).u);
 		}
 		
 		return super.onOptionsItemSelected(item);
@@ -215,10 +214,10 @@ public class DeviceChatFragment extends Fragment implements ResultsListener {
 				JSONObject postjson = new JSONObject();
 			try {
 
-				postjson.put("from", OsMoDroid.settings.getString("device", ""));
-				postjson.put("to", getDeviceByU(deviceU).tracker_id);
+//				postjson.put("from", OsMoDroid.settings.getString("device", ""));
+//				postjson.put("to", getDeviceByU(deviceU).tracker_id);
 				postjson.put("text", input.getText().toString());
-				t.add(Netutil.newapicommand((ResultsListener) DeviceChatFragment.this, "om_device_message_send","json="+postjson.toString()));
+				globalActivity.mService.myIM.sendToServer("IMS:"+getDeviceByU(deviceU).u+"|"+postjson.toString());
 
 				} 
 			catch (JSONException e) {

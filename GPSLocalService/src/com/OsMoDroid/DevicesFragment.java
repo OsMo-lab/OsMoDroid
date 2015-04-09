@@ -58,7 +58,7 @@ public class DevicesFragment extends Fragment  {
 	public void onResume() {
 		Log.d(getClass().getSimpleName(),"devicesfragment Onresume");
 		globalActivity.actionBar.setTitle(R.string.devices);
-if(!deviceU.equals("")){
+if(deviceU!=-1){
 	openDeviceChat(deviceU);
 	
 }
@@ -85,7 +85,7 @@ if(!deviceU.equals("")){
 
 
 		  if (item.getItemId() == 2) {
-			  	openDeviceChat(LocalService.deviceList.get((int) acmi.id).tracker_id);
+			  	openDeviceChat(LocalService.deviceList.get((int) acmi.id).u);
 			   return true;
 
 	    }
@@ -245,10 +245,10 @@ if(!deviceU.equals("")){
 		return super.onContextItemSelected(item);
 	}
 
-	void openDeviceChat(String u) {
+	void openDeviceChat(int u) {
 		 globalActivity.drawClickListener.devchat = new DeviceChatFragment();
 		Bundle bundle = new Bundle();
-		bundle.putString("deviceU", u);
+		bundle.putInt("deviceU", u);
 		globalActivity.drawClickListener.devchat.setArguments(bundle);
 		globalActivity.showFragment(globalActivity.drawClickListener.devchat,true);
 	}
@@ -279,7 +279,7 @@ if(!deviceU.equals("")){
 		MenuItem signalon =menu2.add(0, 13, 13, R.string.signalisation_set_on);
 		MenuItem signaloff =menu2.add(0, 14, 14, R.string.signalisation_set_off);
 		MenuItem where =menu2.add(0, 15, 15, R.string.where_);
-		 //   menu.add(0, 2, 2, R.string.messages).setIcon(android.R.drawable.ic_menu_delete);
+		    menu.add(0, 2, 2, R.string.messages).setIcon(android.R.drawable.ic_menu_delete);
 		   
 		//    menu.add(0, 3, 3, R.string.copylink).setIcon(android.R.drawable.ic_menu_edit);
 		//    menu.add(0, 4, 4, R.string.sharelink).setIcon(android.R.drawable.ic_menu_edit);
@@ -292,11 +292,11 @@ if(!deviceU.equals("")){
 
 	private GPSLocalServiceClient globalActivity;
 	private ListView lv1;
-	 String deviceU="";
+	 int deviceU=-1;
 	//private boolean openedbynotification=false;
 	
 	
-	public void needToOpenChat(String i)
+	public void needToOpenChat(int i)
 	{
 		deviceU=i;
 	}
@@ -456,7 +456,7 @@ if(!deviceU.equals("")){
 	
 	@Override
 	public void onPause() {
-		deviceU="";
+		deviceU=-1;
 		Log.d(getClass().getSimpleName(),"onpause");
 		//openedbynotification=true;
 		super.onPause();

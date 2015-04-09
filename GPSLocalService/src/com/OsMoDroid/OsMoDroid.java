@@ -38,8 +38,8 @@ public class OsMoDroid extends Application {
 	public static final String TRACKER_WIFI_OFF = "22";
 	public static final String TRACKER_VIBRATE = "41";
 	public static final String TRACKER_EXIT = "42";
-	public static final String TRACKER_SESSION_START = "01";
-	public static final String TRACKER_SESSION_STOP = "02";
+	public static final String TRACKER_SESSION_START = "1";
+	public static final String TRACKER_SESSION_STOP = "2";
 	public static final String TTS = "TTS";
 	public static final String WHERE = "12";
 	public static final String SIGNAL_OFF = "32";

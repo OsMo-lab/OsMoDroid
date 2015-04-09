@@ -27,40 +27,34 @@ import android.os.AsyncTask;
 import android.provider.Settings.Global;
 import android.util.Log;
 
-public class Channel implements Serializable {
+public class Channel implements Serializable,ResultsListener {
 	
-	transient public ArrayList<ColoredGPX> gpxList = new ArrayList<ColoredGPX>();
+	public ArrayList<ColoredGPX> gpxList = new ArrayList<ColoredGPX>();
 	public String name;
 	public String description;
 	public String myNameInGroup;
-	//public String general_id;
 	public int u;
 	public String created;
 	public String group_id;
 	public String url;
 	public List<Device> deviceList= new ArrayList<Device>();
 	public List<ChannelChatMessage> messagesstringList= new ArrayList<ChannelChatMessage>();
-	//public List<PathOverlay> paths = new ArrayList<PathOverlay>();
-	transient ArrayList<Point> pointList= new ArrayList<Channel.Point>();
+	ArrayList<Point> pointList= new ArrayList<Channel.Point>();
 	public boolean connected=false;
 	public boolean send=false;
-	transient LocalService localService;
-	
-	//MapFragment map;
-	 File sdDir = android.os.Environment.getExternalStorageDirectory();
-	 File fileName = new File (sdDir, "OsMoDroid/channelsgpx/");
-	
-	 transient ResultsListener gpxdownloadListener = new ResultsListener() {
-	
-		@Override
-		public void onResultsSucceeded(APIComResult result) {
-			Log.d(getClass().getSimpleName(),"download result="+result.load);
-			result.load.initPathOverlay();
-					}
-	};
+	File sdDir = android.os.Environment.getExternalStorageDirectory();
+	File fileName = new File (sdDir, "OsMoDroid/channelsgpx/");
+//	transient ResultsListener gpxdownloadListener = new ResultsListener() {
+//	
+//		@Override
+//		public void onResultsSucceeded(APIComResult result) {
+//			Log.d(getClass().getSimpleName(),"download result="+result.load);
+//			result.load.initPathOverlay();
+//					}
+//	};
 	
 	public boolean chatconnected=false;
-	static class Point {
+	static class Point implements Serializable{
 		int u;
 		float lat;
 		float lon;
@@ -107,9 +101,9 @@ public class Channel implements Serializable {
 //		}
 	//{"uid":"173","lon":"30","count":"0","zoom":"14","track":"0","code":"zxc","url":"ByIWINB22Fj74452is","main":"0","private":"0","u":"51","created":"2013-02-20 12:54:18","color":"0","name":"zxc","me":{"channel_name":"zxc","uid":"173","icon":"1","u":"19","channel_url":"ByIWINB22Fj74452is","added":"2013-02-24 13:40:27","color":"FFFFFF","name":"TEST2","device":"1436","active":"1","role":"0","channel":"51"},"ch":"omc_RAzHkQ9JzY5","user":[{"uid":"173","icon":"1","lon":"41.332442","u":"1436","color":"FFFFFF","name":"TEST2","state":"0","active":"1","role":"0","lat":"54.95365","online":"1"},{"uid":"173","icon":"1","lon":"37.685934","u":"40","color":"FFFFFF","name":"Денис","state":"0","active":"1","role":"0","lat":"55.682043","online":"1"}],"lat":"60","zone":"0"},{"uid":"173","lon":"30","count":"0","zoom":"14","track":"0","code":"123","url":"w2GjFV1BcviZz6qo83","main":"0","private":"0","u":"54","created":"2013-02-25 14:46:35","color":"0","name":"Каналья","me":{"channel_name":"Каналья","uid":"173","icon":"1","u":"21","channel_url":"w2GjFV1BcviZz6qo83","added":"2013-02-25 18:48:42","color":"FFFFFF","name":"TEST2","device":"1436","active":"1","role":"0","channel":"54"},"ch":"omc_qg9q1W06aB6","user":[{"uid":"173","icon":"1","lon":"41.332442","u":"1436","color":"FFFFFF","name":"TEST2","state":"0","active":"1","role":"0","lat":"54.95365","online":"1"}],"lat":"60","zone":"0"}]}
 	
-	public void updChannel(JSONObject jo, LocalService localService)
+	public void updChannel(JSONObject jo)
 		{
-			this.localService=localService;
+			
 			this.name=jo.optString("name");
 			this.u=jo.optInt("u");
 			this.created=jo.optString("created");
@@ -145,30 +139,11 @@ public class Channel implements Serializable {
 					}   
 				}
 			ArrayList<Device> deleteDeviceList= new ArrayList<Device>(this.deviceList);
-			this.localService.myIM.addlog("reciveddevicelist:"+recieveddeviceList.toString());
-			this.localService.myIM.addlog("deletedevicelist:"+deleteDeviceList.toString());
-			this.localService.myIM.addlog("this.devicelist:"+this.deviceList.toString());
 			deleteDeviceList.removeAll(recieveddeviceList);
-			this.localService.myIM.addlog("reciveddevicelist:"+recieveddeviceList.toString());
-			this.localService.myIM.addlog("deletedevicelist:"+deleteDeviceList.toString());
-			this.localService.myIM.addlog("this.devicelist:"+this.deviceList.toString());
 			recieveddeviceList.removeAll(this.deviceList);
-			this.localService.myIM.addlog("reciveddevicelist:"+recieveddeviceList.toString());
-			this.localService.myIM.addlog("deletedevicelist:"+deleteDeviceList.toString());
-			this.localService.myIM.addlog("this.devicelist:"+this.deviceList.toString());
-			this.localService.myIM.addlog("reciveddevicelist:"+recieveddeviceList.toString());
-			
 			this.deviceList.addAll(recieveddeviceList);
-			this.localService.myIM.addlog("reciveddevicelist:"+recieveddeviceList.toString());
-			this.localService.myIM.addlog("deletedevicelist:"+deleteDeviceList.toString());
-			this.localService.myIM.addlog("this.devicelist:"+this.deviceList.toString());
 			this.deviceList.removeAll(deleteDeviceList);
-			this.localService.myIM.addlog("reciveddevicelist:"+recieveddeviceList.toString());
-			this.localService.myIM.addlog("deletedevicelist:"+deleteDeviceList.toString());
-			this.localService.myIM.addlog("this.devicelist:"+this.deviceList.toString());
-			
 			Collections.sort(this.deviceList);
-			
 			 JSONArray points =jo.optJSONArray("point");
 			 if(points!=null)
 			 {
@@ -213,7 +188,7 @@ public class Channel implements Serializable {
 					 if(cgpx.status==ColoredGPX.Statuses.EMPTY)
 					 	{
 						 cgpx.status=Statuses.DOWNLOADING;
-						 Netutil.downloadfile(gpxdownloadListener, cgpx.url, cgpx);
+						 Netutil.downloadfile(this, cgpx.url, cgpx);
 					 	}	
 					 else if (cgpx.status==ColoredGPX.Statuses.DOWNLOADED)
 					 		
@@ -325,6 +300,14 @@ public class Channel implements Serializable {
 				e.printStackTrace();
 			}
 		}
+		
+	}
+
+
+	@Override
+	public void onResultsSucceeded(APIComResult result) {
+		Log.d(getClass().getSimpleName(),"download result="+result.load);
+		result.load.initPathOverlay();
 		
 	}
 

@@ -1418,12 +1418,12 @@ void stop (){
 							{
 								if(ch.u==Integer.parseInt(jsonObject.optString("u")))
 								{
-									ch.updChannel(jsonObject, localService);
+									ch.updChannel(jsonObject);
 								}
 							}
 						
 							Channel ch= new Channel();
-							ch.updChannel(jsonObject, localService);
+							ch.updChannel(jsonObject);
 							recievedChannelList.add(ch);
 						}
 					}
@@ -1743,7 +1743,12 @@ void stop (){
 					{	
 						if (Integer.parseInt(param) == dev.u)
 							{
-								updateCoordinates( addict, dev);
+								try {
+									updateCoordinates( addict, dev);
+								} catch (Exception e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
 							}
 					}
 				if (LocalService.deviceAdapter!=null)
