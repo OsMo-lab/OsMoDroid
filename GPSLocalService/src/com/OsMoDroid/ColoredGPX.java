@@ -26,12 +26,11 @@ public class ColoredGPX implements Serializable {
 	String url;
 	enum Statuses { EMPTY, DOWNLOADING, DOWNLOADED, LOADING, LOADED }
 	Statuses status=Statuses.EMPTY;
-	//PathOverlay path;
-	List<Point> points = new ArrayList<Point>(3000);
+	transient List<Point> points;// = new ArrayList<Point>(3000);
 	List<Channel.Point> waypoints = new ArrayList<Channel.Point>(100);
 	public int mPointsPrecomputed;
-	public Path mPath = new Path();
-	Rect mLineBounds = new Rect();
+
+	transient Rect mLineBounds;// = new Rect();
 	public ColoredGPX(int u,File fileName, String scolor, String url) {
 		gpxfile=fileName;
 		this.url=url;
@@ -49,6 +48,8 @@ public class ColoredGPX implements Serializable {
 			try {
 //				PathOverlay path = new PathOverlay(cg.color, 10, mResourceProxy);
 //				paths.add(path);
+				mLineBounds = new Rect();
+				points = new ArrayList<Point>(3000);
 				FileInputStream is = new FileInputStream(this.gpxfile);
 				Netutil.InitTask initTask = new InitTask(this);
 				status=Statuses.LOADING;

@@ -706,6 +706,13 @@ public void stopcomand()
 				{
 				Log.d(this.getClass().getName(), "channelList is not empty");
 				channelList.addAll(loaded);
+				for (Channel ch: channelList)
+				{
+					for(ColoredGPX cgpx: ch.gpxList)
+					{
+						cgpx.initPathOverlay();
+					}
+				}
 				}
 			}
 			List<Device> loaded=(List<Device>) loadObject(OsMoDroid.DEVLIST, deviceList.getClass());

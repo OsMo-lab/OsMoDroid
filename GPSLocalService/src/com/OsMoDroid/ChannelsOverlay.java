@@ -237,6 +237,7 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
 
 	private void drawGPX(Canvas canvas, final Projection pj, ColoredGPX gpx, BoundingBoxE6 theBoundingBox, Point scrPoint, MapView mapView)
 		{
+			pathpaint.setColor(gpx.color);
 			int size=gpx.points.size();
 			if(size>2)
 			{
@@ -264,7 +265,7 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
 				boundingBox.getLonEastE6(), null);
 				final Rect clipBounds = new Rect(topLeft.x, topLeft.y, bottomRight.x, bottomRight.y);
 
-				gpx.mPath.rewind();
+				//gpx.mPath.rewind();
 				projectedPoint0 = gpx.points.get(size - 1);
 				gpx.mLineBounds.set(projectedPoint0.x, projectedPoint0.y, projectedPoint0.x, projectedPoint0.y);
 
@@ -284,7 +285,7 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
 					// bounds
 					if (screenPoint0 == null) {
 						screenPoint0 = pj.toPixelsFromProjected(projectedPoint0, this.mTempPoint1);
-						gpx.mPath.moveTo(screenPoint0.x, screenPoint0.y);
+						//gpx.mPath.moveTo(screenPoint0.x, screenPoint0.y);
 					}
 
 					screenPoint1 = pj.toPixelsFromProjected(projectedPoint1, this.mTempPoint2);
@@ -294,7 +295,7 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
 						continue;
 					}
 
-					gpx.mPath.lineTo(screenPoint1.x, screenPoint1.y);
+					//gpx.mPath.lineTo(screenPoint1.x, screenPoint1.y);
 					canvas.drawLine(screenPoint0.x, screenPoint0.y, screenPoint1.x, screenPoint1.y, pathpaint);
 					// update starting point to next position
 					projectedPoint0 = projectedPoint1;
@@ -302,7 +303,7 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
 					screenPoint0.y = screenPoint1.y;
 					gpx.mLineBounds.set(projectedPoint0.x, projectedPoint0.y, projectedPoint0.x, projectedPoint0.y);
 				}
-				pathpaint.setColor(gpx.color);
+				
 				//canvas.drawPath(gpx.mPath, this.pathpaint);
 				
 				///
