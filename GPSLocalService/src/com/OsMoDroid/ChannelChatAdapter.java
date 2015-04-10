@@ -46,9 +46,9 @@ public class ChannelChatAdapter extends ArrayAdapter<ChannelChatMessage> {
 		        txtFrom.setText(message.from);
 		        txtText.setText(message.text);
 		        txtTime.setText(message.time);
-		        txtText.setTextColor(Color.BLACK);
-		        txtFrom.setTextColor(Color.BLACK);
-		        txtTime.setTextColor(Color.BLACK);
+//		        txtText.setTextColor(Color.BLACK);
+//		        txtFrom.setTextColor(Color.BLACK);
+//		        txtTime.setTextColor(Color.BLACK);
 //		        txtFrom.setBackgroundColor(message.color);
 //		        txtText.setBackgroundColor(message.color);
 //		        txtTime.setBackgroundColor(message.color);

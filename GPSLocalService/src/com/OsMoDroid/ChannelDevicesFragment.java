@@ -174,6 +174,7 @@ public class ChannelDevicesFragment extends Fragment implements ResultsListener 
 		if (item.getItemId()==3){
 			//globalActivity.mService.myIM.sendToServer("GROUP_CONNECT:"+LocalService.currentChannel.group_id);
 			globalActivity.mService.myIM.sendToServer("GROUP");
+			globalActivity.mService.myIM.sendToServer("GC:"+LocalService.currentChannel.u);
 		}
 		return super.onOptionsItemSelected(item);
 	}
@@ -225,8 +226,7 @@ public class ChannelDevicesFragment extends Fragment implements ResultsListener 
 				try {
 
 				postjson.put("text", input.getText().toString());
-				postjson.put("channel", LocalService.currentChannel.u);
-				postjson.put("device", OsMoDroid.settings.getString("device", ""));
+				globalActivity.mService.myIM.sendToServer("GCS:"+LocalService.currentChannel.u+'|'+postjson.toString());
 				//http://apim.esya.ru/?key=H8&query=om_channel_chat_post&format=jsonp
 				//json={"channel":"51","device":"40","text":"789"}
 				//t.add(Netutil.newapicommand((ResultsListener)ChannelDevicesFragment.this,(Context)getSherlockActivity(), "om_channel_chat_post","json="+postjson.toString()));

@@ -281,7 +281,7 @@ public class ChannelsFragment extends Fragment {
 									{
 										try
 											{
-												globalActivity.mService.myIM.sendToServer("GC|{\"name\":\""+(input2.getText().toString())+"\", \"until\":\"\", \"description\":\"\", \"policy\":\"\"}");
+												globalActivity.mService.myIM.sendToServer("GRPA|{\"name\":\""+(input2.getText().toString())+"\", \"until\":\"\", \"description\":\"\", \"policy\":\"\"}");
 											}
 										catch (Exception e) {
 											e.printStackTrace();

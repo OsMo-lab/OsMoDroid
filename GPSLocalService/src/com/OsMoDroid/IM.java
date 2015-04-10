@@ -837,36 +837,42 @@ void stop (){
 
 	 	 
 
-	private void addToChannelChat(String toParse, String topic) {
+	private void addToChannelChat(int channelU, JSONObject jo) throws JSONException {
 		if(log)Log.d(this.getClass().getName(), "type=chch");
-		if(log)Log.d(this.getClass().getName(), "Сообщение в чат канала " + toParse);
+		if(log)Log.d(this.getClass().getName(), "Сообщение в чат канала " + jo);
+		
 		ChannelChatMessage m =new ChannelChatMessage();
+		m.u=jo.optInt("u");
+		m.text=Netutil.unescape(jo.optString("text"));
+		m.time=jo.optString("time");
 		String fromDevice="Незнамо кто";
 		//09-16 18:25:41.057: D/com.OsMoDroid.IM(1474):     "data": "0|40+\u041e\u043f\u0430\u0441\u043d\u043e +2013-09-16 22:25:44"
 		//"data": "0|40|cxbcxvbcxvbcxvb|2013-03-14 22:42:34"
-		String[] data = toParse.split("\\|");
+		
 		//if(log)Log.d(this.getClass().getName(), "data[0]=" + data[0] + " data[1]=" + data[1] + " data[2]=" + data[2]);
-		String[] datanew = data[1].split("\\+");
+		
 		//if(log)Log.d(this.getClass().getName(), "datanew[0]=" + datanew[0] + " datanew[1]=" + datanew[1] + " datanew[2]=" + datanew[2]);
 		for (final Channel channel : LocalService.channelList) {
 			if(log)Log.d(this.getClass().getName(), "chanal nest" + channel.name);
-			if (topic.equals(channel.group_id+"_chat")){
+			if (channelU==channel.u){
+				if(!channel.messagesstringList.contains(m)){
 						
 			
-			for (Device device : channel.deviceList) {
-				if(log)Log.d(this.getClass().getName(), "device nest" + device.name + " " + device.tracker_id);
-				if (datanew[0].equals((device.tracker_id))) {
-					if(log)Log.d(this.getClass().getName(), "Сообщение от устройства в канале " + device.toString());
-					fromDevice = device.name;
-				}
-				if (datanew[0].equals(OsMoDroid.settings.getString("device", ""))){
-					fromDevice=localService.getString(R.string.iam);
-					if(log)Log.d(this.getClass().getName(), "Сообщение от устройства в канале от меня ");
-				}
-				if (datanew[0].equals("0")){
-				fromDevice=localService.getString(R.string.observers);
-				}
-			}
+//			for (Device device : channel.deviceList) {
+//				if(log)Log.d(this.getClass().getName(), "device nest" + device.name + " " + device.tracker_id);
+//				if (datanew[0].equals((device.tracker_id))) {
+//					if(log)Log.d(this.getClass().getName(), "Сообщение от устройства в канале " + device.toString());
+//					fromDevice = device.name;
+//				}
+//				if (datanew[0].equals(OsMoDroid.settings.getString("device", ""))){
+//					fromDevice=localService.getString(R.string.iam);
+//					if(log)Log.d(this.getClass().getName(), "Сообщение от устройства в канале от меня ");
+//				}
+//				if (datanew[0].equals("0")){
+//				fromDevice=localService.getString(R.string.observers);
+//				}
+//			}
+				fromDevice=jo.optString("name");
 			Intent intent =new Intent(localService, GPSLocalServiceClient.class).putExtra("channelpos", channel.u);
 			intent.setAction("channelchat");
 			PendingIntent contentIntent = PendingIntent.getActivity(localService,333,intent, PendingIntent.FLAG_CANCEL_CURRENT);
@@ -874,7 +880,7 @@ void stop (){
 		 	NotificationCompat.Builder notificationBuilder =new NotificationCompat.Builder(
 					localService.getApplicationContext())
 			    	.setWhen(when)
-			    	.setContentText(channel.name+" "+fromDevice+": "+Netutil.unescape(datanew[1]))
+			    	.setContentText(channel.name+" "+fromDevice+": "+jo.optString("text"))
 			    	.setContentTitle("OsMoDroid")
 			    	.setSmallIcon(android.R.drawable.ic_menu_send)
 			    	.setAutoCancel(true)
@@ -894,18 +900,17 @@ void stop (){
 			
 			
 			
-					channel.messagesstringList.clear();
-					m.text=Netutil.unescape(datanew[1]);
-					m.time=datanew[2];
+					
+					
 					channel.messagesstringList.add(m);
-					localService.alertHandler.post(new Runnable(){
-						public void run() {
+					
+					
 							if (LocalService.channelsmessagesAdapter!=null&& LocalService.currentChannel != null&&LocalService.currentChannel.u==channel.u ){
 								LocalService.currentChannel.messagesstringList.addAll(channel.messagesstringList);
 								LocalService.channelsmessagesAdapter.notifyDataSetChanged();
 							}
-						}
-					});
+						
+				}	
 			}
 		}
 	}
@@ -1078,8 +1083,21 @@ void stop (){
 	}
 	
 	//GROUP_CREATE|{"u":247,"group_id":"IEIFLWQGHSQRBG","name":"Meps","policy":"","description":null}
+	if (command.equals("GC"))
+	{
+		for (int k = 0; k < ja.length(); k++) {
+ 			
+			try {
+				
+		addToChannelChat(Integer.parseInt(param), ja.getJSONObject(k));
+	}
+		catch (Exception e) {
+			// TODO: handle exception
+		}
+	}
+	}
 	
-	if(command.equals("GC"))
+	if(command.equals("GRPA"))
 	{
 		
 		sendToServer("GE:"+jo.optString("group_id")+"|"+OsMoDroid.settings.getString("u", "Creator"));

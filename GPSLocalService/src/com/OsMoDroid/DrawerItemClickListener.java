@@ -163,12 +163,14 @@ public class DrawerItemClickListener implements OnItemClickListener {
 			} catch (IllegalStateException e)
 			{
 				Log.d(this.getClass().getSimpleName(), "Illegal state exception ignoring");
-				ft.commitAllowingStateLoss();
+				try {
+					ft.commitAllowingStateLoss();
+				} catch (Exception e1) {
+					Log.d(this.getClass().getSimpleName(), "Illegal state exception ignoring dons works");
+					e1.printStackTrace();
+				}
 			}
-        finally
-        {
-        	Log.d(this.getClass().getSimpleName(), "Illegal state exception ignoring no work");
-        }
+       
         mDrawerLayout.closeDrawer(mDrawerList);
 //        new Handler().postDelayed(new Runnable() {
 //            @Override

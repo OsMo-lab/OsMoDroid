@@ -1,8 +1,10 @@
 package com.OsMoDroid;
 
+import java.io.Serializable;
+
 import android.graphics.Color;
 
-public class ChannelChatMessage {
+public class ChannelChatMessage implements Serializable{
 //    u = 468
 //    device = 5837
 //    text = не ник аккаунта
@@ -25,5 +27,16 @@ public class ChannelChatMessage {
 	public ChannelChatMessage() {
 		// TODO Auto-generated constructor stub
 	}
-	
+	@Override
+	public boolean equals(Object o) {
+		
+		 if((o instanceof ChannelChatMessage) && this.u == ((ChannelChatMessage)o).u &&this.u!=0)  
+	        {    
+	            return true;    
+	        }  
+	        else  
+	        {
+	        	return false;  
+	        }  
+	}
 }
