@@ -845,6 +845,7 @@ void stop (){
 		m.u=jo.optInt("u");
 		m.text=Netutil.unescape(jo.optString("text"));
 		m.time=jo.optString("time");
+		m.from=jo.optString("name");
 		String fromDevice="Незнамо кто";
 		//09-16 18:25:41.057: D/com.OsMoDroid.IM(1474):     "data": "0|40+\u041e\u043f\u0430\u0441\u043d\u043e +2013-09-16 22:25:44"
 		//"data": "0|40|cxbcxvbcxvbcxvb|2013-03-14 22:42:34"
@@ -856,22 +857,6 @@ void stop (){
 			if(log)Log.d(this.getClass().getName(), "chanal nest" + channel.name);
 			if (channelU==channel.u){
 				if(!channel.messagesstringList.contains(m)){
-						
-			
-//			for (Device device : channel.deviceList) {
-//				if(log)Log.d(this.getClass().getName(), "device nest" + device.name + " " + device.tracker_id);
-//				if (datanew[0].equals((device.tracker_id))) {
-//					if(log)Log.d(this.getClass().getName(), "Сообщение от устройства в канале " + device.toString());
-//					fromDevice = device.name;
-//				}
-//				if (datanew[0].equals(OsMoDroid.settings.getString("device", ""))){
-//					fromDevice=localService.getString(R.string.iam);
-//					if(log)Log.d(this.getClass().getName(), "Сообщение от устройства в канале от меня ");
-//				}
-//				if (datanew[0].equals("0")){
-//				fromDevice=localService.getString(R.string.observers);
-//				}
-//			}
 				fromDevice=jo.optString("name");
 			Intent intent =new Intent(localService, GPSLocalServiceClient.class).putExtra("channelpos", channel.u);
 			intent.setAction("channelchat");
@@ -896,17 +881,8 @@ void stop (){
 		if (LocalService.channelsmessagesAdapter!=null&& LocalService.currentChannel != null&&LocalService.currentChannel.u==channel.u&&LocalService.chatVisible ){
 			LocalService.mNotificationManager.cancel(OsMoDroid.mesnotifyid);
 		}
-	
-			
-			
-			
-					
-					
 					channel.messagesstringList.add(m);
-					
-					
 							if (LocalService.channelsmessagesAdapter!=null&& LocalService.currentChannel != null&&LocalService.currentChannel.u==channel.u ){
-								LocalService.currentChannel.messagesstringList.addAll(channel.messagesstringList);
 								LocalService.channelsmessagesAdapter.notifyDataSetChanged();
 							}
 						

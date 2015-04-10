@@ -295,7 +295,7 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
 					}
 
 					gpx.mPath.lineTo(screenPoint1.x, screenPoint1.y);
-
+					canvas.drawLine(screenPoint0.x, screenPoint0.y, screenPoint1.x, screenPoint1.y, pathpaint);
 					// update starting point to next position
 					projectedPoint0 = projectedPoint1;
 					screenPoint0.x = screenPoint1.x;
@@ -303,7 +303,7 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
 					gpx.mLineBounds.set(projectedPoint0.x, projectedPoint0.y, projectedPoint0.x, projectedPoint0.y);
 				}
 				pathpaint.setColor(gpx.color);
-				canvas.drawPath(gpx.mPath, this.pathpaint);
+				//canvas.drawPath(gpx.mPath, this.pathpaint);
 				
 				///
 				
