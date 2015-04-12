@@ -14,13 +14,13 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class DeviceChatAdapter extends ArrayAdapter<MyMessage> {
+public class DeviceChatAdapter extends ArrayAdapter<ChatMessage> {
 
 	private TextView txtFromAddr;
 	private TextView txtFromName;
 	private TextView txtText;
 	private TextView txtTime;
-	public DeviceChatAdapter(Context context, int textViewResourceId, List<MyMessage> objects) {
+	public DeviceChatAdapter(Context context, int textViewResourceId, List<ChatMessage> objects) {
 		super(context, textViewResourceId, objects);
 		
 	}
@@ -44,7 +44,7 @@ public class DeviceChatAdapter extends ArrayAdapter<MyMessage> {
 		 
 		
 		
-		        MyMessage message = getItem(position);
+		        ChatMessage message = getItem(position);
 		
 		      
 		
@@ -56,19 +56,19 @@ public class DeviceChatAdapter extends ArrayAdapter<MyMessage> {
 		        txtFromName = (TextView) row.findViewById(R.id.txtFrom);
 		        txtText = (TextView) row.findViewById(R.id.txtText);
 		        txtTime = (TextView) row.findViewById(R.id.txtTime);
-		        txtFromAddr.setText(message.from_addr);
-		        txtFromName.setText(message.from_name);
+		        txtFromAddr.setText(message.from);
+		        txtFromName.setText(message.from);
 		        txtText.setText(message.text);
 		        txtTime.setText(message.time);
-		        txtText.setTextColor(Color.BLACK);
-		        if (message.from.equals(OsMoDroid.settings.getString("uid", ""))){
-		        	 
-		        	txtFromName.setTextColor(Color.GREEN);
-		        }
-		        else 
-		        {
-		        	txtFromName.setTextColor(Color.BLACK);
-		        }
+		        //txtText.setTextColor(Color.BLACK);
+//		        if (message.from.equals(OsMoDroid.settings.getString("uid", ""))){
+//		        	 
+//		        	txtFromName.setTextColor(Color.GREEN);
+//		        }
+//		        else 
+//		        {
+//		        	txtFromName.setTextColor(Color.BLACK);
+//		        }
 		       
 		       
 		        				

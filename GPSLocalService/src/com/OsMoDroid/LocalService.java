@@ -227,12 +227,12 @@ public  class LocalService extends Service implements LocationListener,GpsStatus
     public static ArrayList<String> debuglist= new ArrayList<String>();
     public static ArrayList<PermLink> simlimkslist= new ArrayList<PermLink>();
     public static ArrayAdapter<PermLink> simlinksadapter;
-    public static List<MyMessage> chatmessagelist= new ArrayList<MyMessage>();
+    public static List<ChatMessage> chatmessagelist= new ArrayList<ChatMessage>();
     public static Device currentDevice;
     public static DeviceAdapter deviceAdapter;
     public static ChannelsAdapter channelsAdapter;
     public static ChannelsDevicesAdapter channelsDevicesAdapter;
-    public static ArrayAdapter<ChannelChatMessage> channelsmessagesAdapter;
+    public static ArrayAdapter<ChatMessage> channelsmessagesAdapter;
     public static ArrayAdapter<String> debugAdapter;
     public static DeviceChatAdapter chatmessagesAdapter;
     static Context serContext;
@@ -293,7 +293,7 @@ public  class LocalService extends Service implements LocationListener,GpsStatus
 			if(b.containsKey("deviceU")&&b.getInt("deviceU") != -1){
 				String fromDevice=getString(R.string.from_undefined);
 				for (Device dev : LocalService.deviceList){
-					if (b.getString("deviceU").equals(dev.tracker_id)){
+					if (b.getInt("deviceU")==dev.u){
 						fromDevice=" "+dev.name;
 					}
 				}
@@ -317,7 +317,7 @@ public  class LocalService extends Service implements LocationListener,GpsStatus
 					Notification notification = notificationBuilder.build();
 					LocalService.mNotificationManager.notify(OsMoDroid.mesnotifyid, notification);
 			}
-			if (b.containsKey("deviceU")&&LocalService.currentDevice!=null&&LocalService.currentDevice.tracker_id.equals(b.getString("deviceU")) ){
+			if (b.containsKey("deviceU")&&LocalService.currentDevice!=null&&LocalService.currentDevice.u==(b.getInt("deviceU")) ){
 				LocalService.mNotificationManager.cancel(OsMoDroid.mesnotifyid);
 			}
 			String text="";

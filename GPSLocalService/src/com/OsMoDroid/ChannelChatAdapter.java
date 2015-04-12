@@ -17,13 +17,13 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class ChannelChatAdapter extends ArrayAdapter<ChannelChatMessage> {
+public class ChannelChatAdapter extends ArrayAdapter<ChatMessage> {
 
 //	private TextView txtFrom;
 //	private TextView txtText;
 //	private TextView txtTime;
 //	private TextView txtFromAddr;
-	public ChannelChatAdapter(Context context, int textViewResourceId, List<ChannelChatMessage> objects) {
+	public ChannelChatAdapter(Context context, int textViewResourceId, List<ChatMessage> objects) {
 		super(context, textViewResourceId, objects);
 		
 	}
@@ -37,7 +37,7 @@ public class ChannelChatAdapter extends ArrayAdapter<ChannelChatMessage> {
 		            LayoutInflater inflater = (LayoutInflater) this.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		            row = inflater.inflate(R.layout.devicechatitem, parent, false);
 		 }
-		        ChannelChatMessage message = getItem(position);
+		        ChatMessage message = getItem(position);
 		        TextView txtFrom = (TextView) row.findViewById(R.id.txtFrom);
 		        TextView txtText = (TextView) row.findViewById(R.id.txtText);
 		        TextView txtTime = (TextView) row.findViewById(R.id.txtTime);

@@ -38,7 +38,7 @@ public class Channel implements Serializable,ResultsListener {
 	public String group_id;
 	public String url;
 	public List<Device> deviceList= new ArrayList<Device>();
-	public List<ChannelChatMessage> messagesstringList= new ArrayList<ChannelChatMessage>();
+	public List<ChatMessage> messagesstringList= new ArrayList<ChatMessage>();
 	ArrayList<Point> pointList= new ArrayList<Channel.Point>();
 	public boolean connected=false;
 	public boolean send=false;

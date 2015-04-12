@@ -346,69 +346,7 @@ public class IM implements ResultsListener {
 
 
 
-		public void addtoDeviceChat(String message) {
-String u = "";
-			try {
-				MyMessage mes =new MyMessage( new JSONObject(message));
-				if(log)Log.d(this.getClass().getName(), "MyMessage,from "+mes.from);
-				if(log)Log.d(this.getClass().getName(), "DeviceList= "+LocalService.deviceList);
-if (mes.from.equals(OsMoDroid.settings.getString("device", ""))){
-	for (Device dev : LocalService.deviceList){
-		if((dev.tracker_id).equals(mes.to)){
-			u=dev.tracker_id;
-		}
-	}
-} else {
-				for (Device dev : LocalService.deviceList){
-					if((dev.tracker_id).equals(mes.from)){
-						u=dev.tracker_id;
-					}
-				}
-}		
-				
-				if (LocalService.currentDevice!=null&& u ==LocalService.currentDevice.tracker_id){
-					boolean contains = false;
-					for (MyMessage mes1: LocalService.chatmessagelist){
-						
-						
-						if(mes1.u==mes.u){
-							 contains = true;
-							
-						}
-						
-					}
-					if (!contains){
-						LocalService.chatmessagelist.add(mes);
-						Collections.sort(LocalService.chatmessagelist);
-						
-						localService.alertHandler.post(new Runnable(){
-							public void run() {
-								if (LocalService.chatmessagesAdapter!=null){
-									LocalService.chatmessagesAdapter.notifyDataSetChanged();
-								}
-							}
-						});
-						
-						
-					}
-				
-				}
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			if (!u.equals("")){
-			Message msg = new Message();
-
-			Bundle b = new Bundle();
-
-			b.putString("deviceU", u);
-
-			msg.setData(b);
-
-			localService.alertHandler.sendMessage(msg);
-		}
-			}
+	
 
 
 
@@ -834,14 +772,45 @@ void stop (){
 		
 
 	}
-
+public void addtoDeviceChat(int u,JSONObject jo) {
+	// IM:7909|[{"u":"17","from":"45694","text":"xcvxcvz","time":"2015-04-11 22:35:18"}]
+		ChatMessage m =new ChatMessage();
+		m.u=jo.optInt("u");
+		m.text=Netutil.unescape(jo.optString("text"));
+		m.time=jo.optString("time");
+		m.from=jo.optString("from");
+		for (Device dev : LocalService.deviceList){
+			if((dev.u)==u){
+				if(!dev.messagesstringList.contains(m))
+				{
+					dev.messagesstringList.add(m);
+				}
+			}
+		}
+	if (LocalService.currentDevice!=null&& u ==LocalService.currentDevice.u){
+				localService.alertHandler.post(new Runnable(){
+					public void run() {
+						if (LocalService.chatmessagesAdapter!=null){
+							LocalService.chatmessagesAdapter.notifyDataSetChanged();
+						}
+					}
+				});
+				
+				
+			}
+	Message msg = new Message();
+	Bundle b = new Bundle();
+	b.putInt("deviceU", u);
+	msg.setData(b);
+	localService.alertHandler.sendMessage(msg);
+	}
 	 	 
 
 	private void addToChannelChat(int channelU, JSONObject jo) throws JSONException {
 		if(log)Log.d(this.getClass().getName(), "type=chch");
 		if(log)Log.d(this.getClass().getName(), "Сообщение в чат канала " + jo);
 		
-		ChannelChatMessage m =new ChannelChatMessage();
+		ChatMessage m =new ChatMessage();
 		m.u=jo.optInt("u");
 		m.text=Netutil.unescape(jo.optString("text"));
 		m.time=jo.optString("time");
@@ -1058,7 +1027,7 @@ void stop (){
 		localService.saveObject(LocalService.channelList, OsMoDroid.CHANNELLIST);
 	}
 	
-	//GROUP_CREATE|{"u":247,"group_id":"IEIFLWQGHSQRBG","name":"Meps","policy":"","description":null}
+
 	if (command.equals("GC"))
 	{
 		for (int k = 0; k < ja.length(); k++) {
@@ -1069,6 +1038,20 @@ void stop (){
 	}
 		catch (Exception e) {
 			// TODO: handle exception
+		}
+	}
+	}
+	// IM:7909|[{"u":"17","from":"45694","text":"xcvxcvz","time":"2015-04-11 22:35:18"}]
+
+	if (command.equals("IM"))
+	{
+		for (int k = 0; k < ja.length(); k++) 
+		{
+			try 
+			{
+				addtoDeviceChat(Integer.parseInt(param), ja.getJSONObject(k));
+			}
+			catch (Exception e) {
 		}
 	}
 	}

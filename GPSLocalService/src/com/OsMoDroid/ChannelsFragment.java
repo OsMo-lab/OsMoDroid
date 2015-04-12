@@ -109,9 +109,7 @@ public class ChannelsFragment extends Fragment {
 											JSONObject postjson = new JSONObject();
 											try {
 											postjson.put("text", input.getText().toString());
-											postjson.put("channel", LocalService.channelList.get((int) acmi.id).u);
-											postjson.put("device", OsMoDroid.settings.getString("device", ""));
-											//Netutil.newapicommand(ChannelsFragment.this, "om_channel_chat_post","json="+postjson.toString());
+											globalActivity.mService.myIM.sendToServer("GCS:"+LocalService.channelList.get((int) acmi.id).u+'|'+postjson.toString());
 											} catch (JSONException e) {
 												e.printStackTrace();
 											}

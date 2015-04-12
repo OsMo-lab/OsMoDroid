@@ -30,6 +30,7 @@ public class Device implements Comparable<Device> , Serializable{
 	public boolean subscribed=false;
 	public long updatated=0;
 	public List<GeoPoint> devicePath= new ArrayList<GeoPoint>();
+	public List<ChatMessage> messagesstringList= new ArrayList<ChatMessage>();
 	//public PathOverlay p;
 	public Device(){
 		

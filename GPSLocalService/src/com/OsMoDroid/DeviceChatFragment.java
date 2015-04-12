@@ -45,12 +45,12 @@ import android.widget.AdapterView.OnItemClickListener;
 import com.OsMoDroid.Netutil.MyAsyncTask;
 
 
-public class DeviceChatFragment extends Fragment implements ResultsListener {
+public class DeviceChatFragment extends Fragment  {
 	//ListView lv2;
 	//Button sendButton;
 	//EditText input;
 	 int deviceU=-1;
-	 ArrayList<MyAsyncTask> t= new ArrayList<Netutil.MyAsyncTask>();
+	
 	final private static SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-mm-dd HH:mm:ss");
 	
 	Device getDeviceByU (int u){
@@ -71,19 +71,10 @@ public class DeviceChatFragment extends Fragment implements ResultsListener {
 	}
 	@Override
 	public void onDestroyView() {
-		for (MyAsyncTask task: t){
-			task.cancel(true);
-		}
+	
 		super.onDestroyView();
 	}
-	String getMyApp (){
-		for (Device dev:LocalService.deviceList ){
-			if (dev.u == OsMoDroid.settings.getInt("device", -1)){
-				return dev.app;
-			}
-		}
-			return "0";
-	}
+	
 	
 	
 	/* (non-Javadoc)
@@ -189,6 +180,7 @@ public class DeviceChatFragment extends Fragment implements ResultsListener {
 		   //LocalService.currentchanneldeviceList= LocalService.channelList.get(getIntent().getIntExtra("CHANNELPOS", -1)).deviceList;
 		   
 		   LocalService.currentDevice = getDeviceByU(deviceU);
+		   LocalService.chatmessagelist = LocalService.currentDevice.messagesstringList;
 		    
 	LocalService.chatmessagesAdapter = new DeviceChatAdapter(globalActivity.getApplicationContext(), R.layout.devicechatitem, LocalService.chatmessagelist);
 
@@ -250,56 +242,9 @@ public class DeviceChatFragment extends Fragment implements ResultsListener {
 
 	}
 	
-	static public void getDevices(ResultsListener listener){
-
-		Netutil.newapicommand(listener, "om_device");
+	
 
 
-
-	}
-
-
-	@Override
-	public void onResultsSucceeded(APIComResult result) {
-
-		//Log.d(this.getClass().getSimpleName(),"OnResultListener Command:"+result.Command+",Jo="+result.Jo);
-		if (!(result.Jo==null)  ) {
-
-			Toast.makeText(getActivity(),result.Jo.optString("state")+" "+ result.Jo.optString("error_description"),5).show();
-			
-		
-		
-		
-		if (result.Jo.has("om_device_message_get:"+OsMoDroid.settings.getString("device", "")+","+getDeviceByU(deviceU).tracker_id)){
-			
-			LocalService.chatmessagelist.clear();
-
-			// {"im_get_dialog:173,176":{"33374":{"u":"33374","from":"173","from_app":"0","for":"173","for_app":"176","trig":"173-173","trig_app":"0-176","text":"\u0430\u043f\u0440\u0430\u043f\u0440\u0430\u043f\u0440","time":"2013-03-14 21:41:38","readed":"2013-03-15 00:00:04"},"33375":{"u":"33375","from":"173","from_app":"0","for":"173","for_app":"176","trig":"173-173","trig_app":"0-176","text":"\u0438\u043c\u0442\u043c\u0438\u0442\u043c\u0438\u0442","time":"2013-03-14 21:41:58","readed":"2013-03-15 00:00:04"},"33376":{"u":"33376","from":"173","from_app":"0","for":"173","for_app":"176","trig":"173-173","trig_app":"0-176","text":"\u044f","time":"2013-03-14 21:42:13","readed":"2013-03-15 00:00:04"},"33377":{"u":"33377","from":"173","from_app":"0","for":"173","for_app":"176","trig":"173-173","trig_app":"0-176","text":"\u0430\u043f\u0440\u0430\u043f\u0440\u0430\u043f\u0440","time":"2013-03-14 21:52:46","readed":"2013-03-15 00:00:04"},"33378":{"u":"33378","from":"173","from_app":"0","for":"173","for_app":"176","trig":"173-173","trig_app":"0-176","text":"zxcvxzcv","time":"2013-03-14 22:29:15","readed":"2013-03-15 00:00:04"},"33379":{"u":"33379","from":"173","from_app":"0","for":"173","for_app":"176","trig":"173-173","trig_app":"0-176","text":"xcvbxcvbxcvbcxvb","time":"2013-03-14 22:32:44","readed":"2013-03-15 00:00:04"},"33385":{"u":"33385","from":"173","from_app":"0","for":"173","for_app":"176","trig":"173-173","trig_app":"0-176","text":"bnbvnbvnvbn","time":"2013-03-15 14:39:30","readed":"2013-03-15 14:40:11"},"33386":{"u":"33386","from":"173","from_app":"0","for":"173","for_app":"176","trig":"173-173","trig_app":"0-176","text":"567567567567","time":"2013-03-15 14:39:42","readed":"2013-03-15 14:40:11"},"33392":{"u":"33392","from":"173","from_app":"0","for":"173","for_app":"176","trig":"173-173","trig_app":"0-176","text":"\u0438\u0438\u0438\u0438\u0438\u0438\u0438\u0438\u0438\u0438\u0438\u0438\u0438\u0438\u0438\u0438\u0438\u0438\u0438\u0438","time":"2013-03-15 15:53:07","readed":"0000-00-00 00:00:00"},"33396":{"u":"33396","from":"173","from_app":"0","for":"173","for_app":"176","trig":"173-173","trig_app":"0-176","text":"\u0410\u0438\u043b\u043b","time":"2013-03-15 20:54:58","readed":"0000-00-00 00:00:00"},"33397":{"u":"33397","from":"173","from_app":"0","for":"173","for_app":"176","trig":"173-173","trig_app":"0-176","text":"\u0440\u0440\u043e\u043b\u043f\u043f","time":"2013-03-16 14:29:48","readed":"0000-00-00 00:00:00"}},"state":"ok","working":0.0014}
-			
-			
-			try {
-				  JSONArray a = result.Jo.getJSONArray("om_device_message_get:"+OsMoDroid.settings.getString("device", "")+","+getDeviceByU(deviceU).tracker_id );
-				  for (int i = 0; i < a.length(); i++) {
-			 			JSONObject jsonObject = a.getJSONObject(i);
-	          	{
-			    	
-			    	LocalService.chatmessagelist.add( new MyMessage(jsonObject));
-			    	Collections.sort(LocalService.chatmessagelist);
-			    	if (LocalService.chatmessagesAdapter!=null) {LocalService.chatmessagesAdapter.notifyDataSetChanged();}
-	          	}	
-		
-				  }
-				} catch (Exception e) {
-					Log.d(this.getClass().getSimpleName(), "om_device_chat эксепшн"+e.getMessage());
-					e.printStackTrace();
-				}
-
-
-			
-		}
-		
-		}
-	}
 	
 
 }

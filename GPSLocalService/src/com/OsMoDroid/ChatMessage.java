@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 import android.graphics.Color;
 
-public class ChannelChatMessage implements Serializable{
+public class ChatMessage implements Serializable{
 //    u = 468
 //    device = 5837
 //    text = не ник аккаунта
@@ -15,7 +15,7 @@ public class ChannelChatMessage implements Serializable{
 	public String text;
 	public String time;
 	public int color;
-	public ChannelChatMessage(int u, int device,String from, String text, String time , int color) {
+	public ChatMessage(int u, int device,String from, String text, String time , int color) {
 		
 		this.u=u;
 		this.device=device;
@@ -24,13 +24,13 @@ public class ChannelChatMessage implements Serializable{
 		this.time=time;
 		this.color=color;
 	}
-	public ChannelChatMessage() {
+	public ChatMessage() {
 		// TODO Auto-generated constructor stub
 	}
 	@Override
 	public boolean equals(Object o) {
 		
-		 if((o instanceof ChannelChatMessage) && this.u == ((ChannelChatMessage)o).u &&this.u!=0)  
+		 if((o instanceof ChatMessage) && this.u == ((ChatMessage)o).u &&this.u!=0)  
 	        {    
 	            return true;    
 	        }  

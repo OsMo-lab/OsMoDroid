@@ -261,7 +261,7 @@ public class ChannelDevicesFragment extends Fragment implements ResultsListener 
 		  lv2.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) 
 				{
-					ChannelChatMessage m =(ChannelChatMessage)arg0.getItemAtPosition(arg2);
+					ChatMessage m =(ChatMessage)arg0.getItemAtPosition(arg2);
 					if(input.length()==0&&!(m.from.equals(getString(R.string.iam)))){
 					input.setText(m.from+", "+input.getText());
 					input.setSelection(input.length());
