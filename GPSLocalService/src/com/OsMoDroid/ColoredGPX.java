@@ -48,6 +48,7 @@ public class ColoredGPX implements Serializable {
 			try {
 //				PathOverlay path = new PathOverlay(cg.color, 10, mResourceProxy);
 //				paths.add(path);
+				mPointsPrecomputed=0;
 				mLineBounds = new Rect();
 				points = new ArrayList<Point>(3000);
 				FileInputStream is = new FileInputStream(this.gpxfile);

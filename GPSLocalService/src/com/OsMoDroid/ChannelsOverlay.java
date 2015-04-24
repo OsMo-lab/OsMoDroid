@@ -153,12 +153,13 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
 				}
 		}
 		for (Channel ch :LocalService.channelList){
-			for (ColoredGPX gpx :ch.gpxList)
+			if(ch.send)
 				{
-				
-				drawGPX(canvas, pj, gpx, theBoundingBox , scrPoint , mapView);
-			}
-			
+					for (ColoredGPX gpx :ch.gpxList)
+						{
+							drawGPX(canvas, pj, gpx, theBoundingBox , scrPoint , mapView);
+						}
+				}
 			for(Device dev:ch.deviceList)
 			{
 				
