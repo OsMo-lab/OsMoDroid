@@ -149,8 +149,8 @@ public class IM implements ResultsListener {
 	volatile public boolean authed=false;
 	public BufferedReader rd;
 	public PrintWriter wr;
-	long sendBytes=0;
-	long recievedBytes=0;
+	static long sendBytes=0;
+	static long recievedBytes=0;
 	long connectcount=0;
 	long erorconenctcount=0;
 	volatile public boolean needopensession=false;
@@ -271,8 +271,8 @@ public class IM implements ResultsListener {
           }
       };
       
-      void addlog(final String str){
-    	  	localService.alertHandler.post(new Runnable()
+     static void addlog(final String str){
+    	  	LocalService.alertHandler.post(new Runnable()
 				{
 					
 					@Override
@@ -486,7 +486,7 @@ public class IM implements ResultsListener {
 	        	{
 	        		params = new APIcomParams("http://api.osmo.mobi/init?device="+OsMoDroid.settings.getString("newkey", "")
 		        			//+"&protocol=2"
-	        				+"&app="+OsMoDroid.app_code
+	        				+"&app="+OsMoDroid.app_code+"&dinosaur=yes"
 		        			//+"&version="+localService.getversion()
 		        			,"","gettoken");
 	        	}
@@ -814,7 +814,8 @@ public void addtoDeviceChat(int u,JSONObject jo) {
 		m.u=jo.optInt("u");
 		m.text=Netutil.unescape(jo.optString("text"));
 		m.time=jo.optString("time");
-		m.from=jo.optString("name");
+		m.name=jo.optString("name");
+		
 		String fromDevice="Незнамо кто";
 		//09-16 18:25:41.057: D/com.OsMoDroid.IM(1474):     "data": "0|40+\u041e\u043f\u0430\u0441\u043d\u043e +2013-09-16 22:25:44"
 		//"data": "0|40|cxbcxvbcxvbcxvb|2013-03-14 22:42:34"
@@ -962,10 +963,10 @@ public void addtoDeviceChat(int u,JSONObject jo) {
 			}
 			setkeepAliveAlarm();
 			localService.internetnotify(true);
-			if(OsMoDroid.gpslocalserviceclientVisible)
-			{
-				sendToServer("MD=PD=PG");
-			}
+//			if(OsMoDroid.gpslocalserviceclientVisible)
+//			{
+//				sendToServer("MD=PD=PG");
+//			}
 			if(jo.has("group"))
 			{
 				if(jo.optInt("group")==1)
@@ -982,16 +983,20 @@ public void addtoDeviceChat(int u,JSONObject jo) {
 		}
 		localService.refresh();
 	}
-	if(command.equals("GAA"))
+	if(command.equals("GS"))
 	{
-		localService.globalsend=true;
-		localService.refresh();
+		if(param.equals("1"))
+		{
+			localService.globalsend=true;
+			localService.refresh();
+		}
+		if(param.equals("-1"))
+		{
+			localService.globalsend=false;
+			localService.refresh();
+		}
 	}
-	if(command.equals("GDA"))
-	{
-		localService.globalsend=false;
-		localService.refresh();
-	}
+	
 	
 	if(command.equals("GA"))
 	{
@@ -1055,6 +1060,21 @@ public void addtoDeviceChat(int u,JSONObject jo) {
 		}
 	}
 	}
+	
+	//recive IMP|["46191","\u043f\u0432\u0438\u044c\u0431\u043b\u0440","2015-04-16 22:52:13"]
+		if(command.equals("IMP"))
+		{
+			addict=addict.replace("\"", "");
+			addict=addict.replace("[", "");
+			addict=addict.replace("]", "");
+			String [] data = addict.split(",");
+			JSONObject j = new JSONObject();
+			j.put("from", data[0]);
+			j.put("text", data[1]);
+			j.put("time", data[2]);
+			addtoDeviceChat(Integer.parseInt(data[0]), new JSONObject(addict));
+			
+		}
 	
 	if(command.equals("GRPA"))
 	{
@@ -1260,16 +1280,16 @@ public void addtoDeviceChat(int u,JSONObject jo) {
 	{
 		sendToServer("DEVICE");
 	}
-	if(command.contains("DSA"))
+	if(command.equals("DSA"))
 	{
 		sendToServer("DEVICE");
 	}
-	if(command.contains("DSD"))
+	if(command.equals("DSD"))
 	{
 		sendToServer("DEVICE");
 	}
 	
-	if(command.contains("DEVICE")){
+	if(command.equals("DEVICE")){
 		Iterator<Device> i = LocalService.deviceList.iterator();
 		while (i.hasNext()) {
 		   Device dev = i.next(); // must be called before you can call i.remove()
@@ -1377,6 +1397,7 @@ public void addtoDeviceChat(int u,JSONObject jo) {
 			}
 					if(log)Log.d(getClass().getSimpleName(), "write device list to file");
 					localService.saveObject(LocalService.deviceList, OsMoDroid.DEVLIST);
+					//sendToServer("PD");
 						
 	}
 	
@@ -1423,7 +1444,7 @@ public void addtoDeviceChat(int u,JSONObject jo) {
 			}
 			if(log)Log.d(getClass().getSimpleName(), "write group list to file");
 			localService.saveObject(LocalService.channelList, OsMoDroid.CHANNELLIST);
-			sendToServer("PG");
+			//sendToServer("PG");
 	}
 	if(command.equals("GL"))
 		{
@@ -1511,6 +1532,8 @@ public void addtoDeviceChat(int u,JSONObject jo) {
 		
 		
 	}
+
+	
 //GP:MT|{"users":[{"name":"Dddddd","group_tracker_id":"WSlRasAgyD","color":"#ff9900"}]}
 		//GP:MT|{"users":[{"name":"Dddddd","group_tracker_id":"WSlRasAgyD","deleted":"yes"}]}
 		if (command.equals("GP"))
@@ -1614,18 +1637,21 @@ public void addtoDeviceChat(int u,JSONObject jo) {
 			}
 			if(log)Log.d(getClass().getSimpleName(), "write group list to file");
 			localService.saveObject(LocalService.channelList, OsMoDroid.CHANNELLIST);
+			//sendToServer("PG");
 		}
-		if (command.equals("LD"))
+// DP:7909|["3","1"]
+		if (command.equals("DP"))
 			{
 				for (Device dev : LocalService.deviceList)
 				{
-					if(!dev.tracker_id.equals(OsMoDroid.settings.getString("tracker_id", ""))&&(jo.optInt("d")==dev.u||dev.tracker_id.equals(param)))
+					if(dev.u==Integer.parseInt(param))
+					
 						{
-							if(jo.has("t")&&jo.has("v"))
-								{
-									if (jo.optInt("t")==2)
+							
+							
+									if (Integer.parseInt(addict.substring(2, 3)) ==2)
 										{
-											dev.state=jo.optInt("v");
+											dev.state=Integer.parseInt(addict.substring(6, 7));
 											String status;
 											String messageText="";
 											if (dev.state==1)
@@ -1644,11 +1670,11 @@ public void addtoDeviceChat(int u,JSONObject jo) {
 													localService.alertHandler.sendMessage(msg);
 												}
 										}
-								}
+								
 								{
-									if (jo.optInt("t")==3)
+									if (Integer.parseInt(addict.substring(2, 3))==3)
 										{
-											dev.online=jo.optInt("v");
+											dev.online=Integer.parseInt(addict.substring(6, 7));
 											String status = "";
 											String messageText="";
 											if (dev.online==1) { status=localService.getString(R.string.enternet);}
@@ -1762,7 +1788,8 @@ public void addtoDeviceChat(int u,JSONObject jo) {
 			for (int i = d.indexOf("S")+1; i <= d.length()-1; i++) {
 				if(!Character.isDigit(d.charAt(i))||i==(d.length()-1)){
 					if(!Character.toString(d.charAt(i)).equals(".")||i==(d.length()-1)){
-						dev.speed=LocalService.df0.format((((Float.parseFloat(d.substring(d.indexOf("S")+1, i+1))*3.6))));
+						addlog(d.substring(d.indexOf("S")+1, i));
+						dev.speed=LocalService.df0.format((((Float.parseFloat(d.substring(d.indexOf("S")+1, i))*3.6))));
 						break;
 					}
 				}

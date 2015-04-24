@@ -11,6 +11,7 @@ public class ChatMessage implements Serializable{
 //    time = 2014-04-18 18:38:22
 	public int u;
 	public int device;
+	public String name;
 	public String from;
 	public String text;
 	public String time;

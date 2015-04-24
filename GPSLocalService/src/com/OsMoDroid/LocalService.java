@@ -241,7 +241,7 @@ public  class LocalService extends Service implements LocationListener,GpsStatus
 	public static boolean channelsupdated=false;
 	public static boolean chatVisible=false;
 	 public static String currentItemName="";
-    final   Handler alertHandler = new Handler() {
+    final static   Handler alertHandler = new Handler() {
 			@Override
 			public void handleMessage(Message message) {
 			if(log)Log.d(this.getClass().getName(), "Handle message "+message.toString());
@@ -291,20 +291,20 @@ public  class LocalService extends Service implements LocationListener,GpsStatus
 			
 			
 			if(b.containsKey("deviceU")&&b.getInt("deviceU") != -1){
-				String fromDevice=getString(R.string.from_undefined);
+				String fromDevice=serContext.getString(R.string.from_undefined);
 				for (Device dev : LocalService.deviceList){
 					if (b.getInt("deviceU")==dev.u){
 						fromDevice=" "+dev.name;
 					}
 				}
-				Intent intent =new Intent(LocalService.this, GPSLocalServiceClient.class).putExtra("deviceU", b.getInt("deviceU" ));
+				Intent intent =new Intent(serContext, GPSLocalServiceClient.class).putExtra("deviceU", b.getInt("deviceU" ));
 				intent.setAction("devicechat");
 				PendingIntent contentIntent = PendingIntent.getActivity(serContext,333,intent, PendingIntent.FLAG_CANCEL_CURRENT);
 				Long when=System.currentTimeMillis();
 			 	NotificationCompat.Builder notificationBuilder =new NotificationCompat.Builder(
 						serContext.getApplicationContext())
 				    	.setWhen(when)
-				    	.setContentText(getString(R.string.message)+fromDevice)
+				    	.setContentText(serContext.getString(R.string.message)+fromDevice)
 				    	.setContentTitle("OsMoDroid")
 				    	.setSmallIcon(android.R.drawable.ic_menu_send)
 				    	.setAutoCancel(true)
@@ -386,7 +386,7 @@ public  class LocalService extends Service implements LocationListener,GpsStatus
 	private boolean bindedlocaly;
 	private int pollperiod=0;
 	boolean paused=false;
-	private boolean log=true;
+	private static boolean log=true;
 	String sending="";
 	ArrayList<String> buffer= new ArrayList<String>();
 	ArrayList<String> sendingbuffer= new ArrayList<String>();
@@ -1458,10 +1458,12 @@ public void sendid()
 	public void onLocationChanged(Location location) {
 		if(where)
 			{
+				IM.addlog("send on where");
 				sendlocation(location);
 				where=false;
 			}
 		if (!state){
+			IM.addlog("remove updates because state");
 			myManager.removeUpdates(this);
 		}
 		currentLocation.set(location);
@@ -1475,21 +1477,37 @@ public void sendid()
 		if (System.currentTimeMillis()<lastgpslocationtime+pollperiod+30000 && location.getProvider().equals(LocationManager.NETWORK_PROVIDER))
 		{
 			if(log)Log.d(this.getClass().getName(),"У нас есть GPS еще");
+			IM.addlog("We still have GPS");
 			return;
+		}
+		else
+		{
+			IM.addlog("We still have GPS -ELSE");
 		}
 		if (System.currentTimeMillis()>lastgpslocationtime+pollperiod+30000 && location.getProvider().equals(LocationManager.NETWORK_PROVIDER))
 		{
 			if(log)Log.d(this.getClass().getName(),"У нас уже нет GPS");
+			IM.addlog("Lost GPS till");
 			if ((location.distanceTo(prevlocation)>distance && System.currentTimeMillis()>(prevnetworklocationtime+period)))
 			{
+				IM.addlog("send on because networklocation");
 				prevnetworklocationtime=System.currentTimeMillis();
 				sendlocation(location);
 				return; 
 			}
+			else
+			{
+				IM.addlog("send on because networklocation - ELSE");
+			}
+		}
+		else
+		{
+			IM.addlog("Lost GPS till - ELSE");
 		}
 		if(firstsend&&sessionstarted&&myIM!=null&&myIM.authed)
 		{
 			if(log)Log.d(this.getClass().getName(),"Первая отправка");
+			IM.addlog("First send");
 			sendlocation(location);
 			prevlocation.set(location);
 			prevlocation_gpx.set(location);
@@ -1499,6 +1517,10 @@ public void sendid()
 			workmilli= System.currentTimeMillis();
 			firstsend=false;
 
+		}
+		else
+		{
+			IM.addlog("First send - ELSE");
 		}
 		if (location.getSpeed()>=speed_gpx/3.6 && (int)location.getAccuracy()<hdop_gpx && prevlocation_spd!=null )
 		{
@@ -1549,6 +1571,7 @@ public void sendid()
 		refresh();
 		if (location.getProvider().equals(LocationManager.GPS_PROVIDER))
 		{
+			IM.addlog("Provider=GPS");
 			lastgpslocationtime=System.currentTimeMillis();
 			if (gpx && fileheaderok) 
 			{
@@ -1595,9 +1618,12 @@ public void sendid()
 				}
 			}
 			if(log)Log.d(this.getClass().getName(), "sessionstarted="+sessionstarted);
+			IM.addlog("Session started="+sessionstarted);
 			if (live&&sessionstarted)
 			{
+				IM.addlog("live and session satrted");
 				if(bearing>0){
+					IM.addlog("bearing>0");
 					//if(log)Log.d(this.getClass().getName(), "Попали в проверку курса для отправки");
 					//if(log)Log.d(this.getClass().getName(), "Accuracey"+location.getAccuracy()+"hdop"+hdop);
 					double lon1=location.getLongitude();
@@ -1612,36 +1638,57 @@ public void sendid()
 					refresh();
 					if (OsMoDroid.settings.getBoolean("modeAND", false)&&(int)location.getAccuracy()<hdop && location.getSpeed()>=speed/3.6&&(location.distanceTo(prevlocation)>distance && location.getTime()>(prevlocation.getTime()+period) && (location.getSpeed()>=(speedbearing/3.6) && Math.abs(brng-prevbrng)>=bearing)))
 					{
+						IM.addlog("modeAND and accuracy and speed");
 						prevlocation.set(location);
 						prevbrng=brng;
 						//if(log)Log.d(this.getClass().getName(), "send(location)="+location);
 						sendlocation(location);
 					}
+					else
+					{
+						IM.addlog("modeAND and accuracy and speed -ELSE");
+					}
 					if (!OsMoDroid.settings.getBoolean("modeAND", false)&&(int)location.getAccuracy()<hdop && location.getSpeed()>=speed/3.6&&(location.distanceTo(prevlocation)>distance || location.getTime()>(prevlocation.getTime()+period) || (location.getSpeed()>=(speedbearing/3.6) && Math.abs(brng-prevbrng)>=bearing)))
 					{
+						IM.addlog("not modeAND and accuracy and speed");
 						prevlocation.set(location);
 						prevbrng=brng;
 						//if(log)Log.d(this.getClass().getName(), "send(location)="+location);
 						sendlocation(location);
+					}
+					else
+					{
+						IM.addlog("not modeAND and accuracy and speed - ELSE");
 					}
 					
 				}
 				else 
 				{
+					IM.addlog("bearing>0 - ELSE");
 					//if(log)Log.d(this.getClass().getName(), "Отправляем без курса");
 					if (OsMoDroid.settings.getBoolean("modeAND", false)&&(int)location.getAccuracy()<hdop &&location.getSpeed()>=speed/3.6 &&(location.distanceTo(prevlocation)>distance && location.getTime()>(prevlocation.getTime()+period)))
 					{
+						IM.addlog("modeAND and accuracy and speed");
 						//if(log)Log.d(this.getClass().getName(), "Accuracey"+location.getAccuracy()+"hdop"+hdop);
 						prevlocation.set(location);
 						//if(log)Log.d(this.getClass().getName(), "send(location)="+location);
 						sendlocation(location);
 					}
+					else
+					{
+						IM.addlog("modeAND and accuracy and speed - ELSE");
+					}
 					if (!OsMoDroid.settings.getBoolean("modeAND", false)&&(int)location.getAccuracy()<hdop &&location.getSpeed()>=speed/3.6 &&(location.distanceTo(prevlocation)>distance || location.getTime()>(prevlocation.getTime()+period)))
 					{
+						IM.addlog("not modeAND and accuracy and speed");
 						//if(log)Log.d(this.getClass().getName(), "Accuracey"+location.getAccuracy()+"hdop"+hdop);
 						prevlocation.set(location);
 						//if(log)Log.d(this.getClass().getName(), "send(location)="+location);
 						sendlocation(location);
+					}
+					else
+					{
+						IM.addlog("modeAND and accuracy and speed - ELSE");
 					}
 					
 				}
@@ -1649,7 +1696,12 @@ public void sendid()
 			else
 			{
 				if(log)Log.d(this.getClass().getName(), " not !hash.equals() && live&&sessionstarted");	
+				IM.addlog("live and session satrted - ELSE");
 			}
+		}
+		else
+		{
+			IM.addlog("Provider=GPS - ELSE");
 		}
 	}
 	public void onProviderDisabled(String provider) 
@@ -1842,7 +1894,7 @@ private void writegpx(Location location){
 }
 
 private void sendlocation (Location location){
-
+	IM.addlog("void sendlocation");
 	if(log)Log.d(this.getClass().getName(), "void sendlocation");
 
 //http://t.esya.ru/?60.452323:30.153262:5:53:25:hadfDgF:352
@@ -1902,15 +1954,15 @@ private void sendlocation (Location location){
 				sending=sending+"T" + location.getTime()/1000;
 				}
 			}
-		myIM.addlog("Send:AUTHED="+myIM.authed+" Sending:"+sending);
+		IM.addlog("Send:AUTHED="+myIM.authed+" Sending:"+sending);
 		myIM.sendToServer(sending);		
-		myIM.addlog("Sendaf:AUTHED="+myIM.authed+" Sending:"+sending);
+		IM.addlog("Sendaf:AUTHED="+myIM.authed+" Sending:"+sending);
 					
 		if(log)Log.d(this.getClass().getName(), "GPS websocket sendlocation");
 	} else
 		{
 			if(log)Log.d(this.getClass().getName(), "Отправка не пошла: "+myIM.authed +" s "+sending);
-			myIM.addlog("Send not executed:AUTHED="+myIM.authed+" Sending:"+sending);
+			IM.addlog("Send not executed:AUTHED="+myIM.authed+" Sending:"+sending);
 			if(usebuffer)
 			{
 			buffer.add("T|L"+df6.format( location.getLatitude()) +":"+ df6.format(location.getLongitude())

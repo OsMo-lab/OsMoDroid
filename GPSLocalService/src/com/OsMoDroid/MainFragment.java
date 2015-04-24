@@ -609,11 +609,11 @@ else {
 										Boolean boolglobalsend =intent.getBooleanExtra("globalsend", false);
 										if (boolglobalsend)
 										{
-											globalActivity.mService.myIM.sendToServer("GDA");
+											globalActivity.mService.myIM.sendToServer("GS:-1");
 										}
 										else
 										{
-											globalActivity.mService.myIM.sendToServer("GAA");
+											globalActivity.mService.myIM.sendToServer("GS:1");
 										}
 
 									}
