@@ -1536,7 +1536,7 @@ public void sendid()
 			//if(log)Log.d(this.getClass().getName(),"Log of Workdistance, Workdistance="+ Float.toString(workdistance)+" location="+location.toString()+" prevlocation_spd="+prevlocation_spd.toString()+" distanceto="+Float.toString(location.distanceTo(prevlocation_spd)));
 			prevlocation_spd.set(location);	
 			GeoPoint geopoint = new GeoPoint(location);
-			if(devlistener!=null){devlistener.onNewPoint(geopoint);}
+			//if(devlistener!=null){devlistener.onNewPoint(geopoint);}
 			traceList.add(geopoint);
 		}
 		

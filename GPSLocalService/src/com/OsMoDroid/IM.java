@@ -229,31 +229,10 @@ public class IM implements ResultsListener {
           @Override public void onReceive( Context context, Intent _ )
           {
         	  addlog("Socket reconnect receiver trigged");
-        	  localService.alertHandler.post(new Runnable()
-  			{
-  				
-  				@Override
-  				public void run()
-  					{
-  						ondisconnect();
-  						
-  					}
-  			});
         	  disablekeepAliveAlarm();
-        	  
-
         	  stop();
-        	  localService.alertHandler.post(new Runnable()
-  				{
-  					
-  					@Override
-  					public void run()
-  						{
-  							if(log)Log.d(this.getClass().getName(), "void IM.stop");
-  							localService.internetnotify(false);
-  						}
-  				});
-    			localService.refresh();
+        	  localService.internetnotify(false);
+        	  localService.refresh();
         	  start();
               context.unregisterReceiver( this ); 
           }
@@ -1851,12 +1830,13 @@ public void addtoDeviceChat(int u,JSONObject jo) {
 						public void run()
 							{
 								addlog("setReconnectAlarm on error");
+								parent.registerReceiver( reconnectReceiver, new IntentFilter(RECONNECT_INTENT) );
+						    	manager.cancel(reconnectPIntent);
+						    	manager.set( AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + ERROR_RECONNECT_TIMEOUT, reconnectPIntent );
 								
 							}
 					 });
-		    	  parent.registerReceiver( reconnectReceiver, new IntentFilter(RECONNECT_INTENT) );
-		    	  manager.cancel(reconnectPIntent);
-		    	  manager.set( AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + ERROR_RECONNECT_TIMEOUT, reconnectPIntent );
+		    	  
 			 }
 		}
 

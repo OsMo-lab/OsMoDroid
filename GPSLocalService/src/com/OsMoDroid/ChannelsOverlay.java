@@ -99,10 +99,24 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
 		final BoundingBoxE6 theBoundingBox = mapView.getBoundingBox();
 		final Projection pj = mapView.getProjection();
         final Point scrPoint = new Point();
+        final Point scrPoint1 = new Point();
         for(ColoredGPX gpx : LocalService.showedgpxList)
         	{
         		drawGPX(canvas, pj, gpx , theBoundingBox, scrPoint, mapView);
         	}
+        
+        if(LocalService.traceList.size()>2)
+	 	{
+		 pathpaint.setColor(Color.RED);
+		 pj.toPixels((GeoPoint) LocalService.traceList.get(0), scrPoint);
+		 for (int i = LocalService.traceList.size() - 2; i >= 0; i--) 
+		 	{
+			 pj.toPixels((GeoPoint) LocalService.traceList.get(i), scrPoint);
+			 pj.toPixels((GeoPoint) LocalService.traceList.get(i+1), scrPoint1);
+			 canvas.drawLine(scrPoint1.x, scrPoint1.y, scrPoint.x, scrPoint.y, pathpaint);
+		 	}
+		 	
+	 	}
         for(Device dev:LocalService.deviceList)
 		{
 			
@@ -110,16 +124,14 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
 			 if(dev.devicePath.size()>2)
 			 	{
 				 pathpaint.setColor( dev.color);
-				 Path path = new Path();
 				 pj.toPixels((GeoPoint) dev.devicePath.get(0), scrPoint);
-				 path.moveTo(scrPoint.x, scrPoint.y);
-				 for (IGeoPoint geo: dev.devicePath)
+				 for (int i = dev.devicePath.size() - 2; i >= 0; i--) 
 				 	{
-					 pj.toPixels((GeoPoint) geo, scrPoint);
-					 path.lineTo(scrPoint.x, scrPoint.y);
-					 path.moveTo(scrPoint.x, scrPoint.y);
+					 pj.toPixels((GeoPoint) dev.devicePath.get(i), scrPoint);
+					 pj.toPixels((GeoPoint) dev.devicePath.get(i+1), scrPoint1);
+					 canvas.drawLine(scrPoint1.x, scrPoint1.y, scrPoint.x, scrPoint.y, pathpaint);
 				 	}
-				 	canvas.drawPath(path, pathpaint);
+				 	
 			 	}
 		}
 			 if(dev.lat!=0f&&dev.lon!=0f)

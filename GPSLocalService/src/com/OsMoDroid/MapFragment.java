@@ -98,7 +98,7 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
 	 	MapView mMapView;
 		private IMapController mController;
 		private MyLocationNewOverlay myLoc;
-		private PathOverlay myTracePathOverlay;
+		//private PathOverlay myTracePathOverlay;
 		private GPSLocalServiceClient globalActivity;
 		boolean rotate=false;
 		private IMyLocationConsumer myLocationConumer;
@@ -288,7 +288,7 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
 		mController=null;
 		myLoc.disableMyLocation();
 		myLoc=null;
-		myTracePathOverlay=null;
+		//myTracePathOverlay=null;
 		globalActivity=null;
 		Log.d(getClass().getSimpleName(), "map ondetach");
 		super.onDetach();
@@ -501,20 +501,20 @@ public class CustomMapTileFilesystemProvider extends MapTileFilesystemProvider {
 			
 			
 			
-			if(myTracePathOverlay==null)
-			{
-				myTracePathOverlay=new PathOverlay(Color.RED, 10, mResourceProxy);
-				myTracePathOverlay.addPoints(LocalService.traceList);
-			} else
-			{
-				myTracePathOverlay.clearPath();
-				myTracePathOverlay.addPoints(LocalService.traceList);
-			}
+//			if(myTracePathOverlay==null)
+//			{
+//				myTracePathOverlay=new PathOverlay(Color.RED, 10, mResourceProxy);
+//				myTracePathOverlay.addPoints(LocalService.traceList);
+//			} else
+//			{
+//				myTracePathOverlay.clearPath();
+//				myTracePathOverlay.addPoints(LocalService.traceList);
+//			}
 	
 			
 			
 			
-            mMapView.getOverlays().add(myTracePathOverlay);
+            //mMapView.getOverlays().add(myTracePathOverlay);
             
             myLoc = new MyLocationNewOverlay (getActivity(),this, mMapView);
             
@@ -710,17 +710,5 @@ public class CustomMapTileFilesystemProvider extends MapTileFilesystemProvider {
 		// TODO Auto-generated method stub
 		
 	}
-
-
-
-
-
-	@Override
-	public void onNewPoint(GeoPoint geopoint) {
-		Log.d(getClass().getSimpleName(), "map on new point");
-		myTracePathOverlay.addPoint(geopoint);
-		
-	}
-	
 	
 	}
