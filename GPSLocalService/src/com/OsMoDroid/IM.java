@@ -1302,7 +1302,7 @@ public void addtoDeviceChat(int u,JSONObject jo) {
 						exist=true;
 						dev.name=jsonObject.optString("name");
 						dev.tracker_id=jsonObject.optString("id");
-						dev.subscribed=jsonObject.has("subscribe");
+						dev.subscribed=jsonObject.has("sub");
 						dev.u=jsonObject.optInt("u");
 						dev.online=jsonObject.optInt("online");
 						dev.state=jsonObject.optInt("state");
@@ -1340,7 +1340,7 @@ public void addtoDeviceChat(int u,JSONObject jo) {
 					Device newdev = new Device();
 					newdev.name=jsonObject.optString("name");
 					newdev.tracker_id=jsonObject.optString("id");
-					newdev.subscribed=jsonObject.has("subscribe");
+					newdev.subscribed=jsonObject.has("sub");
 					newdev.u=jsonObject.optInt("u");
 					newdev.online=jsonObject.optInt("online");
 					newdev.state=jsonObject.optInt("state");
