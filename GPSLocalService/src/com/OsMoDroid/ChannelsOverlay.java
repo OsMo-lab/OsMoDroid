@@ -113,7 +113,11 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
 		 	{
 			 pj.toPixels((GeoPoint) LocalService.traceList.get(i), scrPoint);
 			 pj.toPixels((GeoPoint) LocalService.traceList.get(i+1), scrPoint1);
-			 canvas.drawLine(scrPoint1.x, scrPoint1.y, scrPoint.x, scrPoint.y, pathpaint);
+			 if (Math.abs(scrPoint.x - scrPoint1.x) + Math.abs(scrPoint.y - scrPoint1.y) <= 1)
+			 	{
+					 canvas.drawLine(scrPoint1.x, scrPoint1.y, scrPoint.x, scrPoint.y, pathpaint);
+				}
+			
 		 	}
 		 	
 	 	}
@@ -129,7 +133,10 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
 				 	{
 					 pj.toPixels((GeoPoint) dev.devicePath.get(i), scrPoint);
 					 pj.toPixels((GeoPoint) dev.devicePath.get(i+1), scrPoint1);
-					 canvas.drawLine(scrPoint1.x, scrPoint1.y, scrPoint.x, scrPoint.y, pathpaint);
+					 if (Math.abs(scrPoint.x - scrPoint1.x) + Math.abs(scrPoint.y - scrPoint1.y) <= 1)
+					 	{
+							 canvas.drawLine(scrPoint1.x, scrPoint1.y, scrPoint.x, scrPoint.y, pathpaint);
+						}
 				 	}
 				 	
 			 	}
@@ -179,16 +186,16 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
 				 if(dev.devicePath.size()>2)
 				 	{
 					 pathpaint.setColor( dev.color);
-					 Path path = new Path();
 					 pj.toPixels((GeoPoint) dev.devicePath.get(0), scrPoint);
-					 path.moveTo(scrPoint.x, scrPoint.y);
-					 for (IGeoPoint geo: dev.devicePath)
+					 for (int i = dev.devicePath.size() - 2; i >= 0; i--) 
 					 	{
-						 pj.toPixels((GeoPoint) geo, scrPoint);
-						 path.lineTo(scrPoint.x, scrPoint.y);
-						 path.moveTo(scrPoint.x, scrPoint.y);
+						 pj.toPixels((GeoPoint) dev.devicePath.get(i), scrPoint);
+						 pj.toPixels((GeoPoint) dev.devicePath.get(i+1), scrPoint1);
+						 if (Math.abs(scrPoint.x - scrPoint1.x) + Math.abs(scrPoint.y - scrPoint1.y) <= 1)
+						 	{
+								 canvas.drawLine(scrPoint1.x, scrPoint1.y, scrPoint.x, scrPoint.y, pathpaint);
+							}
 					 	}
-					 	canvas.drawPath(path, pathpaint);
 				 	}
 			}
 				 if(dev.lat!=0f&&dev.lon!=0f)
