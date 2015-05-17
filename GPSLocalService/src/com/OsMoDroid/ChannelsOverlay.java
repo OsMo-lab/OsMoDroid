@@ -113,7 +113,7 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
 		 	{
 			 pj.toPixels((GeoPoint) LocalService.traceList.get(i), scrPoint);
 			 pj.toPixels((GeoPoint) LocalService.traceList.get(i+1), scrPoint1);
-			 if (Math.abs(scrPoint.x - scrPoint1.x) + Math.abs(scrPoint.y - scrPoint1.y) <= 1)
+			 if (Math.abs(scrPoint.x - scrPoint1.x) + Math.abs(scrPoint.y - scrPoint1.y) > 1)
 			 	{
 					 canvas.drawLine(scrPoint1.x, scrPoint1.y, scrPoint.x, scrPoint.y, pathpaint);
 				}
@@ -133,7 +133,7 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
 				 	{
 					 pj.toPixels((GeoPoint) dev.devicePath.get(i), scrPoint);
 					 pj.toPixels((GeoPoint) dev.devicePath.get(i+1), scrPoint1);
-					 if (Math.abs(scrPoint.x - scrPoint1.x) + Math.abs(scrPoint.y - scrPoint1.y) <= 1)
+					 if (Math.abs(scrPoint.x - scrPoint1.x) + Math.abs(scrPoint.y - scrPoint1.y) > 1)
 					 	{
 							 canvas.drawLine(scrPoint1.x, scrPoint1.y, scrPoint.x, scrPoint.y, pathpaint);
 						}
@@ -191,7 +191,7 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
 					 	{
 						 pj.toPixels((GeoPoint) dev.devicePath.get(i), scrPoint);
 						 pj.toPixels((GeoPoint) dev.devicePath.get(i+1), scrPoint1);
-						 if (Math.abs(scrPoint.x - scrPoint1.x) + Math.abs(scrPoint.y - scrPoint1.y) <= 1)
+						 if (Math.abs(scrPoint.x - scrPoint1.x) + Math.abs(scrPoint.y - scrPoint1.y) > 1)
 						 	{
 								 canvas.drawLine(scrPoint1.x, scrPoint1.y, scrPoint.x, scrPoint.y, pathpaint);
 							}
