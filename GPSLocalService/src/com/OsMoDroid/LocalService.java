@@ -754,7 +754,7 @@ OsMoDroid.settings.edit().putBoolean("ondestroy", false).commit();
 
 	void batteryinfo(Context context) throws JSONException{
             JSONObject postjson = new JSONObject();
-            postjson.put("batteryprocent", batteryprocent);
+            postjson.put("percent", batteryprocent);
             postjson.put("temperature", temperature);
             postjson.put("voltage", voltage);
             postjson.put("plugged", plugged);
