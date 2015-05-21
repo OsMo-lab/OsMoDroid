@@ -754,11 +754,11 @@ OsMoDroid.settings.edit().putBoolean("ondestroy", false).commit();
 
 	void batteryinfo(Context context) throws JSONException{
             JSONObject postjson = new JSONObject();
-            postjson.put("batteryprocent", batteryprocent);
+            postjson.put("percent", batteryprocent);
             postjson.put("temperature", temperature);
             postjson.put("voltage", voltage);
             postjson.put("plugged", plugged);
-            myIM.sendToServer("RCR|"+postjson.toString());
+            myIM.sendToServer("RCR:"+OsMoDroid.TRACKER_BATTERY_INFO+"|"+postjson.toString());
 	}
 	private String capitalize(String s) {
 		  if (s == null || s.length() == 0) {
@@ -790,11 +790,12 @@ OsMoDroid.settings.edit().putBoolean("ondestroy", false).commit();
         postjson.put("androidversion", androidver);
         postjson.put("devicename", getDeviceName());
         postjson.put("display", Integer.toString(width)+"x"+Integer.toString(height));
-        myIM.sendToServer("RCR|"+postjson.toString());
+        myIM.sendToServer("RCR:"+OsMoDroid.TRACKER_SYSTEM_INFO+"|"+postjson.toString());
 }
 	
 	void vibrate (Context context,long milliseconds) {
 		vibrator.vibrate(milliseconds);
+		 myIM.sendToServer("RCR:"+OsMoDroid.TRACKER_VIBRATE+"|1");
 	}
 	
 	
@@ -803,7 +804,7 @@ OsMoDroid.settings.edit().putBoolean("ondestroy", false).commit();
         postjson.put("view", count);
         postjson.put("active", countFix);
         postjson.put("accuracy", accuracy);
-        myIM.sendToServer("RCR|"+postjson.toString());
+        myIM.sendToServer("RCR:"+OsMoDroid.TRACKER_SATELLITES_INFO+"|"+postjson.toString());
 }
 	
 	void getpreferences(Context context) throws JSONException{
@@ -832,18 +833,18 @@ OsMoDroid.settings.edit().putBoolean("ondestroy", false).commit();
         postjson.put("usewake",usewake); 
         postjson.put("notifyperiod",notifyperiod); 
         postjson.put("sendsound",sendsound); 
-        myIM.sendToServer("RCR|"+postjson.toString());
+        //myIM.sendToServer("RCR:"+OsMoDroid.+"|"+postjson.toString());
 }
 
 	void wifion(Context context) {
 		WifiManager wifi = (WifiManager) getSystemService(Context.WIFI_SERVICE);
 		wifi.setWifiEnabled(true);
-		 myIM.sendToServer("RCR|1");
+		myIM.sendToServer("RCR:"+OsMoDroid.TRACKER_WIFI_ON+"|1");
 	}
 	void wifioff(Context context) {
 		WifiManager wifi = (WifiManager) getSystemService(Context.WIFI_SERVICE);
 		wifi.setWifiEnabled(false);
-		myIM.sendToServer("RCR|1");
+		myIM.sendToServer("RCR:"+OsMoDroid.TRACKER_WIFI_OFF+"|1");
 	}
 	
 	void wifiinfo(Context context) throws JSONException {
@@ -865,7 +866,7 @@ OsMoDroid.settings.edit().putBoolean("ondestroy", false).commit();
 		{
 			postjson.put("state", "noconnect");
 		}
-	         myIM.sendToServer("RCR|"+postjson.toString());
+		myIM.sendToServer("RCR:"+OsMoDroid.TRACKER_WIFI_INFO+"|"+postjson.toString());
 	}
 	
 	

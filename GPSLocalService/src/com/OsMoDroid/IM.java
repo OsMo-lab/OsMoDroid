@@ -942,10 +942,10 @@ public void addtoDeviceChat(int u,JSONObject jo) {
 			}
 			setkeepAliveAlarm();
 			localService.internetnotify(true);
-//			if(OsMoDroid.gpslocalserviceclientVisible)
-//			{
-//				sendToServer("MD=PD=PG");
-//			}
+			if (!OsMoDroid.settings.getBoolean("subscribebackground", false))
+				{
+					sendToServer("PG:-1=PD:-1");
+				}
 			if(jo.has("group"))
 			{
 				if(jo.optInt("group")==1)
@@ -1123,9 +1123,11 @@ public void addtoDeviceChat(int u,JSONObject jo) {
 		}
 		if(param.equals(OsMoDroid.TRACKER_SESSION_START)){
 			localService.startServiceWork();
+			sendToServer("RCR:"+OsMoDroid.TRACKER_SESSION_START+"|1");
 		}
 		if(param.equals(OsMoDroid.TRACKER_SESSION_STOP)){
 			localService.stopServiceWork(true);
+			sendToServer("RCR:"+OsMoDroid.TRACKER_SESSION_STOP+"|1");
 		}
 		if(param.equals(OsMoDroid.TTS)){
 			if(OsMoDroid.settings.getBoolean("ttsremote", false)&&localService.tts!=null){localService.tts.speak(addict , TextToSpeech.QUEUE_ADD, null);}
@@ -1133,18 +1135,22 @@ public void addtoDeviceChat(int u,JSONObject jo) {
 		if(param.equals(OsMoDroid.ALARM_ON))
 			{
 				localService.playAlarmOn();
+				sendToServer("RCR:"+OsMoDroid.ALARM_ON+"|1");
 			}
 		if(param.equals(OsMoDroid.ALARM_OFF))
 			{
 				localService.playAlarmOff();
+				sendToServer("RCR:"+OsMoDroid.ALARM_OFF+"|1");
 			}
 		if(param.equals(OsMoDroid.SIGNAL_ON))
 			{
 				localService.enableSignalisation();
+				sendToServer("RCR:"+OsMoDroid.SIGNAL_ON+"|1");
 			}
 		if(param.equals(OsMoDroid.SIGNAL_OFF))
 			{
 				localService.disableSignalisation();
+				sendToServer("RCR:"+OsMoDroid.SIGNAL_OFF+"|1");
 			}
 		if(param.equals(OsMoDroid.TRACKER_BATTERY_INFO))
 			{
@@ -1200,11 +1206,13 @@ public void addtoDeviceChat(int u,JSONObject jo) {
 			}
 		if(param.equals(OsMoDroid.TRACKER_EXIT))
 			{
+				sendToServer("RCR:"+OsMoDroid.TRACKER_EXIT+"|1");
 				localService.stopSelf();
 				System.exit(0);
 			}
 		if(param.equals(OsMoDroid.WHERE))
 			{
+				sendToServer("RCR:"+OsMoDroid.WHERE+"|1");
 				localService.where=true;
 				if (!localService.state){
 					localService.alertHandler.post(new Runnable() {

@@ -382,7 +382,10 @@ public class CustomMapTileFilesystemProvider extends MapTileFilesystemProvider {
 		Log.d(getClass().getSimpleName(), "map onpause");
 		mMapView.getOverlays().remove(myLoc);
 		myLoc.disableMyLocation();
-		
+		if (!OsMoDroid.settings.getBoolean("subscribebackground", false))
+			{
+				globalActivity.mService.myIM.sendToServer("PG:-1=PD:-1");
+			}
 		super.onPause();
 	}
 
@@ -396,6 +399,10 @@ public class CustomMapTileFilesystemProvider extends MapTileFilesystemProvider {
 		globalActivity.actionBar.setTitle(getString(R.string.map));
 		mMapView.getOverlays().add(myLoc);
 		myLoc.enableMyLocation();
+		if (!OsMoDroid.settings.getBoolean("subscribebackground", false))
+			{
+				globalActivity.mService.myIM.sendToServer("PG:1=PD:1");
+			}
 		super.onResume();
 	}
 
