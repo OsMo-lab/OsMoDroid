@@ -210,4 +210,11 @@
   <string name="empty_devices">En esta pantalla hay una lista de sus dispositivos, y suscripciones a sus dispositivos. Las acciones disponibles con sus dispositivos están en el menú contextual.</string>
   <string name="empty_links">En esta pantalla hay una referencia permanente para monitorear su dispositivo desde la web. Las acciones disponibles se pueden encontrar en el menú contextual.</string>
   <string name="checkfirewall">No se ha podido conectar al servidor de seguimiento por su puerto. Compruebe que da total acceso a OsMoDroid por su firewall. También puede ser debido a una conexión de datos mala.</string>
+  <string name="send_frequency">Frecuencia de envío</string>
+  <string name="degrees">Grados</string>
+  <string name="kilometers_per_hour">Kilómetros Por Hora</string>
+  <string name="meters">Metros</string>
+  <string name="memory_card_path">Ruta de tarjeta de memoria</string>
+  <string name="notification">Notificación</string>
+  <string name="vibrate_on_signal_loss">Vibrar al Perder Señal</string>
 </resources>
