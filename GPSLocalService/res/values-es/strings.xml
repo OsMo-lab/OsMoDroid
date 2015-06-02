@@ -55,7 +55,7 @@
   <string name="message">Mensaje</string>
   <string name="sendsupport">Reportar a soporte</string>
   <string name="about">Acerca de</string>
-  <string name="abouttext">OsMoDroid es un cliente de monitorización de localización para Android. Usando un smartphone y el servicio de OsMo, tus amigos y familiar puede saber siempre donde estás.\nDesarrollador principal: Denis Fokin (c) 2012-2014\nUsando esta aplicación acepta los Terminos de Uso: http://osmo.mobi/terms/\nSitio OsMoDroid: http://osmodroid.com\nInformación de Copyright http://osmodroid.com/copyright.html</string>
+  <string name="abouttext">OsMoDroid es un cliente de monitorización de localización para Android. Usando un smartphone y el servicio de OsMo, tus amigos y familiar puede saber siempre donde estás.\nDesarrollador principal: Denis Fokin (c) 2012-2015\nUsando esta aplicación acepta los Terminos de Uso: http://osmo.mobi/terms/\nSitio OsMoDroid: http://osmodroid.mobi\nInformación de Copyright http://osmodroid.mobi/copyright.html</string>
   <string name="send">&gt;&gt;</string>
   <string name="cancel">Cancelar</string>
   <string name="speed">Velocidad: km/h</string>

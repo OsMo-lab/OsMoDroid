@@ -56,12 +56,12 @@
   <string name="sendsupport">Destek birimine raporla</string>
   <string name="about">Hakkında</string>
   <string name="abouttext">OsMoDroid Android için oluşturulmuş bir konum izleme istemcisidir. 
-Osmo hizmetini kullanarak, akıllı bir telefon ile ailenizin ve arkadaşlarınızın nerede olduklarını öğrenebilirsiniz. Ana geliştirici: Denis Fokin (c) 2012-2014
+Osmo hizmetini kullanarak, akıllı bir telefon ile ailenizin ve arkadaşlarınızın nerede olduklarını öğrenebilirsiniz. Ana geliştirici: Denis Fokin (c) 2012-2015
 Bu uygulamayı kullanarak, http://osmo.mobi/terms adresindeki kullanım şartlarını kabul etmiş olursunuz.
 
-OsMoDroid İnternet Sitesi: http://osmodroid.com
+OsMoDroid İnternet Sitesi: http://osmodroid.mobi
 
-Telif Hakkı Bilgileri: http://osmodroid.com/copyright.html</string>
+Telif Hakkı Bilgileri: http://osmodroid.mobi/copyright.html</string>
   <string name="send">  &lt; =&lt; =</string>
   <string name="cancel">İptal</string>
   <string name="speed">Hız: km/s</string>
