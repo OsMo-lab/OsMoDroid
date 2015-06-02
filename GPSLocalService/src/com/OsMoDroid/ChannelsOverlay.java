@@ -178,7 +178,7 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
 						{
 							drawGPX(canvas, pj, gpx, theBoundingBox , scrPoint , mapView);
 						}
-				}
+				
 			for(Device dev:ch.deviceList)
 			{
 				
@@ -252,6 +252,7 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
 			}
 			
 		}
+	}
 		
 	}
 
@@ -437,6 +438,8 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
 			final Rect screenRect = pj.getIntrinsicScreenRect();
 			final int size = LocalService.deviceList.size();
 			for (Channel ch :LocalService.channelList)
+				if(ch.send)
+				{
 				{
 					for(Device dev:ch.deviceList)
 						{
@@ -474,6 +477,7 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
 								}
 						}
 				}
+		}
 			for (int i = 0; i < size; i++) {
 				final Device dev = LocalService.deviceList.get(i);
 				if (dev.lat == 0f) {

@@ -223,6 +223,7 @@
             android:title="@string/startup_at_boot"
             android:defaultValue="false"/>
         <CheckBoxPreference android:key="subscribebackground" android:title="Update map in background" android:defaultValue="false"/>
+        <CheckBoxPreference android:key="tcpnodelay" android:title="TCP NO Delay" android:defaultValue="false"/>
         
     </PreferenceCategory>
     

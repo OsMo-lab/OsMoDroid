@@ -147,8 +147,15 @@ public class ChannelsFragment extends Fragment {
 		  }
 		  
 		  if (item.getItemId() == 5) {
-			  Intent browseIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(LocalService.channelList.get((int) acmi.id).url));
-			  startActivity(browseIntent);
+			  if(LocalService.channelList.get((int) acmi.id).url!=null)
+			  {
+				  Intent browseIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(LocalService.channelList.get((int) acmi.id).url));
+				  startActivity(browseIntent);
+			  }
+			  else
+			  {
+				  Toast.makeText(globalActivity,R.string.noallenter, 5).show();
+			  }
 			  return true;
 		  }
 		  if (item.getItemId() == 6) {

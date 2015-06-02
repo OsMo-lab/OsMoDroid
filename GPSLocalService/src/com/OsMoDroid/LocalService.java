@@ -858,7 +858,7 @@ OsMoDroid.settings.edit().putBoolean("ondestroy", false).commit();
 			String wifiname = wifiInfo.getSSID();
 			String mac = wifiInfo.getMacAddress();
 			String strength = Integer.toString(wifiInfo.getRssi());
-			  postjson.put("ssid", wifiname);
+			  postjson.put("ssid", wifiname.replaceAll("\"", ""));
 		         postjson.put("mac", mac);
 		         postjson.put("strength", strength);
 		}
@@ -1124,6 +1124,9 @@ OsMoDroid.settings.edit().putBoolean("ondestroy", false).commit();
 public void sendid()
 
 {
+	OsMoDroid.editor.putString("p", "");
+	OsMoDroid.editor.putString("u", "");
+	OsMoDroid.editor.commit();
 	String version = android.os.Build.VERSION.RELEASE;
 	String androidID = Secure.getString(getContentResolver(), Secure.ANDROID_ID);
 	TelephonyManager mngr = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE); 

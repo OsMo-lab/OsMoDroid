@@ -384,7 +384,8 @@ public class CustomMapTileFilesystemProvider extends MapTileFilesystemProvider {
 		myLoc.disableMyLocation();
 		if (!OsMoDroid.settings.getBoolean("subscribebackground", false))
 			{
-				globalActivity.mService.myIM.sendToServer("PG:-1=PD:-1");
+				globalActivity.mService.myIM.sendToServer("PD:-1");
+				globalActivity.mService.myIM.sendToServer("PG:-1");
 			}
 		super.onPause();
 	}
@@ -401,7 +402,8 @@ public class CustomMapTileFilesystemProvider extends MapTileFilesystemProvider {
 		myLoc.enableMyLocation();
 		if (!OsMoDroid.settings.getBoolean("subscribebackground", false))
 			{
-				globalActivity.mService.myIM.sendToServer("PG:1=PD:1");
+				globalActivity.mService.myIM.sendToServer("PG:1");
+				globalActivity.mService.myIM.sendToServer("PD:1");
 			}
 		super.onResume();
 	}

@@ -412,7 +412,7 @@ public class IM implements ResultsListener {
 	 * Выключает IM
 	 */
 	void close(){
-		sendToServer("=BYE");
+		sendToServer("BYE");
 		if(log)Log.d(this.getClass().getName(), "void IM.close");
 		addlog("Socket void close");
 		try {
@@ -553,7 +553,7 @@ public class IM implements ResultsListener {
 													// TODO Auto-generated catch block
 													e.printStackTrace();
 												}
-										 wr.println('='+b.getString("write"));
+										 wr.println(b.getString("write"));
 										 
 										 error=wr.checkError();
 										
@@ -665,9 +665,12 @@ public class IM implements ResultsListener {
 					 workserverint=-1;
 					 workservername="";
 					 socket=new Socket();
-					 //socket.setTcpNoDelay(true);
-					
-					 //addlog("TCP_NODELAY="+Boolean.toString(socket.getTcpNoDelay()));
+					 if(OsMoDroid.settings.getBoolean("tcpnodelay", false))
+					 	{
+						 	socket.setTcpNoDelay(true);
+						 	addlog("TCP_NODELAY="+Boolean.toString(socket.getTcpNoDelay()));
+					 	}
+					 
 					socket.connect(sockAddr, 5000);
 					socketRetryInt=0;
 					 connOpened=true;
@@ -944,7 +947,8 @@ public void addtoDeviceChat(int u,JSONObject jo) {
 			localService.internetnotify(true);
 			if (!OsMoDroid.settings.getBoolean("subscribebackground", false))
 				{
-					sendToServer("PG:-1=PD:-1");
+					sendToServer("PG:-1");
+					sendToServer("PD:-1");
 				}
 			if(jo.has("group"))
 			{
@@ -1874,7 +1878,7 @@ public void addtoDeviceChat(int u,JSONObject jo) {
 					e.printStackTrace();
 				}
 			} else {
-				if(result.Jo.optInt("error")==10||result.Jo.optString("token").equals("false")){
+				if(result.Jo.optInt("error")==10||result.Jo.optInt("error")==100||result.Jo.optString("token").equals("false")){
 				localService.alertHandler.post(new Runnable()
 					{
 						
