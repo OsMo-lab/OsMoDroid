@@ -107,6 +107,7 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
 		private MAPSurferTileSource mapSurferTileSource;
 		private BingMapTileSource bingTileSource;
 		private ITileSource sputnikTileSource;
+		private ITileSource outdoorTileSource;
 		private ChannelsOverlay choverlay;
 		@Override
 		public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -128,6 +129,7 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
 			adjdpi.setCheckable(true);
 			adjdpi.setChecked(OsMoDroid.settings.getBoolean("adjust_to_dpi", true));
 			MenuItem sputnik = menu2.add(0, 10, 1, "Sputnik");
+			MenuItem outdoor = menu2.add(0, 12, 1, "Outdoor");
 			menu.add(0,11,1,R.string.size_of_point);
 			super.onCreateOptionsMenu(menu, inflater);
 			
@@ -250,6 +252,10 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
 										}).create();
 						alertdialog3.show();
 				break;
+			case 12:
+				mMapView.setTileSource(outdoorTileSource);
+				LocalService.selectedTileSourceInt=7;
+				break;
 			default:
 				break;
 			}
@@ -334,6 +340,20 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
 		@Override
 		public String getTileURLString(MapTile aTile) {
 		//	x=710&y=381&z=10
+			return getBaseUrl() + aTile.getZoomLevel()+'/'+aTile.getX() +'/' + aTile.getY()+".png" ;
+			
+		}
+}
+	class OutdoorTileSource extends OnlineTileSourceBase {
+
+		OutdoorTileSource(String aName, string aResourceId, int aZoomMinLevel,
+                        int aZoomMaxLevel, int aTileSizePixels,
+                        String aImageFilenameEnding, String... aBaseUrl) {
+                super(aName, aResourceId, aZoomMinLevel, aZoomMaxLevel,
+                                aTileSizePixels, aImageFilenameEnding, aBaseUrl);
+        }
+		@Override
+		public String getTileURLString(MapTile aTile) {
 			return getBaseUrl() + aTile.getZoomLevel()+'/'+aTile.getX() +'/' + aTile.getY()+".png" ;
 			
 		}
@@ -469,8 +489,10 @@ public class CustomMapTileFilesystemProvider extends MapTileFilesystemProvider {
 			final String aImageFilenameEnding = ".png";
 			final String[] aBaseUrl=new String[] {"http://openmapsurfer.uni-hd.de/tiles/roads/"};
 			final String[] sputnikURL = new String[] {"http://b.tiles.maps.sputnik.ru/"};
+			final String[] outdoorURL = new String[] {"http://tile.thunderforest.com/outdoors/"};
 			bingTileSource = new BingMapTileSource(null);
 			sputnikTileSource = new SputnikTileSource("Sputnik", string.unknown, aZoomMinLevel, aZoomMaxLevel, aTileSizePixels, aImageFilenameEnding,sputnikURL);
+			outdoorTileSource = new OutdoorTileSource("OutDoor", string.unknown, aZoomMinLevel, aZoomMaxLevel, aTileSizePixels, aImageFilenameEnding,outdoorURL);
 			mapSurferTileSource = new MAPSurferTileSource(name, string.unknown, aZoomMinLevel, aZoomMaxLevel, aTileSizePixels, aImageFilenameEnding, aBaseUrl);
 			View view = inflater.inflate(R.layout.map, container, false);
 			RelativeLayout rl = (RelativeLayout)view.findViewById(R.id.relative);
@@ -503,6 +525,8 @@ public class CustomMapTileFilesystemProvider extends MapTileFilesystemProvider {
 			case 6:
 				mMapView.setTileSource(sputnikTileSource);
 				break;
+			case 7:
+				mMapView.setTileSource(outdoorTileSource);
 			default:
 				break;
 			}

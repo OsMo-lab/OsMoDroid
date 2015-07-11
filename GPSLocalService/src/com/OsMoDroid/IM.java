@@ -137,7 +137,7 @@ public class IM implements ResultsListener {
 	LocalService localService;
 	FileOutputStream fos;
 	ObjectOutputStream output = null;
-	final private static SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	final static SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	static String SERVER_IP;// = "osmo.mobi";
 	static int SERVERPORT;// = 5757;
 	volatile protected boolean connOpened=false;
@@ -171,7 +171,7 @@ public class IM implements ResultsListener {
 		getTokenTimeoutPIntent = PendingIntent.getBroadcast( parent, 0, new Intent(GET_TOKEN_TIMEOUT_INTENT), 0 );
 		SERVER_IP=server;
 		SERVERPORT=port;
-		addlog("IM create");
+		LocalService.addlog("IM create");
 		iMWriter=new IMWriter();
 		writerThread = new Thread(iMWriter,"writer");
 		writerThread.start();
@@ -201,11 +201,11 @@ public class IM implements ResultsListener {
 							}
 					}
 				ExecutedCommandArryaList.addAll(cl);
-				addlog("Add to command order "+cl);
+				LocalService.addlog("Add to command order "+cl);
 				iMWriter.handler.sendMessage(msg);	
 			}
 			else {
-				addlog("panic! handler is null");
+				LocalService.addlog("panic! handler is null");
 				if(log) Log.d(this.getClass().getName(), " handler is null!!!");
 			}
 				
@@ -216,7 +216,7 @@ public class IM implements ResultsListener {
           {
         		context.unregisterReceiver( this );
         		 if(log)Log.d(this.getClass().getName(), "gettoken timeout reciever trigged");
-        		addlog("Get token timeout receiver trigged");
+        		LocalService.addlog("Get token timeout receiver trigged");
         	  	sendidtask.cancel(true);
         	  	gettokening=false;
         	  	stop();
@@ -228,7 +228,7 @@ public class IM implements ResultsListener {
 	  BroadcastReceiver reconnectReceiver = new BroadcastReceiver() {
           @Override public void onReceive( Context context, Intent _ )
           {
-        	  addlog("Socket reconnect receiver trigged");
+        	  LocalService.addlog("Socket reconnect receiver trigged");
         	  disablekeepAliveAlarm();
         	  stop();
         	  localService.internetnotify(false);
@@ -241,7 +241,7 @@ public class IM implements ResultsListener {
           @Override public void onReceive( Context context, Intent _ )
           {
               if(connOpened){
-            	  addlog("Socket sendPing");
+            	  LocalService.addlog("Socket sendPing");
             	  if(log)Log.d(this.getClass().getName(), " send ping");
             	  sendToServer("P");
             	
@@ -250,36 +250,9 @@ public class IM implements ResultsListener {
           }
       };
       
-     static void addlog(final String str){
-    	  	LocalService.alertHandler.post(new Runnable()
-				{
-					
-					@Override
-					public void run()
-						{
-							//if(OsMoDroid.debug)ExceptionHandler.reportOnlyHandler(parent.getApplicationContext()).uncaughtException(Thread.currentThread(), new Throwable(str));
-				    	  	if(OsMoDroid.debug)
-				    	  		{
-				    	  			LocalService.debuglist.add( sdf1.format(new Date(System.currentTimeMillis()))+" "+str+" S="+sendBytes+ " R="+recievedBytes);
-				    	  			if(LocalService.debuglist.size()>1500)
-				    	  				{
-				    	  					LocalService.debuglist.remove(0);
-				    	  				}
-				    	  		}
-				  			if(LocalService.debugAdapter!=null){LocalService.debugAdapter.notifyDataSetChanged();}
-							
-						}
-				});
-    	  	
-    	  
-      }
-      
-      
-     
-	 
-      public void setkeepAliveAlarm(){
+     public void setkeepAliveAlarm(){
     	  if(log)Log.d(this.getClass().getName(), "void setKeepAliveAlarm");
-    	  addlog("Socket void setkeepalive");
+    	  LocalService.addlog("Socket void setkeepalive");
     	  parent.registerReceiver(keepAliveReceiver, new IntentFilter(KEEPALIVE_INTENT));
     	  manager.cancel(keepAlivePIntent);
     	  manager.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime()+KEEP_ALIVE, KEEP_ALIVE, keepAlivePIntent);
@@ -287,7 +260,7 @@ public class IM implements ResultsListener {
       
       public void disablekeepAliveAlarm(){
     	  if(log)Log.d(this.getClass().getName(), "void disableKeepAliveAlarm");
-    	  addlog("Socket void disablekeepalive");
+    	  LocalService.addlog("Socket void disablekeepalive");
     	  try {
 			parent.unregisterReceiver(keepAliveReceiver);
 		} catch (Exception e) {
@@ -304,7 +277,7 @@ public class IM implements ResultsListener {
 				 @Override
 				public void run()
 					{
-						addlog("Socket setReconnectAlarn");
+						LocalService.addlog("Socket setReconnectAlarn");
 						
 					}
 			 });
@@ -338,7 +311,7 @@ public class IM implements ResultsListener {
 		@Override
 
 		public void onReceive(Context context, Intent intent) {
-			addlog("Network broadcast receive:");
+			LocalService.addlog("Network broadcast receive:");
 		//	if(log)Log.d(this.getClass().getName(), "BCR"+this);
 
 		//	if(log)Log.d(this.getClass().getName(), "BCR"+this+" Intent:"+intent);
@@ -348,7 +321,7 @@ public class IM implements ResultsListener {
 				Bundle extras = intent.getExtras();
 				for (String key : extras.keySet()) {
 				    Object value = extras.get(key);
-				    addlog( String.format("%s %s (%s)", key,  
+				    LocalService.addlog( String.format("%s %s (%s)", key,  
 				        value.toString(), value.getClass().getName()));
 				}
 			//	if(log)Log.d(this.getClass().getName(), "BCR"+this+ " "+intent.getExtras());
@@ -366,11 +339,11 @@ public class IM implements ResultsListener {
 						if(log)Log.d(this.getClass().getName(), "BCR Network is connected");
 						if(log)Log.d(this.getClass().getName(), "Running:"+running);
 						// Network is connected
-						addlog(" Network is connected, running="+running);
+						LocalService.addlog(" Network is connected, running="+running);
 						if(!running ) {
 							//SetAlarm();
 							start();
-							addlog("Socket start by broadcast because no running");
+							LocalService.addlog("Socket start by broadcast because no running");
 						}
 						
 					}
@@ -379,10 +352,10 @@ public class IM implements ResultsListener {
 					{
 						if(log)Log.d(this.getClass().getName(), "BCR Network is not connected");
 						if(log)Log.d(this.getClass().getName(), "Running:"+running);
-						addlog("Socket Network is not connected, running="+running);
+						LocalService.addlog("Socket Network is not connected, running="+running);
 						if (running)
 						{
-							addlog("Socket stop by broadcast because running");
+							LocalService.addlog("Socket stop by broadcast because running");
 							localService.internetnotify(false);
 							stop();
 						}
@@ -414,7 +387,7 @@ public class IM implements ResultsListener {
 	void close(){
 		sendToServer("BYE");
 		if(log)Log.d(this.getClass().getName(), "void IM.close");
-		addlog("Socket void close");
+		LocalService.addlog("Socket void close");
 		try {
 			parent.unregisterReceiver(bcr);
 		} catch (Exception e) {
@@ -444,7 +417,7 @@ public class IM implements ResultsListener {
 	public void gettoken()
 	
 	{
-		addlog("Start get token"+", key="+OsMoDroid.settings.getString("newkey", ""));
+		LocalService.addlog("Start get token"+", key="+OsMoDroid.settings.getString("newkey", ""));
 		if(!gettokening){
 		gettokening=true;
 		
@@ -504,7 +477,7 @@ public class IM implements ResultsListener {
 	
 	 void start(){
 		if(log)Log.d(this.getClass().getName(), "void IM.start");
-		addlog("Socket void start");
+		LocalService.addlog("Socket void start");
 		running = true;
 		connecting=true;
 		localService.refresh();
@@ -558,7 +531,7 @@ public class IM implements ResultsListener {
 										 error=wr.checkError();
 										
 										 if(log)Log.d(this.getClass().getName(), "Write "+b.getString("write")+" error="+error);
-										 addlog("wr write "+b.getString("write")+" error="+error);
+										 LocalService.addlog("wr write "+b.getString("write")+" error="+error);
 										 if(error){
 											 if(running){setReconnectOnError();}
 											 //Looper.myLooper().quit();
@@ -569,7 +542,7 @@ public class IM implements ResultsListener {
 										 }
 								}
 								else {
-									addlog("not connected now");
+									LocalService.addlog("not connected now");
 								}
 							
 								super.handleMessage(msg);
@@ -605,7 +578,7 @@ public class IM implements ResultsListener {
 								} 
 								else {
 									 if(log)Log.d(this.getClass().getName(), "inputstream c=-1 ");
-									 addlog("inputstream c=-1 ");
+									 LocalService.addlog("inputstream c=-1 ");
 									 setReconnectOnError();
 									 break;
 								}
@@ -622,7 +595,7 @@ public class IM implements ResultsListener {
 										localService.alertHandler.sendMessage(msg);	
 									}
 									else {
-										addlog("panic!alert handler is null ");
+										LocalService.addlog("panic!alert handler is null ");
 										 if(log)Log.d(this.getClass().getName(), " alert handler is null!!!");
 									}
 								
@@ -668,7 +641,7 @@ public class IM implements ResultsListener {
 					 if(OsMoDroid.settings.getBoolean("tcpnodelay", false))
 					 	{
 						 	socket.setTcpNoDelay(true);
-						 	addlog("TCP_NODELAY="+Boolean.toString(socket.getTcpNoDelay()));
+						 	LocalService.addlog("TCP_NODELAY="+Boolean.toString(socket.getTcpNoDelay()));
 					 	}
 					 
 					socket.connect(sockAddr, 5000);
@@ -680,7 +653,7 @@ public class IM implements ResultsListener {
 						 @Override
 						public void run()
 							{
-								addlog("TCP Connected");
+								LocalService.addlog("TCP Connected");
 								localService.refresh();
 								
 							}
@@ -702,7 +675,7 @@ public class IM implements ResultsListener {
 						 @Override
 						public void run()
 							{
-								 addlog("could no conenct to socket "+socketRetryInt+e1.getMessage());
+								 LocalService.addlog("could no conenct to socket "+socketRetryInt+e1.getMessage());
 								 							}
 					 });
 					 if(socketRetryInt>3&&!OsMoDroid.settings.getBoolean("understand", false))
@@ -719,7 +692,7 @@ public class IM implements ResultsListener {
 	 
 void stop (){
 		 if(log)Log.d(this.getClass().getName(), "void IM.stop");
-		 addlog("Socket void stop");
+		 LocalService.addlog("Socket void stop");
 		 ExecutedCommandArryaList.clear();
 		 running = false;
 		 connOpened=false;
@@ -742,7 +715,7 @@ void stop (){
 				socket.close();
 			} catch (IOException e)
 			{
-				addlog("exeption close socket "+e.getMessage());
+				LocalService.addlog("exeption close socket "+e.getMessage());
 				e.printStackTrace();
 			}
 		 }
@@ -856,7 +829,7 @@ public void addtoDeviceChat(int u,JSONObject jo) {
 		}
 		
 	if(toParse.equals("P|")){
-		addlog("recieve pong");
+		LocalService.addlog("recieve pong");
 		
 		return;
 		}
@@ -887,15 +860,15 @@ public void addtoDeviceChat(int u,JSONObject jo) {
 		   {
 		   comIter.remove();
 		   if(log)Log.d(this.getClass().getName(), "ExecutedListItem removed: "+str);
-		   addlog("ExecutedListItem removed: "+str);
+		   LocalService.addlog("ExecutedListItem removed: "+str);
 		   }
 	   
 	}
 	if(log)Log.d(this.getClass().getName(), "ExecuteLsit="+ExecutedCommandArryaList.toString());
-	   addlog("ExecuteLsit="+ExecutedCommandArryaList.toString());
+	   LocalService.addlog("ExecuteLsit="+ExecutedCommandArryaList.toString());
 	if(ExecutedCommandArryaList.size()==0)
 		{
-			addlog("Cancel reconnect alarm - no commands in order");
+			LocalService.addlog("Cancel reconnect alarm - no commands in order");
 			manager.cancel(reconnectPIntent);
 		}
 	
@@ -1760,7 +1733,7 @@ public void addtoDeviceChat(int u,JSONObject jo) {
 		StringWriter sw = new StringWriter();
 		e.printStackTrace(new PrintWriter(sw));
 		String exceptionAsString = sw.toString();
-		addlog(exceptionAsString);
+		LocalService.addlog(exceptionAsString);
 	}
 	private void updateCoordinates( String d, final Device dev) {
 	//	if (Integer.parseInt(c.substring(c.indexOf(":")+1), c.length()) == dev.u){
@@ -1779,7 +1752,7 @@ public void addtoDeviceChat(int u,JSONObject jo) {
 			for (int i = d.indexOf("S")+1; i <= d.length()-1; i++) {
 				if(!Character.isDigit(d.charAt(i))||i==(d.length()-1)){
 					if(!Character.toString(d.charAt(i)).equals(".")||i==(d.length()-1)){
-						addlog(d.substring(d.indexOf("S")+1, i));
+						LocalService.addlog(d.substring(d.indexOf("S")+1, i));
 						dev.speed=LocalService.df0.format((((Float.parseFloat(d.substring(d.indexOf("S")+1, i))*3.6))));
 						break;
 					}
@@ -1841,7 +1814,7 @@ public void addtoDeviceChat(int u,JSONObject jo) {
 						 @Override
 						public void run()
 							{
-								addlog("setReconnectAlarm on error");
+								LocalService.addlog("setReconnectAlarm on error");
 								parent.registerReceiver( reconnectReceiver, new IntentFilter(RECONNECT_INTENT) );
 						    	manager.cancel(reconnectPIntent);
 						    	manager.set( AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + ERROR_RECONNECT_TIMEOUT, reconnectPIntent );
@@ -1858,7 +1831,7 @@ public void addtoDeviceChat(int u,JSONObject jo) {
 		manager.cancel(getTokenTimeoutPIntent);
 		if(log)Log.d(getClass().getSimpleName(),"OnResultSucceded "+result.rawresponse);
 		if(result.Command.equals("gettoken")&&!(result.Jo==null)){
-			addlog("Receive token "+result.Jo.toString());
+			LocalService.addlog("Receive token "+result.Jo.toString());
 			if(log)Log.d(getClass().getSimpleName(),"gettoken response:"+result.Jo.toString());
 			//Toast.makeText(localService,result.Jo.optString("state")+" "+ result.Jo.optString("error_description"),5).show();
 			if(result.Jo.has("token")&&!result.Jo.optString("token").equals("false")){
@@ -1903,7 +1876,7 @@ public void addtoDeviceChat(int u,JSONObject jo) {
 			}
 			
 		} else {
-			addlog("Receive token error - shall reconnecting "+ result.rawresponse);
+			LocalService.addlog("Receive token error - shall reconnecting "+ result.rawresponse);
 			setReconnectOnError();
 		}
 		
