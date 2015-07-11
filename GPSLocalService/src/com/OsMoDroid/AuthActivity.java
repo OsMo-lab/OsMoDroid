@@ -61,7 +61,7 @@ public class AuthActivity extends Activity {
 			}
 		   
 		});
-		webView.loadUrl("https://osmo.mobi/signin?type=m");
+		webView.loadUrl("https://osmo.mobi/signin?type=m&key="+OsMoDroid.settings.getString("newkey", ""));
  
 	}
 
