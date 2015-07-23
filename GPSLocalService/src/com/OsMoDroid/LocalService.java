@@ -1190,6 +1190,7 @@ public void sendid()
 			
 			if(log)Log.d(this.getClass().getName(), "Запускаем провайдера по настройкам");
 			if(log)Log.d(this.getClass().getName(), "Период опроса:"+pollperiod);
+			addlog("Период опроса:"+pollperiod);
 			List<String> list = myManager.getAllProviders();
 			if (OsMoDroid.settings.getBoolean("usegps", true))
 			{
@@ -1359,6 +1360,7 @@ public void sendid()
 			if (myManager!=null)
 				{
 					myManager.removeUpdates(this);
+					addlog("removeUpdates");
 				}
 			setstarted(false);
 			stopForeground(true);
@@ -1711,6 +1713,7 @@ public void sendid()
 	public void onProviderDisabled(String provider) 
 	{
 		if(log)Log.d(this.getClass().getName(), "Выключен провайдер:"+provider);
+		addlog("Выключен провайдер:"+provider);
 	}
 
 
@@ -1718,12 +1721,14 @@ public void sendid()
 	public void onProviderEnabled(String provider)
 	{
 		if(log)Log.d(this.getClass().getName(), "Включен провайдер:"+provider);
+		addlog("Включен провайдер:"+provider);
 	}
 
 
 
 	public void onStatusChanged(String provider, int status, Bundle extras) {
 		if(log)Log.d(this.getClass().getName(), "Изменился статус провайдера:"+provider+" статус:"+status+" Бандл:"+extras.getInt("satellites"));
+		addlog("Изменился статус провайдера:"+provider+" статус:"+status+" Бандл:"+extras.getInt("satellites"));
 	}
 
 	 void internetnotify(boolean internet){
@@ -2016,6 +2021,7 @@ public void onGpsStatusChanged(int event) {
 	count=count1;
 	countFix=countFix1;
 	refresh();
+	addlog("onGpsStatusChanged "+count1+" "+countFix1);
 }
 
 public void onInit(int status) {
