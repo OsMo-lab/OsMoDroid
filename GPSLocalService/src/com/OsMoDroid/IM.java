@@ -680,7 +680,7 @@ public class IM implements ResultsListener {
 					 });
 					 if(socketRetryInt>3&&!OsMoDroid.settings.getBoolean("understand", false))
 					 {	
-						 localService.notifywarnactivity(localService.getString(R.string.checkfirewall), true);
+						 localService.notifywarnactivity(localService.getString(R.string.checkfirewall), false,OsMoDroid.NOTIFY_NO_CONNECT);
 					 }
 					
 				 }
@@ -1035,7 +1035,7 @@ public void addtoDeviceChat(int u,JSONObject jo) {
 	if(command.equals("GRPA"))
 	{
 		
-		sendToServer("GE:"+jo.optString("group_id")+"|"+OsMoDroid.settings.getString("u", "Creator"));
+		sendToServer("GROUP");
 	}
 	
 	if(command.equals("TO"))
@@ -1851,7 +1851,8 @@ public void addtoDeviceChat(int u,JSONObject jo) {
 					e.printStackTrace();
 				}
 			} else {
-				if(result.Jo.optInt("error")==10||result.Jo.optInt("error")==100||result.Jo.optString("token").equals("false")){
+				if(result.Jo.optInt("error")==10||result.Jo.optInt("error")==100||result.Jo.optString("token").equals("false"))
+				{
 				localService.alertHandler.post(new Runnable()
 					{
 						
@@ -1863,12 +1864,15 @@ public void addtoDeviceChat(int u,JSONObject jo) {
 							}
 					});
 				stop();
-				localService.sendid();
+				localService.notifywarnactivity(LocalService.unescape(result.Jo.optString("error_description")), false, OsMoDroid.NOTIFY_NO_DEVICE);
+				localService.motd=LocalService.unescape(result.Jo.optString("error_description"));
+				localService.refresh();
+				//localService.sendid();
 				}
-				else
+				else if (result.Jo.optInt("error")==67||result.Jo.optInt("error")==68||result.Jo.optInt("error")==69)
 				{
-					close();
-					localService.notifywarnactivity(LocalService.unescape(result.Jo.optString("error_description")), false);
+					stop();
+					localService.notifywarnactivity(LocalService.unescape(result.Jo.optString("error_description")), false,OsMoDroid.NOTIFY_EXPIRY_USER);
 					localService.motd=LocalService.unescape(result.Jo.optString("error_description"));
 					localService.refresh();
 					

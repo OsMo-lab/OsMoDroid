@@ -2069,25 +2069,11 @@ public synchronized boolean isOnline() {
 
 }
 
-	void warnwronghash (){
-		Intent notificationIntent = new Intent(this, WarnActivity.class);
-
-		notificationIntent.removeExtra("info");
-
-		notificationIntent.putExtra("info", getString(R.string.warnhash));
-		
-		notificationIntent.removeExtra("neednewhash");
-
-		notificationIntent.putExtra("neednewhash", false);
-
-		notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP	| Intent.FLAG_ACTIVITY_SINGLE_TOP);
-		
-		getApplication().startActivity(notificationIntent);
-	}
-
-	void notifywarnactivity(String info, boolean b) {
 
 
+	void notifywarnactivity(String info, boolean supportButton, int mode) {
+
+		 if(!OsMoDroid.gpslocalserviceclientVisible){
 
 		Long when=System.currentTimeMillis();
 
@@ -2097,9 +2083,14 @@ public synchronized boolean isOnline() {
 
 		notificationIntent.putExtra("info", info);
 		
-		notificationIntent.removeExtra("neednewhash");
+		notificationIntent.removeExtra("supportButton");
 
-		notificationIntent.putExtra("neednewhash", b);
+		notificationIntent.putExtra("supportButton", supportButton);
+		
+		notificationIntent.removeExtra("mode");
+
+		notificationIntent.putExtra("mode", mode);
+
 
 
 		//notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP	| Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -2152,6 +2143,27 @@ public synchronized boolean isOnline() {
 			Notification notification = notificationBuilder.build();
 
 			mNotificationManager.notify(OsMoDroid.warnnotifyid, notification);
+		 }
+		 else
+			 {
+				 Intent notificationIntent = new Intent(this, WarnActivity.class);
+
+				 notificationIntent.removeExtra("info");
+
+					notificationIntent.putExtra("info", info);
+					
+					notificationIntent.removeExtra("supportButton");
+
+					notificationIntent.putExtra("supportButton", supportButton);
+					
+					notificationIntent.removeExtra("mode");
+
+					notificationIntent.putExtra("mode", mode);
+
+					notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP	| Intent.FLAG_ACTIVITY_SINGLE_TOP);
+					
+					getApplication().startActivity(notificationIntent);
+			 }
 
 	}
 
@@ -2186,11 +2198,7 @@ public void onResultsSucceeded(APIComResult result) {
 		}
 		else
 			{
-				 if(!OsMoDroid.gpslocalserviceclientVisible){
-					 notifywarnactivity(getString(R.string.warnhash), false);}
-					 else {
-						 warnwronghash ();
-					 }
+				 notifywarnactivity(getString(R.string.warnhash), true, OsMoDroid.NOTIFY_ERROR_SENDID);
 			}
 		
 		}

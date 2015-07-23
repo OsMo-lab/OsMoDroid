@@ -46,6 +46,10 @@ public class OsMoDroid extends Application {
 	public static final String SIGNAL_ON = "31";
 	public static final String ALARM_OFF = "34";
 	public static final String ALARM_ON = "33";
+	public static final int NOTIFY_ERROR_SENDID = 0;
+	public static final int NOTIFY_NO_DEVICE = 1;
+	public static final int NOTIFY_EXPIRY_USER = 2;
+	public static final int NOTIFY_NO_CONNECT = 3;
 	
 
 	@Override
