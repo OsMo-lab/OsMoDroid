@@ -127,7 +127,7 @@ public class Channel implements Serializable,ResultsListener {
 					try {
 						jsonObject = users.getJSONObject(i);
 						try {
-							recieveddeviceList.add(new Device(jsonObject.getInt("device"),jsonObject.getString("name"), jsonObject.getString("color") ) );
+							recieveddeviceList.add(new Device(jsonObject.getInt("u"),jsonObject.getString("name"), jsonObject.getString("color") ) );
 						} catch (NumberFormatException e) {
 							Log.d(getClass().getSimpleName(),"Wrong device info");
 							e.printStackTrace();

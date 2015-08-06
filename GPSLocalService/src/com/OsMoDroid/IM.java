@@ -120,7 +120,7 @@ public class IM implements ResultsListener {
 	private IMReader iMReader;
 	private static int RECONNECT_TIMEOUT = 1000*30;
 	private static final int KEEP_ALIVE = 1000*270;
-	private static final long ERROR_RECONNECT_TIMEOUT = 5*1000;
+	private static final long ERROR_RECONNECT_TIMEOUT = 10*1000;
 	private static final String RECONNECT_INTENT = "com.osmodroid.reconnect";
 	private static final String GET_TOKEN_TIMEOUT_INTENT = "com.osmodroid.gettokentimeout";
 	private static final String KEEPALIVE_INTENT = "com.osmodroid.keepalive";

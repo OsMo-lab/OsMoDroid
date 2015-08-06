@@ -8,21 +8,23 @@
     <ListView
         android:id="@+id/mychannelsdeviceslistView"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        
         android:layout_weight="1"
+        android:layout_height="0dp"
         tools:listitem="@android:layout/simple_list_item_1" >
-
+android:layout_margin="10dp"
     </ListView>
 
     <ListView
         android:id="@+id/mychannelsmessages"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        
         android:layout_weight="1"
         android:scrollingCache="false"
         android:stackFromBottom="true"
+        android:layout_height="0dp"
         android:transcriptMode="alwaysScroll" >
-
+android:layout_margin="10dp"
     </ListView>
 
     <LinearLayout
