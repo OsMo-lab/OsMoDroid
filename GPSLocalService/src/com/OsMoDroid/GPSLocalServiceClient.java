@@ -616,7 +616,10 @@ void showFragment(Fragment fragment, boolean backstack) {
 	}
 	@Override
 	protected void onNewIntent(Intent intent) {
-		
+		if(intent.hasExtra("auth"))
+		{
+			auth();
+		}
 	try {
 		if (OsMoDroid.gpslocalserviceclientVisible){
 			Log.d(this.getClass().getSimpleName(), "on new intent="+intent.getIntExtra("deviceU", -1));

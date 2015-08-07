@@ -1831,6 +1831,7 @@ public void addtoDeviceChat(int u,JSONObject jo) {
 		manager.cancel(getTokenTimeoutPIntent);
 		if(log)Log.d(getClass().getSimpleName(),"OnResultSucceded "+result.rawresponse);
 		if(result.Command.equals("gettoken")&&!(result.Jo==null)){
+			socketRetryInt=0;
 			LocalService.addlog("Receive token "+result.Jo.toString());
 			if(log)Log.d(getClass().getSimpleName(),"gettoken response:"+result.Jo.toString());
 			//Toast.makeText(localService,result.Jo.optString("state")+" "+ result.Jo.optString("error_description"),5).show();
@@ -1841,6 +1842,7 @@ public void addtoDeviceChat(int u,JSONObject jo) {
 					workserverint=Integer.parseInt(result.Jo.optString("address").substring( result.Jo.optString("address").indexOf(':')+1));
 					
 					try {
+						
 						connectThread.start();
 					} catch (IllegalThreadStateException e) {
 						setReconnectOnError();
@@ -1864,10 +1866,16 @@ public void addtoDeviceChat(int u,JSONObject jo) {
 							}
 					});
 				stop();
-				localService.notifywarnactivity(LocalService.unescape(result.Jo.optString("error_description")), false, OsMoDroid.NOTIFY_NO_DEVICE);
+				if(!OsMoDroid.settings.getString("newkey", "").equals(""))
+				{
+				localService.notifywarnactivity(LocalService.unescape(result.Jo.optString("error_description")), true, OsMoDroid.NOTIFY_NO_DEVICE);
 				localService.motd=LocalService.unescape(result.Jo.optString("error_description"));
 				localService.refresh();
-				//localService.sendid();
+				}
+				else
+				{
+				localService.sendid();
+				}
 				}
 				else if (result.Jo.optInt("error")==67||result.Jo.optInt("error")==68||result.Jo.optInt("error")==69)
 				{
@@ -1881,6 +1889,11 @@ public void addtoDeviceChat(int u,JSONObject jo) {
 			
 		} else {
 			LocalService.addlog("Receive token error - shall reconnecting "+ result.rawresponse);
+			socketRetryInt++;
+			 if(socketRetryInt>3&&!OsMoDroid.settings.getBoolean("understand", false))
+			 {	
+				 localService.notifywarnactivity(localService.getString(R.string.checkfirewall), false,OsMoDroid.NOTIFY_NO_CONNECT);
+			 }
 			setReconnectOnError();
 		}
 		
