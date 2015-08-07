@@ -26,6 +26,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.util.GeoPoint;
+import org.osmdroid.views.drawing.OsmBitmapShader;
 
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
@@ -741,7 +742,14 @@ public void stopcomand()
 		}
 		
 	};
-	myIM.start();
+	if(OsMoDroid.settings.getString("newkey", "").equals(""))
+		{
+			sendid();
+		}
+	else
+		{
+			myIM.start();
+		}
 if (OsMoDroid.settings.getBoolean("started", false)){
 	startServiceWork();
 }
