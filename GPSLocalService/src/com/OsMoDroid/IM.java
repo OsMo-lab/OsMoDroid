@@ -761,7 +761,7 @@ public void addtoDeviceChat(int u,JSONObject jo) {
 	}
 	 	 
 
-	private void addToChannelChat(int channelU, JSONObject jo) throws JSONException {
+	private void addToChannelChat(int channelU, JSONObject jo, boolean silent) throws JSONException {
 		if(log)Log.d(this.getClass().getName(), "type=chch");
 		if(log)Log.d(this.getClass().getName(), "Сообщение в чат канала " + jo);
 		
@@ -772,44 +772,49 @@ public void addtoDeviceChat(int u,JSONObject jo) {
 		m.name=jo.optString("name");
 		
 		String fromDevice="Незнамо кто";
-		//09-16 18:25:41.057: D/com.OsMoDroid.IM(1474):     "data": "0|40+\u041e\u043f\u0430\u0441\u043d\u043e +2013-09-16 22:25:44"
-		//"data": "0|40|cxbcxvbcxvbcxvb|2013-03-14 22:42:34"
 		
-		//if(log)Log.d(this.getClass().getName(), "data[0]=" + data[0] + " data[1]=" + data[1] + " data[2]=" + data[2]);
-		
-		//if(log)Log.d(this.getClass().getName(), "datanew[0]=" + datanew[0] + " datanew[1]=" + datanew[1] + " datanew[2]=" + datanew[2]);
-		for (final Channel channel : LocalService.channelList) {
+		for (final Channel channel : LocalService.channelList) 
+		{
 			if(log)Log.d(this.getClass().getName(), "chanal nest" + channel.name);
-			if (channelU==channel.u){
-				if(!channel.messagesstringList.contains(m)){
-				fromDevice=jo.optString("name");
-			Intent intent =new Intent(localService, GPSLocalServiceClient.class).putExtra("channelpos", channel.u);
-			intent.setAction("channelchat");
-			PendingIntent contentIntent = PendingIntent.getActivity(localService,333,intent, PendingIntent.FLAG_CANCEL_CURRENT);
-			Long when=System.currentTimeMillis();
-		 	NotificationCompat.Builder notificationBuilder =new NotificationCompat.Builder(
-					localService.getApplicationContext())
-			    	.setWhen(when)
-			    	.setContentText(channel.name+" "+fromDevice+": "+jo.optString("text"))
-			    	.setContentTitle("OsMoDroid")
-			    	.setSmallIcon(android.R.drawable.ic_menu_send)
-			    	.setAutoCancel(true)
-			    	.setDefaults(Notification.DEFAULT_LIGHTS)
-			    	.setContentIntent(contentIntent);
+			if (channelU==channel.u)
+			{
+				if(!channel.messagesstringList.contains(m))
+				{
+					if(!silent)
+					{
+						fromDevice=jo.optString("name");
+						Intent intent =new Intent(localService, GPSLocalServiceClient.class).putExtra("channelpos", channel.u);
+						intent.setAction("channelchat");
+						PendingIntent contentIntent = PendingIntent.getActivity(localService,333,intent, PendingIntent.FLAG_CANCEL_CURRENT);
+						Long when=System.currentTimeMillis();
+						NotificationCompat.Builder notificationBuilder =new NotificationCompat.Builder(
+								localService.getApplicationContext())
+						.setWhen(when)
+						.setContentText(channel.name+" "+fromDevice+": "+jo.optString("text"))
+						.setContentTitle("OsMoDroid")
+						.setSmallIcon(android.R.drawable.ic_menu_send)
+						.setAutoCancel(true)
+						.setDefaults(Notification.DEFAULT_LIGHTS)
+						.setContentIntent(contentIntent);
 	
-	if (!OsMoDroid.settings.getBoolean("silentnotify", false)){
-			 notificationBuilder.setDefaults(Notification.DEFAULT_LIGHTS| Notification.DEFAULT_VIBRATE| Notification.DEFAULT_SOUND);
-			    	}
-				Notification notification = notificationBuilder.build();
-				LocalService.mNotificationManager.notify(OsMoDroid.mesnotifyid, notification);
+						if (!OsMoDroid.settings.getBoolean("silentnotify", false))
+						{
+							notificationBuilder.setDefaults(Notification.DEFAULT_LIGHTS| Notification.DEFAULT_VIBRATE| Notification.DEFAULT_SOUND);
+						}
+						Notification notification = notificationBuilder.build();
+						LocalService.mNotificationManager.notify(OsMoDroid.mesnotifyid, notification);
 		
-		if (LocalService.channelsmessagesAdapter!=null&& LocalService.currentChannel != null&&LocalService.currentChannel.u==channel.u&&LocalService.chatVisible ){
-			LocalService.mNotificationManager.cancel(OsMoDroid.mesnotifyid);
-		}
-					channel.messagesstringList.add(m);
-							if (LocalService.channelsmessagesAdapter!=null&& LocalService.currentChannel != null&&LocalService.currentChannel.u==channel.u ){
+						if (LocalService.channelsmessagesAdapter!=null&& LocalService.currentChannel != null&&LocalService.currentChannel.u==channel.u&&LocalService.chatVisible )
+						{
+							LocalService.mNotificationManager.cancel(OsMoDroid.mesnotifyid);
+						}
+					}
+				channel.messagesstringList.add(m);
+				Collections.sort(channel.messagesstringList);
+				if (LocalService.channelsmessagesAdapter!=null&& LocalService.currentChannel != null&&LocalService.currentChannel.u==channel.u )
+				{
 								LocalService.channelsmessagesAdapter.notifyDataSetChanged();
-							}
+				}
 						
 				}	
 			}
@@ -995,7 +1000,7 @@ public void addtoDeviceChat(int u,JSONObject jo) {
  			
 			try {
 				
-		addToChannelChat(Integer.parseInt(param), ja.getJSONObject(k));
+		addToChannelChat(Integer.parseInt(param), ja.getJSONObject(k), true);
 	}
 		catch (Exception e) {
 			// TODO: handle exception
@@ -1408,6 +1413,10 @@ public void addtoDeviceChat(int u,JSONObject jo) {
 			}
 			if(log)Log.d(getClass().getSimpleName(), "write group list to file");
 			localService.saveObject(LocalService.channelList, OsMoDroid.CHANNELLIST);
+			for (Channel ch: LocalService.channelList)
+			{
+				sendToServer("GC:"+ch.u);
+			}
 			//sendToServer("PG");
 	}
 	if(command.equals("GL"))
@@ -1602,6 +1611,12 @@ public void addtoDeviceChat(int u,JSONObject jo) {
 			if(log)Log.d(getClass().getSimpleName(), "write group list to file");
 			localService.saveObject(LocalService.channelList, OsMoDroid.CHANNELLIST);
 			//sendToServer("PG");
+		}
+/// recive GPC:2480|{"u":11,"gu":"1621","text":"\u043c\u0438\u0442\u0441\u043c\u0438\u0442\u043c\u0441\u0438\u0442","type":0,"time":"2015-08-09 22:55:23","name":"\u0414\u0435\u043d\u0438\u0441"}
+		if (command.equals("GPC"))
+		{
+			addToChannelChat(Integer.parseInt(param), jo, false);
+			
 		}
 // DP:7909|["3","1"]
 		if (command.equals("DP"))

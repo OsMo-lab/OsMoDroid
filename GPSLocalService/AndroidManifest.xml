@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.OsMoDroid"
-    android:versionCode="251"
+    android:versionCode="252"
     android:versionName="2.1.01" android:installLocation="auto">
     <uses-sdk android:minSdkVersion="5"
         android:targetSdkVersion="19"  />

@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 import android.graphics.Color;
 
-public class ChatMessage implements Serializable{
+public class ChatMessage implements Comparable<ChatMessage>, Serializable{
 //    u = 468
 //    device = 5837
 //    text = не ник аккаунта
@@ -40,4 +40,10 @@ public class ChatMessage implements Serializable{
 	        	return false;  
 	        }  
 	}
+	@Override
+	public int compareTo(ChatMessage another) {
+		
+		return this.u-another.u;
+	}
+	
 }

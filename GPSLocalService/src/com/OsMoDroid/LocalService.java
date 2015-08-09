@@ -1518,7 +1518,7 @@ public void sendid()
 		{
 			LocalService.addlog("Lost GPS till - ELSE");
 		}
-		if(firstsend&&sessionstarted&&myIM!=null&&myIM.authed)
+		if(firstsend)
 		{
 			if(log)Log.d(this.getClass().getName(),"Первая отправка");
 			LocalService.addlog("First send");
