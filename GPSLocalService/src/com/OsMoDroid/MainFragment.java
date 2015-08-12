@@ -196,8 +196,11 @@ public class MainFragment extends Fragment implements GPSLocalServiceClient.upd 
 		OsMoDroid.editor.remove("p");
 		OsMoDroid.editor.remove("u");
 		OsMoDroid.editor.commit();
+		if(OsMoDroid.settings.getBoolean("live", false))
+		{
 		globalActivity.mService.myIM.stop();
 		globalActivity.mService.myIM.start();
+		}
 		globalActivity.mService.refresh();
 		}
 //		if (item.getItemId() == 2) {

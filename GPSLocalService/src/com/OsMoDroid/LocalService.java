@@ -748,7 +748,10 @@ public void stopcomand()
 		}
 	else
 		{
-			myIM.start();
+			if(OsMoDroid.settings.getBoolean("live", false))
+			{
+				myIM.start();
+			}
 		}
 if (OsMoDroid.settings.getBoolean("started", false)){
 	startServiceWork();
@@ -1021,6 +1024,14 @@ OsMoDroid.settings.edit().putBoolean("ondestroy", false).commit();
 			closeGPX();
 		}
 		requestLocationUpdates();
+		}
+		if(myIM.start==false&&live)
+		{
+			myIM.start();
+		}
+		if(myIM.start==true&&!live)
+		{
+			myIM.close();
 		}
 		
 		if(log)Log.d(getClass().getSimpleName(), "applyPreferecne end");
@@ -2196,7 +2207,10 @@ public void onResultsSucceeded(APIComResult result) {
 				{
 					OsMoDroid.editor.putString("newkey", result.Jo.getString("device"));
 					OsMoDroid.editor.commit();
-					myIM.start();
+					if(OsMoDroid.settings.getBoolean("live", false))
+					{
+						myIM.start();
+					}
 				} 
 			catch (JSONException e) 
 				{

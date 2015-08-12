@@ -517,8 +517,11 @@ void showFragment(Fragment fragment, boolean backstack) {
 			}
 			if(requestCode==1&&resultCode==Activity.RESULT_OK){
 				Log.d(this.getClass().getSimpleName(), "void onActivityResult=auth");
-				mService.myIM.stop();
-				mService.myIM.start();
+				if(live)
+				{
+					mService.myIM.stop();
+					mService.myIM.start();
+				}
 			}
 			
 

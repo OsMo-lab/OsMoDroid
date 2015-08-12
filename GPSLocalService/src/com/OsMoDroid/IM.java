@@ -129,6 +129,7 @@ public class IM implements ResultsListener {
     PendingIntent keepAlivePIntent;
     PendingIntent getTokenTimeoutPIntent;
 	volatile protected  boolean running       = false;
+	volatile protected  boolean start       = false;
 	Thread connectThread;
 	volatile private boolean gettokening=false;
 	Context parent;
@@ -413,6 +414,7 @@ public class IM implements ResultsListener {
 			
 		}
 		stop();
+		start=false;
 	};
 	public void gettoken()
 	
@@ -476,6 +478,7 @@ public class IM implements ResultsListener {
 	
 	
 	 void start(){
+		start=true;
 		if(log)Log.d(this.getClass().getName(), "void IM.start");
 		LocalService.addlog("Socket void start");
 		running = true;
