@@ -1051,7 +1051,7 @@ public void addtoDeviceChat(int u,JSONObject jo) {
 		connectcount=0;
 		erorconenctcount=0;
 		needopensession=false;
-		OsMoDroid.editor.putString("viewurl","https://osmo.mobi/u/"+jo.optString("url"));
+		OsMoDroid.editor.putString("viewurl","https://osmo.mobi/s/"+jo.optString("url"));
 		OsMoDroid.editor.commit();
 		localService.refresh();
 	}
