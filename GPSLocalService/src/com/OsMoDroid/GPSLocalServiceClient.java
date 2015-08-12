@@ -924,6 +924,18 @@ if (mBound) {
 	    return res;
 	}
 
+	@Override
+	public void onBackPressed() {
+		if(drawClickListener.currentItem!=0)
+		{
+			drawClickListener.selectItem(getString(R.string.tracker),null);
+		}
+		else
+		{
+		super.onBackPressed();
+		}
+	}
+
 
 
 
