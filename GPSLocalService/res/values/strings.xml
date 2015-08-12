@@ -280,4 +280,7 @@
 <string name="seconds">Seconds</string>
 <string name="network_timeout">Network timeout</string>
 <string name="live_monitoring">Live Monitoring</string>
+<string name="offline_on">Offline mode is enabled. Data not sent to server</string>
+<string name="update_map_in_background">Update map in background</string>
+<string name="tcp_no_delay">TCP NO Delay</string>
 </resources>

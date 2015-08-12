@@ -109,7 +109,7 @@ public class ChannelsFragment extends Fragment {
 											JSONObject postjson = new JSONObject();
 											try {
 											postjson.put("text", input.getText().toString());
-											globalActivity.mService.myIM.sendToServer("GCS:"+LocalService.channelList.get((int) acmi.id).u+'|'+postjson.toString());
+											globalActivity.mService.myIM.sendToServer("GCS:"+LocalService.channelList.get((int) acmi.id).u+'|'+postjson.toString(),true);
 											} catch (JSONException e) {
 												e.printStackTrace();
 											}
@@ -160,7 +160,7 @@ public class ChannelsFragment extends Fragment {
 		  }
 		  if (item.getItemId() == 6) {
 			  //globalActivity.mService.myIM.sendToServer("GROUP_DISCONNECT:"+LocalService.channelList.get((int) acmi.id).group_id);
-			  globalActivity.mService.myIM.sendToServer("GL:"+LocalService.channelList.get((int) acmi.id).group_id);
+			  globalActivity.mService.myIM.sendToServer("GL:"+LocalService.channelList.get((int) acmi.id).group_id,true);
 			  return true;
 		  }
 		  
@@ -286,7 +286,7 @@ public class ChannelsFragment extends Fragment {
 									{
 										try
 											{
-												globalActivity.mService.myIM.sendToServer("GRPA|{\"name\":\""+(input2.getText().toString())+"\", \"until\":\"\", \"description\":\"\", \"policy\":\"\"}");
+												globalActivity.mService.myIM.sendToServer("GRPA|{\"name\":\""+(input2.getText().toString())+"\", \"until\":\"\", \"description\":\"\", \"policy\":\"\"}",true);
 											}
 										catch (Exception e) {
 											e.printStackTrace();
@@ -338,7 +338,7 @@ public class ChannelsFragment extends Fragment {
 									 canalid = Uri.encode(input.getText().toString());
 									if (!(canalid.equals("")))
 									{
-										globalActivity.mService.myIM.sendToServer("GE:"+canalid+"|"+(input2.getText().toString()));
+										globalActivity.mService.myIM.sendToServer("GE:"+canalid+"|"+(input2.getText().toString()),true);
 									} else {
 											Toast.makeText(
 											globalActivity,
@@ -360,7 +360,7 @@ public class ChannelsFragment extends Fragment {
         	}
         if (item.getItemId() == 3) 
         	{
-        		globalActivity.mService.myIM.sendToServer("GROUP");
+        		globalActivity.mService.myIM.sendToServer("GROUP",true);
         	}
         return super.onOptionsItemSelected(item);
 	}

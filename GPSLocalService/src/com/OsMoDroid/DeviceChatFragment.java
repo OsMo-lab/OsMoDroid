@@ -102,7 +102,7 @@ public class DeviceChatFragment extends Fragment  {
 		
 	}
 	void getDeviceInfo() {
-		globalActivity.mService.myIM.sendToServer("IM:"+getDeviceByU(deviceU).u);
+		globalActivity.mService.myIM.sendToServer("IM:"+getDeviceByU(deviceU).u,true);
 	}
 	@Override
 	public void onDetach() {
@@ -158,7 +158,7 @@ public class DeviceChatFragment extends Fragment  {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		
 		if (item.getItemId()==2){
-			globalActivity.mService.myIM.sendToServer("IM:"+getDeviceByU(deviceU).u);
+			globalActivity.mService.myIM.sendToServer("IM:"+getDeviceByU(deviceU).u,true);
 		}
 		
 		return super.onOptionsItemSelected(item);
@@ -209,7 +209,7 @@ public class DeviceChatFragment extends Fragment  {
 //				postjson.put("from", OsMoDroid.settings.getString("device", ""));
 //				postjson.put("to", getDeviceByU(deviceU).tracker_id);
 				postjson.put("text", input.getText().toString());
-				globalActivity.mService.myIM.sendToServer("IMS:"+getDeviceByU(deviceU).u+"|"+postjson.toString());
+				globalActivity.mService.myIM.sendToServer("IMS:"+getDeviceByU(deviceU).u+"|"+postjson.toString(),true);
 
 				} 
 			catch (JSONException e) {

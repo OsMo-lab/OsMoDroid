@@ -417,7 +417,7 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
 										{
 											e1.printStackTrace();
 										}
-								LocalService.myIM.sendToServer("POINT_ADD|"+jo.toString());
+								LocalService.myIM.sendToServer("POINT_ADD|"+jo.toString(),true);
 								return;
 							}
 						});

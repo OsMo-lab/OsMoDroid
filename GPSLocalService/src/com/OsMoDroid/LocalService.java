@@ -760,7 +760,7 @@ OsMoDroid.settings.edit().putBoolean("ondestroy", false).commit();
 	}
 
 	void Pong(Context context) throws JSONException{
-		myIM.sendToServer("RCR|1");
+		myIM.sendToServer("RCR|1",false);
 	}
 
 	void batteryinfo(Context context) throws JSONException{
@@ -769,7 +769,7 @@ OsMoDroid.settings.edit().putBoolean("ondestroy", false).commit();
             postjson.put("temperature", temperature);
             postjson.put("voltage", voltage);
             postjson.put("plugged", plugged);
-            myIM.sendToServer("RCR:"+OsMoDroid.TRACKER_BATTERY_INFO+"|"+postjson.toString());
+            myIM.sendToServer("RCR:"+OsMoDroid.TRACKER_BATTERY_INFO+"|"+postjson.toString(),false);
 	}
 	private String capitalize(String s) {
 		  if (s == null || s.length() == 0) {
@@ -801,12 +801,12 @@ OsMoDroid.settings.edit().putBoolean("ondestroy", false).commit();
         postjson.put("androidversion", androidver);
         postjson.put("devicename", getDeviceName());
         postjson.put("display", Integer.toString(width)+"x"+Integer.toString(height));
-        myIM.sendToServer("RCR:"+OsMoDroid.TRACKER_SYSTEM_INFO+"|"+postjson.toString());
+        myIM.sendToServer("RCR:"+OsMoDroid.TRACKER_SYSTEM_INFO+"|"+postjson.toString(),false);
 }
 	
 	void vibrate (Context context,long milliseconds) {
 		vibrator.vibrate(milliseconds);
-		 myIM.sendToServer("RCR:"+OsMoDroid.TRACKER_VIBRATE+"|1");
+		 myIM.sendToServer("RCR:"+OsMoDroid.TRACKER_VIBRATE+"|1",false);
 	}
 	
 	
@@ -815,7 +815,7 @@ OsMoDroid.settings.edit().putBoolean("ondestroy", false).commit();
         postjson.put("view", count);
         postjson.put("active", countFix);
         postjson.put("accuracy", accuracy);
-        myIM.sendToServer("RCR:"+OsMoDroid.TRACKER_SATELLITES_INFO+"|"+postjson.toString());
+        myIM.sendToServer("RCR:"+OsMoDroid.TRACKER_SATELLITES_INFO+"|"+postjson.toString(),false);
 }
 	
 	void getpreferences(Context context) throws JSONException{
@@ -850,12 +850,12 @@ OsMoDroid.settings.edit().putBoolean("ondestroy", false).commit();
 	void wifion(Context context) {
 		WifiManager wifi = (WifiManager) getSystemService(Context.WIFI_SERVICE);
 		wifi.setWifiEnabled(true);
-		myIM.sendToServer("RCR:"+OsMoDroid.TRACKER_WIFI_ON+"|1");
+		myIM.sendToServer("RCR:"+OsMoDroid.TRACKER_WIFI_ON+"|1",false);
 	}
 	void wifioff(Context context) {
 		WifiManager wifi = (WifiManager) getSystemService(Context.WIFI_SERVICE);
 		wifi.setWifiEnabled(false);
-		myIM.sendToServer("RCR:"+OsMoDroid.TRACKER_WIFI_OFF+"|1");
+		myIM.sendToServer("RCR:"+OsMoDroid.TRACKER_WIFI_OFF+"|1",false);
 	}
 	
 	void wifiinfo(Context context) throws JSONException {
@@ -877,7 +877,7 @@ OsMoDroid.settings.edit().putBoolean("ondestroy", false).commit();
 		{
 			postjson.put("state", "noconnect");
 		}
-		myIM.sendToServer("RCR:"+OsMoDroid.TRACKER_WIFI_INFO+"|"+postjson.toString());
+		myIM.sendToServer("RCR:"+OsMoDroid.TRACKER_WIFI_INFO+"|"+postjson.toString(),false);
 	}
 	
 	
@@ -1102,7 +1102,7 @@ OsMoDroid.settings.edit().putBoolean("ondestroy", false).commit();
 			{
 				if (myIM!=null&&myIM.authed)
 					{
-						myIM.sendToServer("TO");
+						myIM.sendToServer("TO",false);
 						myIM.needopensession=true;
 						myIM.needclosesession=false;
 					}
@@ -1357,7 +1357,7 @@ public void sendid()
                     //APIcomParams params = new APIcomParams("http://a.t.esya.ru/?act=session_stop&hash="+OsMoDroid.settings.getString("hash", "")+"&n="+OsMoDroid.settings.getString("n", "")+"&ttl="+OsMoDroid.settings.getString("session_ttl", "30"),null,"session_stop");
                     //new Netutil.MyAsyncTask(this).execute(params);
 			if(myIM.authed){
-				myIM.sendToServer("TC");
+				myIM.sendToServer("TC",false);
 				myIM.needclosesession=true;
 				myIM.needopensession=false;
 			}
@@ -1983,7 +1983,7 @@ private void sendlocation (Location location){
 				}
 			}
 		LocalService.addlog("Send:AUTHED="+myIM.authed+" Sending:"+sending);
-		myIM.sendToServer(sending);		
+		myIM.sendToServer(sending,false);		
 		LocalService.addlog("Sendaf:AUTHED="+myIM.authed+" Sending:"+sending);
 					
 		if(log)Log.d(this.getClass().getName(), "GPS websocket sendlocation");
@@ -2293,7 +2293,7 @@ public void onSensorChanged(SensorEvent event) {
     	OsMoDroid.editor.putLong("signalisation", System.currentTimeMillis());
     	OsMoDroid.editor.commit();
     	//myIM.sendToServer("REMOTE_CONTROL:"+OsMoDroid.settings.getString("tracker_id", "") +"|"+"ALARM");
-    	myIM.sendToServer("ALARM");
+    	myIM.sendToServer("ALARM",false);
     	if(log)Log.d(this.getClass().getName(), "Alarm Alarm Alarm "+Float.toString(currentAcceleration));
     }
 

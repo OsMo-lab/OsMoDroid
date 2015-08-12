@@ -173,7 +173,7 @@ public class ChannelDevicesFragment extends Fragment implements ResultsListener 
 	public boolean onOptionsItemSelected(MenuItem item) {
 		if (item.getItemId()==3){
 			//globalActivity.mService.myIM.sendToServer("GROUP_CONNECT:"+LocalService.currentChannel.group_id);
-			globalActivity.mService.myIM.sendToServer("GROUP");
+			globalActivity.mService.myIM.sendToServer("GROUP",true);
 			//globalActivity.mService.myIM.sendToServer("GC:"+LocalService.currentChannel.u);
 		}
 		return super.onOptionsItemSelected(item);
@@ -226,7 +226,7 @@ public class ChannelDevicesFragment extends Fragment implements ResultsListener 
 				try {
 
 				postjson.put("text", input.getText().toString());
-				globalActivity.mService.myIM.sendToServer("GCS:"+LocalService.currentChannel.u+'|'+postjson.toString());
+				globalActivity.mService.myIM.sendToServer("GCS:"+LocalService.currentChannel.u+'|'+postjson.toString(),true);
 				//http://apim.esya.ru/?key=H8&query=om_channel_chat_post&format=jsonp
 				//json={"channel":"51","device":"40","text":"789"}
 				//t.add(Netutil.newapicommand((ResultsListener)ChannelDevicesFragment.this,(Context)getSherlockActivity(), "om_channel_chat_post","json="+postjson.toString()));

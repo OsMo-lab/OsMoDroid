@@ -180,13 +180,15 @@ public class IM implements ResultsListener {
 //		start();
 //		}
 	}
-	public void sendToServer(String str)
+	public void sendToServer(String str, boolean gui)
 		{
 			Message msg =new Message();
 			Bundle b =new Bundle();
 			b.putString("write",str);
 			b.putBoolean("pp", str.equals("PP"));
 			msg.setData(b);
+			if(start)
+			{
 			if (iMWriter.handler!=null){
 				String[] data = str.split("\\=");
 				ArrayList<String> cl = new ArrayList<String>(); 
@@ -209,7 +211,14 @@ public class IM implements ResultsListener {
 				LocalService.addlog("panic! handler is null");
 				if(log) Log.d(this.getClass().getName(), " handler is null!!!");
 			}
-				
+			}
+			else
+			{
+				if(gui)
+				{
+					Toast.makeText(localService, localService.getString(R.string.offline_on), Toast.LENGTH_LONG).show();
+				}
+			}
 			
 		}
 	  BroadcastReceiver getTokenTimeoutReceiver = new BroadcastReceiver() {
@@ -244,7 +253,7 @@ public class IM implements ResultsListener {
               if(connOpened){
             	  LocalService.addlog("Socket sendPing");
             	  if(log)Log.d(this.getClass().getName(), " send ping");
-            	  sendToServer("P");
+            	  sendToServer("P",false);
             	
               }
              
@@ -386,7 +395,7 @@ public class IM implements ResultsListener {
 	 * Выключает IM
 	 */
 	void close(){
-		sendToServer("BYE");
+		sendToServer("BYE",false);
 		if(log)Log.d(this.getClass().getName(), "void IM.close");
 		LocalService.addlog("Socket void close");
 		try {
@@ -546,6 +555,7 @@ public class IM implements ResultsListener {
 								}
 								else {
 									LocalService.addlog("not connected now");
+									Toast.makeText(localService, localService.getString(R.string.Unknow), Toast.LENGTH_SHORT).show();
 								}
 							
 								super.handleMessage(msg);
@@ -665,7 +675,7 @@ public class IM implements ResultsListener {
 					 rd = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 					 wr =new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF8"),true);
 					 readerThread.start();
-					 sendToServer( "INIT|"+token);
+					 sendToServer( "INIT|"+token,false);
 					 
 					 
 				 } catch (final Exception e1) {
@@ -910,26 +920,26 @@ public void addtoDeviceChat(int u,JSONObject jo) {
 			authed=true;
 			if(needopensession)	
 			{
-				sendToServer("TO");
+				sendToServer("TO",false);
 			}
 			if(needclosesession)
 			{
-				sendToServer("TC");
+				sendToServer("TC",false);
 			}
 			if(LocalService.channelList.isEmpty())
 			{
-				sendToServer("GROUP");
+				sendToServer("GROUP",false);
 			}
 			if(LocalService.deviceList.isEmpty())
 			{
-				sendToServer("DEVICE");
+				sendToServer("DEVICE",false);
 			}
 			setkeepAliveAlarm();
 			localService.internetnotify(true);
 			if (!OsMoDroid.settings.getBoolean("subscribebackground", false))
 				{
-					sendToServer("PG:-1");
-					sendToServer("PD:-1");
+					sendToServer("PG:-1",false);
+					sendToServer("PD:-1",false);
 				}
 			if(jo.has("group"))
 			{
@@ -1043,7 +1053,7 @@ public void addtoDeviceChat(int u,JSONObject jo) {
 	if(command.equals("GRPA"))
 	{
 		
-		sendToServer("GROUP");
+		sendToServer("GROUP",false);
 	}
 	
 	if(command.equals("TO"))
@@ -1075,7 +1085,7 @@ public void addtoDeviceChat(int u,JSONObject jo) {
 		{
 			localService.sendingbuffer.addAll(localService.buffer);
 			localService.buffer.clear();
-			sendToServer("B|"+ new JSONArray(localService.sendingbuffer));
+			sendToServer("B|"+ new JSONArray(localService.sendingbuffer),false);
 		}
 		
 		if (localService.sendsound && !localService.mayak) {
@@ -1097,22 +1107,22 @@ public void addtoDeviceChat(int u,JSONObject jo) {
 	
 	if(command.equals("PP"))
 	{
-		sendToServer("PP");
+		sendToServer("PP",false);
 	}
 	
 	if(command.equals("RC"))
 	{
 		if(param.equals("PP"))
 		{
-			sendToServer("PP");
+			sendToServer("PP",false);
 		}
 		if(param.equals(OsMoDroid.TRACKER_SESSION_START)){
 			localService.startServiceWork();
-			sendToServer("RCR:"+OsMoDroid.TRACKER_SESSION_START+"|1");
+			sendToServer("RCR:"+OsMoDroid.TRACKER_SESSION_START+"|1",false);
 		}
 		if(param.equals(OsMoDroid.TRACKER_SESSION_STOP)){
 			localService.stopServiceWork(true);
-			sendToServer("RCR:"+OsMoDroid.TRACKER_SESSION_STOP+"|1");
+			sendToServer("RCR:"+OsMoDroid.TRACKER_SESSION_STOP+"|1",false);
 		}
 		if(param.equals(OsMoDroid.TTS)){
 			if(OsMoDroid.settings.getBoolean("ttsremote", false)&&localService.tts!=null){localService.tts.speak(addict , TextToSpeech.QUEUE_ADD, null);}
@@ -1120,22 +1130,22 @@ public void addtoDeviceChat(int u,JSONObject jo) {
 		if(param.equals(OsMoDroid.ALARM_ON))
 			{
 				localService.playAlarmOn();
-				sendToServer("RCR:"+OsMoDroid.ALARM_ON+"|1");
+				sendToServer("RCR:"+OsMoDroid.ALARM_ON+"|1",false);
 			}
 		if(param.equals(OsMoDroid.ALARM_OFF))
 			{
 				localService.playAlarmOff();
-				sendToServer("RCR:"+OsMoDroid.ALARM_OFF+"|1");
+				sendToServer("RCR:"+OsMoDroid.ALARM_OFF+"|1",false);
 			}
 		if(param.equals(OsMoDroid.SIGNAL_ON))
 			{
 				localService.enableSignalisation();
-				sendToServer("RCR:"+OsMoDroid.SIGNAL_ON+"|1");
+				sendToServer("RCR:"+OsMoDroid.SIGNAL_ON+"|1",false);
 			}
 		if(param.equals(OsMoDroid.SIGNAL_OFF))
 			{
 				localService.disableSignalisation();
-				sendToServer("RCR:"+OsMoDroid.SIGNAL_OFF+"|1");
+				sendToServer("RCR:"+OsMoDroid.SIGNAL_OFF+"|1",false);
 			}
 		if(param.equals(OsMoDroid.TRACKER_BATTERY_INFO))
 			{
@@ -1191,13 +1201,13 @@ public void addtoDeviceChat(int u,JSONObject jo) {
 			}
 		if(param.equals(OsMoDroid.TRACKER_EXIT))
 			{
-				sendToServer("RCR:"+OsMoDroid.TRACKER_EXIT+"|1");
+				sendToServer("RCR:"+OsMoDroid.TRACKER_EXIT+"|1",false);
 				localService.stopSelf();
 				System.exit(0);
 			}
 		if(param.equals(OsMoDroid.WHERE))
 			{
-				sendToServer("RCR:"+OsMoDroid.WHERE+"|1");
+				sendToServer("RCR:"+OsMoDroid.WHERE+"|1",false);
 				localService.where=true;
 				if (!localService.state){
 					localService.alertHandler.post(new Runnable() {
@@ -1242,23 +1252,23 @@ public void addtoDeviceChat(int u,JSONObject jo) {
 	}
 	if(command.equals("GE"))
 	{
-		sendToServer("GROUP");
+		sendToServer("GROUP",false);
 	}
 	if(command.equals("DS"))
 	{
-		sendToServer("DEVICE");
+		sendToServer("DEVICE",false);
 	}
 	if(command.equals("DSS"))
 	{
-		sendToServer("DEVICE");
+		sendToServer("DEVICE",false);
 	}
 	if(command.equals("DSA"))
 	{
-		sendToServer("DEVICE");
+		sendToServer("DEVICE",false);
 	}
 	if(command.equals("DSD"))
 	{
-		sendToServer("DEVICE");
+		sendToServer("DEVICE",false);
 	}
 	
 	if(command.equals("DEVICE")){
@@ -1418,7 +1428,7 @@ public void addtoDeviceChat(int u,JSONObject jo) {
 			localService.saveObject(LocalService.channelList, OsMoDroid.CHANNELLIST);
 			for (Channel ch: LocalService.channelList)
 			{
-				sendToServer("GC:"+ch.u);
+				sendToServer("GC:"+ch.u,false);
 			}
 			//sendToServer("PG");
 	}

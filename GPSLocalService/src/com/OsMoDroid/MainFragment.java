@@ -612,11 +612,11 @@ else {
 										Boolean boolglobalsend =intent.getBooleanExtra("globalsend", false);
 										if (boolglobalsend)
 										{
-											globalActivity.mService.myIM.sendToServer("GS:-1");
+											globalActivity.mService.myIM.sendToServer("GS:-1",true);
 										}
 										else
 										{
-											globalActivity.mService.myIM.sendToServer("GS:1");
+											globalActivity.mService.myIM.sendToServer("GS:1",true);
 										}
 
 									}
