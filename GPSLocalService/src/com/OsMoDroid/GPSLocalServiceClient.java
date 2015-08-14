@@ -929,6 +929,7 @@ if (mBound) {
 		if(drawClickListener.currentItem!=0)
 		{
 			drawClickListener.selectItem(getString(R.string.tracker),null);
+			LocalService.currentItemName=OsMoDroid.context.getString(R.string.tracker);
 		}
 		else
 		{

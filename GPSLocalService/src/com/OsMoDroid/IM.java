@@ -1765,7 +1765,7 @@ public void addtoDeviceChat(int u,JSONObject jo) {
 	}
 	private void updateCoordinates( String d, final Device dev) {
 	//	if (Integer.parseInt(c.substring(c.indexOf(":")+1), c.length()) == dev.u){
-			
+			dev.speed="";
 			dev.lat=Float.parseFloat(d.substring(d.indexOf("L")+1, d.indexOf(":")));
 			for (int i = d.indexOf(":")+1; i <= d.length(); i++) {
 				if(!(d.charAt(i)=='-')&&!Character.isDigit(d.charAt(i))){
