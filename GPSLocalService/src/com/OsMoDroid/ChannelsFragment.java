@@ -325,7 +325,7 @@ public class ChannelsFragment extends Fragment {
 			layout.addView(txv2);
 			final EditText input2 = new EditText(globalActivity);
 			layout.addView(input2);
-			input.setInputType(InputType.TYPE_CLASS_TEXT| InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
+			//input.setInputType(InputType.TYPE_CLASS_TEXT| InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
 			input2.setSingleLine(true);
 			AlertDialog alertdialog4 = new AlertDialog.Builder(
 					globalActivity)
