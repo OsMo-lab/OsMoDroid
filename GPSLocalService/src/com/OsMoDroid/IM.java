@@ -1883,37 +1883,21 @@ public void addtoDeviceChat(int u,JSONObject jo) {
 			} else {
 				if(result.Jo.optInt("error")==10||result.Jo.optInt("error")==100||result.Jo.optString("token").equals("false"))
 				{
-				localService.alertHandler.post(new Runnable()
-					{
-						
-						@Override
-						public void run()
-							{
-								if(log)Log.d(this.getClass().getName(), "void IM.stop");
-								localService.internetnotify(false);
-							}
-					});
-				stop();
-				if(!OsMoDroid.settings.getString("newkey", "").equals(""))
-				{
-				localService.notifywarnactivity(LocalService.unescape(result.Jo.optString("error_description")), true, OsMoDroid.NOTIFY_NO_DEVICE);
-				localService.motd=LocalService.unescape(result.Jo.optString("error_description"));
-				localService.refresh();
-				}
-				else
-				{
-				localService.sendid();
-				}
-				}
-				else if (result.Jo.optInt("error")==67||result.Jo.optInt("error")==68||result.Jo.optInt("error")==69)
-				{
-					stop();
-					localService.notifywarnactivity(LocalService.unescape(result.Jo.optString("error_description")), false,OsMoDroid.NOTIFY_EXPIRY_USER);
+					localService.internetnotify(false);
+					close();
+					localService.notifywarnactivity(LocalService.unescape(result.Jo.optString("error_description")), true, OsMoDroid.NOTIFY_NO_DEVICE);
 					localService.motd=LocalService.unescape(result.Jo.optString("error_description"));
 					localService.refresh();
-					
+				
 				}
-			}
+					else if (result.Jo.optInt("error")==67||result.Jo.optInt("error")==68||result.Jo.optInt("error")==69)
+					{
+						close();
+						localService.notifywarnactivity(LocalService.unescape(result.Jo.optString("error_description")), false,OsMoDroid.NOTIFY_EXPIRY_USER);
+						localService.motd=LocalService.unescape(result.Jo.optString("error_description"));
+						localService.refresh();
+					}
+				}
 			
 		} else {
 			LocalService.addlog("Receive token error - shall reconnecting "+ result.rawresponse);
