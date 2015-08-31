@@ -79,7 +79,7 @@ if(deviceU!=-1){
 		  final AdapterContextMenuInfo acmi = (AdapterContextMenuInfo) item.getMenuInfo();
 		  if(acmi!=null){subacmi=acmi;}
 		  if (item.getItemId() == 1) {
-			  globalActivity.mService.myIM.sendToServer("DSD:"+LocalService.deviceAdapter.getItem(acmi.position).tracker_id);
+			  globalActivity.mService.myIM.sendToServer("DSD:"+LocalService.deviceAdapter.getItem(acmi.position).tracker_id,true);
 		    }
 
 
@@ -160,11 +160,11 @@ if(deviceU!=-1){
 				}
 			
 			if(LocalService.deviceList.get((int) acmi.id).subscribed){
-			globalActivity.mService.myIM.sendToServer("DSS|"+jo.toString());
+			globalActivity.mService.myIM.sendToServer("DSS|"+jo.toString(),true);
 			}
 			else
 				{
-					globalActivity.mService.myIM.sendToServer("DS|"+jo.toString());
+					globalActivity.mService.myIM.sendToServer("DS|"+jo.toString(),true);
 				}
 		}
 	};
@@ -174,11 +174,11 @@ if(deviceU!=-1){
  }
  if (item.getItemId() == 8) {
 	 //REMOTE_CONTROL:[tracker_id]|DESTROY_DEVICE
-	 LocalService.myIM.sendToServer("SRC:"+ LocalService.deviceList.get((int) subacmi.id).u+"|"+OsMoDroid.TRACKER_SESSION_START);
+	 LocalService.myIM.sendToServer("SRC:"+ LocalService.deviceList.get((int) subacmi.id).u+"|"+OsMoDroid.TRACKER_SESSION_START,true);
  }
  if (item.getItemId() == 9) {
 	 //REMOTE_CONTROL:[tracker_id]|DESTROY_DEVICE
-	 globalActivity.mService.myIM.sendToServer("SRC:"+ LocalService.deviceList.get((int) subacmi.id).u+"|"+OsMoDroid.TRACKER_SESSION_STOP);
+	 globalActivity.mService.myIM.sendToServer("SRC:"+ LocalService.deviceList.get((int) subacmi.id).u+"|"+OsMoDroid.TRACKER_SESSION_STOP,true);
  }
  
  if (item.getItemId() == 10) {
@@ -203,7 +203,7 @@ if(deviceU!=-1){
 								 
 								if (!( inputhash.getText().toString().equals(""))) {
 									//REMOTE_CONTROL|TTS:Привет жена)
-									globalActivity.mService.myIM.sendToServer("SRC:"+ LocalService.deviceList.get((int) subacmi.id).u+"|"+"TTS:"+inputhash.getText().toString());
+									globalActivity.mService.myIM.sendToServer("SRC:"+ LocalService.deviceList.get((int) subacmi.id).u+"|"+"TTS:"+inputhash.getText().toString(),true);
 								} 
 							}
 						})
@@ -223,23 +223,23 @@ if(deviceU!=-1){
  }
  if (item.getItemId() == 11) 
 	 {
-		 globalActivity.mService.myIM.sendToServer("SRC:"+ LocalService.deviceList.get((int) subacmi.id).u+"|"+OsMoDroid.ALARM_ON);
+		 globalActivity.mService.myIM.sendToServer("SRC:"+ LocalService.deviceList.get((int) subacmi.id).u+"|"+OsMoDroid.ALARM_ON,true);
 	 }
  if (item.getItemId() == 12) 
 	 {
-		 globalActivity.mService.myIM.sendToServer("SRC:"+ LocalService.deviceList.get((int) subacmi.id).u+"|"+OsMoDroid.ALARM_OFF);
+		 globalActivity.mService.myIM.sendToServer("SRC:"+ LocalService.deviceList.get((int) subacmi.id).u+"|"+OsMoDroid.ALARM_OFF,true);
 	 }
  if (item.getItemId() == 13) 
 	 {
-		 globalActivity.mService.myIM.sendToServer("SRC:"+ LocalService.deviceList.get((int) subacmi.id).u+"|"+OsMoDroid.SIGNAL_ON);
+		 globalActivity.mService.myIM.sendToServer("SRC:"+ LocalService.deviceList.get((int) subacmi.id).u+"|"+OsMoDroid.SIGNAL_ON,true);
 	 }
  if (item.getItemId() == 14) 
 	 {
-		 globalActivity.mService.myIM.sendToServer("SRC:"+ LocalService.deviceList.get((int) subacmi.id).u+"|"+OsMoDroid.SIGNAL_OFF);
+		 globalActivity.mService.myIM.sendToServer("SRC:"+ LocalService.deviceList.get((int) subacmi.id).u+"|"+OsMoDroid.SIGNAL_OFF,true);
 	 }
  if (item.getItemId() == 15) 
 	 {
-		 globalActivity.mService.myIM.sendToServer("SRC:"+ LocalService.deviceList.get((int) subacmi.id).u+"|"+OsMoDroid.WHERE);
+		 globalActivity.mService.myIM.sendToServer("SRC:"+ LocalService.deviceList.get((int) subacmi.id).u+"|"+OsMoDroid.WHERE,true);
 	 }
 	    
 		return super.onContextItemSelected(item);
@@ -384,7 +384,7 @@ if(deviceU!=-1){
 										dev.tracker_id=inputN.getText().toString();
 										//LocalService.deviceList.add(dev);
 										//globalActivity.mService.myIM.("LN:"+dev.tracker_id);
-										globalActivity.mService.myIM.sendToServer("DSA:"+dev.tracker_id+"|"+(dev.name));
+										globalActivity.mService.myIM.sendToServer("DSA:"+dev.tracker_id+"|"+(dev.name),true);
 //										if(LocalService.deviceAdapter!=null)
 //										{
 //											LocalService.deviceAdapter.notifyDataSetChanged();
@@ -409,7 +409,7 @@ if(deviceU!=-1){
 
 		}
 		if (item.getItemId() == 2) {
-			globalActivity.mService.myIM.sendToServer("DEVICE");
+			globalActivity.mService.myIM.sendToServer("DEVICE",true);
 		}
 		
 		return super.onOptionsItemSelected(item);

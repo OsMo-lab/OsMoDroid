@@ -196,8 +196,11 @@ public class MainFragment extends Fragment implements GPSLocalServiceClient.upd 
 		OsMoDroid.editor.remove("p");
 		OsMoDroid.editor.remove("u");
 		OsMoDroid.editor.commit();
+		if(OsMoDroid.settings.getBoolean("live", false))
+		{
 		globalActivity.mService.myIM.stop();
 		globalActivity.mService.myIM.start();
+		}
 		globalActivity.mService.refresh();
 		}
 //		if (item.getItemId() == 2) {
@@ -609,11 +612,11 @@ else {
 										Boolean boolglobalsend =intent.getBooleanExtra("globalsend", false);
 										if (boolglobalsend)
 										{
-											globalActivity.mService.myIM.sendToServer("GS:-1");
+											globalActivity.mService.myIM.sendToServer("GS:-1",true);
 										}
 										else
 										{
-											globalActivity.mService.myIM.sendToServer("GS:1");
+											globalActivity.mService.myIM.sendToServer("GS:1",true);
 										}
 
 									}

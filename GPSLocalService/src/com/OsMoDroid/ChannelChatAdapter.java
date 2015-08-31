@@ -43,7 +43,7 @@ public class ChannelChatAdapter extends ArrayAdapter<ChatMessage> {
 		        TextView txtTime = (TextView) row.findViewById(R.id.txtTime);
 		        TextView txtFromAddr = (TextView) row.findViewById(R.id.txtFromAddr);
 		        txtFromAddr.setVisibility(View.GONE);
-		        txtFrom.setText(message.from);
+		        txtFrom.setText(message.name);
 		        txtText.setText(message.text);
 		        txtTime.setText(message.time);
 //		        txtText.setTextColor(Color.BLACK);

@@ -517,8 +517,11 @@ void showFragment(Fragment fragment, boolean backstack) {
 			}
 			if(requestCode==1&&resultCode==Activity.RESULT_OK){
 				Log.d(this.getClass().getSimpleName(), "void onActivityResult=auth");
-				mService.myIM.stop();
-				mService.myIM.start();
+				if(live)
+				{
+					mService.myIM.stop();
+					mService.myIM.start();
+				}
 			}
 			
 
@@ -919,6 +922,19 @@ if (mBound) {
 	        }
 	    }
 	    return res;
+	}
+
+	@Override
+	public void onBackPressed() {
+		if(drawClickListener.currentItem!=0)
+		{
+			drawClickListener.selectItem(getString(R.string.tracker),null);
+			LocalService.currentItemName=OsMoDroid.context.getString(R.string.tracker);
+		}
+		else
+		{
+		super.onBackPressed();
+		}
 	}
 
 

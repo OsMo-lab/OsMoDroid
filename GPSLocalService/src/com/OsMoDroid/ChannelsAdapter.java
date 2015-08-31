@@ -74,11 +74,11 @@ public class ChannelsAdapter extends ArrayAdapter<Channel> {
 			//Netutil.newapicommand((ResultsListener)localservice,context, "om_device_channel_active:"+OsMoDroid.settings.getString("device", "")+","+channel.u+","+boolglobalsend);
 			 if(channel.send)
 			 	{
-				 localservice.myIM.sendToServer("GD:"+channel.u);
+				 localservice.myIM.sendToServer("GD:"+channel.u,true);
 			 	}
 			 else
 			 	{	
-				 localservice.myIM.sendToServer("GA:"+channel.u);
+				 localservice.myIM.sendToServer("GA:"+channel.u,true);
 			 	}
 				
 								}

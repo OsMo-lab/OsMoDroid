@@ -129,6 +129,7 @@ public class IM implements ResultsListener {
     PendingIntent keepAlivePIntent;
     PendingIntent getTokenTimeoutPIntent;
 	volatile protected  boolean running       = false;
+	volatile protected  boolean start       = false;
 	Thread connectThread;
 	volatile private boolean gettokening=false;
 	Context parent;
@@ -179,13 +180,15 @@ public class IM implements ResultsListener {
 //		start();
 //		}
 	}
-	public void sendToServer(String str)
+	public void sendToServer(String str, boolean gui)
 		{
 			Message msg =new Message();
 			Bundle b =new Bundle();
 			b.putString("write",str);
 			b.putBoolean("pp", str.equals("PP"));
 			msg.setData(b);
+			if(start)
+			{
 			if (iMWriter.handler!=null){
 				String[] data = str.split("\\=");
 				ArrayList<String> cl = new ArrayList<String>(); 
@@ -208,7 +211,14 @@ public class IM implements ResultsListener {
 				LocalService.addlog("panic! handler is null");
 				if(log) Log.d(this.getClass().getName(), " handler is null!!!");
 			}
-				
+			}
+			else
+			{
+				if(gui)
+				{
+					Toast.makeText(localService, localService.getString(R.string.offline_on), Toast.LENGTH_LONG).show();
+				}
+			}
 			
 		}
 	  BroadcastReceiver getTokenTimeoutReceiver = new BroadcastReceiver() {
@@ -243,7 +253,7 @@ public class IM implements ResultsListener {
               if(connOpened){
             	  LocalService.addlog("Socket sendPing");
             	  if(log)Log.d(this.getClass().getName(), " send ping");
-            	  sendToServer("P");
+            	  sendToServer("P",false);
             	
               }
              
@@ -385,7 +395,7 @@ public class IM implements ResultsListener {
 	 * Выключает IM
 	 */
 	void close(){
-		sendToServer("BYE");
+		sendToServer("BYE",false);
 		if(log)Log.d(this.getClass().getName(), "void IM.close");
 		LocalService.addlog("Socket void close");
 		try {
@@ -413,6 +423,7 @@ public class IM implements ResultsListener {
 			
 		}
 		stop();
+		start=false;
 	};
 	public void gettoken()
 	
@@ -476,6 +487,7 @@ public class IM implements ResultsListener {
 	
 	
 	 void start(){
+		start=true;
 		if(log)Log.d(this.getClass().getName(), "void IM.start");
 		LocalService.addlog("Socket void start");
 		running = true;
@@ -543,6 +555,7 @@ public class IM implements ResultsListener {
 								}
 								else {
 									LocalService.addlog("not connected now");
+									Toast.makeText(localService, localService.getString(R.string.Unknow), Toast.LENGTH_SHORT).show();
 								}
 							
 								super.handleMessage(msg);
@@ -662,7 +675,7 @@ public class IM implements ResultsListener {
 					 rd = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 					 wr =new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF8"),true);
 					 readerThread.start();
-					 sendToServer( "INIT|"+token);
+					 sendToServer( "INIT|"+token,false);
 					 
 					 
 				 } catch (final Exception e1) {
@@ -761,7 +774,7 @@ public void addtoDeviceChat(int u,JSONObject jo) {
 	}
 	 	 
 
-	private void addToChannelChat(int channelU, JSONObject jo) throws JSONException {
+	private void addToChannelChat(int channelU, JSONObject jo, boolean silent) throws JSONException {
 		if(log)Log.d(this.getClass().getName(), "type=chch");
 		if(log)Log.d(this.getClass().getName(), "Сообщение в чат канала " + jo);
 		
@@ -772,44 +785,49 @@ public void addtoDeviceChat(int u,JSONObject jo) {
 		m.name=jo.optString("name");
 		
 		String fromDevice="Незнамо кто";
-		//09-16 18:25:41.057: D/com.OsMoDroid.IM(1474):     "data": "0|40+\u041e\u043f\u0430\u0441\u043d\u043e +2013-09-16 22:25:44"
-		//"data": "0|40|cxbcxvbcxvbcxvb|2013-03-14 22:42:34"
 		
-		//if(log)Log.d(this.getClass().getName(), "data[0]=" + data[0] + " data[1]=" + data[1] + " data[2]=" + data[2]);
-		
-		//if(log)Log.d(this.getClass().getName(), "datanew[0]=" + datanew[0] + " datanew[1]=" + datanew[1] + " datanew[2]=" + datanew[2]);
-		for (final Channel channel : LocalService.channelList) {
+		for (final Channel channel : LocalService.channelList) 
+		{
 			if(log)Log.d(this.getClass().getName(), "chanal nest" + channel.name);
-			if (channelU==channel.u){
-				if(!channel.messagesstringList.contains(m)){
-				fromDevice=jo.optString("name");
-			Intent intent =new Intent(localService, GPSLocalServiceClient.class).putExtra("channelpos", channel.u);
-			intent.setAction("channelchat");
-			PendingIntent contentIntent = PendingIntent.getActivity(localService,333,intent, PendingIntent.FLAG_CANCEL_CURRENT);
-			Long when=System.currentTimeMillis();
-		 	NotificationCompat.Builder notificationBuilder =new NotificationCompat.Builder(
-					localService.getApplicationContext())
-			    	.setWhen(when)
-			    	.setContentText(channel.name+" "+fromDevice+": "+jo.optString("text"))
-			    	.setContentTitle("OsMoDroid")
-			    	.setSmallIcon(android.R.drawable.ic_menu_send)
-			    	.setAutoCancel(true)
-			    	.setDefaults(Notification.DEFAULT_LIGHTS)
-			    	.setContentIntent(contentIntent);
+			if (channelU==channel.u)
+			{
+				if(!channel.messagesstringList.contains(m))
+				{
+					if(!silent)
+					{
+						fromDevice=jo.optString("name");
+						Intent intent =new Intent(localService, GPSLocalServiceClient.class).putExtra("channelpos", channel.u);
+						intent.setAction("channelchat");
+						PendingIntent contentIntent = PendingIntent.getActivity(localService,333,intent, PendingIntent.FLAG_CANCEL_CURRENT);
+						Long when=System.currentTimeMillis();
+						NotificationCompat.Builder notificationBuilder =new NotificationCompat.Builder(
+								localService.getApplicationContext())
+						.setWhen(when)
+						.setContentText(channel.name+" "+fromDevice+": "+jo.optString("text"))
+						.setContentTitle("OsMoDroid")
+						.setSmallIcon(android.R.drawable.ic_menu_send)
+						.setAutoCancel(true)
+						.setDefaults(Notification.DEFAULT_LIGHTS)
+						.setContentIntent(contentIntent);
 	
-	if (!OsMoDroid.settings.getBoolean("silentnotify", false)){
-			 notificationBuilder.setDefaults(Notification.DEFAULT_LIGHTS| Notification.DEFAULT_VIBRATE| Notification.DEFAULT_SOUND);
-			    	}
-				Notification notification = notificationBuilder.build();
-				LocalService.mNotificationManager.notify(OsMoDroid.mesnotifyid, notification);
+						if (!OsMoDroid.settings.getBoolean("silentnotify", false))
+						{
+							notificationBuilder.setDefaults(Notification.DEFAULT_LIGHTS| Notification.DEFAULT_VIBRATE| Notification.DEFAULT_SOUND);
+						}
+						Notification notification = notificationBuilder.build();
+						LocalService.mNotificationManager.notify(OsMoDroid.mesnotifyid, notification);
 		
-		if (LocalService.channelsmessagesAdapter!=null&& LocalService.currentChannel != null&&LocalService.currentChannel.u==channel.u&&LocalService.chatVisible ){
-			LocalService.mNotificationManager.cancel(OsMoDroid.mesnotifyid);
-		}
-					channel.messagesstringList.add(m);
-							if (LocalService.channelsmessagesAdapter!=null&& LocalService.currentChannel != null&&LocalService.currentChannel.u==channel.u ){
+						if (LocalService.channelsmessagesAdapter!=null&& LocalService.currentChannel != null&&LocalService.currentChannel.u==channel.u&&LocalService.chatVisible )
+						{
+							LocalService.mNotificationManager.cancel(OsMoDroid.mesnotifyid);
+						}
+					}
+				channel.messagesstringList.add(m);
+				Collections.sort(channel.messagesstringList);
+				if (LocalService.channelsmessagesAdapter!=null&& LocalService.currentChannel != null&&LocalService.currentChannel.u==channel.u )
+				{
 								LocalService.channelsmessagesAdapter.notifyDataSetChanged();
-							}
+				}
 						
 				}	
 			}
@@ -902,26 +920,26 @@ public void addtoDeviceChat(int u,JSONObject jo) {
 			authed=true;
 			if(needopensession)	
 			{
-				sendToServer("TO");
+				sendToServer("TO",false);
 			}
 			if(needclosesession)
 			{
-				sendToServer("TC");
+				sendToServer("TC",false);
 			}
 			if(LocalService.channelList.isEmpty())
 			{
-				sendToServer("GROUP");
+				sendToServer("GROUP",false);
 			}
 			if(LocalService.deviceList.isEmpty())
 			{
-				sendToServer("DEVICE");
+				sendToServer("DEVICE",false);
 			}
 			setkeepAliveAlarm();
 			localService.internetnotify(true);
 			if (!OsMoDroid.settings.getBoolean("subscribebackground", false))
 				{
-					sendToServer("PG:-1");
-					sendToServer("PD:-1");
+					sendToServer("PG:-1",false);
+					sendToServer("PD:-1",false);
 				}
 			if(jo.has("group"))
 			{
@@ -970,6 +988,7 @@ public void addtoDeviceChat(int u,JSONObject jo) {
 		}
 		if(log)Log.d(getClass().getSimpleName(), "write group list to file");
 		localService.saveObject(LocalService.channelList, OsMoDroid.CHANNELLIST);
+		sendToServer("GROUP",false);
 	}
 	if(command.equals("GD"))
 	{
@@ -995,7 +1014,7 @@ public void addtoDeviceChat(int u,JSONObject jo) {
  			
 			try {
 				
-		addToChannelChat(Integer.parseInt(param), ja.getJSONObject(k));
+		addToChannelChat(Integer.parseInt(param), ja.getJSONObject(k), true);
 	}
 		catch (Exception e) {
 			// TODO: handle exception
@@ -1035,7 +1054,7 @@ public void addtoDeviceChat(int u,JSONObject jo) {
 	if(command.equals("GRPA"))
 	{
 		
-		sendToServer("GROUP");
+		sendToServer("GROUP",false);
 	}
 	
 	if(command.equals("TO"))
@@ -1046,7 +1065,7 @@ public void addtoDeviceChat(int u,JSONObject jo) {
 		connectcount=0;
 		erorconenctcount=0;
 		needopensession=false;
-		OsMoDroid.editor.putString("viewurl","https://osmo.mobi/u/"+jo.optString("url"));
+		OsMoDroid.editor.putString("viewurl","https://osmo.mobi/s/"+jo.optString("url"));
 		OsMoDroid.editor.commit();
 		localService.refresh();
 	}
@@ -1067,7 +1086,7 @@ public void addtoDeviceChat(int u,JSONObject jo) {
 		{
 			localService.sendingbuffer.addAll(localService.buffer);
 			localService.buffer.clear();
-			sendToServer("B|"+ new JSONArray(localService.sendingbuffer));
+			sendToServer("B|"+ new JSONArray(localService.sendingbuffer),false);
 		}
 		
 		if (localService.sendsound && !localService.mayak) {
@@ -1089,22 +1108,22 @@ public void addtoDeviceChat(int u,JSONObject jo) {
 	
 	if(command.equals("PP"))
 	{
-		sendToServer("PP");
+		sendToServer("PP",false);
 	}
 	
 	if(command.equals("RC"))
 	{
 		if(param.equals("PP"))
 		{
-			sendToServer("PP");
+			sendToServer("PP",false);
 		}
 		if(param.equals(OsMoDroid.TRACKER_SESSION_START)){
 			localService.startServiceWork();
-			sendToServer("RCR:"+OsMoDroid.TRACKER_SESSION_START+"|1");
+			sendToServer("RCR:"+OsMoDroid.TRACKER_SESSION_START+"|1",false);
 		}
 		if(param.equals(OsMoDroid.TRACKER_SESSION_STOP)){
 			localService.stopServiceWork(true);
-			sendToServer("RCR:"+OsMoDroid.TRACKER_SESSION_STOP+"|1");
+			sendToServer("RCR:"+OsMoDroid.TRACKER_SESSION_STOP+"|1",false);
 		}
 		if(param.equals(OsMoDroid.TTS)){
 			if(OsMoDroid.settings.getBoolean("ttsremote", false)&&localService.tts!=null){localService.tts.speak(addict , TextToSpeech.QUEUE_ADD, null);}
@@ -1112,22 +1131,22 @@ public void addtoDeviceChat(int u,JSONObject jo) {
 		if(param.equals(OsMoDroid.ALARM_ON))
 			{
 				localService.playAlarmOn();
-				sendToServer("RCR:"+OsMoDroid.ALARM_ON+"|1");
+				sendToServer("RCR:"+OsMoDroid.ALARM_ON+"|1",false);
 			}
 		if(param.equals(OsMoDroid.ALARM_OFF))
 			{
 				localService.playAlarmOff();
-				sendToServer("RCR:"+OsMoDroid.ALARM_OFF+"|1");
+				sendToServer("RCR:"+OsMoDroid.ALARM_OFF+"|1",false);
 			}
 		if(param.equals(OsMoDroid.SIGNAL_ON))
 			{
 				localService.enableSignalisation();
-				sendToServer("RCR:"+OsMoDroid.SIGNAL_ON+"|1");
+				sendToServer("RCR:"+OsMoDroid.SIGNAL_ON+"|1",false);
 			}
 		if(param.equals(OsMoDroid.SIGNAL_OFF))
 			{
 				localService.disableSignalisation();
-				sendToServer("RCR:"+OsMoDroid.SIGNAL_OFF+"|1");
+				sendToServer("RCR:"+OsMoDroid.SIGNAL_OFF+"|1",false);
 			}
 		if(param.equals(OsMoDroid.TRACKER_BATTERY_INFO))
 			{
@@ -1183,13 +1202,13 @@ public void addtoDeviceChat(int u,JSONObject jo) {
 			}
 		if(param.equals(OsMoDroid.TRACKER_EXIT))
 			{
-				sendToServer("RCR:"+OsMoDroid.TRACKER_EXIT+"|1");
+				sendToServer("RCR:"+OsMoDroid.TRACKER_EXIT+"|1",false);
 				localService.stopSelf();
 				System.exit(0);
 			}
 		if(param.equals(OsMoDroid.WHERE))
 			{
-				sendToServer("RCR:"+OsMoDroid.WHERE+"|1");
+				sendToServer("RCR:"+OsMoDroid.WHERE+"|1",false);
 				localService.where=true;
 				if (!localService.state){
 					localService.alertHandler.post(new Runnable() {
@@ -1234,23 +1253,23 @@ public void addtoDeviceChat(int u,JSONObject jo) {
 	}
 	if(command.equals("GE"))
 	{
-		sendToServer("GROUP");
+		sendToServer("GROUP",false);
 	}
 	if(command.equals("DS"))
 	{
-		sendToServer("DEVICE");
+		sendToServer("DEVICE",false);
 	}
 	if(command.equals("DSS"))
 	{
-		sendToServer("DEVICE");
+		sendToServer("DEVICE",false);
 	}
 	if(command.equals("DSA"))
 	{
-		sendToServer("DEVICE");
+		sendToServer("DEVICE",false);
 	}
 	if(command.equals("DSD"))
 	{
-		sendToServer("DEVICE");
+		sendToServer("DEVICE",false);
 	}
 	
 	if(command.equals("DEVICE")){
@@ -1408,6 +1427,13 @@ public void addtoDeviceChat(int u,JSONObject jo) {
 			}
 			if(log)Log.d(getClass().getSimpleName(), "write group list to file");
 			localService.saveObject(LocalService.channelList, OsMoDroid.CHANNELLIST);
+			for (Channel ch: LocalService.channelList)
+			{
+				if(ch.send)
+					{
+						sendToServer("GC:"+ch.u,false);
+					}
+			}
 			//sendToServer("PG");
 	}
 	if(command.equals("GL"))
@@ -1609,6 +1635,12 @@ public void addtoDeviceChat(int u,JSONObject jo) {
 			localService.saveObject(LocalService.channelList, OsMoDroid.CHANNELLIST);
 			//sendToServer("PG");
 		}
+/// recive GPC:2480|{"u":11,"gu":"1621","text":"\u043c\u0438\u0442\u0441\u043c\u0438\u0442\u043c\u0441\u0438\u0442","type":0,"time":"2015-08-09 22:55:23","name":"\u0414\u0435\u043d\u0438\u0441"}
+		if (command.equals("GPC"))
+		{
+			addToChannelChat(Integer.parseInt(param), jo, false);
+			
+		}
 // DP:7909|["3","1"]
 		if (command.equals("DP"))
 			{
@@ -1743,7 +1775,7 @@ public void addtoDeviceChat(int u,JSONObject jo) {
 	}
 	private void updateCoordinates( String d, final Device dev) {
 	//	if (Integer.parseInt(c.substring(c.indexOf(":")+1), c.length()) == dev.u){
-			
+			dev.speed="";
 			dev.lat=Float.parseFloat(d.substring(d.indexOf("L")+1, d.indexOf(":")));
 			for (int i = d.indexOf(":")+1; i <= d.length(); i++) {
 				if(!(d.charAt(i)=='-')&&!Character.isDigit(d.charAt(i))){
@@ -1861,37 +1893,21 @@ public void addtoDeviceChat(int u,JSONObject jo) {
 			} else {
 				if(result.Jo.optInt("error")==10||result.Jo.optInt("error")==100||result.Jo.optString("token").equals("false"))
 				{
-				localService.alertHandler.post(new Runnable()
-					{
-						
-						@Override
-						public void run()
-							{
-								if(log)Log.d(this.getClass().getName(), "void IM.stop");
-								localService.internetnotify(false);
-							}
-					});
-				stop();
-				if(!OsMoDroid.settings.getString("newkey", "").equals(""))
-				{
-				localService.notifywarnactivity(LocalService.unescape(result.Jo.optString("error_description")), true, OsMoDroid.NOTIFY_NO_DEVICE);
-				localService.motd=LocalService.unescape(result.Jo.optString("error_description"));
-				localService.refresh();
-				}
-				else
-				{
-				localService.sendid();
-				}
-				}
-				else if (result.Jo.optInt("error")==67||result.Jo.optInt("error")==68||result.Jo.optInt("error")==69)
-				{
-					stop();
-					localService.notifywarnactivity(LocalService.unescape(result.Jo.optString("error_description")), false,OsMoDroid.NOTIFY_EXPIRY_USER);
+					localService.internetnotify(false);
+					close();
+					localService.notifywarnactivity(LocalService.unescape(result.Jo.optString("error_description")), true, OsMoDroid.NOTIFY_NO_DEVICE);
 					localService.motd=LocalService.unescape(result.Jo.optString("error_description"));
 					localService.refresh();
-					
+				
 				}
-			}
+					else if (result.Jo.optInt("error")==67||result.Jo.optInt("error")==68||result.Jo.optInt("error")==69)
+					{
+						close();
+						localService.notifywarnactivity(LocalService.unescape(result.Jo.optString("error_description")), false,OsMoDroid.NOTIFY_EXPIRY_USER);
+						localService.motd=LocalService.unescape(result.Jo.optString("error_description"));
+						localService.refresh();
+					}
+				}
 			
 		} else {
 			LocalService.addlog("Receive token error - shall reconnecting "+ result.rawresponse);
