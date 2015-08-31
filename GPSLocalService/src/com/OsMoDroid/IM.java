@@ -988,6 +988,7 @@ public void addtoDeviceChat(int u,JSONObject jo) {
 		}
 		if(log)Log.d(getClass().getSimpleName(), "write group list to file");
 		localService.saveObject(LocalService.channelList, OsMoDroid.CHANNELLIST);
+		sendToServer("GROUP",false);
 	}
 	if(command.equals("GD"))
 	{
@@ -1428,7 +1429,10 @@ public void addtoDeviceChat(int u,JSONObject jo) {
 			localService.saveObject(LocalService.channelList, OsMoDroid.CHANNELLIST);
 			for (Channel ch: LocalService.channelList)
 			{
-				sendToServer("GC:"+ch.u,false);
+				if(ch.send)
+					{
+						sendToServer("GC:"+ch.u,false);
+					}
 			}
 			//sendToServer("PG");
 	}
