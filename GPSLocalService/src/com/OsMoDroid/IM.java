@@ -1570,7 +1570,13 @@ public void addtoDeviceChat(int u,JSONObject jo) {
 								if(!exist)
 								{
 									try {
-										ch.deviceList.add(new Device(jsonObject.getInt("u"),jsonObject.getString("name"), jsonObject.getString("color") ) );
+										Device dev = new Device(jsonObject.getInt("u"),jsonObject.getString("name"), jsonObject.getString("color") );
+										if(jsonObject.has("lat")&&jsonObject.has("lon"))
+										{
+											dev.lat=Float.parseFloat(jsonObject.getString("lat"));
+											dev.lon=Float.parseFloat(jsonObject.getString("lon"));
+										}
+										ch.deviceList.add(dev);
 										Collections.sort(ch.deviceList);
 									} catch (JSONException e) {
 										writeException(e);
