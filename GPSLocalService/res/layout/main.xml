@@ -95,4 +95,11 @@
         android:autoLink="all"
         android:textSize="20sp" />
 
+    <Button
+        android:id="@+id/sosButton"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="SOS"
+        android:textSize="40sp" />
+
 </LinearLayout>

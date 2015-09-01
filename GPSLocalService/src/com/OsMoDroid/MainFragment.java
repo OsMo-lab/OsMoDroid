@@ -387,6 +387,17 @@ public class MainFragment extends Fragment implements GPSLocalServiceClient.upd 
 			});
 			
 			ToggleButton globalsendToggle = (ToggleButton) view.findViewById(R.id.toggleButton1);
+			Button sosButton = (Button) view.findViewById(R.id.sosButton);
+			sosButton.setOnClickListener(new OnClickListener()
+				{
+					
+					@Override
+					public void onClick(View v)
+						{
+							globalActivity.mService.myIM.sendToServer("SOS", true);
+							
+						}
+				});
 			Button auth = (Button) view.findViewById(R.id.authButton);
 			auth.setOnClickListener(new OnClickListener() {
 				
