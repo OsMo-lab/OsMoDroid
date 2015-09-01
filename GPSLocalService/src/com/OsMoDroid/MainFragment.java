@@ -568,7 +568,7 @@ else {
 							}
 							if(!OsMoDroid.settings.getString("tracker_id", "").equals(""))
 							{
-								if(dt.getText().equals(""))
+								if(dt.getText().toString().equals(""))
 								{
 									dt.setText(dt.getText()+" "+"TrackerID="+OsMoDroid.settings.getString("tracker_id", ""));
 								}

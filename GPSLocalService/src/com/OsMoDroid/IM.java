@@ -914,8 +914,17 @@ public void addtoDeviceChat(int u,JSONObject jo) {
 	if(command.equals("INIT")){
 		if(!jo.has("error"))
 			{
+			if(jo.optInt("motd")>OsMoDroid.settings.getInt("modtime", 0))
+			{
+				sendToServer("MD",false);
+			}
+			else
+			{
+				localService.motd=OsMoDroid.settings.getString("motd", "");
+			}
 			OsMoDroid.editor.putString("device", jo.optString("id"));
 			OsMoDroid.editor.putString("tracker_id", jo.optString("id"));
+			OsMoDroid.editor.putString("motdtime", jo.optString("motd"));
 			OsMoDroid.editor.commit();
 			authed=true;
 			if(needopensession)	
@@ -957,6 +966,13 @@ public void addtoDeviceChat(int u,JSONObject jo) {
 		}
 		localService.refresh();
 	}
+	if(command.equals("MD"))
+	{
+		localService.motd=addict;
+		OsMoDroid.editor.putString("modt", addict);
+		OsMoDroid.editor.commit();
+		localService.refresh();
+	}
 	if(command.equals("GS"))
 	{
 		if(param.equals("1"))
@@ -978,6 +994,7 @@ public void addtoDeviceChat(int u,JSONObject jo) {
 		{
 			if(ch.u==Integer.parseInt(param))
 			{
+				//ch.updChannel(jo.getJSONObject("group"));
 				ch.send=true;
 			}
 			
@@ -988,7 +1005,7 @@ public void addtoDeviceChat(int u,JSONObject jo) {
 		}
 		if(log)Log.d(getClass().getSimpleName(), "write group list to file");
 		localService.saveObject(LocalService.channelList, OsMoDroid.CHANNELLIST);
-		sendToServer("GROUP",false);
+		sendToServer("GROUP", false);
 	}
 	if(command.equals("GD"))
 	{
@@ -1896,7 +1913,7 @@ public void addtoDeviceChat(int u,JSONObject jo) {
 					localService.internetnotify(false);
 					close();
 					localService.notifywarnactivity(LocalService.unescape(result.Jo.optString("error_description")), true, OsMoDroid.NOTIFY_NO_DEVICE);
-					localService.motd=LocalService.unescape(result.Jo.optString("error_description"));
+					//localService.motd=LocalService.unescape(result.Jo.optString("error_description"));
 					localService.refresh();
 				
 				}
