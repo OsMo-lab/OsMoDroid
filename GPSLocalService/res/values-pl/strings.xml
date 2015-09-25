@@ -225,4 +225,6 @@ Informacja o prawach autorskich: http://osmodroid.mobi/copyright.html</string>
   <string name="follow_">Śledzę</string>
   <string name="no_follow_">Nie śledzę</string>
   <string name="adjust_to_dpi">Dostosuj do DPI</string>
+  <string name="monitoring_settings">Parametry monitoringu</string>
+  <string name="milliseconds_how_often_to_send_location">Milisekundy. Czas pomiędzy wysyłaniem danych</string>
 </resources>

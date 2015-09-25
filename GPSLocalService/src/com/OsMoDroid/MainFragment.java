@@ -9,6 +9,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.location.LocationManager;
 import android.opengl.Visibility;
 import android.os.Bundle;
@@ -83,7 +84,32 @@ public class MainFragment extends Fragment implements GPSLocalServiceClient.upd 
 
 	 void updateMainUI() {
 		 //Log.d(getClass().getSimpleName(), "mainfragment updateMainUI");
-
+		 ToggleButton sosButton = (ToggleButton) getView().findViewById(R.id.sosButton);
+		 ToggleButton globalsendToggle = (ToggleButton) getView().findViewById(R.id.toggleButton1);
+		 if(globalActivity!=null&&globalActivity.mService!=null)
+		 {
+			 sosButton.setChecked(globalActivity.mService.sos);
+			 if(globalActivity.mService.sos)
+				{
+					getView().setBackgroundColor(Color.RED);
+				}
+				else
+				{
+					getView().setBackgroundColor(Color.TRANSPARENT);
+				}
+		 }
+		 if(OsMoDroid.settings.getBoolean("pro", false))
+		 {
+			 sosButton.setVisibility(View.VISIBLE);
+			 globalsendToggle.setVisibility(View.VISIBLE);
+		 }
+		 else
+		 {
+			 sosButton.setVisibility(View.GONE);
+			 globalsendToggle.setVisibility(View.GONE);
+		 }
+		 
+			
 		String startStatus =globalActivity.checkStarted() ? getString(R.string.Running)
 				: getString(R.string.NotRunning);
 		String statusText = getString(R.string.Sendcount) + globalActivity.sendcounter;
@@ -136,7 +162,7 @@ public class MainFragment extends Fragment implements GPSLocalServiceClient.upd 
 		TextView t2 = (TextView) getView().findViewById(R.id.URL);
 		
 		Linkify.addLinks(t2, Linkify.ALL);
-		ToggleButton globalsendToggle = (ToggleButton) getView().findViewById(R.id.toggleButton1);
+		
 		Button auth = (Button) getView().findViewById(R.id.authButton);
 		
 		if (OsMoDroid.settings.getString("p", "").equals("")){
@@ -386,15 +412,31 @@ public class MainFragment extends Fragment implements GPSLocalServiceClient.upd 
 				}
 			});
 			
-			ToggleButton globalsendToggle = (ToggleButton) view.findViewById(R.id.toggleButton1);
-			Button sosButton = (Button) view.findViewById(R.id.sosButton);
+			
+			final ToggleButton sosButton = (ToggleButton) view.findViewById(R.id.sosButton);
+			if(globalActivity!=null&&globalActivity.mService!=null)
+			{
+				sosButton.setChecked(globalActivity.mService.sos);
+			}
+			sosButton.setVisibility(View.GONE);
 			sosButton.setOnClickListener(new OnClickListener()
 				{
 					
 					@Override
 					public void onClick(View v)
 						{
-							globalActivity.mService.myIM.sendToServer("SOS", true);
+						sosButton.setChecked(!sosButton.isChecked());
+						AlertDialog.Builder builder = new AlertDialog.Builder(globalActivity);//Context parameter
+						builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+						    @Override
+						    public void onClick(DialogInterface dialog, int which) {
+						    	globalActivity.mService.myIM.sendToServer("SOS", true);
+						    }
+						});
+						builder.setNegativeButton(android.R.string.no, null);
+						builder.setMessage(R.string.agree_sos_);
+						AlertDialog alertDialog = builder.create();	
+						alertDialog.show();
 							
 						}
 				});
@@ -406,50 +448,15 @@ public class MainFragment extends Fragment implements GPSLocalServiceClient.upd 
 					
 				}
 			});
-			if (OsMoDroid.settings.getString("p", "").equals("")){
-			//globalsendToggle.setVisibility(View.GONE);
-			auth.setVisibility(View.VISIBLE);
-			}
-			else {
-				auth.setVisibility(View.GONE);
-				//globalsendToggle.setVisibility(View.GONE);
-			}
-//			Button pause = (Button) view.findViewById(R.id.pauseButton);
-//			pause.setEnabled(true);
-//			pause.setOnClickListener(new OnClickListener()
-//				{
-//					
-//					@Override
-//					public void onClick(View v)
-//						{
-//							if(globalActivity.mService!=null&&globalActivity.mService.paused)
-//								{
-//									globalActivity.mService.setPause(false);
-//								}
-//							else
-//								{
-//									globalActivity.mService.setPause(true);
-//								}
-//							updateMainUI();
-//						}
-//				});
-			
-//			if(globalActivity.checkStarted())
-//				{
-//					pause.setVisibility(View.VISIBLE);
-//				}
-//			else
-//				{
-//					pause.setVisibility(View.GONE);
-//				}
-//			if(globalActivity.mService!=null&&!globalActivity.mService.paused)
-//				{
-//					pause.setText("Pause");
-//				}
-//			else
-//				{
-//					pause.setText("Continue");
-//				}
+			if (OsMoDroid.settings.getString("p", "").equals(""))
+				{
+						auth.setVisibility(View.VISIBLE);
+				}
+				else 
+				{
+					auth.setVisibility(View.GONE);
+				}
+
 			Button start = (Button) view.findViewById(R.id.startButton);
 			Button exit = (Button) view.findViewById(R.id.exitButton);
 
@@ -613,8 +620,9 @@ else {
 							globalActivity.sendresult = intent.getStringExtra("sendresult");
 							String stat = intent.getStringExtra("stat");
 							String startmessage = intent.getStringExtra("motd");
+							final ToggleButton globalsendToggle = (ToggleButton) view.findViewById(R.id.toggleButton1);
 							if (intent.hasExtra("globalsend")){
-								final ToggleButton globalsendToggle = (ToggleButton) view.findViewById(R.id.toggleButton1);
+								
 								globalsendToggle.setOnClickListener(new OnClickListener() {
 									
 									public void onClick(View v) 
@@ -641,23 +649,7 @@ else {
 							}
 							
 							if (intent.hasExtra("started")){
-//						Button pause = (Button) view.findViewById(R.id.pauseButton);
-//						if(globalActivity.checkStarted())
-//							{
-//								pause.setVisibility(View.VISIBLE);
-//							}
-//						else
-//							{
-//								pause.setVisibility(View.GONE);
-//							}
-//						if(globalActivity.mService!=null&&!globalActivity.mService.paused)
-//							{
-//								pause.setText("Pause");
-//							}
-//						else
-//							{
-//								pause.setText("Continue");
-//							}
+
 								Button start = (Button) view.findViewById(R.id.startButton);
 								Button stop = (Button) view.findViewById(R.id.exitButton);
 
@@ -666,10 +658,34 @@ else {
 									stop.setEnabled(intent.getBooleanExtra("started", false));
 									globalActivity.started=intent.getBooleanExtra("started", false);
 							}
-							
+							ToggleButton sosButton = (ToggleButton) getView().findViewById(R.id.sosButton);
+							if (intent.hasExtra("pro"))
+							{
+								
+								if(intent.getBooleanExtra("pro", false))
+								{
+									globalsendToggle.setVisibility(View.VISIBLE);
+									sosButton.setVisibility(View.VISIBLE);
+									
+								}
+								else
+								{
+									globalsendToggle.setVisibility(View.GONE);
+									sosButton.setVisibility(View.GONE);
+								}
+							}
+							if (intent.hasExtra("sos")){
+								sosButton.setChecked(intent.getBooleanExtra("sos", false));
+								if(intent.getBooleanExtra("sos", false))
+								{
+									view.setBackgroundColor(Color.RED);
+								}
+								else
+								{
+									view.setBackgroundColor(Color.TRANSPARENT);
+								}
+							}
 
-
-//					if (!(startmessage==null)&&!globalActivity.messageShowed) {
 							if (!(startmessage==null)) {
 								
 								TextView tt = (TextView) view.findViewById(R.id.Location);
@@ -681,7 +697,7 @@ else {
 
 
 
-							//if (globalActivity.position == null){globalActivity.position = context.getString(R.string.NotDefined);}
+						
 
 
 							if (globalActivity.sendresult == null){	globalActivity.sendresult = "";}

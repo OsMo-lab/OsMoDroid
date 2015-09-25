@@ -154,9 +154,9 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
 					paint.setColor(Color.parseColor("#013220"));
 					canvas.save();
 			        canvas.rotate(-mapView.getMapOrientation(), scrPoint.x, scrPoint.y);
-					if(dev.updatated<(System.currentTimeMillis()-30000))
+					if(dev.updatated<(System.currentTimeMillis()-60000))
 						{
-							paint.setColor(Color.parseColor("#F0FFFF"));
+							paint.setColor(Color.GRAY);
 						}
 					if(dev.name.equals(""))
 					{
@@ -218,9 +218,9 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
 						paint.setColor(Color.parseColor("#013220"));
 						canvas.save();
 				        canvas.rotate(-mapView.getMapOrientation(), scrPoint.x, scrPoint.y);
-				        if(dev.updatated<(System.currentTimeMillis()-30000))
+				        if(dev.updatated<(System.currentTimeMillis()-60000))
 							{
-								paint.setColor(Color.parseColor("#F0FFFF"));
+								paint.setColor(Color.GRAY);
 							}
 				        if(dev.name.equals(""))
 						{

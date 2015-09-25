@@ -102,7 +102,7 @@ public class DeviceChatFragment extends Fragment  {
 		
 	}
 	void getDeviceInfo() {
-		globalActivity.mService.myIM.sendToServer("IM:"+getDeviceByU(deviceU).u,true);
+		globalActivity.mService.myIM.sendToServer("IM:"+getDeviceByU(deviceU).u,false);
 	}
 	@Override
 	public void onDetach() {

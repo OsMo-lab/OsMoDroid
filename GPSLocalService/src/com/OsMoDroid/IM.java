@@ -65,6 +65,7 @@ import com.OsMoDroid.Netutil.MyAsyncTask;
 
 
 
+//import android.R;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.Notification;
@@ -555,14 +556,17 @@ public class IM implements ResultsListener {
 								}
 								else {
 									LocalService.addlog("not connected now");
-									Toast.makeText(localService, localService.getString(R.string.Unknow), Toast.LENGTH_SHORT).show();
+									if(OsMoDroid.gpslocalserviceclientVisible)
+										{
+										Toast.makeText(localService, localService.getString(R.string.Unknow), Toast.LENGTH_SHORT).show();
+										}
 								}
 							
 								super.handleMessage(msg);
 							}
 				    	
 				    };
-				  
+				   
 				    Looper.loop();
 				    
 			
@@ -803,9 +807,9 @@ public void addtoDeviceChat(int u,JSONObject jo) {
 						NotificationCompat.Builder notificationBuilder =new NotificationCompat.Builder(
 								localService.getApplicationContext())
 						.setWhen(when)
-						.setContentText(channel.name+" "+fromDevice+": "+jo.optString("text"))
-						.setContentTitle("OsMoDroid")
-						.setSmallIcon(android.R.drawable.ic_menu_send)
+						.setContentText(fromDevice+": "+jo.optString("text"))
+						.setContentTitle(channel.name)
+						.setSmallIcon(R.drawable.white9696)
 						.setAutoCancel(true)
 						.setDefaults(Notification.DEFAULT_LIGHTS)
 						.setContentIntent(contentIntent);
@@ -922,11 +926,21 @@ public void addtoDeviceChat(int u,JSONObject jo) {
 			{
 				localService.motd=OsMoDroid.settings.getString("motd", "");
 			}
+			if(jo.optInt("pro")==1)
+			{
+				localService.pro=true;
+			}
+			else
+			{
+				localService.pro=false;
+			}
 			OsMoDroid.editor.putString("device", jo.optString("id"));
 			OsMoDroid.editor.putString("tracker_id", jo.optString("id"));
 			OsMoDroid.editor.putString("motdtime", jo.optString("motd"));
+			OsMoDroid.editor.putBoolean("pro", localService.pro);
 			OsMoDroid.editor.commit();
 			authed=true;
+			
 			if(needopensession)	
 			{
 				sendToServer("TO",false);
@@ -962,6 +976,18 @@ public void addtoDeviceChat(int u,JSONObject jo) {
 				}
 				localService.refresh();
 			}
+			if(jo.has("sos"))
+			{
+				if(jo.optInt("sos")==1)
+				{
+				localService.sos=true;
+				}
+				if(jo.optInt("sos")==0)
+				{
+				localService.sos=false;
+				}
+				localService.refresh();
+			}
 			
 		}
 		localService.refresh();
@@ -986,7 +1012,19 @@ public void addtoDeviceChat(int u,JSONObject jo) {
 			localService.refresh();
 		}
 	}
-	
+	if(command.equals("SOS"))
+	{
+		if(addict.equals("1"))
+		{
+			localService.sos=true;
+			localService.refresh();
+		}
+		if(addict.equals("-1"))
+		{
+			localService.sos=false;
+			localService.refresh();
+		}
+	}
 	
 	if(command.equals("GA"))
 	{
@@ -994,7 +1032,7 @@ public void addtoDeviceChat(int u,JSONObject jo) {
 		{
 			if(ch.u==Integer.parseInt(param))
 			{
-				//ch.updChannel(jo.getJSONObject("group"));
+				ch.updChannel(jo);
 				ch.send=true;
 			}
 			
@@ -1005,7 +1043,7 @@ public void addtoDeviceChat(int u,JSONObject jo) {
 		}
 		if(log)Log.d(getClass().getSimpleName(), "write group list to file");
 		localService.saveObject(LocalService.channelList, OsMoDroid.CHANNELLIST);
-		sendToServer("GROUP", false);
+		//sendToServer("GROUP", false);
 	}
 	if(command.equals("GD"))
 	{
@@ -1405,7 +1443,7 @@ public void addtoDeviceChat(int u,JSONObject jo) {
 	if(command.equals("GROUP"))
 	{
 		ArrayList<Channel> recievedChannelList=new ArrayList<Channel>();
-		ArrayList<Channel> deleteChannelList=new ArrayList<Channel>(LocalService.channelList); 
+		 
 			for (int i = 0; i < ja.length(); i++) 
 			{
 				try {
@@ -1430,10 +1468,12 @@ public void addtoDeviceChat(int u,JSONObject jo) {
 					writeException(e);
 				}
 			}
+			LocalService.channelList.retainAll(recievedChannelList);
+			/*ArrayList<Channel> deleteChannelList=new ArrayList<Channel>(LocalService.channelList);
 			deleteChannelList.removeAll(recievedChannelList);
 			recievedChannelList.removeAll(LocalService.channelList);
 			LocalService.channelList.addAll(recievedChannelList);
-			LocalService.channelList.removeAll(deleteChannelList);
+			LocalService.channelList.removeAll(deleteChannelList);*/
 			if (LocalService.channelsAdapter!=null )
 				{
 					LocalService.channelsAdapter.notifyDataSetChanged();
@@ -1545,6 +1585,13 @@ public void addtoDeviceChat(int u,JSONObject jo) {
 		//GP:MT|{"users":[{"name":"Dddddd","group_tracker_id":"WSlRasAgyD","deleted":"yes"}]}
 		if (command.equals("GP"))
 		{
+			if(jo.has("refresh"))
+			{
+				if(jo.getBoolean("refresh"))
+				{
+					sendToServer("GROUP", false);
+				}
+			}
 			for (Channel ch : LocalService.channelList)
 			{
 				if(ch.u==Integer.parseInt(param))
@@ -1608,6 +1655,17 @@ public void addtoDeviceChat(int u,JSONObject jo) {
 									if(dev.u==jsonObject.optInt("u"))
 									{
 										exist=true;
+										if(jsonObject.has("lat")&&jsonObject.has("lon"))
+										{
+											float newlat=Float.parseFloat(jsonObject.getString("lat"));
+											float newlon=Float.parseFloat(jsonObject.getString("lon"));
+											if(newlat!=dev.lat&newlon!=dev.lon&&(dev.updatated-System.currentTimeMillis())<5*60*1000)
+											{
+												notifydevicemonitoring(dev);
+											}
+											dev.lat=newlat;
+											dev.lon=newlon;
+										}
 									}
 								}
 								if(!exist)
@@ -1618,6 +1676,7 @@ public void addtoDeviceChat(int u,JSONObject jo) {
 										{
 											dev.lat=Float.parseFloat(jsonObject.getString("lat"));
 											dev.lon=Float.parseFloat(jsonObject.getString("lon"));
+											notifydevicemonitoring(dev);
 										}
 										ch.deviceList.add(dev);
 										Collections.sort(ch.deviceList);
@@ -1793,17 +1852,26 @@ public void addtoDeviceChat(int u,JSONObject jo) {
 	private void updateCoordinates( String d, final Device dev) {
 	//	if (Integer.parseInt(c.substring(c.indexOf(":")+1), c.length()) == dev.u){
 			dev.speed="";
-			dev.lat=Float.parseFloat(d.substring(d.indexOf("L")+1, d.indexOf(":")));
+			float newlat = 0;
+			float newlon = 0;
+			newlat=Float.parseFloat(d.substring(d.indexOf("L")+1, d.indexOf(":")));
 			for (int i = d.indexOf(":")+1; i <= d.length(); i++) {
 				if(!(d.charAt(i)=='-')&&!Character.isDigit(d.charAt(i))){
 					if(!Character.toString(d.charAt(i)).equals(".")){
-						dev.lon=Float.parseFloat(d.substring(d.indexOf(":")+1, i));
-						dev.updatated=System.currentTimeMillis();
+						newlon=Float.parseFloat(d.substring(d.indexOf(":")+1, i));
 						break;
 					}
 				}
 			
 			}
+			if(newlat!=dev.lat&newlon!=dev.lon&&(dev.updatated-System.currentTimeMillis())<5*60*1000)
+			{
+				notifydevicemonitoring(dev);
+			}
+			dev.lat=newlat;
+			dev.lon=newlon;
+			dev.updatated=System.currentTimeMillis();
+			
 			for (int i = d.indexOf("S")+1; i <= d.length()-1; i++) {
 				if(!Character.isDigit(d.charAt(i))||i==(d.length()-1)){
 					if(!Character.toString(d.charAt(i)).equals(".")||i==(d.length()-1)){
@@ -1834,6 +1902,24 @@ public void addtoDeviceChat(int u,JSONObject jo) {
 
 	void ondisconnect(){
 		
+	}
+	
+	void notifydevicemonitoring(Device dev)
+	{
+		String status;
+		String messageText="";
+		status=localService.getString(R.string.started); 
+		messageText = messageText+localService.getString(R.string.monitoringondevice)+dev.name+"\" "+status;
+		if (OsMoDroid.settings.getBoolean("statenotify", true))
+			{
+				Message msg = new Message();
+				Bundle b = new Bundle();
+				b.putBoolean("om_online", true);
+				b.putString("MessageText", sdf1.format(new Date())+" "+messageText);
+				msg.setData(b);
+				if(log)Log.d(this.getClass().getName(), "statenotify entered");
+				localService.alertHandler.sendMessage(msg);
+			}
 	}
 	
 	private void setReconnectOnError()
@@ -1873,6 +1959,7 @@ public void addtoDeviceChat(int u,JSONObject jo) {
 								parent.registerReceiver( reconnectReceiver, new IntentFilter(RECONNECT_INTENT) );
 						    	manager.cancel(reconnectPIntent);
 						    	manager.set( AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + ERROR_RECONNECT_TIMEOUT, reconnectPIntent );
+						    	LocalService.addlog("setReconnectAlarm on error setted  SystemClock.elapsedRealtime()");
 								
 							}
 					 });

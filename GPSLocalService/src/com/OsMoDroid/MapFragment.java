@@ -402,11 +402,11 @@ public class CustomMapTileFilesystemProvider extends MapTileFilesystemProvider {
 		Log.d(getClass().getSimpleName(), "map onpause");
 		mMapView.getOverlays().remove(myLoc);
 		myLoc.disableMyLocation();
-		if (!OsMoDroid.settings.getBoolean("subscribebackground", false))
-			{
-				globalActivity.mService.myIM.sendToServer("PD:-1",false);
-				globalActivity.mService.myIM.sendToServer("PG:-1",false);
-			}
+//		if (!OsMoDroid.settings.getBoolean("subscribebackground", false))
+//			{
+//				globalActivity.mService.myIM.sendToServer("PD:-1",false);
+//				globalActivity.mService.myIM.sendToServer("PG:-1",false);
+//			}
 		super.onPause();
 	}
 
@@ -420,11 +420,11 @@ public class CustomMapTileFilesystemProvider extends MapTileFilesystemProvider {
 		globalActivity.actionBar.setTitle(getString(R.string.map));
 		mMapView.getOverlays().add(myLoc);
 		myLoc.enableMyLocation();
-		if (!OsMoDroid.settings.getBoolean("subscribebackground", false))
-			{
-				globalActivity.mService.myIM.sendToServer("PG:1",false);
-				globalActivity.mService.myIM.sendToServer("PD:1",false);
-			}
+//		if (!OsMoDroid.settings.getBoolean("subscribebackground", false))
+//			{
+//				globalActivity.mService.myIM.sendToServer("PG:1",false);
+//				globalActivity.mService.myIM.sendToServer("PD:1",false);
+//			}
 		super.onResume();
 	}
 
@@ -497,7 +497,7 @@ public class CustomMapTileFilesystemProvider extends MapTileFilesystemProvider {
 			View view = inflater.inflate(R.layout.map, container, false);
 			RelativeLayout rl = (RelativeLayout)view.findViewById(R.id.relative);
 			CustomTileProvider customTileProvider = new CustomTileProvider(getActivity());
-			mMapView = new MapView(getActivity(), 256, mResourceProxy, customTileProvider);
+			mMapView = new MapView(getActivity(), mResourceProxy, customTileProvider);
 			RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.FILL_PARENT	, RelativeLayout.LayoutParams.FILL_PARENT);
 			lp.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
 			lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);

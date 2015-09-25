@@ -143,11 +143,12 @@ public class Channel implements Serializable,ResultsListener {
 						e.printStackTrace();
 					}   
 				}
-			ArrayList<Device> deleteDeviceList= new ArrayList<Device>(this.deviceList);
+			this.deviceList.retainAll(recieveddeviceList);
+		/*	ArrayList<Device> deleteDeviceList= new ArrayList<Device>(this.deviceList);
 			deleteDeviceList.removeAll(recieveddeviceList);
 			recieveddeviceList.removeAll(this.deviceList);
 			this.deviceList.addAll(recieveddeviceList);
-			this.deviceList.removeAll(deleteDeviceList);
+			this.deviceList.removeAll(deleteDeviceList);*/
 			Collections.sort(this.deviceList);
 			 JSONArray points =jo.optJSONArray("point");
 			 if(points!=null)
@@ -183,11 +184,12 @@ public class Channel implements Serializable,ResultsListener {
 						}
 					
 					}
-				ArrayList<ColoredGPX> deletegpxList = new ArrayList<ColoredGPX>(gpxList);
+				gpxList.retainAll(recievedgpxList);
+				/*ArrayList<ColoredGPX> deletegpxList = new ArrayList<ColoredGPX>(gpxList);
 				deletegpxList.removeAll(recievedgpxList);
 				recievedgpxList.removeAll(gpxList);
 				gpxList.addAll(recievedgpxList);
-				gpxList.removeAll(deletegpxList);
+				gpxList.removeAll(deletegpxList);*/
 				for(ColoredGPX cgpx: gpxList)
 					{
 					 if(cgpx.status==ColoredGPX.Statuses.EMPTY)

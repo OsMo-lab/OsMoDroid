@@ -97,6 +97,7 @@ public  class LocalService extends Service implements LocationListener,GpsStatus
 	static final int OSMODROID_ID = 1;
 	Boolean sessionstarted=false;
 	Boolean globalsend=false;
+	Boolean sos=false;
 	Boolean signalisationOn=false;
 	int notifyid=2;
 	int gpson;
@@ -398,6 +399,7 @@ public  class LocalService extends Service implements LocationListener,GpsStatus
 	static int selectedTileSourceInt=7;
 	//boolean connecting=false;
 	NotificationCompat.Builder foregroundnotificationBuilder;
+	boolean pro;
 	
 	     
 		static String formatInterval(final long l)
@@ -473,6 +475,7 @@ public synchronized void refresh(){
 	in.putExtra("stat", getString(R.string.maximal)+df1.format(maxspeed*3.6)+getString(R.string.kmch)+getString(R.string.average)+df1.format(avgspeed*3600)+getString(R.string.kmch)+getString(R.string.going)+df2.format(workdistance/1000) + getString(R.string.km)+"\n"+getString(R.string.worktime)+formatInterval(timeperiod));
 	in.putExtra("started", state);
 	in.putExtra("globalsend", globalsend);
+	in.putExtra("sos", sos);
 	in.putExtra("signalisationon", signalisationOn);
 	in.putExtra("sendcounter", sendcounter);
 	in.putExtra("writecounter", writecounter);
@@ -487,7 +490,7 @@ public synchronized void refresh(){
 	}
 	in.putExtra("motd", motd);
 	in.putExtra("traffic", Long.toString((myIM.sendBytes+myIM.recievedBytes)/1024)+dot.getDecimalSeparator() +Long.toString((myIM.sendBytes+myIM.recievedBytes)%1000)+"KB "+myIM.connectcount+"|"+myIM.erorconenctcount);
-	
+	in.putExtra("pro", pro);
 	sendBroadcast(in);
 
 }
@@ -1483,12 +1486,12 @@ public void sendid()
 	public void onLocationChanged(Location location) {
 		if(where)
 			{
-				LocalService.addlog("send on where");
+				//LocalService.addlog("send on where");
 				sendlocation(location);
 				where=false;
 			}
 		if (!state){
-			LocalService.addlog("remove updates because state");
+			//LocalService.addlog("remove updates because state");
 			myManager.removeUpdates(this);
 		}
 		currentLocation.set(location);
@@ -1502,17 +1505,17 @@ public void sendid()
 		if (System.currentTimeMillis()<lastgpslocationtime+pollperiod+30000 && location.getProvider().equals(LocationManager.NETWORK_PROVIDER))
 		{
 			if(log)Log.d(this.getClass().getName(),"У нас есть GPS еще");
-			LocalService.addlog("We still have GPS");
+			//LocalService.addlog("We still have GPS");
 			return;
 		}
 		else
 		{
-			LocalService.addlog("We still have GPS -ELSE");
+			//LocalService.addlog("We still have GPS -ELSE");
 		}
 		if (System.currentTimeMillis()>lastgpslocationtime+pollperiod+30000 && location.getProvider().equals(LocationManager.NETWORK_PROVIDER))
 		{
 			if(log)Log.d(this.getClass().getName(),"У нас уже нет GPS");
-			LocalService.addlog("Lost GPS till");
+			//LocalService.addlog("Lost GPS till");
 			if ((location.distanceTo(prevlocation)>distance && System.currentTimeMillis()>(prevnetworklocationtime+period)))
 			{
 				LocalService.addlog("send on because networklocation");
@@ -1522,17 +1525,17 @@ public void sendid()
 			}
 			else
 			{
-				LocalService.addlog("send on because networklocation - ELSE");
+				//LocalService.addlog("send on because networklocation - ELSE");
 			}
 		}
 		else
 		{
-			LocalService.addlog("Lost GPS till - ELSE");
+			//LocalService.addlog("Lost GPS till - ELSE");
 		}
 		if(firstsend)
 		{
 			if(log)Log.d(this.getClass().getName(),"Первая отправка");
-			LocalService.addlog("First send");
+			//LocalService.addlog("First send");
 			sendlocation(location);
 			prevlocation.set(location);
 			prevlocation_gpx.set(location);
@@ -1545,7 +1548,7 @@ public void sendid()
 		}
 		else
 		{
-			LocalService.addlog("First send - ELSE");
+			//LocalService.addlog("First send - ELSE");
 		}
 		if (location.getSpeed()>=speed_gpx/3.6 && (int)location.getAccuracy()<hdop_gpx && prevlocation_spd!=null )
 		{
@@ -1596,7 +1599,7 @@ public void sendid()
 		refresh();
 		if (location.getProvider().equals(LocationManager.GPS_PROVIDER))
 		{
-			LocalService.addlog("Provider=GPS");
+			//LocalService.addlog("Provider=GPS");
 			lastgpslocationtime=System.currentTimeMillis();
 			if (gpx && fileheaderok) 
 			{
@@ -1643,12 +1646,12 @@ public void sendid()
 				}
 			}
 			if(log)Log.d(this.getClass().getName(), "sessionstarted="+sessionstarted);
-			LocalService.addlog("Session started="+sessionstarted);
+			//LocalService.addlog("Session started="+sessionstarted);
 			if (live&&sessionstarted)
 			{
-				LocalService.addlog("live and session satrted");
+				//LocalService.addlog("live and session satrted");
 				if(bearing>0){
-					LocalService.addlog("bearing>0");
+					//LocalService.addlog("bearing>0");
 					//if(log)Log.d(this.getClass().getName(), "Попали в проверку курса для отправки");
 					//if(log)Log.d(this.getClass().getName(), "Accuracey"+location.getAccuracy()+"hdop"+hdop);
 					double lon1=location.getLongitude();
@@ -1663,7 +1666,7 @@ public void sendid()
 					refresh();
 					if (OsMoDroid.settings.getBoolean("modeAND", false)&&(int)location.getAccuracy()<hdop && location.getSpeed()>=speed/3.6&&(location.distanceTo(prevlocation)>distance && location.getTime()>(prevlocation.getTime()+period) && (location.getSpeed()>=(speedbearing/3.6) && Math.abs(brng-prevbrng)>=bearing)))
 					{
-						LocalService.addlog("modeAND and accuracy and speed");
+						//LocalService.addlog("modeAND and accuracy and speed");
 						prevlocation.set(location);
 						prevbrng=brng;
 						//if(log)Log.d(this.getClass().getName(), "send(location)="+location);
@@ -1671,11 +1674,11 @@ public void sendid()
 					}
 					else
 					{
-						LocalService.addlog("modeAND and accuracy and speed -ELSE");
+						//LocalService.addlog("modeAND and accuracy and speed -ELSE");
 					}
 					if (!OsMoDroid.settings.getBoolean("modeAND", false)&&(int)location.getAccuracy()<hdop && location.getSpeed()>=speed/3.6&&(location.distanceTo(prevlocation)>distance || location.getTime()>(prevlocation.getTime()+period) || (location.getSpeed()>=(speedbearing/3.6) && Math.abs(brng-prevbrng)>=bearing)))
 					{
-						LocalService.addlog("not modeAND and accuracy and speed");
+						//LocalService.addlog("not modeAND and accuracy and speed");
 						prevlocation.set(location);
 						prevbrng=brng;
 						//if(log)Log.d(this.getClass().getName(), "send(location)="+location);
@@ -1683,17 +1686,17 @@ public void sendid()
 					}
 					else
 					{
-						LocalService.addlog("not modeAND and accuracy and speed - ELSE");
+						//LocalService.addlog("not modeAND and accuracy and speed - ELSE");
 					}
 					
 				}
 				else 
 				{
-					LocalService.addlog("bearing>0 - ELSE");
+					//LocalService.addlog("bearing>0 - ELSE");
 					//if(log)Log.d(this.getClass().getName(), "Отправляем без курса");
 					if (OsMoDroid.settings.getBoolean("modeAND", false)&&(int)location.getAccuracy()<hdop &&location.getSpeed()>=speed/3.6 &&(location.distanceTo(prevlocation)>distance && location.getTime()>(prevlocation.getTime()+period)))
 					{
-						LocalService.addlog("modeAND and accuracy and speed");
+						//LocalService.addlog("modeAND and accuracy and speed");
 						//if(log)Log.d(this.getClass().getName(), "Accuracey"+location.getAccuracy()+"hdop"+hdop);
 						prevlocation.set(location);
 						//if(log)Log.d(this.getClass().getName(), "send(location)="+location);
@@ -1701,11 +1704,11 @@ public void sendid()
 					}
 					else
 					{
-						LocalService.addlog("modeAND and accuracy and speed - ELSE");
+						//LocalService.addlog("modeAND and accuracy and speed - ELSE");
 					}
 					if (!OsMoDroid.settings.getBoolean("modeAND", false)&&(int)location.getAccuracy()<hdop &&location.getSpeed()>=speed/3.6 &&(location.distanceTo(prevlocation)>distance || location.getTime()>(prevlocation.getTime()+period)))
 					{
-						LocalService.addlog("not modeAND and accuracy and speed");
+						//LocalService.addlog("not modeAND and accuracy and speed");
 						//if(log)Log.d(this.getClass().getName(), "Accuracey"+location.getAccuracy()+"hdop"+hdop);
 						prevlocation.set(location);
 						//if(log)Log.d(this.getClass().getName(), "send(location)="+location);
@@ -1713,7 +1716,7 @@ public void sendid()
 					}
 					else
 					{
-						LocalService.addlog("modeAND and accuracy and speed - ELSE");
+						//LocalService.addlog("modeAND and accuracy and speed - ELSE");
 					}
 					
 				}
@@ -1721,12 +1724,12 @@ public void sendid()
 			else
 			{
 				if(log)Log.d(this.getClass().getName(), " not !hash.equals() && live&&sessionstarted");	
-				LocalService.addlog("live and session satrted - ELSE");
+				//LocalService.addlog("live and session satrted - ELSE");
 			}
 		}
 		else
 		{
-			LocalService.addlog("Provider=GPS - ELSE");
+			//LocalService.addlog("Provider=GPS - ELSE");
 		}
 	}
 	public void onProviderDisabled(String provider) 
@@ -1747,7 +1750,7 @@ public void sendid()
 
 	public void onStatusChanged(String provider, int status, Bundle extras) {
 		if(log)Log.d(this.getClass().getName(), "Изменился статус провайдера:"+provider+" статус:"+status+" Бандл:"+extras.getInt("satellites"));
-		addlog("Изменился статус провайдера:"+provider+" статус:"+status+" Бандл:"+extras.getInt("satellites"));
+		//addlog("Изменился статус провайдера:"+provider+" статус:"+status+" Бандл:"+extras.getInt("satellites"));
 	}
 
 	 void internetnotify(boolean internet){
@@ -2040,7 +2043,7 @@ public void onGpsStatusChanged(int event) {
 	count=count1;
 	countFix=countFix1;
 	refresh();
-	addlog("onGpsStatusChanged "+count1+" "+countFix1);
+	//addlog("onGpsStatusChanged "+count1+" "+countFix1);
 }
 
 public void onInit(int status) {

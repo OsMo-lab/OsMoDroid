@@ -283,4 +283,5 @@
 <string name="offline_on">Offline mode is enabled. Data not sent to server</string>
 <string name="update_map_in_background">Update map in background</string>
 <string name="tcp_no_delay">TCP NO Delay</string>
+<string name="agree_sos_">Agree SOS ?</string>
 </resources>

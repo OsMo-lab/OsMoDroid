@@ -95,11 +95,13 @@
         android:autoLink="all"
         android:textSize="20sp" />
 
-    <Button
+    <ToggleButton
         android:id="@+id/sosButton"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:text="SOS"
+        android:textOff="SOS"
+        android:textOn="SOS"
         android:textSize="40sp" />
 
 </LinearLayout>

@@ -262,7 +262,11 @@ void showFragment(Fragment fragment, boolean backstack) {
 	@Override
 	 protected void onPause(){
 		 Log.d(this.getClass().getSimpleName(), "onPause() gpsclient");
-	 
+		 if (!OsMoDroid.settings.getBoolean("subscribebackground", false)&&mBound)
+			{
+				mService.myIM.sendToServer("PD:-1",false);
+				mService.myIM.sendToServer("PG:-1",false);
+			}
 		 
 	 if (!(wakeLock==null) &&wakeLock.isHeld())wakeLock.release();
 
@@ -514,6 +518,12 @@ void showFragment(Fragment fragment, boolean backstack) {
 			finish();
 			startActivity(intent);
 			
+				if (OsMoDroid.settings.getBoolean("subscribebackground", false)&&mBound)
+				{
+					mService.myIM.sendToServer("PG:1",false);
+					mService.myIM.sendToServer("PD:1",false);
+				}
+			
 			}
 			if(requestCode==1&&resultCode==Activity.RESULT_OK){
 				Log.d(this.getClass().getSimpleName(), "void onActivityResult=auth");
@@ -537,7 +547,11 @@ void showFragment(Fragment fragment, boolean backstack) {
 		OsMoDroid.gpslocalserviceclientVisible=true;
 		ReadPref();
 		started = checkStarted();
-
+		if (!OsMoDroid.settings.getBoolean("subscribebackground", false)&&mBound)
+		{
+			mService.myIM.sendToServer("PG:1",false);
+			mService.myIM.sendToServer("PD:1",false);
+		}
 		
 //		if (hash.equals("") && live) {
 //			RequestAuthTask requestAuthTask = new RequestAuthTask();
@@ -926,15 +940,22 @@ if (mBound) {
 
 	@Override
 	public void onBackPressed() {
-		if(drawClickListener.currentItem!=0)
-		{
-			drawClickListener.selectItem(getString(R.string.tracker),null);
-			LocalService.currentItemName=OsMoDroid.context.getString(R.string.tracker);
-		}
-		else
-		{
-		super.onBackPressed();
-		}
+		 int backStackEntryCount = getSupportFragmentManager().getBackStackEntryCount();
+		    if(backStackEntryCount == 0){
+		    	if(drawClickListener.currentItem!=0)
+				{
+					drawClickListener.selectItem(getString(R.string.tracker),null);
+					LocalService.currentItemName=OsMoDroid.context.getString(R.string.tracker);
+				}
+				else
+				{
+				super.onBackPressed();
+				}
+		    }
+		    else{
+		        super.onBackPressed();
+		    }
+		
 	}
 
 
