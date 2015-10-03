@@ -1,0 +1,26 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 21
+    buildToolsVersion "23.0.1"
+    archivesBaseName = "OsMoDroid"
+    defaultConfig {
+        applicationId "com.OsMoDroid"
+        minSdkVersion 7
+        targetSdkVersion 19
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles 'proguard.cfg'
+
+        }
+    }
+}
+
+dependencies {
+    compile 'com.android.support:appcompat-v7:19.0.0'
+    compile 'org.osmdroid:osmdroid-android:4.3'
+    compile 'org.slf4j:slf4j-simple:1.6.1'
+}

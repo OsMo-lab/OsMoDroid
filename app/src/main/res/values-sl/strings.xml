@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="app_name">OsMoDroid</string>
+  <string name="url">Naslov:</string>
+  <string name="succes">Uspešno</string>
+  <string name="error">Napaka:</string>
+  <string name="Sputniki">Sateliti:</string>
+  <string name="Unknow">Neznano</string>
+  <string name="NotDefined">Nedoločeno</string>
+  <string name="Sended">Pošiljanje:</string>
+  <string name="Adres">Naslov:</string>
+  <string name="Settings">Nastavitve</string>
+  <string name="yes">Da</string>
+  <string name="No">Ne</string>
+  <string name="Sendcount">Poslano:</string>
+  <string name="chanal">Skupina</string>
+  <string name="chanals">Skupine</string>
+  <string name="sharelink">Daj v skupno rabo</string>
+  <string name="deviceslis">Sporočila</string>
+  <string name="chanalname">Ime:</string>
+  <string name="privatechanal">Zasebna skupina</string>
+  <string name="chanalkey">Ključ skupine</string>
+  <string name="devices">Naprave</string>
+  <string name="messages">Sporočila</string>
+  <string name="binddevice">Poveži napravo</string>
+  <string name="tracker">Sledilec</string>
+  <string name="links">Povezave</string>
+  <string name="tracks">Sledi</string>
+  <string name="stat">Statistika</string>
+  <string name="average">Povprečje:</string>
+  <string name="going">Razdalja:</string>
+  <string name="km"> km </string>
+  <string name="letsgo">Gremo!</string>
+  <string name="comand">Ukaz:</string>
+  <string name="errorcode">Koda napake:</string>
+  <string name="detalisation">Razlaga:</string>
+  <string name="more">Več</string>
+  <string name="iamhere">Tukaj sem!</string>
+  <string name="spd">Hotrost</string>
+  <string name="map">Zemljevid</string>
+  <string name="iam">Jaz</string>
+  <string name="showtraces">Prikaži sledi</string>
+  <string name="name">Ime</string>
+</resources>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <ListView
+        android:id="@+id/mychannelsdeviceslistView"
+        android:layout_width="fill_parent"
+        
+        android:layout_weight="1"
+
+        tools:listitem="@android:layout/simple_list_item_1"
+        android:layout_height="0dp">
+
+    </ListView>
+
+    <ListView
+        android:id="@+id/mychannelsmessages"
+        android:layout_width="fill_parent"
+        
+
+        android:scrollingCache="false"
+        android:stackFromBottom="true"
+        android:layout_weight="1"
+        android:transcriptMode="alwaysScroll"
+        android:layout_height="0dp">
+
+    </ListView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        
+        
+         >
+		
+        <EditText
+            android:id="@+id/mychannelsdeviceseditText1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:clickable="true"
+            
+            android:ems="10"
+            android:focusable="true"
+            android:inputType="text"
+            android:singleLine="false" >
+
+            <requestFocus />
+        </EditText>
+
+        <Button
+            android:id="@+id/mychanneldevicesendButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/send" />
+    </LinearLayout>
+
+</LinearLayout>
+    <!--android:layout_weight="1"-->
