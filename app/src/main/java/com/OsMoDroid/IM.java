@@ -950,6 +950,11 @@ public class IM implements ResultsListener
                                 localService.stopServiceWork(true);
                                 sendToServer("RCR:" + OsMoDroid.TRACKER_SESSION_STOP + "|1", false);
                             }
+                        if (param.equals(OsMoDroid.TRACKER_SESSION_PAUSE))
+                            {
+                                localService.stopServiceWork(false);
+                                sendToServer("RCR:" + OsMoDroid.TRACKER_SESSION_PAUSE + "|1", false);
+                            }
                         if (param.equals(OsMoDroid.TTS))
                             {
                                 if (OsMoDroid.settings.getBoolean("ttsremote", false) && localService.tts != null)
@@ -1543,13 +1548,15 @@ public class IM implements ResultsListener
                                                                                                         float newlon = Float.parseFloat(jsonObject.getString("lon"));
                                                                                                         if (newlat != dev.lat & newlon != dev.lon && (System.currentTimeMillis() - dev.updatated) > 5 * 60 * 1000)
                                                                                                             {
+                                                                                                                dev.lat = newlat;
+                                                                                                                dev.lon = newlon;
                                                                                                                 notifydevicemonitoring(dev);
                                                                                                             }
-                                                                                                        dev.lat = newlat;
-                                                                                                        dev.lon = newlon;
-                                                                                                        dev.color = Color.parseColor(jsonObject.getString("color"));
-                                                                                                        dev.name = jsonObject.getString("name");
                                                                                                     }
+
+                                                                                                dev.color = Color.parseColor(jsonObject.getString("color"));
+                                                                                                dev.name = jsonObject.getString("name");
+
                                                                                             }
                                                                                     }
                                                                                 if (!exist)
