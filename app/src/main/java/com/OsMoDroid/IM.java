@@ -1626,6 +1626,7 @@ public class IM implements ResultsListener
                             }
                         localService.saveObject(LocalService.channelList, OsMoDroid.CHANNELLIST);
                         //sendToServer("PG");
+                        sendToServer("GP:"+param,false);
                     }
 /// recive GPC:2480|{"u":11,"gu":"1621","text":"\u043c\u0438\u0442\u0441\u043c\u0438\u0442\u043c\u0441\u0438\u0442","type":0,"time":"2015-08-09 22:55:23","name":"\u0414\u0435\u043d\u0438\u0441"}
                 if (command.equals("GPC"))
