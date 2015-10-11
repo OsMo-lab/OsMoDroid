@@ -517,15 +517,12 @@ public class IM implements ResultsListener
                     }
                 if (LocalService.currentDevice != null && u == LocalService.currentDevice.u)
                     {
-                        localService.alertHandler.post(new Runnable()
-                        {
-                            public void run()
-                                {
-                                    if (LocalService.chatmessagesAdapter != null)
-                                        {
-                                            LocalService.chatmessagesAdapter.notifyDataSetChanged();
-                                        }
+                        localService.alertHandler.post(new Runnable() {
+                            public void run() {
+                                if (LocalService.chatmessagesAdapter != null) {
+                                    LocalService.chatmessagesAdapter.notifyDataSetChanged();
                                 }
+                            }
                         });
                     }
                 Message msg = new Message();
@@ -735,9 +732,12 @@ public class IM implements ResultsListener
                                 localService.internetnotify(true);
                                 if (!OsMoDroid.settings.getBoolean("subscribebackground", false))
                                     {
-                                        sendToServer("PG:-1", false);
-                                        sendToServer("PD:-1", false);
+                                        if(!OsMoDroid.gpslocalserviceclientVisible)
+                                        {
+                                            sendToServer("PG:-1", false);
+                                        }
                                     }
+
                                 if (jo.has("group"))
                                     {
                                         if (jo.optInt("group") == 1)
@@ -942,7 +942,7 @@ public class IM implements ResultsListener
                             }
                         if (param.equals(OsMoDroid.TRACKER_SESSION_START))
                             {
-                                localService.startServiceWork();
+                                localService.startServiceWork(true);
                                 sendToServer("RCR:" + OsMoDroid.TRACKER_SESSION_START + "|1", false);
                             }
                         if (param.equals(OsMoDroid.TRACKER_SESSION_STOP))
@@ -950,6 +950,11 @@ public class IM implements ResultsListener
                                 localService.stopServiceWork(true);
                                 sendToServer("RCR:" + OsMoDroid.TRACKER_SESSION_STOP + "|1", false);
                             }
+                        if (param.equals(OsMoDroid.TRACKER_SESSION_CONTINUE))
+                        {
+                            localService.startServiceWork(false);
+                            sendToServer("RCR:" + OsMoDroid.TRACKER_SESSION_PAUSE + "|1", false);
+                        }
                         if (param.equals(OsMoDroid.TRACKER_SESSION_PAUSE))
                             {
                                 localService.stopServiceWork(false);
@@ -1542,17 +1547,23 @@ public class IM implements ResultsListener
                                                                                         if (dev.u == jsonObject.optInt("u"))
                                                                                             {
                                                                                                 exist = true;
-                                                                                                if (jsonObject.has("lat") && jsonObject.has("lon"))
-                                                                                                    {
+                                                                                                if (jsonObject.has("lat") && jsonObject.has("lon")) {
+                                                                                                    try {
+
+
                                                                                                         float newlat = Float.parseFloat(jsonObject.getString("lat"));
                                                                                                         float newlon = Float.parseFloat(jsonObject.getString("lon"));
-                                                                                                        if (newlat != dev.lat & newlon != dev.lon && (System.currentTimeMillis() - dev.updatated) > 5 * 60 * 1000)
-                                                                                                            {
-                                                                                                                dev.lat = newlat;
-                                                                                                                dev.lon = newlon;
-                                                                                                                notifydevicemonitoring(dev);
-                                                                                                            }
+                                                                                                        if (newlat != dev.lat & newlon != dev.lon && (System.currentTimeMillis() - dev.updatated) > 5 * 60 * 1000) {
+                                                                                                            dev.lat = newlat;
+                                                                                                            dev.lon = newlon;
+                                                                                                            notifydevicemonitoring(dev);
+                                                                                                        }
                                                                                                     }
+                                                                                                    catch (NumberFormatException e)
+                                                                                                    {
+                                                                                                        writeException(e);
+                                                                                                    }
+                                                                                                }
 
                                                                                                 dev.color = Color.parseColor(jsonObject.getString("color"));
                                                                                                 dev.name = jsonObject.getString("name");
@@ -1566,9 +1577,17 @@ public class IM implements ResultsListener
                                                                                                 Device dev = new Device(jsonObject.getInt("u"), jsonObject.getString("name"), jsonObject.getString("color"));
                                                                                                 if (jsonObject.has("lat") && jsonObject.has("lon"))
                                                                                                     {
-                                                                                                        dev.lat = Float.parseFloat(jsonObject.getString("lat"));
-                                                                                                        dev.lon = Float.parseFloat(jsonObject.getString("lon"));
-                                                                                                        notifydevicemonitoring(dev);
+                                                                                                       try {
+
+
+                                                                                                           dev.lat = Float.parseFloat(jsonObject.getString("lat"));
+                                                                                                           dev.lon = Float.parseFloat(jsonObject.getString("lon"));
+                                                                                                           //notifydevicemonitoring(dev);
+                                                                                                       }
+                                                                                                       catch (NumberFormatException e)
+                                                                                                       {
+                                                                                                           writeException(e);
+                                                                                                       }
                                                                                                     }
                                                                                                 ch.deviceList.add(dev);
                                                                                                 Collections.sort(ch.deviceList);

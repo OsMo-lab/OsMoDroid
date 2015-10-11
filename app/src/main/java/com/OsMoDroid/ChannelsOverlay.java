@@ -70,7 +70,7 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
                 pathpaint.setStrokeJoin(Join.ROUND);
                 // TODO Auto-generated constructor stub
             }
-        int getSP(int px)
+        int getSP(float px)
             {
                 return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, px, map.getResources().getDisplayMetrics());
             }
@@ -162,7 +162,7 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
                                             {
                                                 canvas.drawText(dev.name, scrPoint.x, scrPoint.y - ten, paint);
                                             }
-                                        canvas.drawText(dev.speed, scrPoint.x, scrPoint.y - twenty, paint);
+                                        canvas.drawText(dev.speed, scrPoint.x, scrPoint.y +ten, paint);
                                         paint.setColor(dev.color);
                                         canvas.drawCircle(scrPoint.x, scrPoint.y, ten, paint);
                                         if (dev.u == followdev)
@@ -229,7 +229,7 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
                                                             {
                                                                 canvas.drawText(dev.name, scrPoint.x, scrPoint.y - ten, paint);
                                                             }
-                                                        canvas.drawText(dev.speed, scrPoint.x, scrPoint.y - twenty, paint);
+                                                        canvas.drawText(dev.speed, scrPoint.x, scrPoint.y + ten, paint);
                                                         paint.setColor(dev.color);
                                                         canvas.drawCircle(scrPoint.x, scrPoint.y, ten, paint);
                                                         if (dev.u == followdev)

@@ -259,7 +259,7 @@ public class GPSLocalServiceClient extends ActionBarActivity
                 Log.d(this.getClass().getSimpleName(), "onPause() gpsclient");
                 if (!OsMoDroid.settings.getBoolean("subscribebackground", false) && mBound)
                     {
-                        mService.myIM.sendToServer("PD:-1", false);
+                       // mService.myIM.sendToServer("PD:-1", false);
                         mService.myIM.sendToServer("PG:-1", false);
                     }
                 if (!(wakeLock == null) && wakeLock.isHeld())
@@ -488,7 +488,7 @@ public class GPSLocalServiceClient extends ActionBarActivity
                                 if (OsMoDroid.settings.getBoolean("subscribebackground", false) && mBound)
                                     {
                                         mService.myIM.sendToServer("PG:1", false);
-                                        mService.myIM.sendToServer("PD:1", false);
+                                       // mService.myIM.sendToServer("PD:1", false);
                                     }
                             }
                         if (requestCode == 1 && resultCode == Activity.RESULT_OK)
@@ -513,7 +513,7 @@ public class GPSLocalServiceClient extends ActionBarActivity
                 if (!OsMoDroid.settings.getBoolean("subscribebackground", false) && mBound)
                     {
                         mService.myIM.sendToServer("PG:1", false);
-                        mService.myIM.sendToServer("PD:1", false);
+                       // mService.myIM.sendToServer("PD:1", false);
                     }
 //		if (hash.equals("") && live) {
 //			RequestAuthTask requestAuthTask = new RequestAuthTask();
@@ -673,7 +673,7 @@ public class GPSLocalServiceClient extends ActionBarActivity
                 //Intent i = new Intent(this, LocalService.class);
                 //startService(i);
                 started = true;
-                mService.startServiceWork();
+                mService.startServiceWork(true);
             }
         private void bindService()
             {

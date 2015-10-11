@@ -777,7 +777,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                     }
                 if (OsMoDroid.settings.getBoolean("started", false))
                     {
-                        startServiceWork();
+                        startServiceWork(true);
                     }
                 OsMoDroid.settings.edit().putBoolean("ondestroy", false).commit();
             }
@@ -1083,7 +1083,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                     {
                         if (intent.getStringExtra("SMS").equals("START") && !state)
                             {
-                                startServiceWork();
+                                startServiceWork(true);
                             }
                         if (intent.getStringExtra("SMS").equals("STOP") && state)
                             {
@@ -1126,7 +1126,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                         Log.d(getClass().getSimpleName(), "applyPreferecne end");
                     }
             }
-        public void startServiceWork()
+        public void startServiceWork(boolean opensession)
             {
                 if (!paused)
                     {
@@ -1187,14 +1187,18 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                     {
                         if (myIM != null && myIM.authed)
                             {
-                                myIM.sendToServer("TO", false);
-                                myIM.needopensession = true;
-                                myIM.needclosesession = false;
+                                if(opensession) {
+                                    myIM.sendToServer("TO", false);
+                                    myIM.needopensession = true;
+                                    myIM.needclosesession = false;
+                                }
                             }
                         else
                             {
-                                myIM.needopensession = true;
-                                myIM.needclosesession = false;
+                                if(opensession) {
+                                    myIM.needopensession = true;
+                                    myIM.needclosesession = false;
+                                }
                             }
                     }
                 if (log)
