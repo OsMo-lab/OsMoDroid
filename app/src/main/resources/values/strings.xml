@@ -71,8 +71,8 @@
 <string name="yourmessage">Your message: </string>
 <string name="sendingmessage">Sending a message</string>
 <string name="sharelink">Share</string>
-<string name="deviceslis">Messages</string>
-<string name="messagetochanal">Message to the group</string>
+<string name="chat">Chat</string>
+<string name="messagetochat">Message to the group</string>
 <string name="copylink">Copy this link</string>
 <string name="openinbrowser">Open in Browser</string>
 <string name="exitfromchanal">Leave group</string>
@@ -87,7 +87,7 @@
 <string name="bindtochanal">Connection to the group</string>
 <string name="requestdevicebefore">Prior request device</string>
 <string name="chatwith">Chat with </string>
-<string name="devices">Devices</string>
+<string name="devices">Family</string>
 <string name="writemessage">Write message</string>
 <string name="messages">Messages</string>
 <string name="binddevice">Bind device</string>

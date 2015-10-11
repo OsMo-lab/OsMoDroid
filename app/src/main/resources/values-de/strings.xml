@@ -72,8 +72,8 @@
   <string name="yourmessage">Deine Nachricht:</string>
   <string name="sendingmessage">Sende eine Nachricht</string>
   <string name="sharelink">Teilen</string>
-  <string name="deviceslis">Nachrichten</string>
-  <string name="messagetochanal">Nachricht an die Gruppe</string>
+  <string name="chat">Nachrichten</string>
+  <string name="messagetochat">Nachricht an die Gruppe</string>
   <string name="copylink">Kopiere diesen Link</string>
   <string name="openinbrowser">Im Browser öffnen</string>
   <string name="exitfromchanal">Gruppe verlassen</string>

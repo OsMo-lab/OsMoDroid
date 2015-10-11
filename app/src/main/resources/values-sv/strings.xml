@@ -73,8 +73,8 @@
   <string name="yourmessage">Ditt meddelande:</string>
   <string name="sendingmessage">Skickar ett meddelande</string>
   <string name="sharelink">Dela</string>
-  <string name="deviceslis">Meddelanden</string>
-  <string name="messagetochanal">Meddelande till gruppen</string>
+  <string name="chat">Meddelanden</string>
+  <string name="messagetochat">Meddelande till gruppen</string>
   <string name="copylink">Kopiera denna länk</string>
   <string name="openinbrowser">Öppna i webbläsare</string>
   <string name="exitfromchanal">Lämna gruppen</string>

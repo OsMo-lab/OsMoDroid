@@ -72,8 +72,8 @@
   <string name="yourmessage">Tuo messaggio:</string>
   <string name="sendingmessage">Invio di un messaggio</string>
   <string name="sharelink">Condividi</string>
-  <string name="deviceslis">Messaggi</string>
-  <string name="messagetochanal">Messaggio al gruppo</string>
+  <string name="chat">Messaggi</string>
+  <string name="messagetochat">Messaggio al gruppo</string>
   <string name="copylink">Copia questo link</string>
   <string name="openinbrowser">Apri nel browser</string>
   <string name="exitfromchanal">Lascia il gruppo</string>

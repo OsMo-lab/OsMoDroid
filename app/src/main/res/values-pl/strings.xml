@@ -59,7 +59,7 @@
 Deweloper: Denis Fokin (c) 2012-2015
 
 Korzystając z tej aplikacji zgadzasz się z Warunkami Użytkowania:
-http://osmo.mobi/terms/
+http://osmo.mobi/terms
 
 Oficjalna strona OsMoDroid:
 http://osmodroid.mobi
@@ -81,8 +81,8 @@ Informacja o prawach autorskich: http://osmodroid.mobi/copyright.html</string>
   <string name="yourmessage">Twoja wiadomość:</string>
   <string name="sendingmessage">Wysyłanie wiadomości</string>
   <string name="sharelink">Udostępnij link</string>
-  <string name="deviceslis">Lista urządzeń</string>
-  <string name="messagetochanal">Wiadomość do grupy</string>
+  <string name="chat">Lista urządzeń</string>
+  <string name="messagetochat">Wiadomość do grupy</string>
   <string name="copylink">Kopiuj link</string>
   <string name="openinbrowser">Otwórz w przeglądarce</string>
   <string name="exitfromchanal">Wyjdź z grupy</string>

@@ -78,8 +78,8 @@ Telif Hakkı Bilgileri: http://osmodroid.mobi/copyright.html</string>
   <string name="yourmessage">Mesajın:</string>
   <string name="sendingmessage">Bir mesaj gönderme</string>
   <string name="sharelink">Paylaş</string>
-  <string name="deviceslis">Mesajlar</string>
-  <string name="messagetochanal">Gruba mesaj at</string>
+  <string name="chat">Mesajlar</string>
+  <string name="messagetochat">Gruba mesaj at</string>
   <string name="copylink">Linki kopyala</string>
   <string name="openinbrowser">Tarayıcıda Aç</string>
   <string name="exitfromchanal">Gruptan ayrıl</string>

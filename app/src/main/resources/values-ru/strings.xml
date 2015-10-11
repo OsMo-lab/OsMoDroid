@@ -54,7 +54,7 @@
 <string name="message">Сообщение</string>
 <string name="sendsupport">Сообщить в техническую поддержку</string>
 <string name="about">О программе</string>
-<string name="abouttext">OsMoDroid это клиент мониторинга для Android. Используя смартфон и сервис OsMo ваши друзья и близкие всегда будут знать где вы.\nРазработчик: Денис Фокин (c) 2012-2015\n\nИспользуя данное приложение вы принимаете Условия Использования:\nhttp://osmo.mobi/terms/\n\nОфициальный сайт OsMoDroid:\nhttp://osmodroid.ru\n\nИнформация о авторских правах: http://osmodroid.ru/copyright.html</string>
+<string name="abouttext">OsMoDroid это клиент мониторинга для Android. Используя смартфон и сервис OsMo ваши друзья и близкие всегда будут знать где вы.\nРазработчик: Денис Фокин (c) 2012-2015\n\nИспользуя данное приложение вы принимаете Условия Использования:\nhttp://osmo.mobi/terms\n\nОфициальный сайт OsMoDroid:\nhttp://osmodroid.ru\n\nИнформация о авторских правах: http://osmodroid.ru/copyright.html</string>
 <string name="send">>></string>
 <string name="cancel">Отмена</string>
 <string name="speed">Скорость: км/ч</string>
@@ -71,8 +71,8 @@
 <string name="yourmessage">Ваше сообщение:</string>
 <string name="sendingmessage">Отправка сообщения</string>
 <string name="sharelink">Поделиться ссылкой</string>
-<string name="deviceslis">Список устройств</string>
-<string name="messagetochanal">Cообщение группе</string>
+<string name="chat">Чат</string>
+<string name="messagetochat">Cообщение группе</string>
 <string name="copylink">Копировать ссылку</string>
 <string name="openinbrowser">Открыть в браузере</string>
 <string name="exitfromchanal">Выйти из группы</string>
@@ -87,7 +87,7 @@
 <string name="bindtochanal">Подключение в группу</string>
 <string name="requestdevicebefore">Предварительно запросите устройство</string>
 <string name="chatwith">"Чат с "</string>
-<string name="devices">Устройства</string>
+<string name="devices">Семья</string>
 <string name="writemessage">Написать сообщение</string>
 <string name="messages">Сообщения</string>
 <string name="binddevice">Привязать устройство</string>

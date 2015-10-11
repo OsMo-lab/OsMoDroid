@@ -196,14 +196,13 @@ public class ChannelsFragment extends Fragment
         @Override
         public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo)
             {
-                menu.add(0, 2, 1, R.string.deviceslis).setIcon(android.R.drawable.ic_menu_delete);
-                menu.add(0, 1, 2, R.string.messagetochanal).setIcon(android.R.drawable.ic_menu_share);
-                menu.add(0, 3, 3, R.string.copylink).setIcon(android.R.drawable.ic_menu_edit);
-                menu.add(0, 4, 4, R.string.sharelink).setIcon(android.R.drawable.ic_menu_edit);
-                menu.add(0, 5, 5, R.string.openinbrowser).setIcon(android.R.drawable.ic_menu_edit);
-                menu.add(0, 6, 6, R.string.exitfromchanal).setIcon(android.R.drawable.ic_menu_edit);
-                menu.add(0, 7, 7, R.string.copychID).setIcon(android.R.drawable.ic_menu_edit);
-                menu.add(0, 8, 8, R.string.shareID).setIcon(android.R.drawable.ic_menu_edit);
+                menu.add(0, 2, 1, R.string.chat).setIcon(android.R.drawable.ic_menu_delete);
+                menu.add(0, 1, 2, R.string.messagetochat).setIcon(android.R.drawable.ic_menu_share);
+                menu.add(0, 3, 3, R.string.openinbrowser).setIcon(android.R.drawable.ic_menu_edit);
+                menu.add(0, 4, 4, R.string.copylink).setIcon(android.R.drawable.ic_menu_edit);
+                menu.add(0, 5, 5, R.string.sharelink).setIcon(android.R.drawable.ic_menu_edit);
+                menu.add(0, 6, 6, R.string.copychID).setIcon(android.R.drawable.ic_menu_edit);
+                menu.add(0, 7, 7, R.string.exitfromchanal).setIcon(android.R.drawable.ic_menu_edit);
                 super.onCreateContextMenu(menu, v, menuInfo);
             }
         @Override
