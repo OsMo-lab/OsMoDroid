@@ -334,7 +334,7 @@ public class IM implements ResultsListener
                     @Override
                     public void run()
                         {
-                            LocalService.addlog("Socket setReconnectAlarn");
+                            LocalService.addlog("Socket setReconnectAlarm");
                         }
                 });
                 parent.registerReceiver(reconnectReceiver, new IntentFilter(RECONNECT_INTENT));
@@ -650,9 +650,9 @@ public class IM implements ResultsListener
                     }
                 if (log)
                     {
-                        Log.d(this.getClass().getName(), "ExecuteLsit=" + ExecutedCommandArryaList.toString());
+                        Log.d(this.getClass().getName(), "ExecuteList=" + ExecutedCommandArryaList.toString());
                     }
-                LocalService.addlog("ExecuteLsit=" + ExecutedCommandArryaList.toString());
+                LocalService.addlog("ExecuteList=" + ExecutedCommandArryaList.toString());
                 if (ExecutedCommandArryaList.size() == 0)
                     {
                         LocalService.addlog("Cancel reconnect alarm - no commands in order");
@@ -2020,7 +2020,7 @@ public class IM implements ResultsListener
                                                         {
                                                             Log.d(this.getClass().getName(), "Write " + b.getString("write") + " error=" + error);
                                                         }
-                                                    LocalService.addlog("wr write " + b.getString("write") + " error=" + error);
+                                                    LocalService.addlog("SocketWrite " + b.getString("write") + " error=" + error);
                                                     if (error)
                                                         {
                                                             if (running)
