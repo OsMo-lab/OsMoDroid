@@ -12,7 +12,7 @@ public class OsMoDroid extends Application
         public static final String NOTIFIESFILENAME = "messagelist";
         public static final String DEVLIST = "devlist";
         public static final String CHANNELLIST = "chlist";
-        public static final String app_code = "VA3h_va2j44fva";
+        public static final String app_code = "F33L_ds31Zklm";
         public static final String TRACKER_BATTERY_INFO = "11";
         public static final String TRACKER_SATELLITES_INFO = "13";
         public static final String TRACKER_SYSTEM_INFO = "14";

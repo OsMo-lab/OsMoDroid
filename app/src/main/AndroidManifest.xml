@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.OsMoDroid"
     android:versionCode="268"
-    android:versionName="2.1.02" android:installLocation="auto">
+    android:versionName="2.1.1" android:installLocation="auto">
     <uses-sdk android:minSdkVersion="7"
         android:targetSdkVersion="19"  />
 	<uses-feature android:name="android.hardware.camera" android:required="false" />
