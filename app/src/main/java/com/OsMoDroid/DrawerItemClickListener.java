@@ -89,6 +89,7 @@ public class DrawerItemClickListener implements OnItemClickListener
                         if (bundle != null)
                             {
                                 chans.channelpos = bundle.getInt("channelpos", -1);
+                                chans.groupurl=bundle.getString("groupurl");
                             }
                         ft.replace(R.id.fragment_container, chans);
                         currentItem = 3;

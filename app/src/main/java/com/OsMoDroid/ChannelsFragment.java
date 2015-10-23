@@ -24,6 +24,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
@@ -44,6 +45,7 @@ public class ChannelsFragment extends Fragment
         //private ListView lv1;
         protected String canalid;
         int channelpos = -1;
+        String groupurl;
         private GPSLocalServiceClient globalActivity;
         private String u;
         /* (non-Javadoc)
@@ -63,6 +65,10 @@ public class ChannelsFragment extends Fragment
                     {
                         openChannelChat(channelpos);
                     }
+                if(groupurl!=null)
+                {
+                    enterchanal(groupurl);
+                }
                 super.onResume();
             }
         @Override
@@ -101,19 +107,7 @@ public class ChannelsFragment extends Fragment
                                         {
                                             public void onClick(DialogInterface dialog, int whichButton)
                                                 {
-                                                    if (!(input.getText().toString().equals("")))
-                                                        {
-                                                            JSONObject postjson = new JSONObject();
-                                                            try
-                                                                {
-                                                                    postjson.put("text", input.getText().toString());
-                                                                    globalActivity.mService.myIM.sendToServer("GCS:" + LocalService.channelList.get((int) acmi.id).u + '|' + postjson.toString(), true);
-                                                                }
-                                                            catch (JSONException e)
-                                                                {
-                                                                    e.printStackTrace();
-                                                                }
-                                                        }
+
                                                 }
                                         })
                                 .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener()
@@ -123,6 +117,40 @@ public class ChannelsFragment extends Fragment
                                         }
                                 }).create();
                         alertdialog3.show();
+                        Button theButton = alertdialog3.getButton(DialogInterface.BUTTON_POSITIVE);
+                        theButton.setOnClickListener(new CustomListener(alertdialog3)
+                        {
+                            @Override
+                            public void onClick(View v)
+                                {
+                                    if (globalActivity.mService.myIM.authed)
+                                        {
+                                            if (!(input.getText().toString().equals("")))
+                                                {
+                                                    JSONObject postjson = new JSONObject();
+                                                    try
+                                                        {
+                                                            postjson.put("text", input.getText().toString());
+                                                            globalActivity.mService.myIM.sendToServer("GCS:" + LocalService.channelList.get((int) acmi.id).u + '|' + postjson.toString(), true);
+                                                        }
+                                                    catch (JSONException e)
+                                                        {
+                                                            e.printStackTrace();
+                                                        }
+                                                }
+                                            else
+                                                {
+                                                    Toast.makeText(
+                                                            globalActivity,
+                                                            R.string.noallenter, Toast.LENGTH_SHORT).show();
+                                                }
+                                        }
+                                    else
+                                        {
+                                            Toast.makeText(globalActivity, R.string.CheckInternet, Toast.LENGTH_SHORT).show();
+                                        }
+                                }
+                        });
                         return true;
                     }
                 if (item.getItemId() == 2)
@@ -156,15 +184,24 @@ public class ChannelsFragment extends Fragment
                             }
                         else
                             {
-                                Toast.makeText(globalActivity, R.string.noallenter, 5).show();
+                                Toast.makeText(globalActivity, R.string.CheckInternet, Toast.LENGTH_SHORT).show();
                             }
                         return true;
                     }
                 if (item.getItemId() == 6)
                     {
                         //globalActivity.mService.myIM.sendToServer("GROUP_DISCONNECT:"+LocalService.channelList.get((int) acmi.id).group_id);
-                        globalActivity.mService.myIM.sendToServer("GL:" + LocalService.channelList.get((int) acmi.id).group_id, true);
-                        return true;
+                        if(globalActivity.mService.myIM.authed)
+                            {
+                                globalActivity.mService.myIM.sendToServer("GL:" + LocalService.channelList.get((int) acmi.id).group_id, true);
+                                return true;
+                            }
+                        else
+                            {
+                                Toast.makeText(
+                                        globalActivity,
+                                        R.string.noallenter, Toast.LENGTH_SHORT).show();
+                            }
                     }
                 if (item.getItemId() == 7)
                     {
@@ -196,14 +233,15 @@ public class ChannelsFragment extends Fragment
         @Override
         public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo)
             {
+               SubMenu m = menu.addSubMenu(0, 99, 5, R.string.sharelink);
                 menu.add(0, 2, 1, R.string.chat).setIcon(android.R.drawable.ic_menu_delete);
                 menu.add(0, 1, 2, R.string.messagetochat).setIcon(android.R.drawable.ic_menu_share);
-                menu.add(0, 5, 5, R.string.openinbrowser).setIcon(android.R.drawable.ic_menu_edit);
-                menu.add(0, 3, 3, R.string.copylink).setIcon(android.R.drawable.ic_menu_edit);
-                menu.add(0, 4, 4, R.string.sharelink).setIcon(android.R.drawable.ic_menu_edit);
-                menu.add(0, 7, 7, R.string.copychID).setIcon(android.R.drawable.ic_menu_edit);
-                /*menu.add(0, 8, 8, R.string.shareID).setIcon(android.R.drawable.ic_menu_edit);*/
-                menu.add(0, 6, 6, R.string.exitfromchanal).setIcon(android.R.drawable.ic_menu_edit);
+                menu.add(0, 5, 3, R.string.openinbrowser).setIcon(android.R.drawable.ic_menu_edit);
+                menu.add(0, 3, 4, R.string.copylink).setIcon(android.R.drawable.ic_menu_edit);
+                m.add(0, 4, 5, R.string.sharelink).setIcon(android.R.drawable.ic_menu_edit);
+                menu.add(0, 7, 6, R.string.copychID).setIcon(android.R.drawable.ic_menu_edit);
+                menu.add(0, 6, 7, R.string.exitfromchanal).setIcon(android.R.drawable.ic_menu_edit);
+                m.add(0, 8, 8, R.string.shareID).setIcon(android.R.drawable.ic_menu_edit);
                 super.onCreateContextMenu(menu, v, menuInfo);
             }
         @Override
@@ -271,27 +309,7 @@ public class ChannelsFragment extends Fragment
                                                 {
                                                     public void onClick(DialogInterface dialog, int whichButton)
                                                         {
-                                                            //canalid = input.getText().toString();
-                                                            //String canalkey = input1.getText().toString();
-                                                            String canalname = input2.getText().toString();
-                                                            //if ( !(canalid.equals("")) && !(canalname.equals("")) && ( chb1.isChecked()&&(!(canalkey.equals(""))) || !chb1.isChecked() )  )
-                                                            if (!(canalname.equals("")))
-                                                                {
-                                                                    try
-                                                                        {
-                                                                            globalActivity.mService.myIM.sendToServer("GRPA|{\"name\":\"" + (input2.getText().toString()) + "\", \"until\":\"\", \"description\":\"\", \"policy\":\"\"}", true);
-                                                                        }
-                                                                    catch (Exception e)
-                                                                        {
-                                                                            e.printStackTrace();
-                                                                        }
-                                                                }
-                                                            else
-                                                                {
-                                                                    Toast.makeText(
-                                                                            globalActivity,
-                                                                            R.string.noallenter, 5).show();
-                                                                }
+
                                                         }
                                                 })
                                         .setNegativeButton(R.string.No,
@@ -302,6 +320,38 @@ public class ChannelsFragment extends Fragment
                                                         }
                                                 }).create();
                                 alertdialog4.show();
+                                Button theButton = alertdialog4.getButton(DialogInterface.BUTTON_POSITIVE);
+                                theButton.setOnClickListener(new CustomListener(alertdialog4)
+                                {
+                                    @Override
+                                    public void onClick(View v)
+                                        {
+                                            if (globalActivity.mService.myIM.authed)
+                                                {
+                                                    String canalname = input2.getText().toString();
+                                                    if (!(canalname.equals("")))
+                                                        {
+
+                                                            globalActivity.mService.myIM.sendToServer("GRPA|{\"name\":\"" + (input2.getText().toString()) + "\", \"until\":\"\", \"description\":\"\", \"policy\":\"\"}", true);
+                                                            super.dialog.dismiss();;
+                                                        }
+                                                    else
+                                                        {
+                                                            Toast.makeText(
+                                                                    globalActivity,
+                                                                    R.string.noallenter, Toast.LENGTH_SHORT).show();
+                                                        }
+
+
+                                                }
+                                            else
+                                                {
+                                                    Toast.makeText(globalActivity, R.string.CheckInternet, Toast.LENGTH_SHORT).show();
+                                                }
+                                        }
+
+                                });
+
                             }
                         else
                             {
@@ -310,65 +360,105 @@ public class ChannelsFragment extends Fragment
                     }
                 if (item.getItemId() == 2)
                     {
-                        if (globalActivity.mService.myIM.authed)
-                            {
-                                LinearLayout layout = new LinearLayout(globalActivity);
-                                layout.setOrientation(LinearLayout.VERTICAL);
-                                final TextView txv1 = new TextView(globalActivity);
-                                txv1.setText(R.string.chanalcode);
-                                layout.addView(txv1);
-                                final EditText input = new EditText(globalActivity);
-                                layout.addView(input);
-                                final TextView txv2 = new TextView(globalActivity);
-                                txv2.setText(R.string.iam);
-                                layout.addView(txv2);
-                                final EditText input2 = new EditText(globalActivity);
-                                layout.addView(input2);
-                                //input.setInputType(InputType.TYPE_CLASS_TEXT| InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
-                                input2.setSingleLine(true);
-                                AlertDialog alertdialog4 = new AlertDialog.Builder(
-                                        globalActivity)
-                                        .setTitle(R.string.bindtochanal)
-                                        .setView(layout)
-                                        .setPositiveButton(R.string.yes,
-                                                new DialogInterface.OnClickListener()
-                                                {
-                                                    public void onClick(DialogInterface dialog,
-                                                                        int whichButton)
-                                                        {
-                                                            canalid = Uri.encode(input.getText().toString());
-                                                            if (!(canalid.equals("")))
-                                                                {
-                                                                    globalActivity.mService.myIM.sendToServer("GE:" + canalid + "|" + (input2.getText().toString()), true);
-                                                                }
-                                                            else
-                                                                {
-                                                                    Toast.makeText(
-                                                                            globalActivity,
-                                                                            R.string.noallenter, 5).show();
-                                                                }
-                                                        }
-                                                })
-                                        .setNegativeButton(R.string.No,
-                                                new DialogInterface.OnClickListener()
-                                                {
-                                                    public void onClick(DialogInterface dialog,
-                                                                        int whichButton)
-                                                        {
-                                                        }
-                                                }).create();
-                                alertdialog4.show();
-                            }
-                        else
-                            {
-                                Toast.makeText(globalActivity, R.string.CheckInternet, 5).show();
-                            }
+                        enterchanal(null);
                     }
                 if (item.getItemId() == 3)
                     {
                         globalActivity.mService.myIM.sendToServer("GROUP", true);
                     }
                 return super.onOptionsItemSelected(item);
+            }
+        private void enterchanal(String url)
+            {
+
+                        LinearLayout layout = new LinearLayout(globalActivity);
+                        layout.setOrientation(LinearLayout.VERTICAL);
+                        final TextView txv1 = new TextView(globalActivity);
+                        txv1.setText(R.string.chanalcode);
+                        layout.addView(txv1);
+                        final EditText input = new EditText(globalActivity);
+                        layout.addView(input);
+                        final TextView txv2 = new TextView(globalActivity);
+                        txv2.setText(R.string.iam);
+                        layout.addView(txv2);
+                        final EditText input2 = new EditText(globalActivity);
+                        layout.addView(input2);
+                        //input.setInputType(InputType.TYPE_CLASS_TEXT| InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
+                        input2.setSingleLine(true);
+                        input2.setText(OsMoDroid.settings.getString("u", ""));
+                        if(url!=null)
+                            {
+                                input.setText(url);
+                                input2.requestFocus();
+                                groupurl=null;
+                            }
+
+                        AlertDialog alertdialog4 = new AlertDialog.Builder(
+                                globalActivity)
+                                .setTitle(R.string.bindtochanal)
+                                .setView(layout)
+                                .setPositiveButton(R.string.yes,
+                                        new DialogInterface.OnClickListener()
+                                        {
+                                            public void onClick(DialogInterface dialog,
+                                                                int whichButton)
+                                                {
+
+                                                }
+                                        })
+                                .setNegativeButton(R.string.No,
+                                        new DialogInterface.OnClickListener()
+                                        {
+                                            public void onClick(DialogInterface dialog,
+                                                                int whichButton)
+                                                {
+                                                }
+                                        }).create();
+                        alertdialog4.show();
+                Button theButton = alertdialog4.getButton(DialogInterface.BUTTON_POSITIVE);
+                theButton.setOnClickListener(new CustomListener(alertdialog4)
+                {
+                    @Override
+                    public void onClick(View v)
+                        {
+                            if (globalActivity.mService.myIM.authed)
+                                {
+                                    canalid = Uri.encode(input.getText().toString());
+                                    if (!(canalid.equals("")))
+                                        {
+                                            //{"id":"урл или введённый руками", "name":"указанное имя", "color":"цвет (если в группе разрешено, он будет принят, если нет - проигнорирован просто)"}
+                                            JSONObject jo = new JSONObject();
+                                            try
+                                                {
+                                                    jo.put("id", canalid);
+                                                    jo.put("name", input2.getText().toString());
+                                                    jo.put("color","");
+                                                    globalActivity.mService.myIM.sendToServer("GE|" + jo.toString(), true);
+                                                    super.dialog.dismiss();
+                                                }
+                                            catch (JSONException e)
+                                                {
+                                                    e.printStackTrace();
+                                                }
+
+                                        }
+                                    else
+                                        {
+                                            Toast.makeText(
+                                                    globalActivity,
+                                                    R.string.noallenter, Toast.LENGTH_SHORT).show();
+                                        }
+
+                                }
+                            else
+                                {
+                                    Toast.makeText(globalActivity, R.string.CheckInternet, Toast.LENGTH_SHORT).show();
+                                }
+                        }
+
+                });
+
+
             }
         /* (non-Javadoc)
          * @see android.support.v4.app.Fragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)
@@ -380,6 +470,10 @@ public class ChannelsFragment extends Fragment
                 if (bundle != null)
                     {
                         channelpos = bundle.getInt("channelpos", -1);
+                        if(bundle.getString("groupurl")!=null)
+                            {
+                                enterchanal(bundle.getString("groupurl"));
+                            }
                     }
                 LocalService.channelsAdapter.context = getActivity();
                 View view = inflater.inflate(R.layout.mychannels, container, false);

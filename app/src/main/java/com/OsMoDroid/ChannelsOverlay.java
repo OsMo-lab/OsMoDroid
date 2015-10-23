@@ -162,7 +162,7 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
                                             {
                                                 canvas.drawText(dev.name, scrPoint.x, scrPoint.y - ten, paint);
                                             }
-                                        canvas.drawText(dev.speed, scrPoint.x, scrPoint.y +ten, paint);
+                                        canvas.drawText(dev.speed, scrPoint.x, scrPoint.y +ten+twenty, paint);
                                         paint.setColor(dev.color);
                                         canvas.drawCircle(scrPoint.x, scrPoint.y, ten, paint);
                                         if (dev.u == followdev)
@@ -229,7 +229,7 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
                                                             {
                                                                 canvas.drawText(dev.name, scrPoint.x, scrPoint.y - ten, paint);
                                                             }
-                                                        canvas.drawText(dev.speed, scrPoint.x, scrPoint.y + ten, paint);
+                                                        canvas.drawText(dev.speed, scrPoint.x, scrPoint.y + ten+twenty, paint);
                                                         paint.setColor(dev.color);
                                                         canvas.drawCircle(scrPoint.x, scrPoint.y, ten, paint);
                                                         if (dev.u == followdev)

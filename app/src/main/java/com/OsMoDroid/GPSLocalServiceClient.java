@@ -539,10 +539,7 @@ public class GPSLocalServiceClient extends ActionBarActivity
                             }
                     }
                 proceednewintent = false;
-//		if (getIntent().getAction().equals(Intent.ACTION_MAIN)&&checkStarted()){
-//			StatFragment stat = new StatFragment();
-//			showFragment(stat);
-//		}
+
             }
         private void intentAction(Intent intent)
             {
@@ -587,6 +584,13 @@ public class GPSLocalServiceClient extends ActionBarActivity
                                         Log.d(this.getClass().getSimpleName(), "on new intent=MAIN");
                                         drawClickListener.selectItem(getString(R.string.tracker), null);
                                     }
+                            }
+                        else if (intent.getAction().equals(Intent.ACTION_VIEW))
+                            {
+                                Bundle bundle = new Bundle();
+                                bundle.putString("groupurl", intent.getData().toString());
+                                drawClickListener.selectItem(getString(R.string.chanals), bundle);
+                                Log.d(this.getClass().getSimpleName(), "on new intent=cation_view");
                             }
                         Intent i = getIntent();
                         i.setAction(null);

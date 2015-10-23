@@ -517,12 +517,15 @@ public class IM implements ResultsListener
                     }
                 if (LocalService.currentDevice != null && u == LocalService.currentDevice.u)
                     {
-                        localService.alertHandler.post(new Runnable() {
-                            public void run() {
-                                if (LocalService.chatmessagesAdapter != null) {
-                                    LocalService.chatmessagesAdapter.notifyDataSetChanged();
+                        localService.alertHandler.post(new Runnable()
+                        {
+                            public void run()
+                                {
+                                    if (LocalService.chatmessagesAdapter != null)
+                                        {
+                                            LocalService.chatmessagesAdapter.notifyDataSetChanged();
+                                        }
                                 }
-                            }
                         });
                     }
                 Message msg = new Message();
@@ -848,7 +851,8 @@ public class IM implements ResultsListener
                                     }
                                 catch (Exception e)
                                     {
-                                        // TODO: handle exception
+                                        writeException(e);
+                                        e.printStackTrace();
                                     }
                             }
                     }
@@ -863,6 +867,8 @@ public class IM implements ResultsListener
                                     }
                                 catch (Exception e)
                                     {
+                                        writeException(e);
+                                        e.printStackTrace();
                                     }
                             }
                     }
@@ -996,6 +1002,7 @@ public class IM implements ResultsListener
                                 catch (JSONException e)
                                     {
                                         e.printStackTrace();
+                                        writeException(e);
                                     }
                             }
                         if (param.equals(OsMoDroid.TRACKER_SATELLITES_INFO))
@@ -1006,6 +1013,7 @@ public class IM implements ResultsListener
                                     }
                                 catch (JSONException e)
                                     {
+                                        writeException(e);
                                         e.printStackTrace();
                                     }
                             }
@@ -1028,6 +1036,7 @@ public class IM implements ResultsListener
                                     }
                                 catch (JSONException e)
                                     {
+                                        writeException(e);
                                         e.printStackTrace();
                                     }
                             }
@@ -1162,7 +1171,7 @@ public class IM implements ResultsListener
                                                                             }
                                                                         catch (Exception e)
                                                                             {
-                                                                                // TODO Auto-generated catch block
+                                                                                writeException(e);
                                                                                 e.printStackTrace();
                                                                             }
                                                                         if (log)
@@ -1208,7 +1217,7 @@ public class IM implements ResultsListener
                                                             }
                                                         catch (Exception e)
                                                             {
-                                                                // TODO Auto-generated catch block
+                                                                writeException(e);
                                                                 e.printStackTrace();
                                                             }
                                                         if (log)
@@ -1502,6 +1511,7 @@ public class IM implements ResultsListener
                                                             }
                                                         catch (JSONException e)
                                                             {
+                                                                writeException(e);
                                                                 e.printStackTrace();
                                                             }
                                                     }
@@ -1562,19 +1572,32 @@ public class IM implements ResultsListener
                                                                                                     catch (NumberFormatException e)
                                                                                                     {
                                                                                                         writeException(e);
+                                                                                                        e.printStackTrace();
                                                                                                     }
                                                                                                 }
-
-                                                                                                dev.color = Color.parseColor(jsonObject.getString("color"));
-                                                                                                dev.name = jsonObject.getString("name");
-
+                                                                                                if(jsonObject.has("color"))
+                                                                                                    {
+                                                                                                        dev.color = Color.parseColor(jsonObject.getString("color"));
+                                                                                                    }
+                                                                                                if(jsonObject.has("name"))
+                                                                                                    {
+                                                                                                        dev.name = jsonObject.getString("name");
+                                                                                                    }
+                                                                                                if(jsonObject.has("state"))
+                                                                                                    {
+                                                                                                        if(dev.state!=1&&jsonObject.getInt("state")==1)
+                                                                                                            {
+                                                                                                                notifydevicemonitoring(dev);
+                                                                                                            }
+                                                                                                        dev.state = jsonObject.getInt("state");
+                                                                                                    }
                                                                                             }
                                                                                     }
                                                                                 if (!exist)
                                                                                     {
                                                                                         try
                                                                                             {
-                                                                                                Device dev = new Device(jsonObject.getInt("u"), jsonObject.getString("name"), jsonObject.getString("color"));
+                                                                                                Device dev = new Device(jsonObject.getInt("u"), jsonObject.optString("name"), jsonObject.optString("color"),jsonObject.optInt("state"));
                                                                                                 if (jsonObject.has("lat") && jsonObject.has("lon"))
                                                                                                     {
                                                                                                        try {
@@ -1587,6 +1610,7 @@ public class IM implements ResultsListener
                                                                                                        catch (NumberFormatException e)
                                                                                                        {
                                                                                                            writeException(e);
+                                                                                                           e.printStackTrace();
                                                                                                        }
                                                                                                     }
                                                                                                 ch.deviceList.add(dev);
@@ -1724,7 +1748,7 @@ public class IM implements ResultsListener
                                             {
                                                 try
                                                     {
-                                                        Device updatedDev = new Device(Integer.parseInt(ja.getString(n).substring(0, ja.getString(n).indexOf("|"))), ja.getString(n).substring(0, ja.getString(n).indexOf("|")), "black");
+                                                        Device updatedDev = new Device(Integer.parseInt(ja.getString(n).substring(0, ja.getString(n).indexOf("|"))), ja.getString(n).substring(0, ja.getString(n).indexOf("|")), "black",1);
                                                         if (!ch.deviceList.contains(updatedDev))
                                                             {
                                                                 ch.deviceList.add(updatedDev);
@@ -1771,7 +1795,7 @@ public class IM implements ResultsListener
                                             }
                                         catch (Exception e)
                                             {
-                                                // TODO Auto-generated catch block
+                                                writeException(e);
                                                 e.printStackTrace();
                                             }
                                     }
@@ -1879,7 +1903,7 @@ public class IM implements ResultsListener
                     }
                 catch (IOException e)
                     {
-                        // TODO Auto-generated catch block
+                        writeException(e);
                         e.printStackTrace();
                     }
                 disablekeepAliveAlarm();
@@ -1907,7 +1931,7 @@ public class IM implements ResultsListener
                                     parent.registerReceiver(reconnectReceiver, new IntentFilter(RECONNECT_INTENT));
                                     manager.cancel(reconnectPIntent);
                                     manager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + ERROR_RECONNECT_TIMEOUT, reconnectPIntent);
-                                    LocalService.addlog("setReconnectAlarm on error setted  SystemClock.elapsedRealtime()");
+                                    LocalService.addlog("setReconnectAlarm on error setted "+SystemClock.elapsedRealtime());
                                 }
                         });
                     }
@@ -1944,12 +1968,13 @@ public class IM implements ResultsListener
                                         catch (IllegalThreadStateException e)
                                             {
                                                 setReconnectOnError();
+                                                writeException(e);
                                                 e.printStackTrace();
                                             }
                                     }
                                 catch (JSONException e)
                                     {
-                                        // TODO Auto-generated catch block
+                                        writeException(e);
                                         e.printStackTrace();
                                     }
                             }
@@ -2011,7 +2036,7 @@ public class IM implements ResultsListener
                                                         }
                                                     catch (InterruptedException e)
                                                         {
-                                                            // TODO Auto-generated catch block
+                                                            writeException(e);
                                                             e.printStackTrace();
                                                         }
                                                     wr.println(b.getString("write"));
@@ -2040,7 +2065,7 @@ public class IM implements ResultsListener
                                             LocalService.addlog("not connected now");
                                             if (OsMoDroid.gpslocalserviceclientVisible)
                                                 {
-                                                    Toast.makeText(localService, localService.getString(R.string.Unknow), Toast.LENGTH_SHORT).show();
+                                                    Toast.makeText(localService, localService.getString(R.string.CheckInternet), Toast.LENGTH_SHORT).show();
                                                 }
                                         }
                                     super.handleMessage(msg);
@@ -2110,6 +2135,7 @@ public class IM implements ResultsListener
                                             {
                                                 setReconnectOnError();
                                             }
+                                        writeException(e);
                                         e.printStackTrace();
                                     }
                             }

@@ -280,4 +280,5 @@
 <string name="offline_on">Включен оффлайн режим, сервер не получит данные.</string>
 <string name="update_map_in_background">Получать положение других устройств при закрытой карте</string>
 <string name="tcp_no_delay">Режим сокета - TCP NO Delay</string>
+    <string name="textetx">textxtxt</string>
 </resources>

@@ -13,7 +13,7 @@ public class Device implements Comparable<Device>, Serializable
     {
         public int u;
         public String tracker_id;
-        public String name;
+        public String name="";
         public String app;
         public String last;
         public String url;
@@ -34,10 +34,14 @@ public class Device implements Comparable<Device>, Serializable
         public Device()
             {
             }
-        public Device(int trid, String name, String color)
+        public Device(int u, String name, String color, int state)
             {
-                this.name = name;
-                this.u = trid;
+                if(name!=null)
+                    {
+                        this.name = name;
+                    }
+                this.u = u;
+                this.state=state;
                 try
                     {
                         this.color = Color.parseColor(color);

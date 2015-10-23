@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.OsMoDroid"
-    android:versionCode="268"
+    android:versionCode="269"
     android:versionName="2.1.1" android:installLocation="auto">
     <uses-sdk android:minSdkVersion="7"
         android:targetSdkVersion="19"  />
@@ -43,6 +43,12 @@
             android:label="@string/app_name" android:launchMode="singleTask"><intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:scheme="https" android:host="osmo.mobi" android:pathPattern="/g/..*"/>
             </intent-filter>
         </activity>
         <activity android:name="PrefActivity"></activity>
