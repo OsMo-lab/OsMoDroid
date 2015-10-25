@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <resources>
   <string name="app_name">OsMoDroid</string>
   <string name="start">Starta</string>
@@ -282,4 +282,8 @@
   <string name="seconds">Sekunder</string>
   <string name="network_timeout">Nätverkstimeout</string>
   <string name="live_monitoring">Direktspårning</string>
+  <string name="offline_on">Offline-läget är aktiverat. Inga data skickas till servern.</string>
+  <string name="update_map_in_background">Uppdatera kartan i bakgrunden</string>
+  <string name="tcp_no_delay">TCP NO fördröjning</string>
+  <string name="agree_sos_">OK med SOS?</string>
 </resources>
