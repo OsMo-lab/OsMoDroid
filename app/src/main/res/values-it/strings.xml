@@ -275,4 +275,10 @@
   <string name="use_mobile_networks">Utilizza la rete mobile</string>
   <string name="launch_background_service_when_the_phone_starts_up_">Avviare il servizio in background all\'accensione del telefono.</string>
   <string name="startup_at_boot">Accendi all\'avvio</string>
+  <string name="gpson">GPS signal detected!</string>
+  <string name="gpsoff">GPS signal lost</string>
+  <string name="monitoring_started">Monitoring started</string>
+  <string name="monitoring_stopped">Monitoring stopped</string>
+  <string name="inetoff">Data connection lost</string>
+  <string name="ineton">Data connection restored</string>
 </resources>

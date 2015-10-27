@@ -146,11 +146,7 @@
                                 android:summary="@string/milliseconds"
                                 android:title="@string/vibration_time_interval"
                                 android:defaultValue="500"/>
-                            <CheckBoxPreference
-                                android:key="playsound"
-                                android:title="@string/sound_on_signal_loss"
-                                android:summary="@string/play_a_sound_when_internet_or_gps_signal_is_lost"
-                                android:defaultValue="false"/>
+
                             <EditTextPreference
                                 android:digits="0123456789"
                                 android:inputType="number"
@@ -199,6 +195,11 @@
                                 <CheckBoxPreference android:title="@string/speak_current_speed" android:key="ttsspeed"/>
                                 <CheckBoxPreference android:title="@string/speak_average_speed" android:key="ttsavgspeed"/>
                                 <CheckBoxPreference android:title="@string/speak_remote_commands" android:key="ttsremote"/>
+                                <CheckBoxPreference
+                                    android:key="playsound"
+                                    android:title="@string/sound_on_signal_loss"
+                                    android:summary="@string/play_a_sound_when_internet_or_gps_signal_is_lost"
+                                    android:defaultValue="false"/>
                             </PreferenceCategory>
                     </PreferenceScreen>
 

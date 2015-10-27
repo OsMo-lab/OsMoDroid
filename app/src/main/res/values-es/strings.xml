@@ -217,4 +217,10 @@
   <string name="memory_card_path">Ruta de tarjeta de memoria</string>
   <string name="notification">Notificación</string>
   <string name="vibrate_on_signal_loss">Vibrar al Perder Señal</string>
+  <string name="gpson">GPS signal detected!</string>
+  <string name="gpsoff">GPS signal lost</string>
+  <string name="monitoring_started">Monitoring started</string>
+  <string name="monitoring_stopped">Monitoring stopped</string>
+  <string name="inetoff">Data connection lost</string>
+  <string name="ineton">Data connection restored</string>
 </resources>

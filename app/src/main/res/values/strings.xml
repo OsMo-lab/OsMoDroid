@@ -284,5 +284,10 @@
 <string name="update_map_in_background">Update map in background</string>
 <string name="tcp_no_delay">TCP NO Delay</string>
 <string name="agree_sos_">Agree SOS ?</string>
-    <string name="textetx">textxtxt</string>
+    <string name="gpson">GPS signal detected!</string>
+    <string name="gpsoff">GPS signal lost</string>
+    <string name="monitoring_started">Monitoring started</string>
+    <string name="monitoring_stopped">Monitoring stopped</string>
+    <string name="inetoff">Data connection lost</string>
+    <string name="ineton">Data connection restored</string>
 </resources>

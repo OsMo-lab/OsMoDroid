@@ -281,4 +281,10 @@
 <string name="update_map_in_background">Получать положение других устройств при закрытой карте</string>
 <string name="tcp_no_delay">Режим сокета - TCP NO Delay</string>
     <string name="textetx">textxtxt</string>
+    <string name="gpson">Пойман сигнал ГПС</string>
+    <string name="gpsoff">Потерян сигнал ГПС</string>
+    <string name="monitoring_started">Мониторинг запущен</string>
+    <string name="monitoring_stopped">Мониторинг остановлен</string>
+    <string name="inetoff">Интернет пропал</string>
+    <string name="ineton">Интернет появился</string>
 </resources>

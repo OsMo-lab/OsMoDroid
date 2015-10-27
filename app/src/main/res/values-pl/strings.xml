@@ -227,4 +227,10 @@ Informacja o prawach autorskich: http://osmodroid.mobi/copyright.html</string>
   <string name="adjust_to_dpi">Dostosuj do DPI</string>
   <string name="monitoring_settings">Parametry monitoringu</string>
   <string name="milliseconds_how_often_to_send_location">Milisekundy. Czas pomiędzy wysyłaniem danych</string>
+  <string name="gpson">GPS signal detected!</string>
+  <string name="gpsoff">GPS signal lost</string>
+  <string name="monitoring_started">Monitoring started</string>
+  <string name="monitoring_stopped">Monitoring stopped</string>
+  <string name="inetoff">Data connection lost</string>
+  <string name="ineton">Data connection restored</string>
 </resources>

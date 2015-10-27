@@ -214,4 +214,10 @@ Telif Hakkı Bilgileri: http://osmodroid.mobi/copyright.html</string>
   <string name="empty_channels">Bu ekranda, hangi gruba girdiğinizi izleyebilirsiniz. Grupları kullanmaya başlamak için, bağlam menüsünü kullanabilirsiniz.</string>
   <string name="empty_devices">Bu ekranda cihazların listesi ve cihaz aboneliklerini görüntüleyebilirsiniz. Cihazlar üzerinde işlem yapmak için bağlam menüsünü kullanabilirsiniz.</string>
   <string name="empty_links">Bu ekranda siteden cihazı izlemek için kalıcı bir referans vardır. Mevcut eylemler bağlam menüsünde bulunmaktadır.</string>
+  <string name="gpson">GPS signal detected!</string>
+  <string name="gpsoff">GPS signal lost</string>
+  <string name="monitoring_started">Monitoring started</string>
+  <string name="monitoring_stopped">Monitoring stopped</string>
+  <string name="inetoff">Data connection lost</string>
+  <string name="ineton">Data connection restored</string>
 </resources>

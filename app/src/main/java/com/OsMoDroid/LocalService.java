@@ -9,8 +9,6 @@ import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.io.StreamCorruptedException;
 import java.io.StringWriter;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.SimpleDateFormat;
@@ -26,9 +24,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.util.GeoPoint;
-import org.osmdroid.views.drawing.OsmBitmapShader;
 
-import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -72,7 +68,6 @@ import android.provider.Settings.Secure;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.TextToSpeech.OnInitListener;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationCompat.Action;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.Display;
@@ -96,13 +91,13 @@ public class LocalService extends Service implements LocationListener, GpsStatus
         Boolean sos = false;
         Boolean signalisationOn = false;
         int notifyid = 2;
-        int gpson;
-        int gpsoff;
-        int ineton;
-        int inetoff;
+       // int gpson;
+       // int gpsoff;
+       // int ineton;
+       // int inetoff;
         int sendpalyer;
-        int startsound;
-        int stopsound;
+       // int startsound;
+       // int stopsound;
         int alarmsound;
         int signalonoff;
         static SoundPool soundPool;
@@ -482,10 +477,12 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                     {
                         in.putExtra("connect", myIM.connOpened);
                         in.putExtra("connecting", myIM.connecting);
+                        in.putExtra("executedlistsize", myIM.executedCommandArryaList.size());
                     }
                 in.putExtra("motd", motd);
                 in.putExtra("traffic", Long.toString((myIM.sendBytes + myIM.recievedBytes) / 1024) + dot.getDecimalSeparator() + Long.toString((myIM.sendBytes + myIM.recievedBytes) % 1000) + "KB " + myIM.connectcount + "|" + myIM.erorconenctcount);
                 in.putExtra("pro", pro);
+
                 sendBroadcast(in);
             }
         public void startcomand()
@@ -656,7 +653,11 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                                         }
                                     if (playsound)
                                         {
-                                            soundPool.play(gpson, 1f, 1f, 1, 0, 1f);
+                                            //soundPool.play(gpson, 1f, 1f, 1, 0, 1f);
+                                            if (tts != null && OsMoDroid.settings.getBoolean("usetts", false))
+                                                {
+                                                    tts.speak(getString(R.string.gpson), TextToSpeech.QUEUE_ADD, null);
+                                                }
                                         }
                                 }
                             else
@@ -671,7 +672,11 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                                         }
                                     if (playsound)
                                         {
-                                            soundPool.play(gpsoff, 1f, 1f, 1, 0, 1f);
+                                            //soundPool.play(gpsoff, 1f, 1f, 1, 0, 1f);
+                                            if (tts != null && OsMoDroid.settings.getBoolean("usetts", false))
+                                                {
+                                                    tts.speak(getString(R.string.gpsoff), TextToSpeech.QUEUE_ADD, null);
+                                                }
                                         }
                                 }
                             else
@@ -694,7 +699,11 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                                     if (playsound && !firstgpsbeepedon)
                                         {
                                             firstgpsbeepedon = true;
-                                            soundPool.play(gpson, 1f, 1f, 1, 0, 1f);
+                                            //soundPool.play(gpson, 1f, 1f, 1, 0, 1f);
+                                            if (tts != null && OsMoDroid.settings.getBoolean("usetts", false))
+                                                {
+                                                    tts.speak(getString(R.string.gpson), TextToSpeech.QUEUE_ADD, null);
+                                                }
                                         }
                                 }
                             else
@@ -705,13 +714,13 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                         }
                 };
                 soundPool = new SoundPool(10, AudioManager.STREAM_NOTIFICATION, 0);
-                gpson = soundPool.load(this, R.raw.gpson, 1);
-                gpsoff = soundPool.load(this, R.raw.gpsoff, 1);
-                ineton = soundPool.load(this, R.raw.ineton, 1);
-                inetoff = soundPool.load(this, R.raw.inetoff, 1);
+               // gpson = soundPool.load(this, R.raw.gpson, 1);
+               // gpsoff = soundPool.load(this, R.raw.gpsoff, 1);
+               // ineton = soundPool.load(this, R.raw.ineton, 1);
+               // inetoff = soundPool.load(this, R.raw.inetoff, 1);
                 sendpalyer = soundPool.load(this, R.raw.sendsound, 1);
-                startsound = soundPool.load(this, R.raw.start, 1);
-                stopsound = soundPool.load(this, R.raw.stop, 1);
+                //startsound = soundPool.load(this, R.raw.start, 1);
+                //stopsound = soundPool.load(this, R.raw.stop, 1);
                 alarmsound = soundPool.load(this, R.raw.signal, 1);
                 signalonoff = soundPool.load(this, R.raw.signalonoff, 1);
                 vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
@@ -1150,7 +1159,11 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                         ReadPref();
                         if (OsMoDroid.settings.getBoolean("playsound", false))
                             {
-                                soundPool.play(startsound, 1f, 1f, 1, 0, 1f);
+                                //soundPool.play(startsound, 1f, 1f, 1, 0, 1f);
+                                if (tts != null && OsMoDroid.settings.getBoolean("usetts", false))
+                                    {
+                                        tts.speak(getString(R.string.monitoring_started), TextToSpeech.QUEUE_ADD, null);
+                                    }
                             }
                         manageGPSFixAlarm();
                         boolean crtfile = false;
@@ -1396,7 +1409,11 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                 buffer.clear();
                 if (OsMoDroid.settings.getBoolean("playsound", false))
                     {
-                        soundPool.play(stopsound, 1f, 1f, 1, 0, 1f);
+                        //soundPool.play(stopsound, 1f, 1f, 1, 0, 1f);
+                        if (tts != null && OsMoDroid.settings.getBoolean("usetts", false))
+                            {
+                                tts.speak(getString(R.string.monitoring_stopped), TextToSpeech.QUEUE_ADD, null);
+                            }
                     }
                 am.cancel(pi);
                 if (live && stopsession)
@@ -1790,7 +1807,11 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                                 //if (playsound &&inetoff!=null&& !inetoff.isPlaying()){inetoff.start();}
                                 if (playsound)
                                     {
-                                        soundPool.play(inetoff, 1f, 1f, 1, 0, 1f);
+                                        //soundPool.play(inetoff, 1f, 1f, 1, 0, 1f);
+                                        if (tts != null && OsMoDroid.settings.getBoolean("usetts", false))
+                                            {
+                                                tts.speak(getString(R.string.inetoff), TextToSpeech.QUEUE_ADD, null);
+                                            }
                                     }
                                 if (log)
                                     {
@@ -1823,7 +1844,11 @@ public class LocalService extends Service implements LocationListener, GpsStatus
 //				}
                                 if (playsound)
                                     {
-                                        soundPool.play(ineton, 1f, 1f, 1, 0, 1f);
+                                        //soundPool.play(ineton, 1f, 1f, 1, 0, 1f);
+                                        if (tts != null && OsMoDroid.settings.getBoolean("usetts", false))
+                                            {
+                                                tts.speak(getString(R.string.ineton), TextToSpeech.QUEUE_ADD, null);
+                                            }
                                     }
                                 beepedon = true;
                                 beepedoff = false;

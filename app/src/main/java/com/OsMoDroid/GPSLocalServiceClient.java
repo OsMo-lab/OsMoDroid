@@ -48,6 +48,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.graphics.Color;
+import android.graphics.drawable.AnimationDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -76,6 +77,8 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
@@ -182,6 +185,11 @@ public class GPSLocalServiceClient extends ActionBarActivity
                                             int icon = R.drawable.eyen;
                                             mService.updateNotification(icon);
                                         }
+                                }
+                            if (!OsMoDroid.settings.getBoolean("subscribebackground", false) && mBound)
+                                {
+                                    mService.myIM.sendToServer("PG:1", false);
+                                    // mService.myIM.sendToServer("PD:1", false);
                                 }
                         }
                 }
@@ -393,6 +401,22 @@ public class GPSLocalServiceClient extends ActionBarActivity
                                             mService.updateNotification(icon);
                                         }
                                 }
+                            if(intent.hasExtra("executedlistsize"))
+                                {
+                                    if(intent.getIntExtra("executedlistsize",0)>0)
+                                        {
+                                            //Animation a = AnimationUtils.loadAnimation(GPSLocalServiceClient.this, R.anim.icon_rotate);
+                                            //findViewById(android.R.id.home).startAnimation(a);
+                                            actionBar.setLogo(R.drawable.anim);
+                                           // AnimationDrawable frameAnimation = (AnimationDrawable) findViewById(android.R.id.home).getBackground();
+                                            //frameAnimation.start();
+                                        }
+//                                    else
+//                                        {
+//                                            Animation a = AnimationUtils.loadAnimation(GPSLocalServiceClient.this, R.anim.icon_rotate);
+//                                            findViewById(android.R.id.home).clearAnimation();
+//                                        }
+                                }
                         }
                 };
                 registerReceiver(mIMstatusReciever, new IntentFilter("OsMoDroid"));
@@ -485,7 +509,7 @@ public class GPSLocalServiceClient extends ActionBarActivity
                                 intent.addCategory(Intent.CATEGORY_LAUNCHER);
                                 finish();
                                 startActivity(intent);
-                                if (OsMoDroid.settings.getBoolean("subscribebackground", false) && mBound)
+                                if (!OsMoDroid.settings.getBoolean("subscribebackground", false) && mBound)
                                     {
                                         mService.myIM.sendToServer("PG:1", false);
                                        // mService.myIM.sendToServer("PD:1", false);

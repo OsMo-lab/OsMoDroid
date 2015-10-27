@@ -1,35 +1,22 @@
 package com.OsMoDroid;
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.net.HttpURLConnection;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
-import java.net.SocketException;
-import java.net.SocketTimeoutException;
 import java.net.InetSocketAddress;
-import java.net.Proxy;
-import java.net.URL;
-import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
-import java.util.Map;
 import java.util.Date;
 import java.util.Iterator;
-import java.util.Map.Entry;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -37,38 +24,28 @@ import org.json.JSONObject;
 import org.osmdroid.util.GeoPoint;
 
 import com.OsMoDroid.Channel.Point;
-import com.OsMoDroid.IM.IMWriter;
 import com.OsMoDroid.Netutil.MyAsyncTask;
 //import android.R;
 import android.app.AlarmManager;
-import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.PendingIntent;
-import android.app.PendingIntent.CanceledException;
 import android.content.BroadcastReceiver;
-import android.content.SharedPreferences;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
 import android.location.LocationManager;
-import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.Uri;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
-import android.os.Environment;
-import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.SystemClock;
 import android.os.Handler;
 import android.os.Message;
-import android.preference.PreferenceManager;
-import android.provider.Settings.Global;
-import android.provider.Settings.Secure;
 import android.speech.tts.TextToSpeech;
 import android.support.v4.app.NotificationCompat;
-import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.widget.Toast;
 /**
@@ -122,7 +99,7 @@ public class IM implements ResultsListener
         private int workserverint = -1;
         private String workservername = "";
         private MyAsyncTask sendidtask;
-        private ArrayList<String> ExecutedCommandArryaList = new ArrayList<String>();
+        ArrayList<String> executedCommandArryaList = new ArrayList<String>();
         BroadcastReceiver keepAliveReceiver = new BroadcastReceiver()
         {
             @Override
@@ -257,7 +234,7 @@ public class IM implements ResultsListener
                 b.putString("write", str);
                 b.putBoolean("pp", str.equals("PP"));
                 msg.setData(b);
-                if (start)
+                if (running)
                     {
                         if (iMWriter.handler != null)
                             {
@@ -274,9 +251,10 @@ public class IM implements ResultsListener
                                                 cl.add(data[index]);
                                             }
                                     }
-                                ExecutedCommandArryaList.addAll(cl);
+                                executedCommandArryaList.addAll(cl);
                                 LocalService.addlog("Add to command order " + cl);
                                 iMWriter.handler.sendMessage(msg);
+                                localService.refresh();
                             }
                         else
                             {
@@ -390,6 +368,30 @@ public class IM implements ResultsListener
                 LocalService.addlog("Start get token" + ", key=" + OsMoDroid.settings.getString("newkey", ""));
                 if (!gettokening)
                     {
+                        JSONObject postjson = new JSONObject();
+                        ConnectivityManager connManager = (ConnectivityManager)localService.getSystemService(localService.CONNECTIVITY_SERVICE);
+                        NetworkInfo netinfo =connManager.getActiveNetworkInfo();
+
+                        NetworkInfo mWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+                        try
+                            {
+                                postjson.put("type", netinfo.getTypeName());
+                        if (mWifi.isConnected())
+                            {
+                                WifiManager wifi = (WifiManager) localService.getSystemService(Context.WIFI_SERVICE);
+                                WifiInfo wifiInfo = wifi.getConnectionInfo();
+                                String wifiname = wifiInfo.getSSID();
+                                String mac = wifiInfo.getMacAddress();
+                                String strength = Integer.toString(wifiInfo.getRssi());
+                                postjson.put("network_ssid", wifiname.replaceAll("\"", ""));
+                                postjson.put("network_mac", mac);
+
+                            }
+                            }
+                            catch (Exception e)
+                                {
+
+                                }
                         gettokening = true;
                         APIcomParams params = null;
                         //APIcomParams params = new APIcomParams("https://api.osmo.mobi/prepare","key="+OsMoDroid.settings.getString("newkey", "")+"&protocol=1","gettoken");
@@ -402,6 +404,7 @@ public class IM implements ResultsListener
                                                 //+"&protocol=2"
                                                 + "&app=" + OsMoDroid.app_code
                                                 //+"&version="+localService.getversion()
+                                                + "&network="+postjson.toString()
                                                 , "", "gettoken");
                                     }
                                 else
@@ -410,6 +413,7 @@ public class IM implements ResultsListener
                                                 //+"&protocol=2"
                                                 + "&app=" + OsMoDroid.app_code + "&dinosaur=yes"
                                                 //+"&version="+localService.getversion()
+                                                + "&network="+postjson.toString()
                                                 , "", "gettoken");
                                     }
                             }
@@ -422,6 +426,7 @@ public class IM implements ResultsListener
                                                 + "&user=" + OsMoDroid.settings.getString("p", "")
                                                 + "&app=" + OsMoDroid.app_code
                                                 //+"&version="+localService.getversion()
+                                                + "&network="+postjson.toString()
                                                 , "", "gettoken");
                                     }
                                 else
@@ -431,6 +436,7 @@ public class IM implements ResultsListener
                                                 + "&user=" + OsMoDroid.settings.getString("p", "")
                                                 + "&app=" + OsMoDroid.app_code + "&dinosaur=yes"
                                                 //+"&version="+localService.getversion()
+                                                + "&network="+postjson.toString()
                                                 , "", "gettoken");
                                     }
                             }
@@ -468,7 +474,7 @@ public class IM implements ResultsListener
                         Log.d(this.getClass().getName(), "void IM.stop");
                     }
                 LocalService.addlog("Socket void stop");
-                ExecutedCommandArryaList.clear();
+                executedCommandArryaList.clear();
                 running = false;
                 connOpened = false;
                 authed = false;
@@ -633,7 +639,7 @@ public class IM implements ResultsListener
                         command = command.substring(0, command.indexOf(':'));
                     }
                 addict = toParse.substring(toParse.indexOf('|') + 1);
-                Iterator<String> comIter = ExecutedCommandArryaList.iterator();
+                Iterator<String> comIter = executedCommandArryaList.iterator();
                 while (comIter.hasNext())
                     {
                         String str = comIter.next();
@@ -653,13 +659,14 @@ public class IM implements ResultsListener
                     }
                 if (log)
                     {
-                        Log.d(this.getClass().getName(), "ExecuteList=" + ExecutedCommandArryaList.toString());
+                        Log.d(this.getClass().getName(), "ExecuteList=" + executedCommandArryaList.toString());
                     }
-                LocalService.addlog("ExecuteList=" + ExecutedCommandArryaList.toString());
-                if (ExecutedCommandArryaList.size() == 0)
+                LocalService.addlog("ExecuteList=" + executedCommandArryaList.toString());
+                if (executedCommandArryaList.size() == 0)
                     {
                         LocalService.addlog("Cancel reconnect alarm - no commands in order");
                         manager.cancel(reconnectPIntent);
+                        localService.refresh();
                     }
                 try
                     {
