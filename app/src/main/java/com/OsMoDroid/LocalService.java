@@ -1808,7 +1808,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                                 if (playsound)
                                     {
                                         //soundPool.play(inetoff, 1f, 1f, 1, 0, 1f);
-                                        if (tts != null && OsMoDroid.settings.getBoolean("usetts", false))
+                                        if (tts != null && OsMoDroid.settings.getBoolean("usetts", false)&&state)
                                             {
                                                 tts.speak(getString(R.string.inetoff), TextToSpeech.QUEUE_ADD, null);
                                             }
@@ -1845,7 +1845,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                                 if (playsound)
                                     {
                                         //soundPool.play(ineton, 1f, 1f, 1, 0, 1f);
-                                        if (tts != null && OsMoDroid.settings.getBoolean("usetts", false))
+                                        if (tts != null && OsMoDroid.settings.getBoolean("usetts", false)&&state)
                                             {
                                                 tts.speak(getString(R.string.ineton), TextToSpeech.QUEUE_ADD, null);
                                             }
