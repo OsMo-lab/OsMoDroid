@@ -635,6 +635,13 @@ public class GPSLocalServiceClient extends ActionBarActivity
                                 Log.d(this.getClass().getSimpleName(), "on new intent=" + intent.getIntExtra("deviceU", -1));
                                 intentAction(intent);
                             }
+                        else
+                        {
+                            if(intent.getAction().equals(Intent.ACTION_VIEW))
+                            {
+                                intentAction(intent);
+                            }
+                        }
                         proceednewintent = true;
                         super.onNewIntent(intent);
                     }
