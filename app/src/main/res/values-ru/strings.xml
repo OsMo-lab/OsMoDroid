@@ -1,4 +1,4 @@
-<resources>
+﻿<resources>
 <string name="app_name">OsMoDroid</string>
 <string name="start">Запустить</string>
 <string name="stop">Остановить</string>
@@ -15,7 +15,7 @@
 <string name="NoConnection">Нет соединения</string>
 <string name="Unknow">Неизвестная</string>
 <string name="NotDefined">Не определено</string>
-<string name="Sended">Отправка: </string>
+<string name="Sended">Статус: </string>
 <string name="Adres">Адрес: </string>
 <string name="RepeatAuth">Сбросить авторизацию</string>
 <string name="warnhash">Не удалось получить ключ от сервера. Проверьте соединение или обратитесь в поддержку</string>
@@ -23,8 +23,8 @@
 <string name="EqualsParameters">Приравнять параметры</string>
 <string name="AgreeRepeatAuth">Подтвердите повторный запрос авторизации</string>
 <string name="ChangeAdresMonitor">Изменится адрес мониторинга!</string>
-<string name="yes">Да</string>
-<string name="No">Нет</string>
+<string name="yes">Ок</string>
+<string name="No">Отмена</string>
 <string name="AgreeParameterEqual">Подтвердите приравнивание параметров передачи и записи</string>
 <string name="TrackRecordParameterChanges">Параметры записи трека изменятся</string>
 <string name="Running">Запущен</string>
@@ -71,7 +71,7 @@
 <string name="yourmessage">Ваше сообщение:</string>
 <string name="sendingmessage">Отправка сообщения</string>
 <string name="sharelink">Поделиться ссылкой</string>
-<string name="chat">Список устройств</string>
+<string name="chat">Чат</string>
 <string name="messagetochat">Cообщение группе</string>
 <string name="copylink">Копировать ссылку</string>
 <string name="openinbrowser">Открыть в браузере</string>
@@ -87,7 +87,7 @@
 <string name="bindtochanal">Подключение в группу</string>
 <string name="requestdevicebefore">Предварительно запросите устройство</string>
 <string name="chatwith">"Чат с "</string>
-<string name="devices">Устройства</string>
+<string name="devices">Семья</string>
 <string name="writemessage">Написать сообщение</string>
 <string name="messages">Сообщения</string>
 <string name="binddevice">Привязать устройство</string>
@@ -144,7 +144,7 @@
 <string name="loading">Загрузка...</string>
 <string name="servermessage">Сообщение от сервера</string>
 <string name="deletelink">Удалить ссылку</string>
-<string name="uploadtotrera">Загрузить в ТреРа</string>
+<string name="uploadtotrera">Загрузить в ОсМо</string>
 <string name="delete">Удалить</string>
 <string name="channelsend">Рассылка в группы</string>
 <string name="alarm">Сигнализация</string>
@@ -188,7 +188,7 @@
 <string name="play_alarm_off">Выключить сирену</string>
 <string name="signalisation_set_on">Поставить на сигнализацию</string>
 <string name="signalisation_set_off">Снять с сигнализации</string>
-<string name="approximate_traffic">Примерный трафик</string>
+<string name="approximate_traffic">Трафик</string>
 <string name="online">В сети</string>
 <string name="offline">Не в сети</string>
 <string name="monitoring_on">Мониторинг запущен</string>
@@ -277,10 +277,10 @@
 <string name="seconds">Секунды</string>
 <string name="network_timeout">Таймаут сети</string>
 <string name="live_monitoring">Онлайн-Мониторинг</string>
-<string name="offline_on">Включен оффлайн режим, сервер не получит данные.</string>
-<string name="update_map_in_background">Получать положение других устройств при закрытой карте</string>
-<string name="tcp_no_delay">Режим сокета - TCP NO Delay</string>
-    <string name="textetx">textxtxt</string>
+<string name="offline_on">Соединение недоступно, повторите действие после соединении</string>
+<string name="update_map_in_background">Постоянно получать данные групп</string>
+<string name="tcp_no_delay">Режим сокета "Без ожидания"</string>
+<string name="agree_sos_">Активировать режим SOS?</string>
     <string name="gpson">Пойман сигнал ГПС</string>
     <string name="gpsoff">Потерян сигнал ГПС</string>
     <string name="monitoring_started">Мониторинг запущен</string>
