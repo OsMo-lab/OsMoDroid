@@ -2,7 +2,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:padding="@dimen/widget_margin"
-                android:background="#09C">
+                android:background="@android:color/transparent">
 
 
 
@@ -12,6 +12,10 @@
         android:id="@+id/imageButtonWidget"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
-        android:src="@drawable/eyen"/>
+        android:src="@drawable/eyen"
+        android:background="@android:color/transparent"
+        android:scaleType="fitCenter"
+        android:cropToPadding="false"
+       />
 
 </RelativeLayout>
