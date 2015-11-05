@@ -31,7 +31,9 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.PendingIntent.CanceledException;
 import android.app.Service;
+import android.appwidget.AppWidgetManager;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -73,6 +75,7 @@ import android.util.Log;
 import android.view.Display;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
+import android.widget.RemoteViews;
 import android.widget.Toast;
 
 import com.OsMoDroid.Netutil.MyAsyncTask;
@@ -1073,21 +1076,38 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                     {
                         Log.d(getClass().getSimpleName(), "on start ");
                     }
+                updatewidgets();
                 handleStart(intent, startId);
                 super.onStart(intent, startId);
             }
         @Override
         public int onStartCommand(Intent intent, int flags, int startId)
             {
+                super.onStartCommand(intent, flags, startId);
                 if (log)
                     {
                         Log.d(getClass().getSimpleName(), "on startcommand");
                     }
+                updatewidgets();
                 handleStart(intent, startId);
                 return START_STICKY;
             }
         void handleStart(Intent intent, int startId)
             {
+                Log.d(getClass().getSimpleName(), "on handleStart"+intent);
+                if (intent != null)
+                    {
+                        Bundle bundle = intent.getExtras();
+                        if (bundle != null)
+                            {
+                                for (String key : bundle.keySet())
+                                    {
+                                        Object value = bundle.get(key);
+                                        Log.d(getClass().getSimpleName(), String.format("%s %s (%s)", key,
+                                                value.toString(), value.getClass().getName()));
+                                    }
+                            }
+                    }
                 if (intent != null && intent.hasExtra("SMS"))
                     {
                         if (intent.getStringExtra("SMS").equals("START") && !state)
@@ -1099,9 +1119,19 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                                 stopServiceWork(true);
                             }
                     }
-                if (intent != null && intent.hasExtra("ACTION") && intent.getStringExtra("ACTION").equals("STOP"))
+                if (intent != null && intent.hasExtra("ACTION"))
                     {
-                        stopServiceWork(true);
+                        Log.d(getClass().getSimpleName(), "on handleStart intent has ACTION="+intent.getStringExtra("ACTION"));
+                        if(intent.getStringExtra("ACTION").equals("STOP"))
+                            {
+                                stopServiceWork(true);
+                            }
+                        if(intent.getStringExtra("ACTION").equals("START"))
+                            {
+                                startServiceWork(true);
+                            }
+
+
                     }
             }
         public void applyPreference()
@@ -1189,7 +1219,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                 foregroundnotificationBuilder.setContentIntent(osmodroidLaunchIntent);
                 Intent is = new Intent(this, LocalService.class);
                 is.putExtra("ACTION", "STOP");
-                PendingIntent stop = PendingIntent.getService(this, 0, is, 0);
+                PendingIntent stop = PendingIntent.getService(this, 0, is, PendingIntent.FLAG_UPDATE_CURRENT);
                 foregroundnotificationBuilder.addAction(android.R.drawable.ic_delete, getString(R.string.stop_monitoring), stop);
                 Notification notification = foregroundnotificationBuilder.build();
                 //notification = new Notification(icon, tickerText, when);
@@ -1222,6 +1252,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                     {
                         tts.speak(getString(R.string.letsgo), TextToSpeech.QUEUE_ADD, null);
                     }
+                updatewidgets();
             }
         private void manageGPSFixAlarm()
             {
@@ -1444,6 +1475,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                     }
                 setstarted(false);
                 stopForeground(true);
+                updatewidgets();
             }
         /**
          *
@@ -1507,7 +1539,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
             {
                 if (where)
                     {
-                        //LocalService.addlog("send on where");
+                        LocalService.addlog("send on where");
                         sendlocation(location);
                         where = false;
                     }
@@ -2227,6 +2259,42 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                 soundPool.play(signalonoff, 1f, 1f, 1, 0, 1f);
                 signalisationOn = false;
                 refresh();
+            }
+        public void updatewidgets()
+            {
+                Log.d(getClass().getSimpleName(), "on updatewidgets state="+state);
+                AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this.getApplicationContext());
+                ComponentName thisWidget = new ComponentName(this,OsMoWidget.class);
+
+                int[] allWidgetIds =  appWidgetManager.getAppWidgetIds(thisWidget);
+                Intent is = new Intent(this, LocalService.class);
+
+
+
+
+                for (int widgetId : allWidgetIds) {
+                    // create some random data
+
+
+                    RemoteViews remoteViews = new RemoteViews(this.getApplicationContext().getPackageName(),R.layout.os_mo_widget);
+                    if(state)
+                        {
+                            remoteViews.setImageViewResource(R.id.imageButtonWidget, R.drawable.eyeo);
+                            is.putExtra("ACTION", "STOP");
+                            Log.d(getClass().getSimpleName(), "on updatewidgets set action=STOP state=" + state);
+                        }
+                    else
+                        {
+                            remoteViews.setImageViewResource(R.id.imageButtonWidget, R.drawable.eyen);
+                            is.putExtra("ACTION", "START");
+                            Log.d(getClass().getSimpleName(), "on updatewidgets set action=START state=" + state);
+                        }
+                    PendingIntent stop = PendingIntent.getService(this, 0, is, PendingIntent.FLAG_UPDATE_CURRENT);
+
+                    //PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, is, PendingIntent.FLAG_UPDATE_CURRENT);
+                    remoteViews.setOnClickPendingIntent(R.id.imageButtonWidget, stop);
+                    appWidgetManager.updateAppWidget(widgetId, remoteViews);
+                }
             }
         public void onAccuracyChanged(Sensor sensor, int accuracy)
             {

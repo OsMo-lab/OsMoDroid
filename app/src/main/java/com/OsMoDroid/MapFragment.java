@@ -365,11 +365,11 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
                 final int aZoomMaxLevel = 18;
                 final int aTileSizePixels = 256;
                 final String aImageFilenameEnding = ".png";
-                final String[] aBaseUrl = new String[]{"http://openmapsurfer.uni-hd.de/tiles/roads/"};
+                final String[] aBaseUrl = new String[]{"http://korona.geog.uni-heidelberg.de/tiles/roads/"};
                 final String[] sputnikURL = new String[]{"http://b.tiles.maps.sputnik.ru/"};
                 final String[] outdoorURL = new String[]{"http://tile.thunderforest.com/outdoors/"};
                 bingTileSource = new BingMapTileSource(null);
-                sputnikTileSource = new SputnikTileSource("Sputnik", string.unknown, aZoomMinLevel, aZoomMaxLevel, aTileSizePixels, aImageFilenameEnding, sputnikURL);
+                sputnikTileSource = new SputnikTileSource("Sputnik", string.unknown, aZoomMinLevel, aZoomMaxLevel, 512, aImageFilenameEnding, sputnikURL);
                 outdoorTileSource = new OutdoorTileSource("OutDoor", string.unknown, aZoomMinLevel, aZoomMaxLevel, aTileSizePixels, aImageFilenameEnding, outdoorURL);
                 mapSurferTileSource = new MAPSurferTileSource(name, string.unknown, aZoomMinLevel, aZoomMaxLevel, aTileSizePixels, aImageFilenameEnding, aBaseUrl);
                 View view = inflater.inflate(R.layout.map, container, false);

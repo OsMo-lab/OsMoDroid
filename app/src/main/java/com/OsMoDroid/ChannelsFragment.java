@@ -67,7 +67,26 @@ public class ChannelsFragment extends Fragment
                     }
                 if(groupurl!=null)
                 {
-                    enterchanal(groupurl);
+                    boolean exist =false;
+                    for(Channel ch : LocalService.channelList)
+                        {
+                            if(ch.url.equals(groupurl))
+                                {
+                                    if(!ch.send)
+                                        {
+                                            globalActivity.mService.myIM.sendToServer("GA:" + ch.u, true);
+                                        }
+                                    groupurl=null;
+                                    globalActivity.drawClickListener.selectItem(getString(R.string.map), null);
+                                    exist=true;
+                                    break;
+                                }
+
+                        }
+                    if(!exist)
+                        {
+                            enterchanal(groupurl);
+                        }
                 }
                 super.onResume();
             }
@@ -193,7 +212,7 @@ public class ChannelsFragment extends Fragment
                         //globalActivity.mService.myIM.sendToServer("GROUP_DISCONNECT:"+LocalService.channelList.get((int) acmi.id).group_id);
                         if(globalActivity.mService.myIM.authed)
                             {
-                                globalActivity.mService.myIM.sendToServer("GL:" + LocalService.channelList.get((int) acmi.id).group_id, true);
+                                globalActivity.mService.myIM.sendToServer("GL:" + LocalService.channelList.get((int) acmi.id).u, true);
                                 return true;
                             }
                         else
@@ -466,15 +485,6 @@ public class ChannelsFragment extends Fragment
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
             {
-                Bundle bundle = getArguments();
-                if (bundle != null)
-                    {
-                        channelpos = bundle.getInt("channelpos", -1);
-                        if(bundle.getString("groupurl")!=null)
-                            {
-                                enterchanal(bundle.getString("groupurl"));
-                            }
-                    }
                 LocalService.channelsAdapter.context = getActivity();
                 View view = inflater.inflate(R.layout.mychannels, container, false);
                 ListView lv1 = (ListView) view.findViewById(R.id.mychannelslistView);

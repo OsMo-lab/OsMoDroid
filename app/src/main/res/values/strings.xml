@@ -290,4 +290,6 @@
     <string name="monitoring_stopped">Monitoring stopped</string>
     <string name="inetoff">Data connection lost</string>
     <string name="ineton">Data connection restored</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
 </resources>

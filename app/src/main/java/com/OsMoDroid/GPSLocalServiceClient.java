@@ -188,7 +188,10 @@ public class GPSLocalServiceClient extends ActionBarActivity
                                 }
                             if (!OsMoDroid.settings.getBoolean("subscribebackground", false) && mBound)
                                 {
-                                    mService.myIM.sendToServer("PG:1", false);
+                                    if(mService.myIM.authed)
+                                        {
+                                            mService.myIM.sendToServer("PG:1", false);
+                                        }
                                     // mService.myIM.sendToServer("PD:1", false);
                                 }
                         }
@@ -295,6 +298,9 @@ public class GPSLocalServiceClient extends ActionBarActivity
             {
                 Log.d(this.getClass().getSimpleName(), "onCreate() gpsclient");
                 super.onCreate(savedInstanceState);
+                actionBar = getSupportActionBar();
+                actionBar.setDisplayHomeAsUpEnabled(true);
+                actionBar.setHomeButtonEnabled(true);
                 OsMoDroid.activity = this;
                 PreferenceManager.setDefaultValues(this, R.xml.pref, true);
                 ReadPref();
@@ -338,9 +344,7 @@ public class GPSLocalServiceClient extends ActionBarActivity
                         setTheme(R.style.Theme_AppCompat_Light);
                         mDrawerLayout.setBackgroundColor(Color.WHITE);
                     }
-                actionBar = getSupportActionBar();
-                actionBar.setDisplayHomeAsUpEnabled(true);
-                actionBar.setHomeButtonEnabled(true);
+
                 mTitle = mDrawerTitle = getTitle();
                 mDrawerToggle = new ActionBarDrawerToggle(
                         this,                  /* host Activity */
@@ -420,6 +424,7 @@ public class GPSLocalServiceClient extends ActionBarActivity
                         }
                 };
                 registerReceiver(mIMstatusReciever, new IntentFilter("OsMoDroid"));
+
             }
         void setupDrawerList()
             {
@@ -511,7 +516,11 @@ public class GPSLocalServiceClient extends ActionBarActivity
                                 startActivity(intent);
                                 if (!OsMoDroid.settings.getBoolean("subscribebackground", false) && mBound)
                                     {
-                                        mService.myIM.sendToServer("PG:1", false);
+                                        if(mService.myIM.authed)
+
+                                            {
+                                                mService.myIM.sendToServer("PG:1", false);
+                                            }
                                        // mService.myIM.sendToServer("PD:1", false);
                                     }
                             }
@@ -536,7 +545,11 @@ public class GPSLocalServiceClient extends ActionBarActivity
                 started = checkStarted();
                 if (!OsMoDroid.settings.getBoolean("subscribebackground", false) && mBound)
                     {
-                        mService.myIM.sendToServer("PG:1", false);
+                        if(mService.myIM.authed)
+                            {
+                                mService.myIM.sendToServer("PG:1", false);
+                            }
+
                        // mService.myIM.sendToServer("PD:1", false);
                     }
 //		if (hash.equals("") && live) {

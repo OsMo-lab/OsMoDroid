@@ -75,7 +75,7 @@ public class Channel implements Serializable, ResultsListener
                 this.u = jo.optInt("u");
                 this.created = jo.optString("created");
                 this.group_id = jo.optString("id");
-                this.url = "http://osmo.mobi/g/" + jo.optString("url");
+                this.url = "https://osmo.mobi/g/" + jo.optString("url");
                 this.myNameInGroup = jo.optString("nick");
                 if (jo.optInt("active") == 1)
                     {

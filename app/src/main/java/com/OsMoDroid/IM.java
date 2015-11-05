@@ -130,8 +130,10 @@ public class IM implements ResultsListener
                             for (String key : extras.keySet())
                                 {
                                     Object value = extras.get(key);
-                                    LocalService.addlog(String.format("%s %s (%s)", key,
-                                            value.toString(), value.getClass().getName()));
+                                    if(value!=null)
+                                        {
+                                            LocalService.addlog(String.format("%s %s (%s)", key, value.toString(), value.getClass().getName()));
+                                        }
                                 }
                             //	if(log)Log.d(this.getClass().getName(), "BCR"+this+ " "+intent.getExtras());
                             //	NetworkInfo netinfo = (NetworkInfo) extras.get("networkInfo");
@@ -953,6 +955,16 @@ public class IM implements ResultsListener
                             {
                                 sendToServer("PP", false);
                             }
+                        if (param.equals(OsMoDroid.REFRESH_GROUPS))
+                            {
+                                sendToServer("GROUP",false);
+                                sendToServer("RCR:" + OsMoDroid.REFRESH_GROUPS + "|1", false);
+                            }
+                        if (param.equals(OsMoDroid.REFRESH_DEVICES))
+                            {
+                                sendToServer("DEVICE",false);
+                                sendToServer("RCR:" + OsMoDroid.REFRESH_DEVICES + "|1", false);
+                            }
                         if (param.equals(OsMoDroid.TRACKER_SESSION_START))
                             {
                                 localService.startServiceWork(true);
@@ -1344,7 +1356,7 @@ public class IM implements ResultsListener
                         Channel chToDel = null;
                         for (Channel ch : LocalService.channelList)
                             {
-                                if (ch.group_id.equals(param))
+                                if (ch.u==Integer.parseInt(param))
                                     {
                                         chToDel = ch;
                                     }
