@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <resources>
   <string name="app_name">OsMoDroid</string>
   <string name="start">Starta</string>
@@ -16,7 +16,7 @@
   <string name="NoConnection">Ingen anslutning</string>
   <string name="Unknow">Okänt</string>
   <string name="NotDefined">Ej definierat</string>
-  <string name="Sended">Skickar:</string>
+  <string name="Sended">Status:</string>
   <string name="Adres">Adress:</string>
   <string name="RepeatAuth">Återställ logindata</string>
   <string name="warnhash">Kunde inte hämta nyckel från servern; kontrollera din anslutning eller kontakta supporten</string>
@@ -24,8 +24,8 @@
   <string name="EqualsParameters">Likställ inställningarna</string>
   <string name="AgreeRepeatAuth">Bekräfta begäran om nytt godkännande</string>
   <string name="ChangeAdresMonitor">Detta ändrar övervakningsadressen!</string>
-  <string name="yes">Ja</string>
-  <string name="No">Nej</string>
+  <string name="yes">OK</string>
+  <string name="No">Avbryt</string>
   <string name="AgreeParameterEqual">Bekräfta likställning av transmissionsparametrar och inspelning</string>
   <string name="TrackRecordParameterChanges">Spårinspelningsparametrar kommer att ändras</string>
   <string name="Running">Startad</string>
@@ -73,7 +73,7 @@
   <string name="yourmessage">Ditt meddelande:</string>
   <string name="sendingmessage">Skickar ett meddelande</string>
   <string name="sharelink">Dela</string>
-  <string name="chat">Meddelanden</string>
+  <string name="chat">Chatt</string>
   <string name="messagetochat">Meddelande till gruppen</string>
   <string name="copylink">Kopiera denna länk</string>
   <string name="openinbrowser">Öppna i webbläsare</string>
@@ -84,12 +84,11 @@
   <string name="chanalcode">ID:</string>
   <string name="privatechanal">Privat grupp</string>
   <string name="chanalkey">Gruppnyckel</string>
-  <string name="createchanal">Registrera grupp här</string>
   <string name="noallenter">Inkluderar inte alla data</string>
-  <string name="bindtochanal">Anslutning till gruppen</string>
+  <string name="bindtochanal">Anslut till gruppen</string>
   <string name="requestdevicebefore">Tidigare begäran för enheten</string>
   <string name="chatwith">Chatta med</string>
-  <string name="devices">Enheter</string>
+  <string name="devices">Släkt</string>
   <string name="writemessage">Skriv ett meddelande</string>
   <string name="messages">Meddelanden</string>
   <string name="binddevice">Bind enhet</string>
@@ -137,20 +136,18 @@
   <string name="dayssend">skickat per dag:</string>
   <string name="monthsends">skickat per månad:</string>
   <string name="exit">Avsluta</string>
-  <string name="savepref">Spara inställningarna på SD-kortet</string>
-  <string name="loadpref">Hämta inställningarna från SD-kortet</string>
   <string name="more">Mer</string>
   <string name="iamhere">Här är jag!</string>
   <string name="linkcopied">Länk kopierad till Urklipp</string>
   <string name="Stoping">Stopp</string>
   <string name="closesession">Stänga session?</string>
   <string name="loading">Laddar ...</string>
-  <string name="uploadtrera">Ladda upp till TReRa?</string>
+  <string name="uploadtrera">Skicka till OsMo?</string>
   <string name="servermessage">Meddelande från servern</string>
   <string name="deletelink">Ta bort länk</string>
-  <string name="uploadtotrera">Ladda upp till TReRa</string>
+  <string name="uploadtotrera">Skicka till OsMo</string>
   <string name="delete">Ta bort</string>
-  <string name="channelsend">Skicka till kanaler</string>
+  <string name="channelsend">Skicka till grupper</string>
   <string name="alarm">Larm</string>
   <string name="recivedmessages">Mottagna meddelanden:</string>
   <string name="spd">Hastighet</string>
@@ -165,7 +162,7 @@
   <string name="map">Karta</string>
   <string name="drawer_open">öppna</string>
   <string name="drawer_close">stäng</string>
-  <string name="iam">Jag</string>
+  <string name="iam">Smeknamn:</string>
   <string name="needgps">Kräver aktivering av GPS</string>
   <string name="enablegps">Aktivera GPS</string>
   <string name="showtraces">Visa spår</string>
@@ -193,7 +190,7 @@
   <string name="play_alarm_off">Stäng av ringklockan</string>
   <string name="signalisation_set_on">Aktivera larmet</string>
   <string name="signalisation_set_off">Stäng av larmet</string>
-  <string name="approximate_traffic">Ungefärlig trafik</string>
+  <string name="approximate_traffic">Trafik</string>
   <string name="online">Online</string>
   <string name="offline">Offline</string>
   <string name="monitoring_on">Övervakning på</string>
@@ -268,11 +265,9 @@
   <string name="speak_current_speed">Läs upp aktuell hastighet</string>
   <string name="speak_average_speed">Läs upp snitthastighet</string>
   <string name="speak_remote_commands">Läs upp fjärrkommandon</string>
-  <string name="increases_battery_consumption">Ökar strömkonsumtionen</string>
   <string name="keep_screen_on">Behåll skärmen på</string>
   <string name="determine_location_by_gps_provides_best_accuracy_but_uses_more_battery_">Bestäm plats med GPS. Ger bäst noggrannhet men drar mer ström.</string>
   <string name="use_gps">Använd GPS</string>
-  <string name="determine_location_by_cellular_networks_and_wifi_not_very_accurate_but_easier_on_battery_">Bestäm platsen via mobila nätverk och Wi-Fi. Inte så noggrann men kräver mindre ström.</string>
   <string name="use_mobile_networks">Använd mobila nätverk</string>
   <string name="launch_background_service_when_the_phone_starts_up_">Starta bakgrundstjänst när telefonen startas.</string>
   <string name="startup_at_boot">Starta med enheten</string>
@@ -283,13 +278,12 @@
   <string name="network_timeout">Nätverkstimeout</string>
   <string name="live_monitoring">Direktspårning</string>
   <string name="offline_on">Offline-läget är aktiverat. Inga data skickas till servern.</string>
-  <string name="update_map_in_background">Uppdatera kartan i bakgrunden</string>
-  <string name="tcp_no_delay">TCP NO fördröjning</string>
-  <string name="agree_sos_">OK med SOS?</string>
-  <string name="gpson">GPS signal detected!</string>
-  <string name="gpsoff">GPS signal lost</string>
-  <string name="monitoring_started">Monitoring started</string>
-  <string name="monitoring_stopped">Monitoring stopped</string>
-  <string name="inetoff">Data connection lost</string>
-  <string name="ineton">Data connection restored</string>
+  <string name="update_map_in_background">Ta alltid emot datagrupper</string>
+  <string name="agree_sos_">Aktivera SOS?</string>
+  <string name="gpson">GPS-signal upptäckt!</string>
+  <string name="gpsoff">GPS-signal tappad</string>
+  <string name="monitoring_started">Övervakning startad</string>
+  <string name="monitoring_stopped">Övervakning stoppad</string>
+  <string name="inetoff">Dataanslutning tappad</string>
+  <string name="ineton">Dataanslutning återupprättad</string>
 </resources>
