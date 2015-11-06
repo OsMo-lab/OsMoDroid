@@ -82,7 +82,7 @@
 <string name="chanalcode">ID:</string>
 <string name="privatechanal">Private group</string>
 <string name="chanalkey">Group key</string>
-<string name="createchanal">Group register here</string>
+<string name="createchanal">Create a group</string>
 <string name="noallenter">Does not include all data</string>
 <string name="bindtochanal">Join the group</string>
 <string name="requestdevicebefore">Prior request device</string>
@@ -135,8 +135,8 @@
 <string name="dayssend">shipments per day:</string>
 <string name="monthsends">shipments per month:</string>
 <string name="exit">Exit</string>
-<string name="savepref">Save Settings on the memory card</string>
-<string name="loadpref">Load settings from the memory card</string>
+<string name="savepref">Save Settings on SD</string>
+<string name="loadpref">Load settings from SD</string>
 <string name="more">More</string>
 <string name="iamhere">I\'m right here!</string>
 <string name="linkcopied">Link copied to clipboard</string>
@@ -266,11 +266,11 @@
 <string name="speak_current_speed">Speak current speed</string>
 <string name="speak_average_speed">Speak average speed</string>
 <string name="speak_remote_commands">Speak remote commands</string>
-<string name="increases_battery_consumption">Increases battery consumption</string>
+<string name="increases_battery_consumption">When working with the application screen will not turn on automatically</string>
 <string name="keep_screen_on">Keep Screen On</string>
 <string name="determine_location_by_gps_provides_best_accuracy_but_uses_more_battery_">Determine location by GPS. Provides best accuracy, but uses more battery.</string>
 <string name="use_gps">Use GPS</string>
-<string name="determine_location_by_cellular_networks_and_wifi_not_very_accurate_but_easier_on_battery_">Determine location by cellular networks and WiFi. Not very accurate, but easier on battery.</string>
+<string name="determine_location_by_cellular_networks_and_wifi_not_very_accurate_but_easier_on_battery_">Determine location by cellular networks and WiFi</string>
 <string name="use_mobile_networks">Use Mobile Networks</string>
 <string name="launch_background_service_when_the_phone_starts_up_">Launch background service when the phone starts up.</string>
 <string name="startup_at_boot">Startup at boot</string>
@@ -284,12 +284,12 @@
 <string name="update_map_in_background">Always receive data groups</string>
 <string name="tcp_no_delay">The socket mode "NO DELAY"</string>
 <string name="agree_sos_">Activate the SOS?</string>
-    <string name="gpson">GPS signal detected!</string>
-    <string name="gpsoff">GPS signal lost</string>
-    <string name="monitoring_started">Monitoring started</string>
-    <string name="monitoring_stopped">Monitoring stopped</string>
-    <string name="inetoff">Data connection lost</string>
-    <string name="ineton">Data connection restored</string>
-    <string name="appwidget_text">EXAMPLE</string>
-    <string name="add_widget">Add widget</string>
+<string name="gpson">GPS signal detected!</string>
+<string name="gpsoff">GPS signal lost</string>
+<string name="monitoring_started">Monitoring started</string>
+<string name="monitoring_stopped">Monitoring stopped</string>
+<string name="inetoff">Data connection lost</string>
+<string name="ineton">Data connection restored</string>
+<string name="appwidget_text">Example</string>
+<string name="add_widget">Add widget</string>
 </resources>

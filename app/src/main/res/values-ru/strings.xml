@@ -134,8 +134,8 @@
 <string name="dayssend">Отправок в день:</string>
 <string name="monthsends">Отправок в месяц:</string>
 <string name="exit">Выход</string>
-<string name="savepref">Сохранить настройки на карту</string>
-<string name="loadpref">Загрузить настройки с карты</string>
+<string name="savepref">Сохранить настройки на SD</string>
+<string name="loadpref">Загрузить настройки с SD</string>
 <string name="more">Ещё</string>
 <string name="iamhere">"Я тут! "</string>
 <string name="linkcopied">Ссылка скопирована в буфер обмена</string>
@@ -263,11 +263,11 @@
 <string name="speak_current_speed">Проговаривать текущую скорость</string>
 <string name="speak_average_speed">Проговаривать среднюю скорость</string>
 <string name="speak_remote_commands">Проговаривать удаленные команды</string>
-<string name="increases_battery_consumption">Увеличивает расход энергии</string>
+<string name="increases_battery_consumption">При работе с приложением экран не будет отключаться автоматически</string>
 <string name="keep_screen_on">Не гасить экран</string>
 <string name="determine_location_by_gps_provides_best_accuracy_but_uses_more_battery_">Определять местоположение по GPS</string>
 <string name="use_gps">GPS</string>
-<string name="determine_location_by_cellular_networks_and_wifi_not_very_accurate_but_easier_on_battery_">Определять местоположение по сотовым сетям и WiFi (дополнительный интернет-трафик)</string>
+<string name="determine_location_by_cellular_networks_and_wifi_not_very_accurate_but_easier_on_battery_">Определять местоположение по сотовым сетям и WiFi</string>
 <string name="use_mobile_networks">Мобильные сети</string>
 <string name="launch_background_service_when_the_phone_starts_up_">Запускать фоновый сервис при включении телефона</string>
 <string name="startup_at_boot">Автозагрузка в фоне</string>
@@ -281,10 +281,12 @@
 <string name="update_map_in_background">Постоянно получать данные групп</string>
 <string name="tcp_no_delay">Режим сокета "Без ожидания"</string>
 <string name="agree_sos_">Активировать режим SOS?</string>
-    <string name="gpson">Пойман сигнал ГПС</string>
-    <string name="gpsoff">Потерян сигнал ГПС</string>
-    <string name="monitoring_started">Мониторинг запущен</string>
-    <string name="monitoring_stopped">Мониторинг остановлен</string>
-    <string name="inetoff">Интернет пропал</string>
-    <string name="ineton">Интернет появился</string>
+<string name="gpson">Пойман сигнал ГПС</string>
+<string name="gpsoff">Потерян сигнал ГПС</string>
+<string name="monitoring_started">Мониторинг запущен</string>
+<string name="monitoring_stopped">Мониторинг остановлен</string>
+<string name="inetoff">Интернет пропал</string>
+<string name="ineton">Интернет появился</string>
+<string name="appwidget_text">Пример</string>
+<string name="add_widget">Добавить виджет</string>
 </resources>
