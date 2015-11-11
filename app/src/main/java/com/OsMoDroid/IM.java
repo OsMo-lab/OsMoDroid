@@ -933,7 +933,7 @@ public class IM implements ResultsListener
                                 localService.soundPool.play(localService.sendpalyer, 1f, 1f, 1, 0, 1f);
                                 localService.mayak = false;
                             }
-                        String time = localService.sdf3.format(new Date(System.currentTimeMillis()));
+                        String time = OsMoDroid.sdf3.format(new Date(System.currentTimeMillis()));
                         localService.sendresult = time + " " + localService.getString(R.string.succes);
                         localService.refresh();
                         return;
@@ -1585,7 +1585,7 @@ public class IM implements ResultsListener
                                                                                                         if (newlat != dev.lat & newlon != dev.lon && (System.currentTimeMillis() - dev.updatated) > 5 * 60 * 1000) {
                                                                                                             dev.lat = newlat;
                                                                                                             dev.lon = newlon;
-                                                                                                            notifydevicemonitoring(dev);
+                                                                                                            notifydevicemonitoring(dev,true);
                                                                                                         }
                                                                                                     }
                                                                                                     catch (NumberFormatException e)
@@ -1606,7 +1606,11 @@ public class IM implements ResultsListener
                                                                                                     {
                                                                                                         if(dev.state!=1&&jsonObject.getInt("state")==1)
                                                                                                             {
-                                                                                                                notifydevicemonitoring(dev);
+                                                                                                                notifydevicemonitoring(dev,true);
+                                                                                                            }
+                                                                                                        if(dev.state==1&&jsonObject.getInt("state")==0)
+                                                                                                            {
+                                                                                                                notifydevicemonitoring(dev,false);
                                                                                                             }
                                                                                                         dev.state = jsonObject.getInt("state");
                                                                                                     }
@@ -1857,7 +1861,7 @@ public class IM implements ResultsListener
                     }
                 if (newlat != dev.lat & newlon != dev.lon && (System.currentTimeMillis() - dev.updatated) > 5 * 60 * 1000)
                     {
-                        notifydevicemonitoring(dev);
+                        notifydevicemonitoring(dev,true);
                     }
                 dev.lat = newlat;
                 dev.lon = newlon;
@@ -1869,7 +1873,7 @@ public class IM implements ResultsListener
                                 if (!Character.toString(d.charAt(i)).equals(".") || i == (d.length() - 1))
                                     {
                                         LocalService.addlog(d.substring(d.indexOf("S") + 1, i));
-                                        dev.speed = LocalService.df0.format((((Float.parseFloat(d.substring(d.indexOf("S") + 1, i)) * 3.6))));
+                                        dev.speed = OsMoDroid.df0.format((((Float.parseFloat(d.substring(d.indexOf("S") + 1, i)) * 3.6))));
                                         break;
                                     }
                             }
@@ -1891,11 +1895,19 @@ public class IM implements ResultsListener
         void ondisconnect()
             {
             }
-        void notifydevicemonitoring(Device dev)
+        void notifydevicemonitoring(Device dev,boolean start)
             {
                 String status;
                 String messageText = "";
-                status = localService.getString(R.string.started);
+                if(start)
+                    {
+                        status = localService.getString(R.string.started);
+                    }
+                else
+                    {
+                        status = localService.getString(R.string.stoped);
+                    }
+
                 messageText = messageText + localService.getString(R.string.monitoringondevice) + dev.name + "\" " + status;
                 if (OsMoDroid.settings.getBoolean("statenotify", true))
                     {

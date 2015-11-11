@@ -9,9 +9,6 @@ import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.io.StreamCorruptedException;
 import java.io.StringWriter;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -195,14 +192,6 @@ public class LocalService extends Service implements LocationListener, GpsStatus
         StringBuilder sendedsb = new StringBuilder(327681);
         private int lcounter = 0;
         private int scounter = 0;
-        final private static DecimalFormat df6 = new DecimalFormat("########.######");
-        final static DecimalFormat df1 = new DecimalFormat("#######0.0");
-        final static DecimalFormat df2 = new DecimalFormat("#######0.00");
-        final static DecimalFormat df0 = new DecimalFormat("########");
-        final private static SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-        final private static SimpleDateFormat sdf2 = new SimpleDateFormat("yyyyMMddHHmmss");
-        final static SimpleDateFormat sdf3 = new SimpleDateFormat("HH:mm:ss");
-        final private static DecimalFormatSymbols dot = new DecimalFormatSymbols();
         protected boolean firstgpsbeepedon = false;
         static IM myIM;
         //static IM trackerIM;
@@ -464,17 +453,17 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                 in.putExtra("sattelite", satellite + " " + getString(R.string.accuracy) + accuracy);
                 in.putExtra("sendresult", sendresult);
                 in.putExtra("buffercounter", buffercounter);
-                in.putExtra("stat", getString(R.string.maximal) + df1.format(maxspeed * 3.6) + getString(R.string.kmch) + getString(R.string.average) + df1.format(avgspeed * 3600) + getString(R.string.kmch) + getString(R.string.going) + df2.format(workdistance / 1000) + getString(R.string.km) + "\n" + getString(R.string.worktime) + formatInterval(timeperiod));
+                in.putExtra("stat", getString(R.string.maximal) + OsMoDroid.df1.format(maxspeed * 3.6) + getString(R.string.kmch) + getString(R.string.average) + OsMoDroid.df1.format(avgspeed * 3600) + getString(R.string.kmch) + getString(R.string.going) + OsMoDroid.df2.format(workdistance / 1000) + getString(R.string.km) + "\n" + getString(R.string.worktime) + formatInterval(timeperiod));
                 in.putExtra("started", state);
                 in.putExtra("globalsend", globalsend);
                 in.putExtra("sos", sos);
                 in.putExtra("signalisationon", signalisationOn);
                 in.putExtra("sendcounter", sendcounter);
                 in.putExtra("writecounter", writecounter);
-                in.putExtra("currentspeed", df0.format(currentspeed * 3.6));
-                in.putExtra("avgspeed", df1.format(avgspeed * 3600));
-                in.putExtra("maxspeed", df1.format(maxspeed * 3.6));
-                in.putExtra("workdistance", df2.format(workdistance / 1000));
+                in.putExtra("currentspeed", OsMoDroid.df0.format(currentspeed * 3.6));
+                in.putExtra("avgspeed", OsMoDroid.df1.format(avgspeed * 3600));
+                in.putExtra("maxspeed", OsMoDroid.df1.format(maxspeed * 3.6));
+                in.putExtra("workdistance", OsMoDroid.df2.format(workdistance / 1000));
                 in.putExtra("timeperiod", formatInterval(timeperiod));
                 if (myIM != null)
                     {
@@ -483,7 +472,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                         in.putExtra("executedlistsize", myIM.executedCommandArryaList.size());
                     }
                 in.putExtra("motd", motd);
-                in.putExtra("traffic", Long.toString((myIM.sendBytes + myIM.recievedBytes) / 1024) + dot.getDecimalSeparator() + Long.toString((myIM.sendBytes + myIM.recievedBytes) % 1000) + "KB " + myIM.connectcount + "|" + myIM.erorconenctcount);
+                in.putExtra("traffic", Long.toString((myIM.sendBytes + myIM.recievedBytes) / 1024) + OsMoDroid.dot.getDecimalSeparator() + Long.toString((myIM.sendBytes + myIM.recievedBytes) % 1000) + "KB " + myIM.connectcount + "|" + myIM.erorconenctcount);
                 in.putExtra("pro", pro);
 
                 sendBroadcast(in);
@@ -607,17 +596,17 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                 myManager = (LocationManager) getSystemService(LOCATION_SERVICE);
                 satellite = getString(R.string.Sputniki);
                 position = getString(R.string.NotDefined) + "\n" + getString(R.string.speed);
-                sdf1.setTimeZone(TimeZone.getTimeZone("UTC"));
+                OsMoDroid.sdf1.setTimeZone(TimeZone.getTimeZone("UTC"));
                 currentLocation = new Location("");
                 prevlocation = new Location("");
                 prevlocation_gpx = new Location("");
                 currentLocation.setLatitude((double) OsMoDroid.settings.getFloat("lat", 0f));
                 currentLocation.setLongitude((double) OsMoDroid.settings.getFloat("lon", 0f));
-                dot.setDecimalSeparator('.');
-                df1.setDecimalSeparatorAlwaysShown(false);
-                df6.setDecimalSeparatorAlwaysShown(false);
-                df1.setDecimalFormatSymbols(dot);
-                df6.setDecimalFormatSymbols(dot);
+                OsMoDroid.dot.setDecimalSeparator('.');
+                OsMoDroid.df1.setDecimalSeparatorAlwaysShown(false);
+                OsMoDroid.df6.setDecimalSeparatorAlwaysShown(false);
+                OsMoDroid.df1.setDecimalFormatSymbols(OsMoDroid.dot);
+                OsMoDroid.df6.setDecimalFormatSymbols(OsMoDroid.dot);
                 ReadPref();
                 deviceAdapter = new DeviceAdapter(getApplicationContext(), R.layout.deviceitem, LocalService.deviceList);
                 channelsAdapter = new ChannelsAdapter(getApplicationContext(), R.layout.deviceitem, LocalService.channelList, this);
@@ -769,7 +758,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                                     buffercounter++;
                                     buffer.addAll(sendingbuffer);
                                     sendingbuffer.clear();
-                                    String time = sdf3.format(new Date(System.currentTimeMillis()));
+                                    String time = OsMoDroid.sdf3.format(new Date(System.currentTimeMillis()));
                                     sendresult = time + " " + getString(R.string.error);
                                     updateNotification(-1);
                                     refresh();
@@ -1383,7 +1372,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                                 editor.commit();
                             }
                         // SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
-                        String time = sdf2.format(new Date());
+                        String time = OsMoDroid.sdf2.format(new Date());
                         fileName = new File(sdDir, "OsMoDroid/");
                         fileName.mkdirs();
                         if (OsMoDroid.settings.getString("gpxname", "").equals(""))
@@ -1412,7 +1401,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                         try
                             {
                                 // SimpleDateFormat sdf = new SimpleDateFormat("yyyy-mm-dd'T'HH:mm:ssZ");
-                                String time = sdf1.format(new Date(System.currentTimeMillis())) + "Z";
+                                String time = OsMoDroid.sdf1.format(new Date(System.currentTimeMillis())) + "Z";
                                 FileWriter trackwr = new FileWriter(fileName);
                                 trackwr.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
                                 trackwr.write("<gpx xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" version=\"1.1\" xmlns=\"http://www.topografix.com/GPX/1/1\" creator=\"OsMoDroid\" xsi:schemaLocation=\"http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd\">");
@@ -1622,7 +1611,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                         if (OsMoDroid.settings.getBoolean("ttsavgspeed", false) && OsMoDroid.settings.getBoolean("usetts", false) && tts != null && !tts.isSpeaking() && ((int) workdistance) / 1000 > intKM)
                             {
                                 intKM = (int) workdistance / 1000;
-                                tts.speak(getString(R.string.going) + ' ' + Integer.toString(intKM) + ' ' + "KM" + ',' + getString(R.string.avg) + ' ' + df1.format(avgspeed * 3600) + ',' + getString(R.string.inway) + ' ' + formatInterval(timeperiod), TextToSpeech.QUEUE_ADD, null);
+                                tts.speak(getString(R.string.going) + ' ' + Integer.toString(intKM) + ' ' + "KM" + ',' + getString(R.string.avg) + ' ' + OsMoDroid.df1.format(avgspeed * 3600) + ',' + getString(R.string.inway) + ' ' + formatInterval(timeperiod), TextToSpeech.QUEUE_ADD, null);
                             }
                         //if(log)Log.d(this.getClass().getName(),"Log of Workdistance, Workdistance="+ Float.toString(workdistance)+" location="+location.toString()+" prevlocation_spd="+prevlocation_spd.toString()+" distanceto="+Float.toString(location.distanceTo(prevlocation_spd)));
                         prevlocation_spd.set(location);
@@ -1647,14 +1636,14 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                     }
                 //if(log)Log.d(this.getClass().getName(), df0.format(location.getSpeed()*3.6).toString());
                 //if(log)Log.d(this.getClass().getName(), df0.format(prevlocation.getSpeed()*3.6).toString());
-                if (OsMoDroid.settings.getBoolean("ttsspeed", false) && OsMoDroid.settings.getBoolean("usetts", false) && tts != null && !tts.isSpeaking() && !(df0.format(location.getSpeed() * 3.6).toString()).equals(lastsay))
+                if (OsMoDroid.settings.getBoolean("ttsspeed", false) && OsMoDroid.settings.getBoolean("usetts", false) && tts != null && !tts.isSpeaking() && !(OsMoDroid.df0.format(location.getSpeed() * 3.6).toString()).equals(lastsay))
                     {
                         //if(log)Log.d(this.getClass().getName(), df0.format(location.getSpeed()*3.6).toString());
                         //if(log)Log.d(this.getClass().getName(), df0.format(prevlocation.getSpeed()*3.6).toString());
-                        tts.speak(df0.format(location.getSpeed() * 3.6), TextToSpeech.QUEUE_ADD, null);
-                        lastsay = df0.format(location.getSpeed() * 3.6).toString();
+                        tts.speak(OsMoDroid.df0.format(location.getSpeed() * 3.6), TextToSpeech.QUEUE_ADD, null);
+                        lastsay = OsMoDroid.df0.format(location.getSpeed() * 3.6).toString();
                     }
-                position = (df6.format(location.getLatitude()) + ", " + df6.format(location.getLongitude()) + "\nСкорость:" + df1.format(location.getSpeed() * 3.6)) + " Км/ч";
+                position = (OsMoDroid.df6.format(location.getLatitude()) + ", " + OsMoDroid.df6.format(location.getLongitude()) + "\nСкорость:" + OsMoDroid.df1.format(location.getSpeed() * 3.6)) + " Км/ч";
                 //position = ( String.format("%.6f", location.getLatitude())+", "+String.format("%.6f", location.getLongitude())+" = "+String.format("%.1f", location.getSpeed()));
                 //if (location.getTime()>lastfix+3000)notifygps(false);
                 //if (location.getTime()<lastfix+3000)notifygps(true);
@@ -1677,7 +1666,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                                         double y = Math.sin(dLon) * Math.cos(lat2);
                                         double x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLon);
                                         brng_gpx = Math.toDegrees(Math.atan2(y, x)); //.toDeg();
-                                        position = position + "\n" + getString(R.string.TrackCourseChange) + df1.format(Math.abs(brng_gpx - prevbrng_gpx));
+                                        position = position + "\n" + getString(R.string.TrackCourseChange) + OsMoDroid.df1.format(Math.abs(brng_gpx - prevbrng_gpx));
                                         refresh();
                                         if (OsMoDroid.settings.getBoolean("modeAND_gpx", false) && (int) location.getAccuracy() < hdop_gpx && location.getSpeed() >= speed_gpx / 3.6 && (location.distanceTo(prevlocation_gpx) > distance_gpx && location.getTime() > (prevlocation_gpx.getTime() + period_gpx) && (location.getSpeed() >= speedbearing_gpx / 3.6 && Math.abs(brng_gpx - prevbrng_gpx) >= bearing_gpx)))
                                             {
@@ -1728,7 +1717,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                                         double y = Math.sin(dLon) * Math.cos(lat2);
                                         double x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLon);
                                         brng = Math.toDegrees(Math.atan2(y, x)); //.toDeg();
-                                        position = position + "\n" + getString(R.string.SendCourseChange) + df1.format(Math.abs(brng - prevbrng));
+                                        position = position + "\n" + getString(R.string.SendCourseChange) + OsMoDroid.df1.format(Math.abs(brng - prevbrng));
                                         refresh();
                                         if (OsMoDroid.settings.getBoolean("modeAND", false) && (int) location.getAccuracy() < hdop && location.getSpeed() >= speed / 3.6 && (location.distanceTo(prevlocation) > distance && location.getTime() > (prevlocation.getTime() + period) && (location.getSpeed() >= (speedbearing / 3.6) && Math.abs(brng - prevbrng) >= bearing)))
                                             {
@@ -1923,16 +1912,16 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                 long gpstime = location.getTime();
                 Date date = new Date(gpstime);
                 // SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-mm-dd'T'HH:mm:ssZ");
-                String strgpstime = sdf1.format(date) + "Z";
+                String strgpstime = OsMoDroid.sdf1.format(date) + "Z";
                 writecounter++;
                 if ((gpxbuffer).length() < 5000)
                     {
-                        gpxbuffer = gpxbuffer + "<trkpt lat=\"" + df6.format(location.getLatitude()) + "\""
-                                + " lon=\"" + df6.format(location.getLongitude())
-                                + "\"><ele>" + df1.format(location.getAltitude())
+                        gpxbuffer = gpxbuffer + "<trkpt lat=\"" + OsMoDroid.df6.format(location.getLatitude()) + "\""
+                                + " lon=\"" + OsMoDroid.df6.format(location.getLongitude())
+                                + "\"><ele>" + OsMoDroid.df1.format(location.getAltitude())
                                 + "</ele><time>" + strgpstime
-                                + "</time><speed>" + df1.format(location.getSpeed())
-                                + "</speed>" + "<hdop>" + df1.format(location.getAccuracy() / 4) + "</hdop>" + "</trkpt>";
+                                + "</time><speed>" + OsMoDroid.df1.format(location.getSpeed())
+                                + "</speed>" + "<hdop>" + OsMoDroid.df1.format(location.getAccuracy() / 4) + "</hdop>" + "</trkpt>";
                     }
                 else
                     {
@@ -1976,11 +1965,11 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                         if ((location.getSpeed() * 3.6) >= 6)
                             {
                                 sending =
-                                        "T|L" + df6.format(location.getLatitude()) + ":" + df6.format(location.getLongitude())
-                                                + "S" + df1.format(location.getSpeed())
-                                                + "A" + df0.format(location.getAltitude())
-                                                + "H" + df0.format(location.getAccuracy())
-                                                + "C" + df0.format(location.getBearing());
+                                        "T|L" + OsMoDroid.df6.format(location.getLatitude()) + ":" + OsMoDroid.df6.format(location.getLongitude())
+                                                + "S" + OsMoDroid.df0.format(location.getSpeed())
+                                                + "A" + OsMoDroid.df0.format(location.getAltitude())
+                                                + "H" + OsMoDroid.df0.format(location.getAccuracy())
+                                                + "C" + OsMoDroid.df0.format(location.getBearing());
                                 if (usebuffer)
                                     {
                                         sending = sending + "T" + location.getTime() / 1000;
@@ -1989,10 +1978,10 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                         if ((location.getSpeed() * 3.6) < 6)
                             {
                                 sending =
-                                        "T|L" + df6.format(location.getLatitude()) + ":" + df6.format(location.getLongitude())
-                                                + "S" + df1.format(location.getSpeed())
-                                                + "A" + df0.format(location.getAltitude())
-                                                + "H" + df0.format(location.getAccuracy());
+                                        "T|L" + OsMoDroid.df6.format(location.getLatitude()) + ":" + OsMoDroid.df6.format(location.getLongitude())
+                                                + "S" + OsMoDroid.df0.format(location.getSpeed())
+                                                + "A" + OsMoDroid.df0.format(location.getAltitude())
+                                                + "H" + OsMoDroid.df0.format(location.getAccuracy());
                                 if (usebuffer)
                                     {
                                         sending = sending + "T" + location.getTime() / 1000;
@@ -2001,9 +1990,9 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                         if ((location.getSpeed() * 3.6) <= 1)
                             {
                                 sending =
-                                        "T|L" + df6.format(location.getLatitude()) + ":" + df6.format(location.getLongitude())
-                                                + "A" + df0.format(location.getAltitude())
-                                                + "H" + df0.format(location.getAccuracy());
+                                        "T|L" + OsMoDroid.df6.format(location.getLatitude()) + ":" + OsMoDroid.df6.format(location.getLongitude())
+                                                + "A" + OsMoDroid.df0.format(location.getAltitude())
+                                                + "H" + OsMoDroid.df0.format(location.getAccuracy());
                                 if (usebuffer)
                                     {
                                         sending = sending + "T" + location.getTime() / 1000;
@@ -2026,11 +2015,11 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                         LocalService.addlog("Send not executed:AUTHED=" + myIM.authed + " Sending:" + sending);
                         if (usebuffer)
                             {
-                                buffer.add("T|L" + df6.format(location.getLatitude()) + ":" + df6.format(location.getLongitude())
-                                                + "S" + df1.format(location.getSpeed())
-                                                + "A" + df0.format(location.getAltitude())
-                                                + "H" + df0.format(location.getAccuracy())
-                                                + "C" + df0.format(location.getBearing())
+                                buffer.add("T|L" + OsMoDroid.df6.format(location.getLatitude()) + ":" + OsMoDroid.df6.format(location.getLongitude())
+                                                + "S" + OsMoDroid.df1.format(location.getSpeed())
+                                                + "A" + OsMoDroid.df0.format(location.getAltitude())
+                                                + "H" + OsMoDroid.df0.format(location.getAccuracy())
+                                                + "C" + OsMoDroid.df0.format(location.getBearing())
                                                 + "T" + location.getTime() / 1000
                                 );
                                 buffercounter++;
@@ -2279,13 +2268,13 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                     RemoteViews remoteViews = new RemoteViews(this.getApplicationContext().getPackageName(),R.layout.os_mo_widget);
                     if(state)
                         {
-                            remoteViews.setImageViewResource(R.id.imageButtonWidget, R.drawable.eyeo);
+                            remoteViews.setImageViewResource(R.id.imageButtonWidget, R.drawable.on);
                             is.putExtra("ACTION", "STOP");
                             Log.d(getClass().getSimpleName(), "on updatewidgets set action=STOP state=" + state);
                         }
                     else
                         {
-                            remoteViews.setImageViewResource(R.id.imageButtonWidget, R.drawable.eyen);
+                            remoteViews.setImageViewResource(R.id.imageButtonWidget, R.drawable.off);
                             is.putExtra("ACTION", "START");
                             Log.d(getClass().getSimpleName(), "on updatewidgets set action=START state=" + state);
                         }

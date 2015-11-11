@@ -127,9 +127,9 @@ public class SimLinksFragment extends Fragment
         public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo)
             {
                 menu.add(0, 5, 5, R.string.openinbrowser).setIcon(android.R.drawable.ic_menu_edit);
-                menu.add(0, 1, 0, R.string.sharelink).setIcon(android.R.drawable.ic_menu_share);
-                menu.add(0, 3, 0, R.string.copylink).setIcon(android.R.drawable.ic_menu_edit);
-                menu.add(0, 2, 0, R.string.deletelink).setIcon(android.R.drawable.ic_menu_delete);
+                menu.add(0, 1, 2, R.string.sharelink).setIcon(android.R.drawable.ic_menu_share);
+                menu.add(0, 3, 3, R.string.copylink).setIcon(android.R.drawable.ic_menu_edit);
+                menu.add(0, 2, 4, R.string.deletelink).setIcon(android.R.drawable.ic_menu_delete);
                 super.onCreateContextMenu(menu, v, menuInfo);
             }
         public boolean onContextItemSelected(android.view.MenuItem item)

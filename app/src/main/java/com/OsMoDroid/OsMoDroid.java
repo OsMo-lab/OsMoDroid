@@ -5,6 +5,10 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
 import android.view.inputmethod.InputMethodManager;
+
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.SimpleDateFormat;
 public class OsMoDroid extends Application
     {
         final public static int warnnotifyid = 3;
@@ -38,8 +42,17 @@ public class OsMoDroid extends Application
         public static final int NOTIFY_NO_DEVICE = 1;
         public static final int NOTIFY_EXPIRY_USER = 2;
         public static final int NOTIFY_NO_CONNECT = 3;
+        final static DecimalFormat df1 = new DecimalFormat("#######0.0");
+        final static DecimalFormat df2 = new DecimalFormat("#######0.00");
+        final static DecimalFormat df0 = new DecimalFormat("########");
+        final static SimpleDateFormat sdf3 = new SimpleDateFormat("HH:mm:ss");
         private static final int MIN_UPLOAD_ID = 4;
         private static final int MAX_UPLOAD_ID = 1000;
+        final static DecimalFormat df6 = new DecimalFormat("########.######");
+        final static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        final static SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        final static SimpleDateFormat sdf2 = new SimpleDateFormat("yyyyMMddHHmmss");
+        final static DecimalFormatSymbols dot = new DecimalFormatSymbols();
         public static boolean mesactivityVisible = false;
         public static boolean gpslocalserviceclientVisible = false;
         public static SharedPreferences settings;

@@ -270,12 +270,12 @@ public class DevicesFragment extends Fragment
                 MenuItem signalon = menu2.add(0, 13, 13, R.string.signalisation_set_on);
                 MenuItem signaloff = menu2.add(0, 14, 14, R.string.signalisation_set_off);
                 MenuItem where = menu2.add(0, 15, 15, R.string.where_);
-                menu.add(0, 2, 2, R.string.messages).setIcon(android.R.drawable.ic_menu_delete);
+                //    menu.add(0, 2, 2, R.string.messages).setIcon(android.R.drawable.ic_menu_delete);
                 //    menu.add(0, 3, 3, R.string.copylink).setIcon(android.R.drawable.ic_menu_edit);
                 //    menu.add(0, 4, 4, R.string.sharelink).setIcon(android.R.drawable.ic_menu_edit);
                 //    menu.add(0, 5, 5, R.string.openinbrowser).setIcon(android.R.drawable.ic_menu_edit);
                 menu.add(0, 6, 6, R.string.showonmap).setIcon(android.R.drawable.ic_menu_edit);
-                menu.add(0, 7, 7, R.string.color).setIcon(android.R.drawable.ic_menu_edit);
+                //menu.add(0, 7, 7, R.string.color).setIcon(android.R.drawable.ic_menu_edit);
                 super.onCreateContextMenu(menu, v, menuInfo);
             }
         //private boolean openedbynotification=false;

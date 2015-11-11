@@ -527,9 +527,11 @@ public class GPSLocalServiceClient extends ActionBarActivity
                         if (requestCode == 1 && resultCode == Activity.RESULT_OK)
                             {
                                 Log.d(this.getClass().getSimpleName(), "void onActivityResult=auth");
-                                if (live)
+                                if (live&& mBound)
                                     {
                                         mService.myIM.stop();
+                                        LocalService.channelList.clear();
+                                        LocalService.deviceList.clear();
                                         mService.myIM.start();
                                     }
                             }

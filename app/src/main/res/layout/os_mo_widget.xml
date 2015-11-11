@@ -12,7 +12,7 @@
         android:id="@+id/imageButtonWidget"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
-        android:src="@drawable/eyen"
+        android:src="@drawable/off"
         android:background="@android:color/transparent"
         android:scaleType="fitCenter"
         android:cropToPadding="false"
