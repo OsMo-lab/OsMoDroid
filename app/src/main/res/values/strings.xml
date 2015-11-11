@@ -60,7 +60,7 @@
 <string name="speed">Speed: km/h</string>
 <string name="auth">Authorization</string>
 <string name="nomapapp">No Maps-like application appears to be installed.</string>
-<string name="showonmap">Shown on the map</string>
+<string name="showonmap">Show on the map</string>
 <string name="chanal">Group </string>
 <string name="refresh">Update</string>
 <string name="coordinats">Location: </string>
@@ -206,7 +206,7 @@
 <string name="point_create">Send point to server</string>
 <string name="point_create_description">Enter name for point to send</string>
 <string name="empty_channels">On this screen, you can watch the group in which you entered. To start using groups, use the context menu.</string> 
-<string name="empty_devices">On this screen is a list of your devices, and subscriptions to the device. Actions with the devices available in the context menu.</string> 
+<string name="empty_devices">On this screen will be a list of devices from groups like "Family". Action devices are available in the context menu.</string> 
 <string name="empty_links">On this screen has a permanent reference for monitoring your device from the site. Available actions can be found in the context menu.</string>
 <string name="understand">OK, Do not report bad connections more</string>
 <string name="checkfirewall">Could not connect to tracker server by it port. Check what you allow OsMoDroid full access in you firewall. Also it could because bad data connection quality.</string>
