@@ -390,7 +390,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
         private long pausemill;
         int intKM;
         boolean where = false;
-        static int selectedTileSourceInt = 7;
+        static int selectedTileSourceInt = 1;
         //boolean connecting=false;
         NotificationCompat.Builder foregroundnotificationBuilder;
         boolean pro;

@@ -50,6 +50,7 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
         private final Point mTempPoint1 = new Point();
         private final Point mTempPoint2 = new Point();
         private final Point mCurScreenCoords = new Point();
+
         //private final float mScale;
         Paint paint = new Paint();
         MapView map;
@@ -91,6 +92,7 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
         @Override
         protected void draw(Canvas canvas, MapView mapView, boolean shadow)
             {
+
                 ten = getSP(OsMoDroid.settings.getInt("pointsize", 8));
                 twenty = getSP(OsMoDroid.settings.getInt("pointsize", 8) * 2);
                 pathpaint.setStrokeWidth(OsMoDroid.settings.getInt("pointsize", 8));
@@ -343,59 +345,26 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
                                     }
                                 //gpx.mPath.lineTo(screenPoint1.x, screenPoint1.y);
                                 canvas.drawLine(screenPoint0.x, screenPoint0.y, screenPoint1.x, screenPoint1.y, pathpaint);
-//                                if((i%10)==0&&(screenPoint0.x - screenPoint1.x)!=0&&(screenPoint0.y - screenPoint1.y)!=0)
-//                                    {
-//                                        double a = Math.atan(Math.abs(screenPoint0.y - screenPoint1.y) / Math.abs(screenPoint0.x - screenPoint1.x));
-//                                        double b = Math.atan(  Math.abs(screenPoint0.x - screenPoint1.x)/Math.abs(screenPoint0.y - screenPoint1.y));
-//
-//                                        Bitmap d = BitmapFactory.decodeResource(mapView.getResources(), R.drawable.arrowup);
-//
-//                                        //d.setBounds(new Rect(screenPoint1.x - 20, screenPoint1.y - 20, screenPoint1.x + 20, screenPoint1.y + 20));
-//                                        Paint paint = new Paint();
-//
-//                                        Matrix matrix = new Matrix();
-//                                        matrix.reset();
-//                                        matrix.postTranslate(-d.getWidth() / 2, -d.getHeight() / 2); // Centers image
-//                                        if(screenPoint0.x>screenPoint1.x&&screenPoint0.y>screenPoint1.y)
-//                                            {
-//                                                matrix.postRotate(90f + (float) Math.toDegrees(a));
-//                                            }
-//                                        if(screenPoint0.x<screenPoint1.x&&screenPoint0.y>screenPoint1.y)
-//                                            {
-//                                                matrix.postRotate((float)Math.toDegrees(b));
-//                                            }
-//                                        if(screenPoint0.x<screenPoint1.x&&screenPoint0.y<screenPoint1.y)
-//                                            {
-//
-//                                            }
-//                                        if(screenPoint0.x>screenPoint1.x&&screenPoint0.y<screenPoint1.y)
-//                                            {
-//
-//                                            }
-//                                        matrix.postTranslate(screenPoint1.x, screenPoint1.y);
-//                                        // Rotate around Center Point
-//                                        //matrix.setRotate((float)Math.toDegrees(a),d.getHeight()/2,d.getWidth()/2);
-//
-//                                        canvas.drawBitmap(d, matrix, paint);
-//                                    }
-                                // update starting point to next position
+                                float angleRad = (float) Math.atan2(screenPoint0.y-screenPoint1.y, screenPoint0.x-screenPoint1.x);
+                                float angle = (float) (angleRad * 180 / Math.PI) + 90f;
+                                if((Math.sqrt((screenPoint0.x-screenPoint1.x)*(screenPoint0.x-screenPoint1.x)+(screenPoint0.y-screenPoint1.y)*(screenPoint0.y-screenPoint1.y)))>ten*5)
+                                    {
+                                        canvas.save();
+                                        canvas.rotate(angle,screenPoint1.x,screenPoint1.y);
+                                       // canvas.drawLine(screenPoint1.x - ten, screenPoint1.y, screenPoint1.x + ten, screenPoint1.y, pathpaint);
+                                        canvas.drawLine(screenPoint1.x+ten/2,screenPoint1.y, screenPoint1.x,screenPoint1.y-ten,pathpaint);
+                                        canvas.drawLine(screenPoint1.x, screenPoint1.y - ten, screenPoint1.x-ten/2, screenPoint1.y,pathpaint);
+                                        canvas.restore();
+
+                                    }
+
+
                                 projectedPoint0 = projectedPoint1;
                                 screenPoint0.x = screenPoint1.x;
                                 screenPoint0.y = screenPoint1.y;
                                 gpx.mLineBounds.set(projectedPoint0.x, projectedPoint0.y, projectedPoint0.x, projectedPoint0.y);
                             }
-                        //canvas.drawPath(gpx.mPath, this.pathpaint);
-                        ///
-//					Path path = new Path();
-//					pj.toMapPixels(gpx.points.get(0), scrPoint);
-//					path.moveTo(scrPoint.x, scrPoint.y);
-//					for (IGeoPoint geo: gpx.points)
-//				 		{
-//							pj.toMapPixels(geo, scrPoint);
-//							path.lineTo(scrPoint.x, scrPoint.y);
-//							path.moveTo(scrPoint.x, scrPoint.y);
-//				 		}
-//				 	canvas.drawPath(path, pathpaint);
+
                     }
                 for (Channel.Point p : gpx.waypoints)
                     {

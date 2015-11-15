@@ -74,7 +74,7 @@ public class SimLinksFragment extends Fragment
                         }
                 });
                 //if(list.size()==0){reflinks();}
-                reflinks();
+
                 return view;
             }
         @Override
@@ -95,6 +95,7 @@ public class SimLinksFragment extends Fragment
         public void onResume()
             {
                 globalActivity.actionBar.setTitle(R.string.links);
+                reflinks();
                 super.onResume();
             }
         @Override
