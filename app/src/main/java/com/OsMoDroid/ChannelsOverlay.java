@@ -305,6 +305,7 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
                             }
                         Point screenPoint0 = null; // points on screen
                         Point screenPoint1;
+                        Point lastArrowPoint = new Point(0,0);
                         Point projectedPoint0; // points from the points list
                         Point projectedPoint1;
                         // clipping rectangle in the intermediate projection, to avoid performing projection.
@@ -347,8 +348,13 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
                                 canvas.drawLine(screenPoint0.x, screenPoint0.y, screenPoint1.x, screenPoint1.y, pathpaint);
                                 float angleRad = (float) Math.atan2(screenPoint0.y-screenPoint1.y, screenPoint0.x-screenPoint1.x);
                                 float angle = (float) (angleRad * 180 / Math.PI) + 90f;
-                                if((Math.sqrt((screenPoint0.x-screenPoint1.x)*(screenPoint0.x-screenPoint1.x)+(screenPoint0.y-screenPoint1.y)*(screenPoint0.y-screenPoint1.y)))>ten*5)
+                                float angleRadLastArrow = (float) Math.atan2(screenPoint0.y-lastArrowPoint.y, screenPoint0.x-lastArrowPoint.x);
+                                float angleLastArrow = (float) (angleRadLastArrow * 180 / Math.PI) + 90f;
+                                if(
+                                        Math.sqrt((screenPoint0.x-lastArrowPoint.x)*(screenPoint0.x-lastArrowPoint.x)+(screenPoint0.y-lastArrowPoint.y)*(screenPoint0.y-lastArrowPoint.y))>ten*5
+                                        ||Math.abs(angleLastArrow-angle)>45)
                                     {
+                                        lastArrowPoint=screenPoint0;
                                         canvas.save();
                                         canvas.rotate(angle,screenPoint1.x,screenPoint1.y);
                                        // canvas.drawLine(screenPoint1.x - ten, screenPoint1.y, screenPoint1.x + ten, screenPoint1.y, pathpaint);
