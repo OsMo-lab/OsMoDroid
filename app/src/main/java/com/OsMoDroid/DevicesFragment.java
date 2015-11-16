@@ -306,9 +306,9 @@ public class DevicesFragment extends Fragment
         @Override
         public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
             {
-                MenuItem bind = menu.add(0, 1, 1, R.string.binddevice);
-                MenuItemCompat.setShowAsAction(bind, MenuItemCompat.SHOW_AS_ACTION_IF_ROOM);
-                bind.setIcon(android.R.drawable.ic_menu_add);
+                //MenuItem bind = menu.add(0, 1, 1, R.string.binddevice);
+                //MenuItemCompat.setShowAsAction(bind, MenuItemCompat.SHOW_AS_ACTION_IF_ROOM);
+                //bind.setIcon(android.R.drawable.ic_menu_add);
                 MenuItem refresh = menu.add(0, 2, 2, R.string.refresh);
                 MenuItemCompat.setShowAsAction(refresh, MenuItemCompat.SHOW_AS_ACTION_IF_ROOM);
                 refresh.setIcon(android.R.drawable.ic_menu_rotate);

@@ -194,11 +194,11 @@ public class MainFragment extends Fragment implements GPSLocalServiceClient.upd
                 MenuItem copyadress = menu.add(0, 11, 11, R.string.copylink);
                 MenuItemCompat.setShowAsAction(copyadress, MenuItemCompat.SHOW_AS_ACTION_IF_ROOM);
                 copyadress.setIcon(android.R.drawable.ic_menu_edit);
-                MenuItem shareID = menu.add(0, 12, 12, R.string.shareid);
+                //MenuItem shareID = menu.add(0, 12, 12, R.string.shareid);
                 MenuItem about = menu.add(0, 13, 14, R.string.about);
                 about.setIcon(android.R.drawable.ic_menu_info_details);
                 about.setIntent(new Intent(getActivity(), AboutActivity.class));
-                MenuItem exit = menu.add(0, 14, 13, R.string.copytrackerid);
+                //MenuItem exit = menu.add(0, 14, 13, R.string.copytrackerid);
                 MenuItem save = menu2.add(0, 18, 18, R.string.savepref);
                 MenuItem load = menu2.add(0, 19, 19, R.string.loadpref);
                 //MenuItem addlisten = menu.add(0, 20, 0, "listento");
@@ -290,10 +290,17 @@ public class MainFragment extends Fragment implements GPSLocalServiceClient.upd
                     }
                 if (item.getItemId() == 10)
                     {
-                        Intent sendIntent = new Intent(Intent.ACTION_SEND);
-                        sendIntent.setType("text/plain");
-                        sendIntent.putExtra(android.content.Intent.EXTRA_TEXT, getString(R.string.iamhere) + OsMoDroid.settings.getString("viewurl", ""));
-                        startActivity(Intent.createChooser(sendIntent, getActivity().getString(R.string.sharelink)));
+                        if(!OsMoDroid.settings.getString("viewurl", "").equals(""))
+                            {
+                                Intent sendIntent = new Intent(Intent.ACTION_SEND);
+                                sendIntent.setType("text/plain");
+                                sendIntent.putExtra(android.content.Intent.EXTRA_TEXT, getString(R.string.iamhere) + OsMoDroid.settings.getString("viewurl", ""));
+                                startActivity(Intent.createChooser(sendIntent, getActivity().getString(R.string.sharelink)));
+                            }
+                        else
+                            {
+                                Toast.makeText(getActivity(), R.string.startmonitoringfirst, Toast.LENGTH_SHORT).show();
+                            }
                     }
                 if (item.getItemId() == 11)
                     {
@@ -558,17 +565,17 @@ public class MainFragment extends Fragment implements GPSLocalServiceClient.upd
                                                     dt.setText(OsMoDroid.settings.getString("u", "") + "\n" + dt.getText());
                                                 }
                                         }
-                                    if (!OsMoDroid.settings.getString("tracker_id", "").equals(""))
-                                        {
-                                            if (dt.getText().toString().equals(""))
-                                                {
-                                                    dt.setText(dt.getText() + " " + "TrackerID=" + OsMoDroid.settings.getString("tracker_id", ""));
-                                                }
-                                            else
-                                                {
-                                                    dt.setText(dt.getText() + "\n" + "TrackerID=" + OsMoDroid.settings.getString("tracker_id", ""));
-                                                }
-                                        }
+//                                    if (!OsMoDroid.settings.getString("tracker_id", "").equals(""))
+//                                        {
+//                                            if (dt.getText().toString().equals(""))
+//                                                {
+//                                                    dt.setText(dt.getText() + " " + "TrackerID=" + OsMoDroid.settings.getString("tracker_id", ""));
+//                                                }
+//                                            else
+//                                                {
+//                                                    dt.setText(dt.getText() + "\n" + "TrackerID=" + OsMoDroid.settings.getString("tracker_id", ""));
+//                                                }
+//                                        }
                                     if (dt.getText().equals(""))
                                         {
                                             dt.setText(intent.getStringExtra("sattelite"));
