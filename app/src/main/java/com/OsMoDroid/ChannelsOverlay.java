@@ -348,18 +348,20 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
                                 canvas.drawLine(screenPoint0.x, screenPoint0.y, screenPoint1.x, screenPoint1.y, pathpaint);
                                 float angleRad = (float) Math.atan2(screenPoint0.y-screenPoint1.y, screenPoint0.x-screenPoint1.x);
                                 float angle = (float) (angleRad * 180 / Math.PI) + 90f;
-                                float angleRadLastArrow = (float) Math.atan2(screenPoint0.y-lastArrowPoint.y, screenPoint0.x-lastArrowPoint.x);
+                                float angleRadLastArrow = (float) Math.atan2(screenPoint1.y-lastArrowPoint.y, screenPoint1.x-lastArrowPoint.x);
                                 float angleLastArrow = (float) (angleRadLastArrow * 180 / Math.PI) + 90f;
                                 if(
-                                        Math.sqrt((screenPoint0.x-lastArrowPoint.x)*(screenPoint0.x-lastArrowPoint.x)+(screenPoint0.y-lastArrowPoint.y)*(screenPoint0.y-lastArrowPoint.y))>ten*5
-                                        ||Math.abs(angleLastArrow-angle)>45)
+                                        Math.sqrt((screenPoint0.x-lastArrowPoint.x)*(screenPoint0.x-lastArrowPoint.x)+(screenPoint0.y-lastArrowPoint.y)*(screenPoint0.y-lastArrowPoint.y))>twenty*10f
+                                        ||Math.abs(angleLastArrow-angle)>200f
+                                        )
                                     {
-                                        lastArrowPoint=screenPoint0;
+                                        lastArrowPoint.x=screenPoint0.x;
+                                        lastArrowPoint.y=screenPoint0.y;
                                         canvas.save();
                                         canvas.rotate(angle,screenPoint1.x,screenPoint1.y);
                                        // canvas.drawLine(screenPoint1.x - ten, screenPoint1.y, screenPoint1.x + ten, screenPoint1.y, pathpaint);
-                                        canvas.drawLine(screenPoint1.x+ten/2,screenPoint1.y, screenPoint1.x,screenPoint1.y-ten,pathpaint);
-                                        canvas.drawLine(screenPoint1.x, screenPoint1.y - ten, screenPoint1.x-ten/2, screenPoint1.y,pathpaint);
+                                        canvas.drawLine(screenPoint1.x+twenty/2,screenPoint1.y, screenPoint1.x,screenPoint1.y-twenty,pathpaint);
+                                        canvas.drawLine(screenPoint1.x, screenPoint1.y - twenty, screenPoint1.x-twenty/2, screenPoint1.y,pathpaint);
                                         canvas.restore();
 
                                     }
