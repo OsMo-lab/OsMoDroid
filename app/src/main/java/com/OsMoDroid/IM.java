@@ -12,6 +12,8 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
 import java.net.InetSocketAddress;
+//import java.security.SecureRandom;
+//import java.security.cert.X509Certificate;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -48,6 +50,14 @@ import android.speech.tts.TextToSpeech;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
+
+//import javax.net.ssl.SSLContext;
+//import javax.net.ssl.SSLSession;
+//import javax.net.ssl.SSLSocket;
+//import javax.net.ssl.SSLSocketFactory;
+//import javax.net.ssl.TrustManager;
+//import javax.net.ssl.X509TrustManager;
+
 /**
  * @author dfokin
  *         Class for work with osmo server
@@ -67,6 +77,7 @@ public class IM implements ResultsListener
         private static int RECONNECT_TIMEOUT = 1000 * 30;
         final boolean log = true;
         public Socket socket;
+//        public SSLSocket sslsocket;
         volatile public boolean authed = false;
         public BufferedReader rd;
         public PrintWriter wr;
@@ -1585,6 +1596,7 @@ public class IM implements ResultsListener
                                                                                                         if (newlat != dev.lat & newlon != dev.lon && (System.currentTimeMillis() - dev.updatated) > 5 * 60 * 1000) {
                                                                                                             dev.lat = newlat;
                                                                                                             dev.lon = newlon;
+                                                                                                            dev.updatated=System.currentTimeMillis();
                                                                                                             notifydevicemonitoring(dev,true);
                                                                                                         }
                                                                                                     }
@@ -1861,7 +1873,7 @@ public class IM implements ResultsListener
                     }
                 if (newlat != dev.lat & newlon != dev.lon && (System.currentTimeMillis() - dev.updatated) > 5 * 60 * 1000)
                     {
-                        notifydevicemonitoring(dev,true);
+                        //notifydevicemonitoring(dev,true);
                     }
                 dev.lat = newlat;
                 dev.lon = newlon;
@@ -1883,7 +1895,8 @@ public class IM implements ResultsListener
                     @Override
                     public void run()
                         {
-                            dev.devicePath.add(new GeoPoint(dev.lat, dev.lon));
+                            GeoPoint gp = new GeoPoint(dev.lat, dev.lon);
+                            dev.devicePath.add(new android.graphics.Point(gp.getLatitudeE6(),gp.getLongitudeE6()));
                             if (LocalService.devlistener != null)
                                 {
                                     LocalService.devlistener.onDeviceChange(dev);
@@ -2194,12 +2207,42 @@ public class IM implements ResultsListener
                                 workserverint = -1;
                                 workservername = "";
                                 socket = new Socket();
+
                                 if (OsMoDroid.settings.getBoolean("tcpnodelay", false))
                                     {
                                         socket.setTcpNoDelay(true);
                                         LocalService.addlog("TCP_NODELAY=" + Boolean.toString(socket.getTcpNoDelay()));
                                     }
                                 socket.connect(sockAddr, 5000);
+                                //socket.connect(new InetSocketAddress( "osmo.mobi", 4249), 5000);
+                               // SSLContext sslContext= SSLContext.getInstance("TLS");
+                                //sslContext.init(null,null,null);
+                              //  TrustManager[] trustAllCerts = new TrustManager[] {
+                             //           new X509TrustManager() {
+                           //                 public X509Certificate[] getAcceptedIssuers() {
+                          //                      X509Certificate[] myTrustedAnchors = new X509Certificate[0];
+                          //                      return myTrustedAnchors;
+                         //                   }
+//
+//                                            @Override
+//                                            public void checkClientTrusted(X509Certificate[] certs, String authType) {}
+//
+//                                            @Override
+//                                            public void checkServerTrusted(X509Certificate[] certs, String authType) {}
+//                                        }
+//                                };
+//                                sslContext.init(null,trustAllCerts,new SecureRandom());
+//                                SSLSocketFactory socketFactory = sslContext.getSocketFactory();
+//                               sslsocket=(SSLSocket) socketFactory.createSocket(socket, "osmo.mobi", 4249, false);
+//                                sslsocket.setUseClientMode(true);
+//                                SSLSession sslSession=sslsocket.getSession();
+//                                if (log)
+//                                    {
+//                                        Log.d(this.getClass().getName(), "Secured="+sslSession.isValid());
+//                                    }
+//if(!sslSession.isValid()){
+//    throw new Exception();
+//}
                                 socketRetryInt = 0;
                                 connOpened = true;
                                 connecting = false;

@@ -8,6 +8,7 @@ import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.overlay.PathOverlay;
 
 import android.graphics.Color;
+import android.graphics.Point;
 import android.util.Log;
 public class Device implements Comparable<Device>, Serializable
     {
@@ -28,7 +29,8 @@ public class Device implements Comparable<Device>, Serializable
         public String ch;
         public boolean subscribed = false;
         public long updatated = 0;
-        public List<GeoPoint> devicePath = new ArrayList<GeoPoint>();
+        public List<Point> devicePath = new ArrayList<Point>();
+        public int iprecomputed=0;
         public List<ChatMessage> messagesstringList = new ArrayList<ChatMessage>();
         //public PathOverlay p;
         public Device()

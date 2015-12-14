@@ -101,6 +101,7 @@ public class Channel implements Serializable, ResultsListener
                                                 dev.lat = Float.parseFloat(jsonObject.getString("lat"));
                                                 dev.lon = Float.parseFloat(jsonObject.getString("lon"));
                                             }
+                                        dev.updatated=System.currentTimeMillis();
                                         recieveddeviceList.add(dev);
                                     }
                                 catch (NumberFormatException e)

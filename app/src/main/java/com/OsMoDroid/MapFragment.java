@@ -113,12 +113,15 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
         @Override
         public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
             {
+                MenuItem arrows = menu.add(0, 14, 0, "Show arrows");
                 MenuItem traces = menu.add(0, 1, 0, R.string.showtraces);
                 MenuItem rotation = menu.add(0, 2, 0, R.string.enable_manual_rotation);
                 courserotation = menu.add(0, 3, 0, R.string.enable_course_rotation);
                 traces.setCheckable(true);
                 rotation.setCheckable(true);
                 courserotation.setCheckable(true);
+                arrows.setCheckable(true);
+                arrows.setChecked(OsMoDroid.settings.getBoolean("arrows",true));
                 traces.setChecked(OsMoDroid.settings.getBoolean("traces", true));
                 rotation.setChecked(OsMoDroid.settings.getBoolean("rotation", false));
                 courserotation.setChecked(rotate);
@@ -144,39 +147,46 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
                             item.setChecked(!item.isChecked());
                             OsMoDroid.editor.putBoolean("traces", item.isChecked());
                             OsMoDroid.editor.commit();
+                            reinitchoverlay();
                             mMapView.invalidate();
                             break;
                         case 2:
                             item.setChecked(!item.isChecked());
                             OsMoDroid.editor.putBoolean("rotation", item.isChecked());
                             OsMoDroid.editor.commit();
+                            reinitchoverlay();
                             mMapView.invalidate();
                             break;
                         case 3:
                             item.setChecked(!item.isChecked());
                             rotate = !rotate;
                             mMapView.setMapOrientation(0);
+                            reinitchoverlay();
                             mMapView.invalidate();
                             break;
                         case 6:
                             mMapView.setTileSource(TileSourceFactory.MAPNIK);
                             LocalService.selectedTileSourceInt = 1;
+                            reinitchoverlay();
                             break;
                         case 5:
                             mMapView.setTileSource(mapSurferTileSource);
                             LocalService.selectedTileSourceInt = 2;
+                            reinitchoverlay();
                             break;
                         case 7:
                             BingMapTileSource.retrieveBingKey(globalActivity);
                             bingTileSource.setStyle(BingMapTileSource.IMAGERYSET_AERIAL);
                             mMapView.setTileSource(bingTileSource);
                             LocalService.selectedTileSourceInt = 3;
+                            reinitchoverlay();
                             break;
                         case 8:
                             BingMapTileSource.retrieveBingKey(globalActivity);
                             bingTileSource.setStyle(BingMapTileSource.IMAGERYSET_AERIALWITHLABELS);
                             mMapView.setTileSource(bingTileSource);
                             LocalService.selectedTileSourceInt = 4;
+                            reinitchoverlay();
                             break;
                         case 9:
                             item.setChecked(!item.isChecked());
@@ -186,10 +196,12 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
                             mMapView.setTilesScaledToDpi(item.isChecked());
                             mMapView.invalidate();
                             mController.setCenter(g);
+                            reinitchoverlay();
                             break;
                         case 10:
                             mMapView.setTileSource(sputnikTileSource);
                             LocalService.selectedTileSourceInt = 6;
+                            reinitchoverlay();
                             break;
                         case 11:
                             LinearLayout layout = new LinearLayout(getActivity());
@@ -243,6 +255,14 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
                         case 12:
                             mMapView.setTileSource(outdoorTileSource);
                             LocalService.selectedTileSourceInt = 7;
+                            reinitchoverlay();
+                            break;
+                        case 14:
+                            item.setChecked(!item.isChecked());
+                            OsMoDroid.editor.putBoolean("arrows", item.isChecked());
+                            OsMoDroid.editor.commit();
+                            reinitchoverlay();
+                            mMapView.invalidate();
                             break;
                         default:
                             break;
@@ -389,6 +409,7 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
                 switch (LocalService.selectedTileSourceInt)
                     {
                         case 1:
+
                             mMapView.setTileSource(TileSourceFactory.MAPNIK);
                             break;
                         case 2:
@@ -482,6 +503,12 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
                 compas.enableCompass();
                 mMapView.setKeepScreenOn(true);
                 return view;
+            }
+        private void reinitchoverlay()
+            {
+                mMapView.getOverlays().remove(choverlay);
+                choverlay = new ChannelsOverlay(mResourceProxy, mMapView);
+                mMapView.getOverlays().add(choverlay);
             }
         @Override
         public void onDeviceChange(Device dev)

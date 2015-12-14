@@ -37,6 +37,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.graphics.Point;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -78,7 +79,8 @@ import android.widget.Toast;
 import com.OsMoDroid.Netutil.MyAsyncTask;
 public class LocalService extends Service implements LocationListener, GpsStatus.Listener, TextToSpeech.OnInitListener, ResultsListener, SensorEventListener
     {
-        public static List<IGeoPoint> traceList = new ArrayList<IGeoPoint>();
+        public static Device mydev = new Device();
+        //public static List<Point> traceList = new ArrayList<Point>();
         public static ArrayList<ColoredGPX> showedgpxList = new ArrayList<ColoredGPX>();
         boolean binded = false;
         private SensorManager mSensorManager;
@@ -391,6 +393,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
         int intKM;
         boolean where = false;
         static int selectedTileSourceInt = 1;
+
         //boolean connecting=false;
         NotificationCompat.Builder foregroundnotificationBuilder;
         boolean pro;
@@ -1173,7 +1176,8 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                         scounter = 0;
                         sendcounter = 0;
                         sended = true;
-                        traceList.clear();
+                        mydev.devicePath.clear();
+                        mydev.iprecomputed=0;
                         sending = "";
                         ReadPref();
                         if (OsMoDroid.settings.getBoolean("playsound", false))
@@ -1617,7 +1621,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                         prevlocation_spd.set(location);
                         GeoPoint geopoint = new GeoPoint(location);
                         //if(devlistener!=null){devlistener.onNewPoint(geopoint);}
-                        traceList.add(geopoint);
+                        mydev.devicePath.add(new Point(geopoint.getLatitudeE6(), geopoint.getLongitudeE6()));
                     }
                 if ((int) location.getAccuracy() < hdop_gpx)
                     {

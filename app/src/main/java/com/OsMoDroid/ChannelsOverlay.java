@@ -111,40 +111,35 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
                                 drawGPX(canvas, pj, gpx, theBoundingBox, scrPoint, mapView);
                             }
                     }
-                if (LocalService.traceList.size() > 2)
+                if (LocalService.mydev.devicePath.size() > 2)
                     {
-
-                        pathpaint.setColor(Color.RED);
-                        pj.toPixels((GeoPoint) LocalService.traceList.get(0), scrPoint);
-                        for (int i = LocalService.traceList.size() - 2; i >= 0; i--)
-                            {
-                                //((GeoPoint)LocalService.traceList.get(i+1)).distanceTo(LocalService.traceList.get(i));
-                                pj.toPixels((GeoPoint) LocalService.traceList.get(i), scrPoint);
-                                pj.toPixels((GeoPoint) LocalService.traceList.get(i + 1), scrPoint1);
-                                if (Math.abs(scrPoint.x - scrPoint1.x) + Math.abs(scrPoint.y - scrPoint1.y) > 1)
-                                    {
-                                        canvas.drawLine(scrPoint1.x, scrPoint1.y, scrPoint.x, scrPoint.y, pathpaint);
-                                    }
-                            }
+                        drawdevicepath(canvas,pj,LocalService.mydev);
+//                        pathpaint.setColor(Color.RED);
+//                        pj.toPixels((GeoPoint) LocalService.traceList.get(0), scrPoint);
+//                        for (int i = LocalService.traceList.size() - 2; i >= 0; i--)
+//                            {
+//                                //((GeoPoint)LocalService.traceList.get(i+1)).distanceTo(LocalService.traceList.get(i));
+//                                //pj.toPixels((GeoPoint) LocalService.traceList.get(i), scrPoint);
+//                                pj.toPixels((GeoPoint) LocalService.traceList.get(i + 1), scrPoint1);
+//                                if (Math.abs(scrPoint.x - scrPoint1.x) + Math.abs(scrPoint.y - scrPoint1.y) > 3 )
+//                                    {
+//                                        if( Math.abs(scrPoint.x - scrPoint1.x) + Math.abs(scrPoint.y - scrPoint1.y)<twenty*20)
+//                                            {
+//                                                canvas.drawLine(scrPoint1.x, scrPoint1.y, scrPoint.x, scrPoint.y, pathpaint);
+//                                            }
+//                                        else
+//                                            {
+//                                                canvas.drawPoint( scrPoint.x, scrPoint.y, pathpaint);
+//                                            }
+//                                        scrPoint.set(scrPoint1.x,scrPoint1.y);
+//                                    }
+//                            }
                     }
                 for (Device dev : LocalService.deviceList)
                     {
                         if (OsMoDroid.settings.getBoolean("traces", true))
                             {
-                                if (dev.devicePath.size() > 2)
-                                    {
-                                        pathpaint.setColor(dev.color);
-                                        pj.toPixels((GeoPoint) dev.devicePath.get(0), scrPoint);
-                                        for (int i = dev.devicePath.size() - 2; i >= 0; i--)
-                                            {
-                                                pj.toPixels((GeoPoint) dev.devicePath.get(i), scrPoint);
-                                                pj.toPixels((GeoPoint) dev.devicePath.get(i + 1), scrPoint1);
-                                                if (Math.abs(scrPoint.x - scrPoint1.x) + Math.abs(scrPoint.y - scrPoint1.y) > 1)
-                                                    {
-                                                        canvas.drawLine(scrPoint1.x, scrPoint1.y, scrPoint.x, scrPoint.y, pathpaint);
-                                                    }
-                                            }
-                                    }
+                                drawdevicepath(canvas,pj,dev);
                             }
                         if (dev.lat != 0f && dev.lon != 0f)
                             {
@@ -224,20 +219,7 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
                                     {
                                         if (OsMoDroid.settings.getBoolean("traces", true))
                                             {
-                                                if (dev.devicePath.size() > 2)
-                                                    {
-                                                        pathpaint.setColor(dev.color);
-                                                        pj.toPixels((GeoPoint) dev.devicePath.get(0), scrPoint);
-                                                        for (int i = dev.devicePath.size() - 2; i >= 0; i--)
-                                                            {
-                                                                pj.toPixels((GeoPoint) dev.devicePath.get(i), scrPoint);
-                                                                pj.toPixels((GeoPoint) dev.devicePath.get(i + 1), scrPoint1);
-                                                                if (Math.abs(scrPoint.x - scrPoint1.x) + Math.abs(scrPoint.y - scrPoint1.y) > 1)
-                                                                    {
-                                                                        canvas.drawLine(scrPoint1.x, scrPoint1.y, scrPoint.x, scrPoint.y, pathpaint);
-                                                                    }
-                                                            }
-                                                    }
+                                                drawdevicepath(canvas, pj, dev);
                                             }
                                         if (dev.lat != 0f && dev.lon != 0f)
                                             {
@@ -286,6 +268,39 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
                                             }
                                     }
 
+                            }
+                    }
+            }
+        private void drawdevicepath(Canvas canvas, Projection pj, Device dev)
+            {
+                if (dev.devicePath.size() > 2)
+                    {
+                        pathpaint.setColor(dev.color);
+                        while (dev.iprecomputed < dev.devicePath.size())
+                            {
+                                final Point pt = dev.devicePath.get(dev.iprecomputed);
+                                pj.toProjectedPixels(pt.x, pt.y, pt);
+                                dev.iprecomputed++;
+                            }
+                        //pj.toPixels((GeoPoint) dev.devicePath.get(0), scrPoint);
+                       Point screenPoint = pj.toPixelsFromProjected(dev.devicePath.get(0), this.mTempPoint1);
+                        for (int i = dev.devicePath.size() - 2; i >= 0; i--)
+                            {
+                                //pj.toPixels((GeoPoint) dev.devicePath.get(i), scrPoint);
+                                Point screenPoint1 = pj.toPixelsFromProjected(dev.devicePath.get(i+1), this.mTempPoint2);
+                                //pj.toPixels((GeoPoint) dev.devicePath.get(i + 1), scrPoint1);
+                                if (Math.abs(screenPoint.x - screenPoint1.x) + Math.abs(screenPoint.y - screenPoint1.y) > 3 )
+                                    {
+                                        if( Math.abs(screenPoint.x - screenPoint1.x) + Math.abs(screenPoint.y - screenPoint1.y)<twenty*20)
+                                            {
+                                                canvas.drawLine(screenPoint1.x, screenPoint1.y, screenPoint.x, screenPoint.y, pathpaint);
+                                            }
+                                        else
+                                            {
+                                                canvas.drawPoint( screenPoint.x, screenPoint.y, pathpaint);
+                                            }
+                                        screenPoint.set(screenPoint1.x,screenPoint1.y);
+                                    }
                             }
                     }
             }
@@ -340,32 +355,40 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
                                 screenPoint1 = pj.toPixelsFromProjected(projectedPoint1, this.mTempPoint2);
                                 // skip this point, too close to previous point
 
-                                if (Math.abs(screenPoint1.x - screenPoint0.x) + Math.abs(screenPoint1.y - screenPoint0.y) <= 3)
+                                if (Math.abs(screenPoint1.x - screenPoint0.x) + Math.abs(screenPoint1.y - screenPoint0.y) <= 3 )
                                     {
                                         continue;
                                     }
                                 //gpx.mPath.lineTo(screenPoint1.x, screenPoint1.y);
-                                canvas.drawLine(screenPoint0.x, screenPoint0.y, screenPoint1.x, screenPoint1.y, pathpaint);
-                                float angleRad = (float) Math.atan2(screenPoint0.y-screenPoint1.y, screenPoint0.x-screenPoint1.x);
-                                float angle = (float) (angleRad * 180 / Math.PI) + 90f;
-                                float angleRadLastArrow = (float) Math.atan2(screenPoint1.y-lastArrowPoint.y, screenPoint1.x-lastArrowPoint.x);
-                                float angleLastArrow = (float) (angleRadLastArrow * 180 / Math.PI) + 90f;
-                                if(
-                                        Math.sqrt((screenPoint0.x-lastArrowPoint.x)*(screenPoint0.x-lastArrowPoint.x)+(screenPoint0.y-lastArrowPoint.y)*(screenPoint0.y-lastArrowPoint.y))>twenty*10f
-                                        ||Math.abs(angleLastArrow-angle)>200f
-                                        )
+                                if((Math.abs(screenPoint1.x - screenPoint0.x) + Math.abs(screenPoint1.y - screenPoint0.y))<twenty*20)
                                     {
-                                        lastArrowPoint.x=screenPoint0.x;
-                                        lastArrowPoint.y=screenPoint0.y;
-                                        canvas.save();
-                                        canvas.rotate(angle,screenPoint1.x,screenPoint1.y);
-                                       // canvas.drawLine(screenPoint1.x - ten, screenPoint1.y, screenPoint1.x + ten, screenPoint1.y, pathpaint);
-                                        canvas.drawLine(screenPoint1.x+twenty/2,screenPoint1.y, screenPoint1.x,screenPoint1.y-twenty,pathpaint);
-                                        canvas.drawLine(screenPoint1.x, screenPoint1.y - twenty, screenPoint1.x-twenty/2, screenPoint1.y,pathpaint);
-                                        canvas.restore();
-
+                                        canvas.drawLine(screenPoint0.x, screenPoint0.y, screenPoint1.x, screenPoint1.y, pathpaint);
+                                        if(OsMoDroid.settings.getBoolean("arrows",true))
+                                            {
+                                                float angleRad = (float) Math.atan2(screenPoint0.y - screenPoint1.y, screenPoint0.x - screenPoint1.x);
+                                                float angle = (float) (angleRad * 180 / Math.PI) + 90f;
+                                                float angleRadLastArrow = (float) Math.atan2(screenPoint1.y - lastArrowPoint.y, screenPoint1.x - lastArrowPoint.x);
+                                                float angleLastArrow = (float) (angleRadLastArrow * 180 / Math.PI) + 90f;
+                                                if (
+                                                        Math.sqrt((screenPoint0.x - lastArrowPoint.x) * (screenPoint0.x - lastArrowPoint.x) + (screenPoint0.y - lastArrowPoint.y) * (screenPoint0.y - lastArrowPoint.y)) > twenty * 10f
+                                                                || Math.abs(angleLastArrow - angle) > 200f
+                                                        )
+                                                    {
+                                                        lastArrowPoint.x = screenPoint0.x;
+                                                        lastArrowPoint.y = screenPoint0.y;
+                                                        canvas.save();
+                                                        canvas.rotate(angle, screenPoint0.x, screenPoint0.y);
+                                                        // canvas.drawLine(screenPoint1.x - ten, screenPoint1.y, screenPoint1.x + ten, screenPoint1.y, pathpaint);
+                                                        canvas.drawLine(screenPoint0.x + twenty / 2, screenPoint0.y + twenty, screenPoint0.x, screenPoint0.y, pathpaint);
+                                                        canvas.drawLine(screenPoint0.x, screenPoint0.y, screenPoint0.x - twenty / 2, screenPoint0.y + twenty, pathpaint);
+                                                        canvas.restore();
+                                                    }
+                                            }
                                     }
-
+                                else
+                                    {
+                                        canvas.drawPoint(screenPoint1.x, screenPoint1.y, pathpaint);
+                                    }
 
                                 projectedPoint0 = projectedPoint1;
                                 screenPoint0.x = screenPoint1.x;
