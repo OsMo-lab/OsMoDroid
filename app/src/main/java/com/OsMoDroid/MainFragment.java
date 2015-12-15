@@ -565,17 +565,17 @@ public class MainFragment extends Fragment implements GPSLocalServiceClient.upd
                                                     dt.setText(OsMoDroid.settings.getString("u", "") + "\n" + dt.getText());
                                                 }
                                         }
-//                                    if (!OsMoDroid.settings.getString("tracker_id", "").equals(""))
-//                                        {
-//                                            if (dt.getText().toString().equals(""))
-//                                                {
-//                                                    dt.setText(dt.getText() + " " + "TrackerID=" + OsMoDroid.settings.getString("tracker_id", ""));
-//                                                }
-//                                            else
-//                                                {
-//                                                    dt.setText(dt.getText() + "\n" + "TrackerID=" + OsMoDroid.settings.getString("tracker_id", ""));
-//                                                }
-//                                        }
+                                    if (!OsMoDroid.settings.getString("tracker_id", "").equals(""))
+                                        {
+                                            if (dt.getText().toString().equals(""))
+                                                {
+                                                    dt.setText(dt.getText() +  "TrackerID=" + OsMoDroid.settings.getString("tracker_id", ""));
+                                                }
+                                            else
+                                                {
+                                                    dt.setText(dt.getText() + "\n" + "TrackerID=" + OsMoDroid.settings.getString("tracker_id", ""));
+                                                }
+                                        }
                                     if (dt.getText().equals(""))
                                         {
                                             dt.setText(intent.getStringExtra("sattelite"));

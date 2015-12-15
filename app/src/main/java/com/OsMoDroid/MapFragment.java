@@ -113,7 +113,7 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
         @Override
         public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
             {
-                MenuItem arrows = menu.add(0, 14, 0, "Show arrows");
+                MenuItem arrows = menu.add(0, 14, 0, R.string.show_arrows);
                 MenuItem traces = menu.add(0, 1, 0, R.string.showtraces);
                 MenuItem rotation = menu.add(0, 2, 0, R.string.enable_manual_rotation);
                 courserotation = menu.add(0, 3, 0, R.string.enable_course_rotation);
@@ -121,7 +121,7 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
                 rotation.setCheckable(true);
                 courserotation.setCheckable(true);
                 arrows.setCheckable(true);
-                arrows.setChecked(OsMoDroid.settings.getBoolean("arrows",true));
+                arrows.setChecked(OsMoDroid.settings.getBoolean("arrows",false));
                 traces.setChecked(OsMoDroid.settings.getBoolean("traces", true));
                 rotation.setChecked(OsMoDroid.settings.getBoolean("rotation", false));
                 courserotation.setChecked(rotate);

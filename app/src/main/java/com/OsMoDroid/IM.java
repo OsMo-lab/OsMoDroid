@@ -2021,6 +2021,24 @@ public class IM implements ResultsListener
                                         writeException(e);
                                         e.printStackTrace();
                                     }
+                                if(result.Jo.has("uid"))
+                                    {
+                                        if(result.Jo.optInt("uid")>0)
+                                            {
+                                                OsMoDroid.editor.putString("u", result.Jo.optString("name", ""));
+                                                OsMoDroid.editor.putString("p", result.Jo.optString("uid", ""));
+                                                OsMoDroid.editor.commit();
+
+                                            }
+                                        else
+                                            {
+                                                OsMoDroid.editor.remove("p");
+                                                OsMoDroid.editor.remove("u");
+                                                OsMoDroid.editor.commit();
+
+                                            }
+                                        localService.refresh();
+                                    }
                             }
                         else
                             {

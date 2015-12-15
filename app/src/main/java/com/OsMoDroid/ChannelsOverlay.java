@@ -283,7 +283,7 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
                                 dev.iprecomputed++;
                             }
                         //pj.toPixels((GeoPoint) dev.devicePath.get(0), scrPoint);
-                       Point screenPoint = pj.toPixelsFromProjected(dev.devicePath.get(0), this.mTempPoint1);
+                       Point screenPoint = pj.toPixelsFromProjected(dev.devicePath.get(dev.devicePath.size()-1), this.mTempPoint1);
                         for (int i = dev.devicePath.size() - 2; i >= 0; i--)
                             {
                                 //pj.toPixels((GeoPoint) dev.devicePath.get(i), scrPoint);

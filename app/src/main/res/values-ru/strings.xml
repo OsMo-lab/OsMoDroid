@@ -290,4 +290,5 @@
 <string name="appwidget_text">Пример</string>
 <string name="add_widget">Добавить виджет</string>
     <string name="startmonitoringfirst">Сначала запустите мониторинг</string>
+    <string name="show_arrows">Стрелки направления</string>
 </resources>

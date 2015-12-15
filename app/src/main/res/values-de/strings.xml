@@ -98,4 +98,5 @@
   <string name="inetoff">Data connection lost</string>
   <string name="ineton">Data connection restored</string>
   <string name="startmonitoringfirst">To get URL, start monitoring first</string>
+  <string name="show_arrows">Show arrows</string>
 </resources>
