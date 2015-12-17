@@ -1088,6 +1088,14 @@ public class IM implements ResultsListener
                                 localService.stopSelf();
                                 System.exit(0);
                             }
+                        if (param.equals(OsMoDroid.TRACKER_GET_PREFS))
+                            {
+                                localService.getpreferences(localService);
+                            }
+                        if (param.equals(OsMoDroid.TRACKER_SET_PREFS))
+                            {
+                                localService.setpreferences(jo,localService);
+                            }
                         if (param.equals(OsMoDroid.WHERE))
                             {
                                 sendToServer("RCR:" + OsMoDroid.WHERE + "|1", false);

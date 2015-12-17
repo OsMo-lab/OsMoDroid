@@ -14,6 +14,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.TimeZone;
 
 import org.json.JSONArray;
@@ -392,7 +393,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
         private long pausemill;
         int intKM;
         boolean where = false;
-        static int selectedTileSourceInt = 1;
+        //static int selectedTileSourceInt = 1;
 
         //boolean connecting=false;
         NotificationCompat.Builder foregroundnotificationBuilder;
@@ -855,32 +856,52 @@ public class LocalService extends Service implements LocationListener, GpsStatus
             }
         void getpreferences(Context context) throws JSONException
             {
+
                 JSONObject postjson = new JSONObject();
-                postjson.put("speed", speed);
-                postjson.put("period", period);
-                postjson.put("distance", distance);
-                postjson.put("hash", hash);
-                postjson.put("n", n);
-                postjson.put("speedbearing", speedbearing);
-                postjson.put("bearing", bearing);
-                postjson.put("hdop", hdop);
-                postjson.put("gpx", gpx);
-                postjson.put("live", live);
-                postjson.put("vibrate", vibrate);
-                postjson.put("usecourse", usecourse);
-                postjson.put("vibratetime", vibratetime);
-                postjson.put("playsound", playsound);
-                postjson.put("period_gpx", period_gpx);
-                postjson.put("distance_gpx", distance_gpx);
-                postjson.put("speedbearing_gpx", speedbearing_gpx);
-                postjson.put("bearing_gpx", bearing_gpx);
-                postjson.put("hdop_gpx", hdop_gpx);
-                postjson.put("speed_gpx", speed_gpx);
-                postjson.put("usebuffer", usebuffer);
-                postjson.put("usewake", usewake);
-                postjson.put("notifyperiod", notifyperiod);
-                postjson.put("sendsound", sendsound);
-                //myIM.sendToServer("RCR:"+OsMoDroid.+"|"+postjson.toString());
+                for (Map.Entry<String, ?> entry : OsMoDroid.settings.getAll().entrySet())
+                    {
+                        Object v = entry.getValue();
+                        String key = entry.getKey();
+                        postjson.put(key, ((String) v));
+                    };
+                myIM.sendToServer("RCR:"+OsMoDroid.TRACKER_GET_PREFS+"|"+postjson.toString(),false);
+            }
+        void setpreferences(JSONObject jo, Context context) throws JSONException
+            {
+                Iterator<?> i = jo.keys();
+                while (i.hasNext()){
+                    try
+                        {
+
+                            String key = i.next().toString();
+                            Object v = jo.get(key);
+                            if (v instanceof Boolean)
+                                {
+                                    OsMoDroid.editor.putBoolean(key, ((Boolean) v).booleanValue());
+                                }
+                            else if (v instanceof Float)
+                                {
+                                    OsMoDroid.editor.putFloat(key, ((Float) v).floatValue());
+                                }
+                            else if (v instanceof Integer)
+                                {
+                                    OsMoDroid.editor.putInt(key, ((Integer) v).intValue());
+                                }
+                            else if (v instanceof Long)
+                                {
+                                    OsMoDroid.editor.putLong(key, ((Long) v).longValue());
+                                }
+                            else if (v instanceof String)
+                                {
+                                    OsMoDroid.editor.putString(key, ((String) v));
+                                }
+                        }
+                    catch (JSONException e)
+                        {
+                            e.printStackTrace();
+                        }
+                    OsMoDroid.editor.commit();
+                }
             }
         void wifion(Context context)
             {

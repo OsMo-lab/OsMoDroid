@@ -115,8 +115,20 @@ public class TracFileListFragment extends Fragment implements ResultsListener
                     }
                 if (item.getItemId() == 2)
                     {
-                        File file = new File(sdDir, "OsMoDroid/" + trackFileList.get((int) acmi.id).fileName);
-                        file.delete();
+                        File fileName = new File(sdDir, "OsMoDroid/" + trackFileList.get((int) acmi.id).fileName);
+                        ColoredGPX load = new ColoredGPX(0, fileName, "#0000FF", null);
+                        Iterator<ColoredGPX> it = LocalService.showedgpxList.iterator();
+                        while (it.hasNext())
+                            {
+                                ColoredGPX cg = it.next();
+                                if (cg.gpxfile.equals(load.gpxfile))
+                                    {
+                                        it.remove();
+                                    }
+                            }
+                        trackFileList.get((int) acmi.id).showedonmap = false;
+                        trackFileAdapter.notifyDataSetChanged();
+                        fileName.delete();
                         getFileList();
                     }
                 if (item.getItemId() == 3)
@@ -165,9 +177,9 @@ public class TracFileListFragment extends Fragment implements ResultsListener
                                         ContextMenuInfo menuInfo)
             {
                 //menu.add(0, 1, 1, R.string.uploadtotrera).setIcon(android.R.drawable.arrow_up_float);
-                menu.add(0, 2, 2, R.string.delete).setIcon(android.R.drawable.ic_menu_delete);
-                menu.add(0, 3, 3, R.string.showonmap).setIcon(android.R.drawable.ic_menu_directions);
-                menu.add(0, 4, 4, R.string.cancel).setIcon(android.R.drawable.ic_menu_manage);
+                menu.add(0, 2, 3, R.string.delete).setIcon(android.R.drawable.ic_menu_delete);
+                menu.add(0, 3, 1, R.string.showonmap).setIcon(android.R.drawable.ic_menu_directions);
+                menu.add(0, 4, 2, R.string.hidefromnmap).setIcon(android.R.drawable.ic_menu_manage);
                 super.onCreateContextMenu(menu, v, menuInfo);
             }
         @Override

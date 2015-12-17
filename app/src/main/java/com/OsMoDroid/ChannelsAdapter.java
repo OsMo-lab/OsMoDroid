@@ -67,9 +67,9 @@ public class ChannelsAdapter extends ArrayAdapter<Channel>
                     {
                         channelName.setText(channel.group_id + ':' + channel.myNameInGroup);
                     }
-                if (channel.url != null)
+                if (channel.url != null&&channel.group_id!=null)
                     {
-                        channelCreated.setText(channel.url);
+                        channelCreated.setText(channel.url+'\n'+channel.group_id);
                     }
                 tg.setChecked(channel.send);
                 //channelName.setTextColor(Color.BLACK);

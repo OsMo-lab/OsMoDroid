@@ -291,7 +291,7 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
                                 //pj.toPixels((GeoPoint) dev.devicePath.get(i + 1), scrPoint1);
                                 if (Math.abs(screenPoint.x - screenPoint1.x) + Math.abs(screenPoint.y - screenPoint1.y) > 3 )
                                     {
-                                        if( Math.abs(screenPoint.x - screenPoint1.x) + Math.abs(screenPoint.y - screenPoint1.y)<twenty*20)
+                                        if( Math.abs(screenPoint.x - screenPoint1.x) + Math.abs(screenPoint.y - screenPoint1.y)<twenty*15)
                                             {
                                                 canvas.drawLine(screenPoint1.x, screenPoint1.y, screenPoint.x, screenPoint.y, pathpaint);
                                             }
@@ -360,7 +360,7 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
                                         continue;
                                     }
                                 //gpx.mPath.lineTo(screenPoint1.x, screenPoint1.y);
-                                if((Math.abs(screenPoint1.x - screenPoint0.x) + Math.abs(screenPoint1.y - screenPoint0.y))<twenty*20)
+                                if((Math.abs(screenPoint1.x - screenPoint0.x) + Math.abs(screenPoint1.y - screenPoint0.y))<twenty*15)
                                     {
                                         canvas.drawLine(screenPoint0.x, screenPoint0.y, screenPoint1.x, screenPoint1.y, pathpaint);
                                         if(OsMoDroid.settings.getBoolean("arrows",true))

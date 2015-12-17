@@ -166,26 +166,32 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
                             break;
                         case 6:
                             mMapView.setTileSource(TileSourceFactory.MAPNIK);
-                            LocalService.selectedTileSourceInt = 1;
+                            OsMoDroid.editor.putInt("selectedTileSourceInt", 1);
+                            OsMoDroid.editor.commit();
                             reinitchoverlay();
                             break;
                         case 5:
                             mMapView.setTileSource(mapSurferTileSource);
-                            LocalService.selectedTileSourceInt = 2;
+                            OsMoDroid.editor.putInt("selectedTileSourceInt", 2);
+                            OsMoDroid.editor.commit();
+
                             reinitchoverlay();
                             break;
                         case 7:
                             BingMapTileSource.retrieveBingKey(globalActivity);
                             bingTileSource.setStyle(BingMapTileSource.IMAGERYSET_AERIAL);
                             mMapView.setTileSource(bingTileSource);
-                            LocalService.selectedTileSourceInt = 3;
+                            OsMoDroid.editor.putInt("selectedTileSourceInt", 3);
+                            OsMoDroid.editor.commit();
+
                             reinitchoverlay();
                             break;
                         case 8:
                             BingMapTileSource.retrieveBingKey(globalActivity);
                             bingTileSource.setStyle(BingMapTileSource.IMAGERYSET_AERIALWITHLABELS);
                             mMapView.setTileSource(bingTileSource);
-                            LocalService.selectedTileSourceInt = 4;
+                            OsMoDroid.editor.putInt("selectedTileSourceInt", 4);
+                            OsMoDroid.editor.commit();
                             reinitchoverlay();
                             break;
                         case 9:
@@ -200,7 +206,8 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
                             break;
                         case 10:
                             mMapView.setTileSource(sputnikTileSource);
-                            LocalService.selectedTileSourceInt = 6;
+                            OsMoDroid.editor.putInt("selectedTileSourceInt", 6);
+                            OsMoDroid.editor.commit();
                             reinitchoverlay();
                             break;
                         case 11:
@@ -254,7 +261,9 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
                             break;
                         case 12:
                             mMapView.setTileSource(outdoorTileSource);
-                            LocalService.selectedTileSourceInt = 7;
+                            OsMoDroid.editor.putInt("selectedTileSourceInt", 7);
+                            OsMoDroid.editor.commit();
+
                             reinitchoverlay();
                             break;
                         case 14:
@@ -406,7 +415,7 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
                 rl.addView(mMapView, 0);
                 ImageButton centerImageButton = (ImageButton) view.findViewById(R.id.imageButtonCenter);
                 Button rotateButton = (Button) view.findViewById(R.id.buttonRotate);
-                switch (LocalService.selectedTileSourceInt)
+                switch (OsMoDroid.settings.getInt("selectedTileSourceInt",1))
                     {
                         case 1:
 

@@ -26,6 +26,8 @@ public class OsMoDroid extends Application
         public static final String TRACKER_WIFI_OFF = "22";
         public static final String TRACKER_VIBRATE = "41";
         public static final String TRACKER_EXIT = "42";
+        public static final String TRACKER_GET_PREFS = "43";
+        public static final String TRACKER_SET_PREFS = "44";
         public static final String TRACKER_SESSION_CONTINUE = "5";
         public static final String TRACKER_SESSION_PAUSE = "6";
         public static final String TRACKER_SESSION_START = "1";
