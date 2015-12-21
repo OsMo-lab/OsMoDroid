@@ -119,7 +119,7 @@ public class DebugFragment extends Fragment
                             String sendtext = sb.toString();
                             Intent sendIntent = new Intent(Intent.ACTION_SEND);
                             sendIntent.setType("text/plain");
-                            sendIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{"support@osmo.mobi"});
+                            sendIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{"osmo.mobi@gmail.com"});
                             sendIntent.putExtra(android.content.Intent.EXTRA_TEXT, sendtext);
                             sendIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Debug log");
                             startActivity(Intent.createChooser(sendIntent, "Email"));

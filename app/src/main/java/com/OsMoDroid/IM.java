@@ -1614,6 +1614,7 @@ public class IM implements ResultsListener
                                                                                                         e.printStackTrace();
                                                                                                     }
                                                                                                 }
+                                                                                                getDevtrace(jsonObject, dev);
                                                                                                 if(jsonObject.has("color"))
                                                                                                     {
                                                                                                         dev.color = Color.parseColor(jsonObject.getString("color"));
@@ -1656,6 +1657,7 @@ public class IM implements ResultsListener
                                                                                                            e.printStackTrace();
                                                                                                        }
                                                                                                     }
+                                                                                                getDevtrace(jsonObject, dev);
                                                                                                 ch.deviceList.add(dev);
                                                                                                 Collections.sort(ch.deviceList);
                                                                                             }
@@ -1852,6 +1854,35 @@ public class IM implements ResultsListener
                                 Log.d(getClass().getSimpleName(), "write group list to file");
                             }
                         localService.saveObject(LocalService.deviceList, OsMoDroid.DEVLIST);
+                    }
+            }
+         static void  getDevtrace(JSONObject jsonObject, Device dev)
+            {
+                if(jsonObject.has("track"))
+                    {
+                        if(dev.devicePath.isEmpty())
+                            {
+                                JSONArray devtrackpoints = jsonObject.optJSONArray("track");
+                                for (int k = 0; k <devtrackpoints.length() ; k++)
+                                    {
+                                        JSONObject p = (JSONObject) devtrackpoints.opt(k);
+                                        int lat=0;
+                                        int lon=0;
+                                        try
+                                            {
+                                                lat = Integer.parseInt(p.optString("lat").replace(".",""));
+                                                lon = Integer.parseInt(p.optString("lon").replace(".",""));
+                                            }
+                                        catch (NumberFormatException e)
+                                            {
+                                                e.printStackTrace();
+                                            }
+                                        if(lat!=0&&lon!=0)
+                                            {
+                                                dev.devicePath.add(new android.graphics.Point(lat, lon));
+                                            }
+                                    }
+                            }
                     }
             }
         private void writeException(Exception e)
