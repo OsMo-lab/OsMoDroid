@@ -1553,8 +1553,24 @@ public class LocalService extends Service implements LocationListener, GpsStatus
             {
                 if (where)
                     {
+
+                      //  тогда RCR:12 вроде (пример опять же с батарейки) и json lat lon hdop altitude (остальное не знаю надо ли, можно и speed)
+                      //  RCR:12|{"lat"60.534543,"lon":30.1244,"speed":4.2,"hdop":500,"altitude":1200}
                         LocalService.addlog("send on where");
-                        sendlocation(location);
+                        JSONObject postjson = new JSONObject();
+                        try
+                            {
+                                postjson.put("lat", location.getLatitude());
+                                postjson.put("lon", location.getLongitude());
+                                postjson.put("speed", location.getSpeed());
+                                postjson.put("hdop", location.getAccuracy());
+                                postjson.put("altitude", location.getAltitude());
+                            }
+                        catch (JSONException e)
+                            {
+                                e.printStackTrace();
+                            }
+                        myIM.sendToServer("RCR:" + OsMoDroid.WHERE + "|" + postjson.toString(), false);
                         where = false;
                     }
                 if (!state)
