@@ -288,4 +288,5 @@
   <string name="ineton">Dataanslutning återupprättad</string>
   <string name="startmonitoringfirst">To get URL, start monitoring first</string>
   <string name="show_arrows">Show arrows</string>
+  <string name="longpath">Long paths</string>
 </resources>

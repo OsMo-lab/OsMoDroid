@@ -284,22 +284,46 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
                             }
                         //pj.toPixels((GeoPoint) dev.devicePath.get(0), scrPoint);
                        Point screenPoint = pj.toPixelsFromProjected(dev.devicePath.get(dev.devicePath.size()-1), this.mTempPoint1);
-                        for (int i = dev.devicePath.size() - 2; i >= 0; i--)
+                        if(OsMoDroid.settings.getBoolean("longpath",true))
                             {
-                                //pj.toPixels((GeoPoint) dev.devicePath.get(i), scrPoint);
-                                Point screenPoint1 = pj.toPixelsFromProjected(dev.devicePath.get(i+1), this.mTempPoint2);
-                                //pj.toPixels((GeoPoint) dev.devicePath.get(i + 1), scrPoint1);
-                                if (Math.abs(screenPoint.x - screenPoint1.x) + Math.abs(screenPoint.y - screenPoint1.y) > 3 )
+                                for (int i = dev.devicePath.size() - 2; i >= 0; i--)
                                     {
-                                        if( Math.abs(screenPoint.x - screenPoint1.x) + Math.abs(screenPoint.y - screenPoint1.y)<twenty*15)
+                                        //pj.toPixels((GeoPoint) dev.devicePath.get(i), scrPoint);
+                                        Point screenPoint1 = pj.toPixelsFromProjected(dev.devicePath.get(i + 1), this.mTempPoint2);
+                                        //pj.toPixels((GeoPoint) dev.devicePath.get(i + 1), scrPoint1);
+                                        if (Math.abs(screenPoint.x - screenPoint1.x) + Math.abs(screenPoint.y - screenPoint1.y) > 3)
                                             {
-                                                canvas.drawLine(screenPoint1.x, screenPoint1.y, screenPoint.x, screenPoint.y, pathpaint);
+                                                if (Math.abs(screenPoint.x - screenPoint1.x) + Math.abs(screenPoint.y - screenPoint1.y) < twenty * 15)
+                                                    {
+                                                        canvas.drawLine(screenPoint1.x, screenPoint1.y, screenPoint.x, screenPoint.y, pathpaint);
+                                                    }
+                                                else
+                                                    {
+                                                        canvas.drawPoint(screenPoint.x, screenPoint.y, pathpaint);
+                                                    }
+                                                screenPoint.set(screenPoint1.x, screenPoint1.y);
                                             }
-                                        else
+                                    }
+                            }
+                        else
+                            {
+                                for (int i = dev.devicePath.size() - 2; i >= dev.devicePath.size()-30; i--)
+                                    {
+                                        //pj.toPixels((GeoPoint) dev.devicePath.get(i), scrPoint);
+                                        Point screenPoint1 = pj.toPixelsFromProjected(dev.devicePath.get(i + 1), this.mTempPoint2);
+                                        //pj.toPixels((GeoPoint) dev.devicePath.get(i + 1), scrPoint1);
+                                        if (Math.abs(screenPoint.x - screenPoint1.x) + Math.abs(screenPoint.y - screenPoint1.y) > 3)
                                             {
-                                                canvas.drawPoint( screenPoint.x, screenPoint.y, pathpaint);
+                                                if (Math.abs(screenPoint.x - screenPoint1.x) + Math.abs(screenPoint.y - screenPoint1.y) < twenty * 15)
+                                                    {
+                                                        canvas.drawLine(screenPoint1.x, screenPoint1.y, screenPoint.x, screenPoint.y, pathpaint);
+                                                    }
+                                                else
+                                                    {
+                                                        canvas.drawPoint(screenPoint.x, screenPoint.y, pathpaint);
+                                                    }
+                                                screenPoint.set(screenPoint1.x, screenPoint1.y);
                                             }
-                                        screenPoint.set(screenPoint1.x,screenPoint1.y);
                                     }
                             }
                     }

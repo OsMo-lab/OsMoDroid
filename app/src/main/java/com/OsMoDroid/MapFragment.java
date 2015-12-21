@@ -113,6 +113,7 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
         @Override
         public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
             {
+                MenuItem longpath = menu.add(0, 15, 0, R.string.longpath);
                 MenuItem arrows = menu.add(0, 14, 0, R.string.show_arrows);
                 MenuItem traces = menu.add(0, 1, 0, R.string.showtraces);
                 MenuItem rotation = menu.add(0, 2, 0, R.string.enable_manual_rotation);
@@ -121,9 +122,11 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
                 rotation.setCheckable(true);
                 courserotation.setCheckable(true);
                 arrows.setCheckable(true);
-                arrows.setChecked(OsMoDroid.settings.getBoolean("arrows",false));
+                longpath.setCheckable(true);
+                arrows.setChecked(OsMoDroid.settings.getBoolean("arrows", false));
                 traces.setChecked(OsMoDroid.settings.getBoolean("traces", true));
                 rotation.setChecked(OsMoDroid.settings.getBoolean("rotation", false));
+                longpath.setChecked(OsMoDroid.settings.getBoolean("longpath", true));
                 courserotation.setChecked(rotate);
                 SubMenu menu2 = menu.addSubMenu(Menu.NONE, 4, 4, R.string.map);
                 MenuItem mapsurfer = menu2.add(0, 5, 1, "MapSurfer");
@@ -271,6 +274,12 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
                             OsMoDroid.editor.putBoolean("arrows", item.isChecked());
                             OsMoDroid.editor.commit();
                             reinitchoverlay();
+                            mMapView.invalidate();
+                            break;
+                        case 15:
+                            item.setChecked(!item.isChecked());
+                            OsMoDroid.editor.putBoolean("longpath", item.isChecked());
+                            OsMoDroid.editor.commit();
                             mMapView.invalidate();
                             break;
                         default:

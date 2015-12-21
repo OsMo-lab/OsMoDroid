@@ -222,4 +222,5 @@ Telif Hakkı Bilgileri: http://osmodroid.mobi/copyright.html</string>
   <string name="ineton">Data connection restored</string>
   <string name="startmonitoringfirst">To get URL, start monitoring first</string>
   <string name="show_arrows">Show arrows</string>
+  <string name="longpath">Long paths</string>
 </resources>
