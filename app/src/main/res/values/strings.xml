@@ -296,4 +296,5 @@
     <string name="show_arrows">Show arrows</string>
     <string name="hidefromnmap">Hide from map</string>
     <string name="longpath">Long paths</string>
+    <string name="fullgpx">Full gpx</string>
 </resources>

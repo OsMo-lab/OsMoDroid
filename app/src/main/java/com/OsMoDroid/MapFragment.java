@@ -113,6 +113,7 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
         @Override
         public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
             {
+                MenuItem fullgpx = menu.add(0, 16, 0, R.string.fullgpx);
                 MenuItem longpath = menu.add(0, 15, 0, R.string.longpath);
                 MenuItem arrows = menu.add(0, 14, 0, R.string.show_arrows);
                 MenuItem traces = menu.add(0, 1, 0, R.string.showtraces);
@@ -123,10 +124,12 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
                 courserotation.setCheckable(true);
                 arrows.setCheckable(true);
                 longpath.setCheckable(true);
+                fullgpx.setCheckable(true);
                 arrows.setChecked(OsMoDroid.settings.getBoolean("arrows", false));
                 traces.setChecked(OsMoDroid.settings.getBoolean("traces", true));
                 rotation.setChecked(OsMoDroid.settings.getBoolean("rotation", false));
                 longpath.setChecked(OsMoDroid.settings.getBoolean("longpath", true));
+                fullgpx.setChecked(OsMoDroid.settings.getBoolean("fullgpx", true));
                 courserotation.setChecked(rotate);
                 SubMenu menu2 = menu.addSubMenu(Menu.NONE, 4, 4, R.string.map);
                 MenuItem mapsurfer = menu2.add(0, 5, 1, "MapSurfer");
@@ -279,6 +282,12 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
                         case 15:
                             item.setChecked(!item.isChecked());
                             OsMoDroid.editor.putBoolean("longpath", item.isChecked());
+                            OsMoDroid.editor.commit();
+                            mMapView.invalidate();
+                            break;
+                        case 16:
+                            item.setChecked(!item.isChecked());
+                            OsMoDroid.editor.putBoolean("fullgpx", item.isChecked());
                             OsMoDroid.editor.commit();
                             mMapView.invalidate();
                             break;

@@ -29,9 +29,10 @@ public class Device implements Comparable<Device>, Serializable
         public String ch;
         public boolean subscribed = false;
         public long updatated = 0;
-        public List<Point> devicePath = new ArrayList<Point>();
+        public List<SerPoint> devicePath = new ArrayList<SerPoint>();
         public int iprecomputed=0;
         public List<ChatMessage> messagesstringList = new ArrayList<ChatMessage>();
+        int clusterid=0;
         //public PathOverlay p;
         public Device()
             {

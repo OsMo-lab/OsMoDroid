@@ -1658,7 +1658,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                         prevlocation_spd.set(location);
                         GeoPoint geopoint = new GeoPoint(location);
                         //if(devlistener!=null){devlistener.onNewPoint(geopoint);}
-                        mydev.devicePath.add(new Point(geopoint.getLatitudeE6(), geopoint.getLongitudeE6()));
+                        mydev.devicePath.add(new SerPoint(new Point(geopoint.getLatitudeE6(), geopoint.getLongitudeE6())));
                     }
                 if ((int) location.getAccuracy() < hdop_gpx)
                     {

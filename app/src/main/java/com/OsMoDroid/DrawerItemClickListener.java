@@ -96,17 +96,29 @@ public class DrawerItemClickListener implements OnItemClickListener
                     }
                 else if (name.equals(OsMoDroid.context.getString(R.string.devices)))
                     {
-                        if (devs == null)
+//                        if (devs == null)
+//                            {
+//                                devs = new DevicesFragment();
+//                            }
+//                        if (bundle != null)
+//                            {
+//                                //devs.setArguments(bundle.geti);
+//                                devs.deviceU = bundle.getInt("deviceU");
+//                            }
+                        for (Channel ch:LocalService.channelList)
                             {
-                                devs = new DevicesFragment();
+                                if(ch.type==2)
+                                    {
+                                      chandev = new ChannelDevicesFragment();
+                                        Bundle b = new Bundle();
+                                        b.putInt("channelpos", ch.u);
+                                        chandev.setArguments(b);
+                                        ft.replace(R.id.fragment_container, chandev);
+                                        break;
+                                    }
                             }
-                        if (bundle != null)
-                            {
-                                //devs.setArguments(bundle.geti);
-                                devs.deviceU = bundle.getInt("deviceU");
-                            }
-                        ft.replace(R.id.fragment_container, devs);
-                        currentItem = 4;
+//                        ft.replace(R.id.fragment_container, devs);
+                        currentItem = 3;
                     }
                 else if (name.equals(OsMoDroid.context.getString(R.string.links)))
                     {

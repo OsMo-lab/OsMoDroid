@@ -293,4 +293,5 @@
     <string name="show_arrows">Стрелки направления</string>
     <string name="hidefromnmap">Убрать с карты</string>
     <string name="longpath">Длинные пути</string>
+    <string name="fullgpx">Не разрывать gpx-треки</string>
 </resources>

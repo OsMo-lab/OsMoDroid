@@ -1865,13 +1865,13 @@ public class IM implements ResultsListener
                                 JSONArray devtrackpoints = jsonObject.optJSONArray("track");
                                 for (int k = 0; k <devtrackpoints.length() ; k++)
                                     {
-                                        JSONObject p = (JSONObject) devtrackpoints.opt(k);
+                                        JSONArray p = (JSONArray) devtrackpoints.opt(k);
                                         int lat=0;
                                         int lon=0;
                                         try
                                             {
-                                                lat = Integer.parseInt(p.optString("lat").replace(".",""));
-                                                lon = Integer.parseInt(p.optString("lon").replace(".",""));
+                                                lat = Integer.parseInt(p.optString(0).replace(".",""));
+                                                lon = Integer.parseInt(p.optString(1).replace(".",""));
                                             }
                                         catch (NumberFormatException e)
                                             {
@@ -1879,7 +1879,7 @@ public class IM implements ResultsListener
                                             }
                                         if(lat!=0&&lon!=0)
                                             {
-                                                dev.devicePath.add(new android.graphics.Point(lat, lon));
+                                                dev.devicePath.add(new SerPoint(new android.graphics.Point(lat, lon)));
                                             }
                                     }
                             }
@@ -1935,7 +1935,7 @@ public class IM implements ResultsListener
                     public void run()
                         {
                             GeoPoint gp = new GeoPoint(dev.lat, dev.lon);
-                            dev.devicePath.add(new android.graphics.Point(gp.getLatitudeE6(),gp.getLongitudeE6()));
+                            dev.devicePath.add(new SerPoint(new android.graphics.Point(gp.getLatitudeE6(),gp.getLongitudeE6())));
                             if (LocalService.devlistener != null)
                                 {
                                     LocalService.devlistener.onDeviceChange(dev);

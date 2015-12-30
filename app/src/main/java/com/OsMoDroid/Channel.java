@@ -37,6 +37,7 @@ public class Channel implements Serializable, ResultsListener
         public List<Device> deviceList = new ArrayList<Device>();
         public List<ChatMessage> messagesstringList = new ArrayList<ChatMessage>();
         public boolean send = false;
+        public int type=0;
 //	transient ResultsListener gpxdownloadListener = new ResultsListener() {
 //
 //		@Override
@@ -77,6 +78,7 @@ public class Channel implements Serializable, ResultsListener
                 this.group_id = jo.optString("id");
                 this.url = "https://osmo.mobi/g/" + jo.optString("url");
                 this.myNameInGroup = jo.optString("nick");
+                this.type=jo.optInt("type");
                 if (jo.optInt("active") == 1)
                     {
                         this.send = true;
@@ -308,6 +310,7 @@ public class Channel implements Serializable, ResultsListener
                 String name;
                 String description;
                 String color;
+                int clusterid=0;
                 Point()
                     {
                         name = "";

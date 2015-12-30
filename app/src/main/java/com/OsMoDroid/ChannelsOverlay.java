@@ -47,6 +47,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 public class ChannelsOverlay extends Overlay implements RotationGestureDetector.RotationListener
     {
+        private int cluster_radius;
         private final Point mTempPoint1 = new Point();
         private final Point mTempPoint2 = new Point();
         private final Point mCurScreenCoords = new Point();
@@ -61,10 +62,19 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
         private RotationGestureDetector mRotationDetector;
         private float currentAngle = 0f;
         private MapFragment mapFragment;
+        int lastclusterid=0;
+        class Cluster
+            {
+               Point p;
+                int id;
+                int size=0;
+            }
+        ArrayList<Cluster> clusters=new ArrayList<Cluster>();
         public ChannelsOverlay(ResourceProxy pResourceProxy, MapView map)
             {
                 super(pResourceProxy);
                 this.map = map;
+
                 this.mapFragment = mapFragment;
                 mRotationDetector = new RotationGestureDetector(this);
                 // mScale = OsMoDroid.context.getResources().getDisplayMetrics().density;
@@ -74,6 +84,7 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
                 pathpaint.setAntiAlias(true);
                 pathpaint.setStrokeCap(Cap.ROUND);
                 pathpaint.setStrokeJoin(Join.ROUND);
+                paint.setTextSize(twenty);
                 // TODO Auto-generated constructor stub
             }
         int getSP(float px)
@@ -94,16 +105,20 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
             {
 
                 ten = getSP(OsMoDroid.settings.getInt("pointsize", 8));
+                cluster_radius=ten*2;
                 twenty = getSP(OsMoDroid.settings.getInt("pointsize", 8) * 2);
-                pathpaint.setStrokeWidth(OsMoDroid.settings.getInt("pointsize", 8));
+                pathpaint.setStrokeWidth(getSP(OsMoDroid.settings.getInt("pointsize", 8))/2);
                 if (shadow)
                     {
                         return;
                     }
+                pathpaint.setAlpha(128);
+
                 final BoundingBoxE6 theBoundingBox = mapView.getBoundingBox();
                 final Projection pj = mapView.getProjection();
                 final Point scrPoint = new Point();
                 final Point scrPoint1 = new Point();
+                drawClusters(canvas, mapView, pj);
                 for (ColoredGPX gpx : LocalService.showedgpxList)
                     {
                         if (gpx.status.equals(ColoredGPX.Statuses.LOADED))
@@ -191,7 +206,7 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
                                     }
                                 for (com.OsMoDroid.Channel.Point p : ch.pointList)
                                     {
-                                        if (theBoundingBox.contains(new GeoPoint(p.lat, p.lon)))
+                                        if (p.clusterid==0&&theBoundingBox.contains(new GeoPoint(p.lat, p.lon)))
                                             {
                                                 pj.toPixels(new GeoPoint(p.lat, p.lon), scrPoint);
                                                 paint.setDither(true);
@@ -199,10 +214,10 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
                                                 paint.setTextSize(twenty);
                                                 paint.setTypeface(Typeface.DEFAULT_BOLD);
                                                 paint.setTextAlign(Paint.Align.CENTER);
-                                                paint.setColor(Color.parseColor("#013220"));
+
                                                 canvas.save();
                                                 canvas.rotate(-mapView.getMapOrientation(), scrPoint.x, scrPoint.y);
-                                                canvas.drawText(p.name, scrPoint.x, scrPoint.y - ten, paint);
+
                                                 try
                                                     {
                                                         paint.setColor(Color.parseColor(p.color));
@@ -212,17 +227,29 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
                                                         paint.setColor(Color.RED);
                                                     }
                                                 canvas.drawRect(scrPoint.x - ten, scrPoint.y - ten, scrPoint.x + ten, scrPoint.y + ten, paint);
+                                                paint.setColor(Color.parseColor("#013220"));
+                                                Rect textBounds = new Rect();
+                                                String shortname = p.name;
+                                                if(p.name.length()>3)
+                                                    {
+                                                         shortname = p.name.substring(0,3);
+                                                    }
+                                                paint.getTextBounds(shortname, 0,shortname.length(), textBounds);
+                                                paint.setTextSize(twenty/2);
+                                                canvas.drawText(shortname, scrPoint.x, scrPoint.y + textBounds.height()/2- ten/2 , paint);
+                                                paint.setTextSize(twenty);
                                                 canvas.restore();
                                             }
                                     }
                                 for (Device dev : ch.deviceList)
                                     {
-                                        if (OsMoDroid.settings.getBoolean("traces", true))
+
+                                        if (dev.lat != 0f && dev.lon != 0f&&dev.clusterid==0)
                                             {
-                                                drawdevicepath(canvas, pj, dev);
-                                            }
-                                        if (dev.lat != 0f && dev.lon != 0f)
-                                            {
+                                                if (OsMoDroid.settings.getBoolean("traces", true))
+                                                    {
+                                                        drawdevicepath(canvas, pj, dev);
+                                                    }
                                                 if (theBoundingBox.contains(new GeoPoint(dev.lat, dev.lon)))
                                                     {
                                                         pj.toPixels(new GeoPoint(dev.lat, dev.lon), scrPoint);
@@ -271,27 +298,131 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
                             }
                     }
             }
+        private void drawClusters(Canvas canvas, MapView mapView, Projection pj)
+            {
+                Point scrPoint = new Point();
+                clusters.clear();
+                for (Channel ch:LocalService.channelList)
+                    {
+                        for (Device dev:ch.deviceList)
+                            {
+                                dev.clusterid=0;
+                                pj.toPixels(new GeoPoint(dev.lat, dev.lon), scrPoint);
+                                for(Cluster cluster:clusters)
+                                    {
+                                        if(Math.abs(cluster.p.x-scrPoint.x)< cluster_radius&&Math.abs(cluster.p.y-scrPoint.y)< cluster_radius)
+                                            {
+                                                dev.clusterid=cluster.id;
+                                                cluster.size++;
+                                                break;
+                                            }
+
+                                    }
+                                if(dev.clusterid==0)
+                                    {
+
+                                        Cluster c = new Cluster();
+                                        c.p = new Point(scrPoint.x,scrPoint.y);
+
+                                        c.size=1;
+                                        lastclusterid++;
+                                        c.id=lastclusterid;
+                                        dev.clusterid=c.id;
+                                        clusters.add(c);
+                                    }
+                            }
+                        for (Channel.Point point:ch.pointList)
+                            {
+                                point.clusterid=0;
+                                pj.toPixels(new GeoPoint(point.lat, point.lon), scrPoint);
+                                for(Cluster cluster:clusters)
+                                    {
+                                        if(Math.abs(cluster.p.x-scrPoint.x)< cluster_radius&&Math.abs(cluster.p.y-scrPoint.y)< cluster_radius)
+                                            {
+                                                point.clusterid=cluster.id;
+                                                cluster.size++;
+                                                break;
+                                            }
+
+                                    }
+                                if(point.clusterid==0)
+                                    {
+
+                                        Cluster c = new Cluster();
+                                        c.p = new Point(scrPoint.x,scrPoint.y);
+
+                                        c.size=1;
+                                        lastclusterid++;
+                                        c.id=lastclusterid;
+                                        point.clusterid=c.id;
+                                        clusters.add(c);
+                                    }
+                            }
+
+                    }
+                for(Cluster cluster:clusters)
+                    {
+                        if(cluster.size==1)
+                            {
+                                for(Channel ch:LocalService.channelList)
+                                    {
+                                        for(Device dev:ch.deviceList)
+                                            {
+                                                if(dev.clusterid==cluster.id)
+                                                    {
+                                                        dev.clusterid=0;
+                                                    }
+                                            }
+                                        for(Channel.Point point:ch.pointList)
+                                            {
+                                                if(point.clusterid==cluster.id)
+                                                    {
+                                                        point.clusterid=0;
+                                                    }
+                                            }
+                                    }
+                            }
+                        else
+                            {
+                                canvas.save();
+                                canvas.rotate(-mapView.getMapOrientation(), cluster.p.x, cluster.p.y);
+                                paint.setColor(Color.GRAY);
+                                paint.setAlpha(128);
+                                canvas.drawCircle(cluster.p.x, cluster.p.y, cluster_radius + ten / 2, paint);
+                                paint.setColor(Color.LTGRAY);
+                                paint.setAlpha(128);
+                                canvas.drawCircle(cluster.p.x, cluster.p.y, cluster_radius, paint);
+                                paint.setColor(Color.BLACK);
+                                Rect textBounds = new Rect();
+                                paint.getTextBounds(Integer.toString(cluster.size), 0, Integer.toString(cluster.size).length(), textBounds);
+                                canvas.drawText(Integer.toString(cluster.size), cluster.p.x, cluster.p.y+ textBounds.height()/2, paint);
+                                canvas.restore();
+
+                            }
+                    }
+            }
         private void drawdevicepath(Canvas canvas, Projection pj, Device dev)
             {
                 if (dev.devicePath.size() > 2)
                     {
                         pathpaint.setColor(dev.color);
+                        pathpaint.setAlpha(128);
                         while (dev.iprecomputed < dev.devicePath.size())
                             {
-                                final Point pt = dev.devicePath.get(dev.iprecomputed);
-                                pj.toProjectedPixels(pt.x, pt.y, pt);
+                                final SerPoint pt = dev.devicePath.get(dev.iprecomputed);
+                                pj.toProjectedPixels(pt.point.x, pt.point.y, pt.point);
                                 dev.iprecomputed++;
                             }
                         //pj.toPixels((GeoPoint) dev.devicePath.get(0), scrPoint);
-                       Point screenPoint = pj.toPixelsFromProjected(dev.devicePath.get(dev.devicePath.size()-1), this.mTempPoint1);
+                       Point screenPoint = pj.toPixelsFromProjected(dev.devicePath.get(dev.devicePath.size()-1).point, this.mTempPoint1);
                         if(OsMoDroid.settings.getBoolean("longpath",true))
                             {
                                 for (int i = dev.devicePath.size() - 2; i >= 0; i--)
                                     {
                                         //pj.toPixels((GeoPoint) dev.devicePath.get(i), scrPoint);
-                                        Point screenPoint1 = pj.toPixelsFromProjected(dev.devicePath.get(i + 1), this.mTempPoint2);
+                                        Point screenPoint1 = pj.toPixelsFromProjected(dev.devicePath.get(i + 1).point, this.mTempPoint2);
                                         //pj.toPixels((GeoPoint) dev.devicePath.get(i + 1), scrPoint1);
-                                        if (Math.abs(screenPoint.x - screenPoint1.x) + Math.abs(screenPoint.y - screenPoint1.y) > 3)
+                                        if (Math.abs(screenPoint.x - screenPoint1.x) + Math.abs(screenPoint.y - screenPoint1.y) > ten)
                                             {
                                                 if (Math.abs(screenPoint.x - screenPoint1.x) + Math.abs(screenPoint.y - screenPoint1.y) < twenty * 15)
                                                     {
@@ -310,9 +441,9 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
                                 for (int i = dev.devicePath.size() - 2; i >= dev.devicePath.size()-30; i--)
                                     {
                                         //pj.toPixels((GeoPoint) dev.devicePath.get(i), scrPoint);
-                                        Point screenPoint1 = pj.toPixelsFromProjected(dev.devicePath.get(i + 1), this.mTempPoint2);
+                                        Point screenPoint1 = pj.toPixelsFromProjected(dev.devicePath.get(i + 1).point, this.mTempPoint2);
                                         //pj.toPixels((GeoPoint) dev.devicePath.get(i + 1), scrPoint1);
-                                        if (Math.abs(screenPoint.x - screenPoint1.x) + Math.abs(screenPoint.y - screenPoint1.y) > 3)
+                                        if (Math.abs(screenPoint.x - screenPoint1.x) + Math.abs(screenPoint.y - screenPoint1.y) > ten)
                                             {
                                                 if (Math.abs(screenPoint.x - screenPoint1.x) + Math.abs(screenPoint.y - screenPoint1.y) < twenty * 15)
                                                     {
@@ -331,6 +462,7 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
         private void drawGPX(Canvas canvas, final Projection pj, ColoredGPX gpx, BoundingBoxE6 theBoundingBox, Point scrPoint, MapView mapView)
             {
                 pathpaint.setColor(gpx.color);
+                pathpaint.setAlpha(128);
                 int size = gpx.points.size();
                 if (size > 2)
                     {
@@ -379,12 +511,12 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
                                 screenPoint1 = pj.toPixelsFromProjected(projectedPoint1, this.mTempPoint2);
                                 // skip this point, too close to previous point
 
-                                if (Math.abs(screenPoint1.x - screenPoint0.x) + Math.abs(screenPoint1.y - screenPoint0.y) <= 3 )
+                                if (Math.abs(screenPoint1.x - screenPoint0.x) + Math.abs(screenPoint1.y - screenPoint0.y) <= ten )
                                     {
                                         continue;
                                     }
                                 //gpx.mPath.lineTo(screenPoint1.x, screenPoint1.y);
-                                if((Math.abs(screenPoint1.x - screenPoint0.x) + Math.abs(screenPoint1.y - screenPoint0.y))<twenty*15)
+                                if(OsMoDroid.settings.getBoolean("fullgpx",true)||(Math.abs(screenPoint1.x - screenPoint0.x) + Math.abs(screenPoint1.y - screenPoint0.y))<twenty*15)
                                     {
                                         canvas.drawLine(screenPoint0.x, screenPoint0.y, screenPoint1.x, screenPoint1.y, pathpaint);
                                         if(OsMoDroid.settings.getBoolean("arrows",true))
@@ -403,8 +535,8 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
                                                         canvas.save();
                                                         canvas.rotate(angle, screenPoint0.x, screenPoint0.y);
                                                         // canvas.drawLine(screenPoint1.x - ten, screenPoint1.y, screenPoint1.x + ten, screenPoint1.y, pathpaint);
-                                                        canvas.drawLine(screenPoint0.x + twenty / 2, screenPoint0.y + twenty, screenPoint0.x, screenPoint0.y, pathpaint);
-                                                        canvas.drawLine(screenPoint0.x, screenPoint0.y, screenPoint0.x - twenty / 2, screenPoint0.y + twenty, pathpaint);
+                                                        canvas.drawLine(screenPoint0.x + twenty / 3, screenPoint0.y + twenty/2, screenPoint0.x, screenPoint0.y, pathpaint);
+                                                        canvas.drawLine(screenPoint0.x, screenPoint0.y, screenPoint0.x - twenty / 3, screenPoint0.y + twenty/2, pathpaint);
                                                         canvas.restore();
                                                     }
                                             }
@@ -524,29 +656,53 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
                 final Projection pj = mapView.getProjection();
                 final Rect screenRect = pj.getIntrinsicScreenRect();
                 final int size = LocalService.deviceList.size();
+                for(Cluster c:clusters)
+                    {
+
+                        if (c.p.x <= (e.getX() + 2 * ten) && c.p.x >= (e.getX() - 2 * ten)
+                                && c.p.y <= (e.getY() + ten) && c.p.y >= (e.getY() - ten))
+                            {
+                                map.getController().zoomInFixing(c.p.x,c.p.y);
+                            }
+                    }
                 for (Channel ch : LocalService.channelList)
                     {
+
                         if (ch.send)
                             {
-                                {
+                                for(Channel.Point p: ch.pointList)
+                                    {
+                                        if(p.clusterid==0)
+                                            {
+                                                pj.toPixels(new GeoPoint(p.lat, p.lon), mCurScreenCoords);
+                                                if (mCurScreenCoords.x <= (e.getX() + 2 * ten) && mCurScreenCoords.x >= (e.getX() - 2 * ten)
+                                                        && mCurScreenCoords.y <= (e.getY() + ten) && mCurScreenCoords.y >= (e.getY() - ten))
+                                                    {
+                                                        Toast.makeText(mapView.getContext(), p.name, Toast.LENGTH_SHORT).show();
+                                                    }
+                                            }
+                                    }
                                     for (Device dev : ch.deviceList)
                                         {
-                                            pj.toPixels(new GeoPoint(dev.lat, dev.lon), mCurScreenCoords);
-                                            if (mCurScreenCoords.x <= (e.getX() + 2 * ten) && mCurScreenCoords.x >= (e.getX() - 2 * ten)
-                                                    && mCurScreenCoords.y <= (e.getY() + ten) && mCurScreenCoords.y >= (e.getY() - ten))
+                                            if(dev.clusterid==0)
                                                 {
-                                                    if (followdev != dev.u)
+                                                    pj.toPixels(new GeoPoint(dev.lat, dev.lon), mCurScreenCoords);
+                                                    if (mCurScreenCoords.x <= (e.getX() + 2 * ten) && mCurScreenCoords.x >= (e.getX() - 2 * ten)
+                                                            && mCurScreenCoords.y <= (e.getY() + ten) && mCurScreenCoords.y >= (e.getY() - ten))
                                                         {
-                                                            Toast.makeText(mapView.getContext(), map.getContext().getString(R.string.follow_) + dev.name, Toast.LENGTH_SHORT).show();
-                                                            followdev = dev.u;
+                                                            if (followdev != dev.u)
+                                                                {
+                                                                    Toast.makeText(mapView.getContext(), map.getContext().getString(R.string.follow_) + dev.name, Toast.LENGTH_SHORT).show();
+                                                                    followdev = dev.u;
+                                                                }
+                                                            else
+                                                                {
+                                                                    Toast.makeText(mapView.getContext(), map.getContext().getString(R.string.no_follow_) + dev.name, Toast.LENGTH_SHORT).show();
+                                                                    followdev = -1;
+                                                                }
+                                                            mapView.invalidate();
+                                                            return true;
                                                         }
-                                                    else
-                                                        {
-                                                            Toast.makeText(mapView.getContext(), map.getContext().getString(R.string.no_follow_) + dev.name, Toast.LENGTH_SHORT).show();
-                                                            followdev = -1;
-                                                        }
-                                                    mapView.invalidate();
-                                                    return true;
                                                 }
                                         }
                                     for (ColoredGPX cg : ch.gpxList)
@@ -563,7 +719,7 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
                                         }
                                 }
                             }
-                    }
+
                 for (int i = 0; i < size; i++)
                     {
                         final Device dev = LocalService.deviceList.get(i);

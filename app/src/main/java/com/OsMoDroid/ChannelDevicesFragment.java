@@ -30,6 +30,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
@@ -58,12 +59,125 @@ public class ChannelDevicesFragment extends Fragment implements ResultsListener
          */
         private GPSLocalServiceClient globalActivity;
         private int channelpos;
+        private AdapterContextMenuInfo subacmi;
         //ArrayList<MyAsyncTask> t= new ArrayList<Netutil.MyAsyncTask>();
         @Override
         public boolean onContextItemSelected(android.view.MenuItem item)
             {
                 final AdapterContextMenuInfo acmi = (AdapterContextMenuInfo) item.getMenuInfo();
-                if (item.getItemId() == 1)
+                if (acmi != null)
+                    {
+                        subacmi = acmi;
+                    }
+
+
+
+//                if (item.getItemId() == 7)
+//                    {
+//                        ColorDialog.OnClickListener cl = new ColorDialog.OnClickListener()
+//                        {
+//                            @Override
+//                            public void onClick(Object tag, int color)
+//                                {
+//                                    LocalService.deviceList.get((int) acmi.id).color = color;
+//                                    JSONObject jo = new JSONObject();
+//                                    JSONObject jodata = new JSONObject();
+//                                    try
+//                                        {
+//                                            jodata.putOpt("color", "#" + Integer.toHexString(color));
+//                                            jo.put("u", LocalService.deviceList.get((int) acmi.id).u);
+//                                            jo.put("data", jodata);
+//                                        }
+//                                    catch (JSONException e)
+//                                        {
+//                                            // TODO Auto-generated catch block
+//                                            e.printStackTrace();
+//                                        }
+//                                    if (LocalService.deviceList.get((int) acmi.id).subscribed)
+//                                        {
+//                                            globalActivity.mService.myIM.sendToServer("DSS|" + jo.toString(), true);
+//                                        }
+//                                    else
+//                                        {
+//                                            globalActivity.mService.myIM.sendToServer("DS|" + jo.toString(), true);
+//                                        }
+//                                }
+//                        };
+//                        ColorDialog dialog = new ColorDialog(globalActivity, false, getView(), LocalService.deviceList.get((int) acmi.id).color, cl, R.drawable.wheel);
+//                        dialog.show();
+//                    }
+                if (item.getItemId() == 8)
+                    {
+                        //REMOTE_CONTROL:[tracker_id]|DESTROY_DEVICE
+                        LocalService.myIM.sendToServer("SRC:" + LocalService.deviceList.get((int) subacmi.id).u + "|" + OsMoDroid.TRACKER_SESSION_START, true);
+                    }
+                if (item.getItemId() == 9)
+                    {
+                        //REMOTE_CONTROL:[tracker_id]|DESTROY_DEVICE
+                        globalActivity.mService.myIM.sendToServer("SRC:" + LocalService.deviceList.get((int) subacmi.id).u + "|" + OsMoDroid.TRACKER_SESSION_STOP, true);
+                    }
+                if (item.getItemId() == 10)
+                    {
+                        //REMOTE_CONTROL:[tracker_id]|DESTROY_DEVICE
+                        LinearLayout layout = new LinearLayout(getActivity());
+                        layout.setOrientation(LinearLayout.VERTICAL);
+                        final TextView txv5 = new TextView(getActivity());
+                        txv5.setText("Enter text to TTS");
+                        layout.addView(txv5);
+                        final EditText inputhash = new EditText(getActivity());
+                        layout.addView(inputhash);
+                        AlertDialog alertdialog3 = new AlertDialog.Builder(
+                                getActivity())
+                                .setTitle("Remote TTS")
+                                .setView(layout)
+                                .setPositiveButton(R.string.yes,
+                                        new DialogInterface.OnClickListener()
+                                        {
+                                            public void onClick(DialogInterface dialog,
+                                                                int whichButton)
+                                                {
+                                                    if (!(inputhash.getText().toString().equals("")))
+                                                        {
+                                                            //REMOTE_CONTROL|TTS:Привет жена)
+                                                            globalActivity.mService.myIM.sendToServer("SRC:" + LocalService.deviceList.get((int) subacmi.id).u + "|" + "TTS:" + inputhash.getText().toString(), true);
+                                                        }
+                                                }
+                                        })
+                                .setNegativeButton(R.string.No,
+                                        new DialogInterface.OnClickListener()
+                                        {
+                                            public void onClick(DialogInterface dialog,
+                                                                int whichButton)
+                                                {
+
+								/* User clicked cancel so do some stuff */
+                                                }
+                                        }).create();
+                        alertdialog3.show();
+                    }
+                if (item.getItemId() == 11)
+                    {
+                        globalActivity.mService.myIM.sendToServer("SRC:" + LocalService.deviceList.get((int) subacmi.id).u + "|" + OsMoDroid.ALARM_ON, true);
+                    }
+                if (item.getItemId() == 12)
+                    {
+                        globalActivity.mService.myIM.sendToServer("SRC:" + LocalService.deviceList.get((int) subacmi.id).u + "|" + OsMoDroid.ALARM_OFF, true);
+                    }
+                if (item.getItemId() == 13)
+                    {
+                        globalActivity.mService.myIM.sendToServer("SRC:" + LocalService.deviceList.get((int) subacmi.id).u + "|" + OsMoDroid.SIGNAL_ON, true);
+                    }
+                if (item.getItemId() == 14)
+                    {
+                        globalActivity.mService.myIM.sendToServer("SRC:" + LocalService.deviceList.get((int) subacmi.id).u + "|" + OsMoDroid.SIGNAL_OFF, true);
+                    }
+                if (item.getItemId() == 15)
+                    {
+                        globalActivity.mService.myIM.sendToServer("SRC:" + LocalService.deviceList.get((int) subacmi.id).u + "|" + OsMoDroid.WHERE, true);
+                    }
+
+
+                if (item.getItemId() == 6)
                     {
                         if (LocalService.channelsDevicesAdapter.getItem(acmi.position).lat != 0)
                             {
@@ -92,8 +206,34 @@ public class ChannelDevicesFragment extends Fragment implements ResultsListener
         public void onCreateContextMenu(ContextMenu menu, View v,
                                         ContextMenuInfo menuInfo)
             {
-                menu.add(0, 1, 0, R.string.showonmap).setIcon(android.R.drawable.ic_menu_mylocation);
-                ;
+                if(LocalService.currentChannel.type==2)
+                    {
+
+                        AdapterContextMenuInfo acmi = (AdapterView.AdapterContextMenuInfo) menuInfo;
+
+                        SubMenu menu2 = menu.addSubMenu(Menu.NONE, 100, 20, R.string.remote_commands);
+                        MenuItem start = menu2.add(0, 8, 8, R.string.start_monitoring);
+                        MenuItem stop = menu2.add(0, 9, 9, R.string.stop_monitoring);
+                        //MenuItem sendTTS =menu2.add(0, 10, 10, R.string.send_tts);
+                        MenuItem alarmon = menu2.add(0, 11, 11, R.string.play_alarm_on);
+                        MenuItem alarmoff = menu2.add(0, 12, 12, R.string.play_alarm_off);
+                        MenuItem signalon = menu2.add(0, 13, 13, R.string.signalisation_set_on);
+                        MenuItem signaloff = menu2.add(0, 14, 14, R.string.signalisation_set_off);
+                        MenuItem where = menu2.add(0, 15, 15, R.string.where_);
+                        //    menu.add(0, 2, 2, R.string.messages).setIcon(android.R.drawable.ic_menu_delete);
+                        //    menu.add(0, 3, 3, R.string.copylink).setIcon(android.R.drawable.ic_menu_edit);
+                        //    menu.add(0, 4, 4, R.string.sharelink).setIcon(android.R.drawable.ic_menu_edit);
+                        //    menu.add(0, 5, 5, R.string.openinbrowser).setIcon(android.R.drawable.ic_menu_edit);
+                        menu.add(0, 6, 6, R.string.showonmap).setIcon(android.R.drawable.ic_menu_edit);
+                        //menu.add(0, 7, 7, R.string.color).setIcon(android.R.drawable.ic_menu_edit);
+                        super.onCreateContextMenu(menu, v, menuInfo);
+
+                    }
+                else
+                    {
+                        menu.add(0, 6, 6, R.string.showonmap).setIcon(android.R.drawable.ic_menu_edit);
+                    }
+
                 super.onCreateContextMenu(menu, v, menuInfo);
             }
         @Override
@@ -134,7 +274,7 @@ public class ChannelDevicesFragment extends Fragment implements ResultsListener
             {
                 Log.d(getClass().getSimpleName(), "ChannelDevicesFragment onResume");
                 LocalService.chatVisible = true;
-                globalActivity.actionBar.setTitle(getString(R.string.chanal) + LocalService.currentChannel.name);
+                globalActivity.actionBar.setTitle(getString(R.string.chanal) +' '+ LocalService.currentChannel.name);
                 super.onResume();
             }
         @Override
