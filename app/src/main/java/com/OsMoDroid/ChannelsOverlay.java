@@ -656,15 +656,15 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
                 final Projection pj = mapView.getProjection();
                 final Rect screenRect = pj.getIntrinsicScreenRect();
                 final int size = LocalService.deviceList.size();
-                for(Cluster c:clusters)
-                    {
-
-                        if (c.p.x <= (e.getX() + 2 * ten) && c.p.x >= (e.getX() - 2 * ten)
-                                && c.p.y <= (e.getY() + ten) && c.p.y >= (e.getY() - ten))
-                            {
-                                map.getController().zoomInFixing(c.p.x,c.p.y);
-                            }
-                    }
+//                for(Cluster c:clusters)
+//                    {
+//
+//                        if (c.p.x <= (e.getX() + 2 * ten) && c.p.x >= (e.getX() - 2 * ten)
+//                                && c.p.y <= (e.getY() + ten) && c.p.y >= (e.getY() - ten))
+//                            {
+//                                map.getController().zoomInFixing(c.p.x,c.p.y);
+//                            }
+//                    }
                 for (Channel ch : LocalService.channelList)
                     {
 

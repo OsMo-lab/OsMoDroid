@@ -3,7 +3,7 @@
   <string name="app_name">OsMoDroid</string>
   <string name="start">Starta</string>
   <string name="stop">Stoppa</string>
-  <string name="serviceStatus">Status:</string>
+  <string name="serviceStatus">Läge:</string>
   <string name="location">Plats:</string>
   <string name="sends">Status:</string>
   <string name="url">Adress:</string>
@@ -62,7 +62,7 @@
   <string name="speed">Hastighet: km/h</string>
   <string name="auth">Godkännande</string>
   <string name="nomapapp">Ingen kartapp verkar vara installerad.</string>
-  <string name="showonmap">Visad på kartan</string>
+  <string name="showonmap">Visa på kartan</string>
   <string name="chanal">Grupp</string>
   <string name="refresh">Uppdatera</string>
   <string name="coordinats">Plats:</string>
@@ -84,6 +84,7 @@
   <string name="chanalcode">ID:</string>
   <string name="privatechanal">Privat grupp</string>
   <string name="chanalkey">Gruppnyckel</string>
+  <string name="createchanal">Skapa en grupp</string>
   <string name="noallenter">Inkluderar inte alla data</string>
   <string name="bindtochanal">Anslut till gruppen</string>
   <string name="requestdevicebefore">Tidigare begäran för enheten</string>
@@ -136,6 +137,8 @@
   <string name="dayssend">skickat per dag:</string>
   <string name="monthsends">skickat per månad:</string>
   <string name="exit">Avsluta</string>
+  <string name="savepref">Spara inställningarna på SD-kortet</string>
+  <string name="loadpref">Hämta inställningarna från SD-kortet</string>
   <string name="more">Mer</string>
   <string name="iamhere">Här är jag!</string>
   <string name="linkcopied">Länk kopierad till Urklipp</string>
@@ -205,7 +208,7 @@
   <string name="point_create">Sänd punkt till servern</string>
   <string name="point_create_description">Ange namn på punkten att sända</string>
   <string name="empty_channels">Här kan du bevaka den grupp du tillhör. För att börja använda grupper, använd kontextmenyn.</string>
-  <string name="empty_devices">Här finns en lista över dina enheter och enhetsprenumerationer. Åtgärder med tillgängliga enheter finns i kontextmenyn.</string>
+  <string name="empty_devices">På denna skärm visas en lista med enheter från grupper som \"Familj\". Åtgärder visas i kontextmenyn.</string>
   <string name="empty_links">Här finns en permanent referens för att övervaka din enhet från sajten. Tillgängliga åtgärder hittar du i kontextmenyn.</string>
   <string name="understand">OK. Rapportera inte dåliga anslutningar längre</string>
   <string name="checkfirewall">Kan inte ansluta till spårningsservern. Kolla att du gett OsMoDroid fullständig access i din brandvägg. Detta kan också bero på dålig kvalitet på dataanslutningen.</string>
@@ -265,9 +268,11 @@
   <string name="speak_current_speed">Läs upp aktuell hastighet</string>
   <string name="speak_average_speed">Läs upp snitthastighet</string>
   <string name="speak_remote_commands">Läs upp fjärrkommandon</string>
+  <string name="increases_battery_consumption">Vid arbete med appen slås inte skärmen på automatiskt</string>
   <string name="keep_screen_on">Behåll skärmen på</string>
   <string name="determine_location_by_gps_provides_best_accuracy_but_uses_more_battery_">Bestäm plats med GPS. Ger bäst noggrannhet men drar mer ström.</string>
   <string name="use_gps">Använd GPS</string>
+  <string name="determine_location_by_cellular_networks_and_wifi_not_very_accurate_but_easier_on_battery_">Bestäm platsen via mobila nätverk och Wi-Fi.</string>
   <string name="use_mobile_networks">Använd mobila nätverk</string>
   <string name="launch_background_service_when_the_phone_starts_up_">Starta bakgrundstjänst när telefonen startas.</string>
   <string name="startup_at_boot">Starta med enheten</string>
@@ -279,6 +284,7 @@
   <string name="live_monitoring">Direktspårning</string>
   <string name="offline_on">Offline-läget är aktiverat. Inga data skickas till servern.</string>
   <string name="update_map_in_background">Ta alltid emot datagrupper</string>
+  <string name="tcp_no_delay">Läget \"INGEN FÖRDRÖJNING\"</string>
   <string name="agree_sos_">Aktivera SOS?</string>
   <string name="gpson">GPS-signal upptäckt!</string>
   <string name="gpsoff">GPS-signal tappad</string>
@@ -286,7 +292,10 @@
   <string name="monitoring_stopped">Övervakning stoppad</string>
   <string name="inetoff">Dataanslutning tappad</string>
   <string name="ineton">Dataanslutning återupprättad</string>
-  <string name="startmonitoringfirst">To get URL, start monitoring first</string>
-  <string name="show_arrows">Show arrows</string>
-  <string name="longpath">Long paths</string>
+  <string name="appwidget_text">Exempel</string>
+  <string name="add_widget">Lägg till widget</string>
+  <string name="startmonitoringfirst">För att få URL, starta bevakning först</string>
+  <string name="show_arrows">Visa pilar</string>
+  <string name="hidefromnmap">Visa inte på kartan</string>
+  <string name="longpath">Långa sökvägar</string>
 </resources>
