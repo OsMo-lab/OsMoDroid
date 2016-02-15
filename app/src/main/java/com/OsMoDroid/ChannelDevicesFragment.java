@@ -109,12 +109,12 @@ public class ChannelDevicesFragment extends Fragment implements ResultsListener
                 if (item.getItemId() == 8)
                     {
                         //REMOTE_CONTROL:[tracker_id]|DESTROY_DEVICE
-                        LocalService.myIM.sendToServer("SRC:" + LocalService.deviceList.get((int) subacmi.id).u + "|" + OsMoDroid.TRACKER_SESSION_START, true);
+                        LocalService.myIM.sendToServer("SRC:" + LocalService.currentchanneldeviceList.get((int) subacmi.id).u + "|" + OsMoDroid.TRACKER_SESSION_START, true);
                     }
                 if (item.getItemId() == 9)
                     {
                         //REMOTE_CONTROL:[tracker_id]|DESTROY_DEVICE
-                        globalActivity.mService.myIM.sendToServer("SRC:" + LocalService.deviceList.get((int) subacmi.id).u + "|" + OsMoDroid.TRACKER_SESSION_STOP, true);
+                        globalActivity.mService.myIM.sendToServer("SRC:" + LocalService.currentchanneldeviceList.get((int) subacmi.id).u + "|" + OsMoDroid.TRACKER_SESSION_STOP, true);
                     }
                 if (item.getItemId() == 10)
                     {
@@ -139,7 +139,7 @@ public class ChannelDevicesFragment extends Fragment implements ResultsListener
                                                     if (!(inputhash.getText().toString().equals("")))
                                                         {
                                                             //REMOTE_CONTROL|TTS:Привет жена)
-                                                            globalActivity.mService.myIM.sendToServer("SRC:" + LocalService.deviceList.get((int) subacmi.id).u + "|" + "TTS:" + inputhash.getText().toString(), true);
+                                                            globalActivity.mService.myIM.sendToServer("SRC:" + LocalService.currentchanneldeviceList.get((int) subacmi.id).u + "|" + "TTS:" + inputhash.getText().toString(), true);
                                                         }
                                                 }
                                         })
@@ -157,23 +157,23 @@ public class ChannelDevicesFragment extends Fragment implements ResultsListener
                     }
                 if (item.getItemId() == 11)
                     {
-                        globalActivity.mService.myIM.sendToServer("SRC:" + LocalService.deviceList.get((int) subacmi.id).u + "|" + OsMoDroid.ALARM_ON, true);
+                        globalActivity.mService.myIM.sendToServer("SRC:" + LocalService.currentchanneldeviceList.get((int) subacmi.id).u + "|" + OsMoDroid.ALARM_ON, true);
                     }
                 if (item.getItemId() == 12)
                     {
-                        globalActivity.mService.myIM.sendToServer("SRC:" + LocalService.deviceList.get((int) subacmi.id).u + "|" + OsMoDroid.ALARM_OFF, true);
+                        globalActivity.mService.myIM.sendToServer("SRC:" + LocalService.currentchanneldeviceList.get((int) subacmi.id).u + "|" + OsMoDroid.ALARM_OFF, true);
                     }
                 if (item.getItemId() == 13)
                     {
-                        globalActivity.mService.myIM.sendToServer("SRC:" + LocalService.deviceList.get((int) subacmi.id).u + "|" + OsMoDroid.SIGNAL_ON, true);
+                        globalActivity.mService.myIM.sendToServer("SRC:" + LocalService.currentchanneldeviceList.get((int) subacmi.id).u + "|" + OsMoDroid.SIGNAL_ON, true);
                     }
                 if (item.getItemId() == 14)
                     {
-                        globalActivity.mService.myIM.sendToServer("SRC:" + LocalService.deviceList.get((int) subacmi.id).u + "|" + OsMoDroid.SIGNAL_OFF, true);
+                        globalActivity.mService.myIM.sendToServer("SRC:" + LocalService.currentchanneldeviceList.get((int) subacmi.id).u + "|" + OsMoDroid.SIGNAL_OFF, true);
                     }
                 if (item.getItemId() == 15)
                     {
-                        globalActivity.mService.myIM.sendToServer("SRC:" + LocalService.deviceList.get((int) subacmi.id).u + "|" + OsMoDroid.WHERE, true);
+                        globalActivity.mService.myIM.sendToServer("SRC:" + LocalService.currentchanneldeviceList.get((int) subacmi.id).u + "|" + OsMoDroid.WHERE, true);
                     }
 
 

@@ -118,7 +118,11 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
                 final Projection pj = mapView.getProjection();
                 final Point scrPoint = new Point();
                 final Point scrPoint1 = new Point();
-                drawClusters(canvas, mapView, pj);
+                if(OsMoDroid.settings.getBoolean("drawclusters", false))
+                    {
+                        drawClusters(canvas, mapView, pj);
+                    }
+
                 for (ColoredGPX gpx : LocalService.showedgpxList)
                     {
                         if (gpx.status.equals(ColoredGPX.Statuses.LOADED))
@@ -300,65 +304,71 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
             }
         private void drawClusters(Canvas canvas, MapView mapView, Projection pj)
             {
+                BoundingBoxE6 bb = pj.getBoundingBox();
+
+
                 Point scrPoint = new Point();
                 clusters.clear();
                 for (Channel ch:LocalService.channelList)
                     {
-                        for (Device dev:ch.deviceList)
+                        if (ch.send){
+                            for (Device dev : ch.deviceList)
+                                {
+                                    dev.clusterid = 0;
+                                    GeoPoint gp = new GeoPoint(dev.lat, dev.lon);
+                                    pj.toPixels(gp, scrPoint);
+                                    if (bb.contains(gp))
+                                        {
+                                            for (Cluster cluster : clusters)
+                                                {
+                                                    if (Math.abs(cluster.p.x - scrPoint.x) < cluster_radius && Math.abs(cluster.p.y - scrPoint.y) < cluster_radius)
+                                                        {
+                                                            dev.clusterid = cluster.id;
+                                                            cluster.size++;
+                                                            break;
+                                                        }
+                                                }
+                                            if (dev.clusterid == 0)
+                                                {
+                                                    Cluster c = new Cluster();
+                                                    c.p = new Point(scrPoint.x, scrPoint.y);
+                                                    c.size = 1;
+                                                    lastclusterid++;
+                                                    c.id = lastclusterid;
+                                                    dev.clusterid = c.id;
+                                                    clusters.add(c);
+                                                }
+                                        }
+                                }
+                        for (Channel.Point point : ch.pointList)
                             {
-                                dev.clusterid=0;
-                                pj.toPixels(new GeoPoint(dev.lat, dev.lon), scrPoint);
-                                for(Cluster cluster:clusters)
+                                point.clusterid = 0;
+                                GeoPoint gp = new GeoPoint(point.lat, point.lon);
+                                pj.toPixels(gp, scrPoint);
+                                if (bb.contains(gp))
                                     {
-                                        if(Math.abs(cluster.p.x-scrPoint.x)< cluster_radius&&Math.abs(cluster.p.y-scrPoint.y)< cluster_radius)
+                                        for (Cluster cluster : clusters)
                                             {
-                                                dev.clusterid=cluster.id;
-                                                cluster.size++;
-                                                break;
+                                                if (Math.abs(cluster.p.x - scrPoint.x) < cluster_radius && Math.abs(cluster.p.y - scrPoint.y) < cluster_radius)
+                                                    {
+                                                        point.clusterid = cluster.id;
+                                                        cluster.size++;
+                                                        break;
+                                                    }
                                             }
-
-                                    }
-                                if(dev.clusterid==0)
-                                    {
-
-                                        Cluster c = new Cluster();
-                                        c.p = new Point(scrPoint.x,scrPoint.y);
-
-                                        c.size=1;
-                                        lastclusterid++;
-                                        c.id=lastclusterid;
-                                        dev.clusterid=c.id;
-                                        clusters.add(c);
+                                        if (point.clusterid == 0)
+                                            {
+                                                Cluster c = new Cluster();
+                                                c.p = new Point(scrPoint.x, scrPoint.y);
+                                                c.size = 1;
+                                                lastclusterid++;
+                                                c.id = lastclusterid;
+                                                point.clusterid = c.id;
+                                                clusters.add(c);
+                                            }
                                     }
                             }
-                        for (Channel.Point point:ch.pointList)
-                            {
-                                point.clusterid=0;
-                                pj.toPixels(new GeoPoint(point.lat, point.lon), scrPoint);
-                                for(Cluster cluster:clusters)
-                                    {
-                                        if(Math.abs(cluster.p.x-scrPoint.x)< cluster_radius&&Math.abs(cluster.p.y-scrPoint.y)< cluster_radius)
-                                            {
-                                                point.clusterid=cluster.id;
-                                                cluster.size++;
-                                                break;
-                                            }
-
-                                    }
-                                if(point.clusterid==0)
-                                    {
-
-                                        Cluster c = new Cluster();
-                                        c.p = new Point(scrPoint.x,scrPoint.y);
-
-                                        c.size=1;
-                                        lastclusterid++;
-                                        c.id=lastclusterid;
-                                        point.clusterid=c.id;
-                                        clusters.add(c);
-                                    }
-                            }
-
+                    }
                     }
                 for(Cluster cluster:clusters)
                     {
@@ -400,6 +410,7 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
 
                             }
                     }
+
             }
         private void drawdevicepath(Canvas canvas, Projection pj, Device dev)
             {
@@ -438,7 +449,12 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
                             }
                         else
                             {
-                                for (int i = dev.devicePath.size() - 2; i >= dev.devicePath.size()-30; i--)
+                                int k = dev.devicePath.size()-30;
+                                if (k<0)
+                                    {
+                                        k=0;
+                                    }
+                                for (int i = dev.devicePath.size() - 2; i >=k; i--)
                                     {
                                         //pj.toPixels((GeoPoint) dev.devicePath.get(i), scrPoint);
                                         Point screenPoint1 = pj.toPixelsFromProjected(dev.devicePath.get(i + 1).point, this.mTempPoint2);

@@ -1539,6 +1539,11 @@ public class IM implements ResultsListener
                                                                                 if (p.u == jsonObject.optInt("u"))
                                                                                     {
                                                                                         exist = true;
+                                                                                        p.lat = Float.parseFloat(jsonObject.getString("lat"));
+                                                                                        p.lon = Float.parseFloat(jsonObject.getString("lon"));
+                                                                                        p.description = jsonObject.optString("description");
+                                                                                        p.color = jsonObject.optString("color");
+                                                                                        p.name = jsonObject.getString("name");
                                                                                     }
                                                                             }
                                                                         if (!exist)

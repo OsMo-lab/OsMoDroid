@@ -298,4 +298,5 @@
   <string name="show_arrows">Visa pilar</string>
   <string name="hidefromnmap">Visa inte på kartan</string>
   <string name="longpath">Långa sökvägar</string>
+  <string name="fullgpx">Fullständig GPX</string>
 </resources>
