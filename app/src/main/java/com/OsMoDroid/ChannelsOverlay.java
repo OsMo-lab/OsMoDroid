@@ -16,6 +16,7 @@ import org.osmdroid.views.overlay.Overlay;
 import org.osmdroid.views.overlay.OverlayItem;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.database.DataSetObserver;
 import android.graphics.Bitmap;
@@ -286,7 +287,8 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
                                                             {
                                                                 canvas.drawText(dev.speed, scrPoint.x, scrPoint.y + ten+twenty, paint);
                                                             }
-
+                                                        paint.setColor(Color.GRAY);
+                                                        canvas.drawCircle(scrPoint.x, scrPoint.y, ten+ten/10, paint);
                                                         paint.setColor(dev.color);
                                                         canvas.drawCircle(scrPoint.x, scrPoint.y, ten, paint);
                                                         if (dev.u == followdev)
@@ -607,64 +609,72 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
         @Override
         public boolean onLongPress(MotionEvent e, MapView mapView)
             {
-                Projection proj = mapView.getProjection();
-                IGeoPoint p = proj.fromPixels((int) e.getX(), (int) e.getY());
-                final JSONObject jo = new JSONObject();
-                try
+                if(LocalService.channelList.size()>0)
                     {
-                        jo.put("lat", p.getLatitude());
-                        jo.put("lon", p.getLongitude());
+                        Projection proj = mapView.getProjection();
+                        IGeoPoint p = proj.fromPixels((int) e.getX(), (int) e.getY());
+                        final JSONObject jo = new JSONObject();
+                        try
+                            {
+                                jo.put("lat", p.getLatitude());
+                                jo.put("lon", p.getLongitude());
+                            }
+                        catch (JSONException e1)
+                            {
+                                e1.printStackTrace();
+                            }
+                        LinearLayout layout = new LinearLayout(map.getContext());
+                        layout.setOrientation(LinearLayout.VERTICAL);
+                        final TextView txv5 = new TextView(map.getContext());
+                        txv5.setText(R.string.point_name_);
+                        layout.addView(txv5);
+                        final EditText pointName = new EditText(map.getContext());
+                        layout.addView(pointName);
+                        final TextView txv6 = new TextView(map.getContext());
+                        txv6.setText(R.string.chanal);
+                        layout.addView(txv6);
+                        final Spinner groupSpinner = new Spinner(map.getContext());
+                        layout.addView(groupSpinner);
+                        ArrayAdapter<Channel> dataAdapter = new ArrayAdapter<Channel>(map.getContext(), R.layout.spinneritem, LocalService.channelList);
+                        groupSpinner.setAdapter(dataAdapter);
+                        AlertDialog alertdialog1 = new AlertDialog.Builder(map.getContext()).create();
+                        alertdialog1.setView(layout);
+                        alertdialog1.setTitle(map.getContext().getString(R.string.point_create));
+                        alertdialog1.setMessage(map.getContext().getString(R.string.point_create_description));
+                        alertdialog1.setButton(map.getContext().getString(R.string.yes),
+                                new DialogInterface.OnClickListener()
+                                    {
+                                        public void onClick(DialogInterface dialog, int which)
+                                            {
+                                                try
+                                                    {
+                                                        jo.put("name", pointName.getText().toString());
+                                                        jo.put("group", ((Channel) groupSpinner.getSelectedItem()).u);
+                                                    }
+                                                catch (JSONException e1)
+                                                    {
+                                                        e1.printStackTrace();
+                                                    }
+                                                LocalService.myIM.sendToServer("GPA|" + jo.toString(), true);
+                                                return;
+                                            }
+                                    });
+                        alertdialog1.setButton2(map.getContext().getString(R.string.No),
+                                new DialogInterface.OnClickListener()
+                                    {
+                                        public void onClick(DialogInterface dialog, int which)
+                                            {
+                                                return;
+                                            }
+                                    });
+                        alertdialog1.show();
                     }
-                catch (JSONException e1)
+                else
                     {
-                        e1.printStackTrace();
+                        Toast.makeText(map.getContext(), R.string.nogroupstosendpoint, Toast.LENGTH_SHORT).show();
                     }
-                LinearLayout layout = new LinearLayout(map.getContext());
-                layout.setOrientation(LinearLayout.VERTICAL);
-                final TextView txv5 = new TextView(map.getContext());
-                txv5.setText(R.string.point_name_);
-                layout.addView(txv5);
-                final EditText pointName = new EditText(map.getContext());
-                layout.addView(pointName);
-                final TextView txv6 = new TextView(map.getContext());
-                txv6.setText(R.string.chanal);
-                layout.addView(txv6);
-                final Spinner groupSpinner = new Spinner(map.getContext());
-                layout.addView(groupSpinner);
-                ArrayAdapter<Channel> dataAdapter = new ArrayAdapter<Channel>(map.getContext(), R.layout.spinneritem, LocalService.channelList);
-                groupSpinner.setAdapter(dataAdapter);
-                AlertDialog alertdialog1 = new AlertDialog.Builder(map.getContext()).create();
-                alertdialog1.setView(layout);
-                alertdialog1.setTitle(map.getContext().getString(R.string.point_create));
-                alertdialog1.setMessage(map.getContext().getString(R.string.point_create_description));
-                alertdialog1.setButton(map.getContext().getString(R.string.yes),
-                        new DialogInterface.OnClickListener()
-                        {
-                            public void onClick(DialogInterface dialog, int which)
-                                {
-                                    try
-                                        {
-                                            jo.put("name", pointName.getText().toString());
-                                            jo.put("group", ((Channel) groupSpinner.getSelectedItem()).u);
-                                        }
-                                    catch (JSONException e1)
-                                        {
-                                            e1.printStackTrace();
-                                        }
-                                    LocalService.myIM.sendToServer("GPA|" + jo.toString(), true);
-                                    return;
-                                }
-                        });
-                alertdialog1.setButton2(map.getContext().getString(R.string.No),
-                        new DialogInterface.OnClickListener()
-                        {
-                            public void onClick(DialogInterface dialog, int which)
-                                {
-                                    return;
-                                }
-                        });
-                alertdialog1.show();
-                return super.onLongPress(e, mapView);
+                        return super.onLongPress(e, mapView);
+
             }
         @Override
         public boolean onSingleTapConfirmed(MotionEvent e, MapView mapView)

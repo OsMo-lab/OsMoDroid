@@ -101,12 +101,12 @@ public class MainFragment extends Fragment implements GPSLocalServiceClient.upd
                     }
                 if (OsMoDroid.settings.getBoolean("pro", false))
                     {
-                        sosButton.setVisibility(View.VISIBLE);
+                       // sosButton.setVisibility(View.VISIBLE);
                         globalsendToggle.setVisibility(View.VISIBLE);
                     }
                 else
                     {
-                        sosButton.setVisibility(View.GONE);
+                       // sosButton.setVisibility(View.GONE);
                         globalsendToggle.setVisibility(View.GONE);
                     }
                 String startStatus = globalActivity.checkStarted() ? getString(R.string.Running)
@@ -167,11 +167,13 @@ public class MainFragment extends Fragment implements GPSLocalServiceClient.upd
                 if (OsMoDroid.settings.getString("p", "").equals(""))
                     {
                         //globalsendToggle.setVisibility(View.GONE);
+                        sosButton.setVisibility(View.GONE);
                         auth.setVisibility(View.VISIBLE);
                     }
                 else
                     {
                         auth.setVisibility(View.GONE);
+                        sosButton.setVisibility(View.VISIBLE);
                         //globalsendToggle.setVisibility(View.GONE);
                     }
             }
@@ -434,7 +436,14 @@ public class MainFragment extends Fragment implements GPSLocalServiceClient.upd
                                     }
                             });
                             builder.setNegativeButton(android.R.string.no, null);
-                            builder.setMessage(R.string.agree_sos_);
+                            if(!sosButton.isChecked())
+                                {
+                                    builder.setMessage(R.string.agree_sos_);
+                                }
+                            else
+                                {
+                                    builder.setMessage(R.string.agreesosno);
+                                }
                             AlertDialog alertDialog = builder.create();
                             alertDialog.show();
                         }
@@ -637,16 +646,16 @@ public class MainFragment extends Fragment implements GPSLocalServiceClient.upd
                                     ToggleButton sosButton = (ToggleButton) getView().findViewById(R.id.sosButton);
                                     if (intent.hasExtra("pro"))
                                         {
-                                            if (intent.getBooleanExtra("pro", false))
-                                                {
-                                                    globalsendToggle.setVisibility(View.VISIBLE);
-                                                    sosButton.setVisibility(View.VISIBLE);
-                                                }
-                                            else
-                                                {
-                                                    globalsendToggle.setVisibility(View.GONE);
-                                                    sosButton.setVisibility(View.GONE);
-                                                }
+//                                            if (intent.getBooleanExtra("pro", false))
+//                                                {
+//                                                    globalsendToggle.setVisibility(View.VISIBLE);
+//                                                    sosButton.setVisibility(View.VISIBLE);
+//                                                }
+//                                            else
+//                                                {
+//                                                    globalsendToggle.setVisibility(View.GONE);
+//                                                    sosButton.setVisibility(View.GONE);
+//                                                }
                                         }
                                     if (intent.hasExtra("sos"))
                                         {

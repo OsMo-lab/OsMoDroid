@@ -18,6 +18,7 @@ public class OsMoDroid extends Application
         public static final String CHANNELLIST = "chlist";
         //public static final String app_code = "F33L_ds31Zklm";
         public static final String app_code = "VA3h_va2j44fva";
+        public static final String TRACKER_GCM_ID = "80";
         public static final String TRACKER_BATTERY_INFO = "11";
         public static final String TRACKER_SATELLITES_INFO = "13";
         public static final String TRACKER_SYSTEM_INFO = "14";
@@ -44,6 +45,8 @@ public class OsMoDroid extends Application
         public static final int NOTIFY_NO_DEVICE = 1;
         public static final int NOTIFY_EXPIRY_USER = 2;
         public static final int NOTIFY_NO_CONNECT = 3;
+        public static final String SENT_TOKEN_TO_SERVER = "sentTokenToServer";
+        public static final String REGISTRATION_COMPLETE = "registrationComplete";
         final static DecimalFormat df1 = new DecimalFormat("#######0.0");
         final static DecimalFormat df2 = new DecimalFormat("#######0.00");
         final static DecimalFormat df0 = new DecimalFormat("########");
@@ -55,6 +58,8 @@ public class OsMoDroid extends Application
         final static SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
         final static SimpleDateFormat sdf2 = new SimpleDateFormat("yyyyMMddHHmmss");
         final static DecimalFormatSymbols dot = new DecimalFormatSymbols();
+        public static final String GCMTODOLIST = "gcmtodolist";
+        public static final String SOS ="99" ;
         public static boolean mesactivityVisible = false;
         public static boolean gpslocalserviceclientVisible = false;
         public static SharedPreferences settings;
@@ -65,6 +70,7 @@ public class OsMoDroid extends Application
         static GPSLocalServiceClient activity;
         static InputMethodManager inputMethodManager;
         private static int notifyid = 1;
+
         public static int notifyidApp()
             {
                 return notifyid++;

@@ -350,11 +350,6 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
                 Log.d(getClass().getSimpleName(), "map onpause");
                 mMapView.getOverlays().remove(myLoc);
                 myLoc.disableMyLocation();
-//		if (!OsMoDroid.settings.getBoolean("subscribebackground", false))
-//			{
-//				globalActivity.mService.myIM.sendToServer("PD:-1",false);
-//				globalActivity.mService.myIM.sendToServer("PG:-1",false);
-//			}
                 super.onPause();
             }
         @Override
@@ -364,11 +359,7 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
                 globalActivity.actionBar.setTitle(getString(R.string.map));
                 mMapView.getOverlays().add(myLoc);
                 myLoc.enableMyLocation();
-//		if (!OsMoDroid.settings.getBoolean("subscribebackground", false))
-//			{
-//				globalActivity.mService.myIM.sendToServer("PG:1",false);
-//				globalActivity.mService.myIM.sendToServer("PD:1",false);
-//			}
+                globalActivity.mService.myIM.sendToServer("SM",false);
                 super.onResume();
             }
         @Override

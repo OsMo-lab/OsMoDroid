@@ -221,6 +221,7 @@ public class IM implements ResultsListener
                     context.unregisterReceiver(this);
                 }
         };
+
         public IM(String server, int port, LocalService service)
             {
                 RECONNECT_TIMEOUT = Integer.parseInt(OsMoDroid.settings.getString("timeout", "30")) * 1000;
@@ -562,6 +563,7 @@ public class IM implements ResultsListener
                 if (log)
                     {
                         Log.d(this.getClass().getName(), "Сообщение в чат канала " + jo);
+                        //LocalService.addlog("Сообщение в чат канала " + jo);
                     }
                 ChatMessage m = new ChatMessage();
                 m.u = jo.optInt("u");
@@ -569,6 +571,7 @@ public class IM implements ResultsListener
                 m.time = jo.optString("time");
                 m.name = jo.optString("name");
                 String fromDevice = "Незнамо кто";
+                LocalService.addlog("Размер спсика групп " + LocalService.channelList.size());
                 for (final Channel channel : LocalService.channelList)
                     {
                         if (log)
@@ -616,17 +619,14 @@ public class IM implements ResultsListener
                             }
                     }
             }
-        synchronized void parseEx(String toParse) throws JSONException
+        synchronized void parseEx(String toParse,boolean gcm) throws JSONException
             {
-                //addlog("recieve "+toParse);
+                //LocalService.addlog("recieve " + toParse);
                 if (log)
                     {
                         Log.d(this.getClass().getName(), "recive " + toParse);
                     }
-                if (!running)
-                    {
-                        running = true;
-                    }
+
                 if (toParse.equals("P|"))
                     {
                         LocalService.addlog("recieve pong");
@@ -652,6 +652,54 @@ public class IM implements ResultsListener
                         command = command.substring(0, command.indexOf(':'));
                     }
                 addict = toParse.substring(toParse.indexOf('|') + 1);
+
+                try
+                    {
+                        jo = new JSONObject(addict);
+                    }
+                catch (JSONException e)
+                    {
+                        try
+                            {
+                                if (log)
+                                    {
+                                        Log.d(this.getClass().getName(), "не JSONO ");
+                                    }
+                                ja = new JSONArray(addict);
+                            }
+                        catch (JSONException e1)
+                            {
+                                // TODO Auto-generated catch block
+                                if (log)
+                                    {
+                                        Log.d(this.getClass().getName(), "не JSONA ");
+                                    }
+                            }
+                    }
+                if(!gcm)
+                    {
+                    parseremovefromcommandlist(command, param);
+                }
+
+                if (jo.has("error"))
+                    {
+                        if(OsMoDroid.gpslocalserviceclientVisible)
+                            {
+                                final String str = jo.optString("error_description");
+                                Toast.makeText(localService, str, Toast.LENGTH_LONG).show();
+                            }
+                    }
+                else
+                    {
+                        parsedata(jo, ja, command, param, addict);
+                    }
+            }
+        private void parseremovefromcommandlist(String command, String param)
+            {
+                if (!running)
+                    {
+                        running = true;
+                    }
                 Iterator<String> comIter = executedCommandArryaList.iterator();
                 while (comIter.hasNext())
                     {
@@ -681,34 +729,10 @@ public class IM implements ResultsListener
                         manager.cancel(reconnectPIntent);
                         localService.refresh();
                     }
-                try
-                    {
-                        jo = new JSONObject(addict);
-                    }
-                catch (JSONException e)
-                    {
-                        try
-                            {
-                                if (log)
-                                    {
-                                        Log.d(this.getClass().getName(), "не JSONO ");
-                                    }
-                                ja = new JSONArray(addict);
-                            }
-                        catch (JSONException e1)
-                            {
-                                // TODO Auto-generated catch block
-                                if (log)
-                                    {
-                                        Log.d(this.getClass().getName(), "не JSONA ");
-                                    }
-                            }
-                    }
-                if (jo.has("error"))
-                    {
-                        final String str = jo.optString("error_description");
-                        Toast.makeText(localService, str, Toast.LENGTH_SHORT).show();
-                    }
+            }
+        private void parsedata(JSONObject jo, JSONArray ja, String command, String param, String addict) throws JSONException
+            {
+                JSONObject jsonObject;
                 if (command.equals("INIT"))
                     {
                         if (!jo.has("error"))
@@ -743,10 +767,27 @@ public class IM implements ResultsListener
                                     {
                                         sendToServer("TC", false);
                                     }
+                                if(OsMoDroid.settings.getBoolean("needsendgcmregid",true))
+                                    {
+                                        LocalService.myIM.sendToServer("GCM|" + OsMoDroid.settings.getString("GCMRegId","no"), false);
+                                    }
                                 if (LocalService.channelList.isEmpty())
                                     {
                                         sendToServer("GROUP", false);
                                     }
+                                else
+                                    {
+                                        for (String s: LocalService.gcmtodolist)
+                                            {
+                                                parseEx(s,true);
+                                            }
+                                        LocalService.gcmtodolist.clear();
+                                        LocalService.connectcompleted =true;
+                                        localService.saveObject(LocalService.gcmtodolist, OsMoDroid.GCMTODOLIST);
+                                    }
+
+
+
                                 if (LocalService.deviceList.isEmpty())
                                     {
                                         sendToServer("DEVICE", false);
@@ -779,7 +820,7 @@ public class IM implements ResultsListener
                                             {
                                                 localService.sos = true;
                                             }
-                                        if (jo.optInt("sos") == 0)
+                                       else
                                             {
                                                 localService.sos = false;
                                             }
@@ -960,12 +1001,30 @@ public class IM implements ResultsListener
                     {
                         sendToServer("PP", false);
                     }
+                if (command.equals("GCM"))
+                    {
+                        OsMoDroid.editor.putBoolean("needsendgcmregid", false).apply();
+                    }
                 if (command.equals("RC"))
                     {
                         if (param.equals("PP"))
                             {
                                 sendToServer("PP", false);
                             }
+                        if (param.equals(OsMoDroid.SOS))
+                            {
+                                Intent dialogIntent = new Intent(localService, SosActivity.class);
+                                dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                dialogIntent.putExtra("message",addict);
+                                localService.startActivity(dialogIntent);
+                            }
+                        if (param.equals(OsMoDroid.TRACKER_GCM_ID))
+                            {
+                                sendToServer("GCM|" + OsMoDroid.settings.getString("GCMRegId","no"), false);
+                                sendToServer("RCR:" + OsMoDroid.TRACKER_GCM_ID + "|1", false);
+                            }
+
+
                         if (param.equals(OsMoDroid.REFRESH_GROUPS))
                             {
                                 sendToServer("GROUP",false);
@@ -1369,6 +1428,13 @@ public class IM implements ResultsListener
                                     }
                             }
                         //sendToServer("PG");
+                        for (String s: LocalService.gcmtodolist)
+                            {
+                                parseEx(s,true);
+                            }
+                        LocalService.gcmtodolist.clear();
+                        LocalService.connectcompleted =true;
+                        localService.saveObject(LocalService.gcmtodolist, OsMoDroid.GCMTODOLIST);
                     }
                 if (command.equals("GL"))
                     {
@@ -1861,7 +1927,7 @@ public class IM implements ResultsListener
                         localService.saveObject(LocalService.deviceList, OsMoDroid.DEVLIST);
                     }
             }
-         static void  getDevtrace(JSONObject jsonObject, Device dev)
+        static void  getDevtrace(JSONObject jsonObject, Device dev)
             {
                 if(jsonObject.has("track"))
                     {
@@ -2019,7 +2085,7 @@ public class IM implements ResultsListener
                                     parent.registerReceiver(reconnectReceiver, new IntentFilter(RECONNECT_INTENT));
                                     manager.cancel(reconnectPIntent);
                                     manager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + ERROR_RECONNECT_TIMEOUT, reconnectPIntent);
-                                    LocalService.addlog("setReconnectAlarm on error setted "+SystemClock.elapsedRealtime());
+                                    LocalService.addlog("setReconnectAlarm on error setted " + SystemClock.elapsedRealtime());
                                 }
                         });
                     }

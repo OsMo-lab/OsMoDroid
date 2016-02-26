@@ -294,4 +294,6 @@
     <string name="hidefromnmap">Убрать с карты</string>
     <string name="longpath">Длинные пути</string>
     <string name="fullgpx">Не разрывать gpx-треки</string>
+    <string name="nogroupstosendpoint">Нет групп для отправки точки</string>
+    <string name="agreesosno">Отключить SOS ?</string>
 </resources>

@@ -728,7 +728,9 @@ public class GPSLocalServiceClient extends ActionBarActivity
         private void bindService()
             {
                 Log.d(this.getClass().getSimpleName(), "bindservice gpsclient");
-                Intent i = new Intent("OsMoDroid.local");
+                Intent i = new Intent(this, LocalService.class);
+                i.setAction("OsMoDroid.local");
+                //Intent i = new Intent("OsMoDroid.local");
                 if (!mBound)
                     {
                         bindService(i, conn, Context.BIND_AUTO_CREATE);

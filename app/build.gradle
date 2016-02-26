@@ -2,25 +2,35 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 21
-    buildToolsVersion "23.0.1"
+    buildToolsVersion "23.0.2"
+    //useLibrary  'org.apache.http.legacy'
     archivesBaseName = "OsMoDroid"
     defaultConfig {
         applicationId "com.OsMoDroid"
-        minSdkVersion 7
+        minSdkVersion 9
         targetSdkVersion 19
     }
 
     buildTypes {
         release {
             minifyEnabled true
-            proguardFiles 'proguard.cfg'
+            //proguardFiles 'proguard.cfg'
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
 
         }
+    }
+    lintOptions{
+        checkReleaseBuilds false
     }
 }
 
 dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+
+
+    compile 'com.google.android.gms:play-services-gcm:8.4.0'
     compile 'com.android.support:appcompat-v7:19.0.0'
     compile 'org.osmdroid:osmdroid-android:4.3'
     compile 'org.slf4j:slf4j-simple:1.6.1'
 }
+apply plugin: 'com.google.gms.google-services'

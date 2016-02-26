@@ -1,6 +1,5 @@
 package com.OsMoDroid;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -20,7 +19,6 @@ import java.util.TimeZone;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.util.GeoPoint;
 
 import android.app.AlarmManager;
@@ -83,6 +81,8 @@ public class LocalService extends Service implements LocationListener, GpsStatus
         public static Device mydev = new Device();
         //public static List<Point> traceList = new ArrayList<Point>();
         public static ArrayList<ColoredGPX> showedgpxList = new ArrayList<ColoredGPX>();
+        static boolean connectcompleted
+                =false;
         boolean binded = false;
         private SensorManager mSensorManager;
         private Sensor mAccelerometer;
@@ -215,6 +215,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
         public static ArrayList<PermLink> simlimkslist = new ArrayList<PermLink>();
         public static ArrayAdapter<PermLink> simlinksadapter;
         public static List<ChatMessage> chatmessagelist = new ArrayList<ChatMessage>();
+        public static ArrayList<String> gcmtodolist = new ArrayList<String>();
         public static Device currentDevice;
         public static DeviceAdapter deviceAdapter;
         public static ChannelsAdapter channelsAdapter;
@@ -252,7 +253,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                                     str = str.substring(0, str.length() - 1);
                                     try
                                         {
-                                            myIM.parseEx(new String(str));
+                                            myIM.parseEx(new String(str),false);
                                         }
                                     catch (Exception e)
                                         {
@@ -267,7 +268,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                                 {
                                     try
                                         {
-                                            myIM.parseEx(new String(str));
+                                            myIM.parseEx(new String(str),false);
                                         }
                                     catch (Exception e)
                                         {
@@ -583,6 +584,8 @@ public class LocalService extends Service implements LocationListener, GpsStatus
             {
                 super.onCreate();
                 Log.d(this.getClass().getName(), "localserviceoncreate");
+                Intent gcmregintent = new Intent(this, RegistrationIntentService.class);
+                startService(gcmregintent);
                 ttsManage();
                 getversion();
                 serContext = LocalService.this;
@@ -737,6 +740,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                                                 cgpx.initPathOverlay();
                                             }
                                     }
+                                connectcompleted =true;
                             }
                     }
                 List<Device> loaded = (List<Device>) loadObject(OsMoDroid.DEVLIST, deviceList.getClass());
@@ -744,6 +748,11 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                     {
                         Log.d(this.getClass().getName(), "devicelist is not empty");
                         deviceList.addAll(loaded);
+                    }
+                ArrayList<String> loadedgcm = (ArrayList<String>) loadObject(OsMoDroid.GCMTODOLIST, gcmtodolist.getClass());
+                if(loadedgcm!=null)
+                    {
+                        gcmtodolist.addAll(loadedgcm);
                     }
                 myIM = new IM("osmo.mobi", 4245, this)
                 {
@@ -1085,18 +1094,19 @@ public class LocalService extends Service implements LocationListener, GpsStatus
         @Override
         public void onStart(Intent intent, int startId)
             {
+                //super.onStart(intent, startId);
                 if (log)
                     {
                         Log.d(getClass().getSimpleName(), "on start ");
                     }
                 updatewidgets();
                 handleStart(intent, startId);
-                super.onStart(intent, startId);
+
             }
         @Override
         public int onStartCommand(Intent intent, int flags, int startId)
             {
-                super.onStartCommand(intent, flags, startId);
+                //super.onStartCommand(intent, flags, startId);
                 if (log)
                     {
                         Log.d(getClass().getSimpleName(), "on startcommand");
@@ -1118,33 +1128,55 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                                         Object value = bundle.get(key);
                                         Log.d(getClass().getSimpleName(), String.format("%s %s (%s)", key,
                                                 value.toString(), value.getClass().getName()));
+                                        addlog(String.format("%s %s (%s)", key,
+                                                value.toString(), value.getClass().getName()));
                                     }
                             }
-                    }
-                if (intent != null && intent.hasExtra("SMS"))
-                    {
-                        if (intent.getStringExtra("SMS").equals("START") && !state)
+                        if ( intent.hasExtra("SMS"))
                             {
-                                startServiceWork(true);
+                                if (intent.getStringExtra("SMS").equals("START") && !state)
+                                    {
+                                        startServiceWork(true);
+                                    }
+                                if (intent.getStringExtra("SMS").equals("STOP") && state)
+                                    {
+                                        stopServiceWork(true);
+                                    }
                             }
-                        if (intent.getStringExtra("SMS").equals("STOP") && state)
+                        if (intent.hasExtra("ACTION"))
                             {
-                                stopServiceWork(true);
+                                Log.d(getClass().getSimpleName(), "on handleStart intent has ACTION=" + intent.getStringExtra("ACTION"));
+                                if (intent.getStringExtra("ACTION").equals("STOP"))
+                                    {
+                                        stopServiceWork(true);
+                                    }
+                                if (intent.getStringExtra("ACTION").equals("START"))
+                                    {
+                                        startServiceWork(true);
+                                    }
                             }
-                    }
-                if (intent != null && intent.hasExtra("ACTION"))
-                    {
-                        Log.d(getClass().getSimpleName(), "on handleStart intent has ACTION="+intent.getStringExtra("ACTION"));
-                        if(intent.getStringExtra("ACTION").equals("STOP"))
+                        if(intent.hasExtra("GCM"))
                             {
-                                stopServiceWork(true);
+                                try
+                                    {
+                                       if(connectcompleted)
+                                           {
+                                               myIM.parseEx(intent.getStringExtra("GCM"),true);
+                                           }
+                                        else
+                                           {
+                                               gcmtodolist.add(intent.getStringExtra("GCM"));
+                                               saveObject(gcmtodolist, OsMoDroid.GCMTODOLIST);
+                                           }
+                                    }
+                                catch (JSONException e)
+                                    {
+                                        StringWriter sw = new StringWriter();
+                                        e.printStackTrace(new PrintWriter(sw));
+                                        String exceptionAsString = sw.toString();
+                                        addlog(exceptionAsString);
+                                    }
                             }
-                        if(intent.getStringExtra("ACTION").equals("START"))
-                            {
-                                startServiceWork(true);
-                            }
-
-
                     }
             }
         public void applyPreference()
@@ -2384,17 +2416,11 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                     {
                         e.printStackTrace();
                     }
-                catch (FileNotFoundException e)
+                catch (Exception e)
                     {
                         e.printStackTrace();
-                    }
-                catch (IOException e)
-                    {
-                        e.printStackTrace();
-                    }
-                catch (ClassNotFoundException e)
-                    {
-                        e.printStackTrace();
+                        addlog("object not loaded from file - excepion");
+
                     }
                 return null;
             }
