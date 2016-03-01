@@ -31,6 +31,7 @@ public class Channel implements Serializable, ResultsListener
         public String description;
         public String myNameInGroup;
         public int u;
+        public int gu;
         public String created;
         public String group_id;
         public String url;
@@ -78,6 +79,7 @@ public class Channel implements Serializable, ResultsListener
                 this.group_id = jo.optString("id");
                 this.url = "https://osmo.mobi/g/" + jo.optString("url");
                 this.myNameInGroup = jo.optString("nick");
+                this.gu=jo.optInt("gu");
                 this.type=jo.optInt("type");
                 if (jo.optInt("active") == 1)
                     {

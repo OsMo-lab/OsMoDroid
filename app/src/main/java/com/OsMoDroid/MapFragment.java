@@ -147,6 +147,7 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
         @Override
         public boolean onOptionsItemSelected(MenuItem item)
             {
+                IGeoPoint c = mMapView.getMapCenter();
                 switch (item.getItemId())
                     {
                         case 1:
@@ -171,10 +172,12 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
                             mMapView.invalidate();
                             break;
                         case 6:
+
                             mMapView.setTileSource(TileSourceFactory.MAPNIK);
                             OsMoDroid.editor.putInt("selectedTileSourceInt", 1);
                             OsMoDroid.editor.commit();
                             reinitchoverlay();
+
                             break;
                         case 5:
                             mMapView.setTileSource(mapSurferTileSource);
@@ -294,6 +297,7 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
                         default:
                             break;
                     }
+                mController.setCenter(c);
                 return super.onOptionsItemSelected(item);
             }
         @Override

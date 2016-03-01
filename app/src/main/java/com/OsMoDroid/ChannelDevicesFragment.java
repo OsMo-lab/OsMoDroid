@@ -309,10 +309,14 @@ public class ChannelDevicesFragment extends Fragment implements ResultsListener
                         if (lv1.getVisibility() == View.VISIBLE)
                             {
                                 lv1.setVisibility(View.GONE);
+                                OsMoDroid.editor.putBoolean("showdevices", false);
+                                OsMoDroid.editor.commit();
                             }
                         else
                             {
                                 lv1.setVisibility(View.VISIBLE);
+                                OsMoDroid.editor.putBoolean("showdevices", true);
+                                OsMoDroid.editor.commit();
                             }
                     }
                 return super.onOptionsItemSelected(item);
@@ -345,6 +349,15 @@ public class ChannelDevicesFragment extends Fragment implements ResultsListener
                 //(getSherlockActivity(), R.layout.channelchatitem, LocalService.currentChannel.messagesstringList );
                 lv1 = (ListView) view.findViewById(R.id.mychannelsdeviceslistView);
                 lv2 = (ListView) view.findViewById(R.id.mychannelsmessages);
+                if(OsMoDroid.settings.getBoolean("showdevices",true))
+                    {
+                        lv1.setVisibility(View.VISIBLE);
+                    }
+                else
+                    {
+                        lv1.setVisibility(View.GONE);
+                    }
+
 //		Button hideButton = (Button) view.findViewById(R.id.hidebutton);
 //		hideButton.setOnClickListener(new OnClickListener() {
 //			@Override
@@ -380,22 +393,30 @@ public class ChannelDevicesFragment extends Fragment implements ResultsListener
                         {
                             if (!(input.getText().toString().equals("")))
                                 {
-                                    JSONObject postjson = new JSONObject();
-                                    try
+                                    if (globalActivity.mService.myIM.authed)
                                         {
-                                            postjson.put("text", input.getText().toString());
-                                            globalActivity.mService.myIM.sendToServer("GCS:" + LocalService.currentChannel.u + '|' + postjson.toString(), true);
-                                            //http://apim.esya.ru/?key=H8&query=om_channel_chat_post&format=jsonp
-                                            //json={"channel":"51","device":"40","text":"789"}
-                                            //t.add(Netutil.newapicommand((ResultsListener)ChannelDevicesFragment.this,(Context)getSherlockActivity(), "om_channel_chat_post","json="+postjson.toString()));
-                                            input.setText("");
+                                            JSONObject postjson = new JSONObject();
+                                            try
+                                                {
+                                                    postjson.put("text", input.getText().toString());
+                                                    globalActivity.mService.myIM.sendToServer("GCS:" + LocalService.currentChannel.u + '|' + postjson.toString(), true);
+                                                    //http://apim.esya.ru/?key=H8&query=om_channel_chat_post&format=jsonp
+                                                    //json={"channel":"51","device":"40","text":"789"}
+                                                    //t.add(Netutil.newapicommand((ResultsListener)ChannelDevicesFragment.this,(Context)getSherlockActivity(), "om_channel_chat_post","json="+postjson.toString()));
+                                                    input.setText("");
+                                                }
+                                            catch (JSONException e)
+                                                {
+                                                    // TODO Auto-generated catch block
+                                                    e.printStackTrace();
+                                                }
                                         }
-                                    catch (JSONException e)
+                                    else
                                         {
-                                            // TODO Auto-generated catch block
-                                            e.printStackTrace();
+                                            Toast.makeText(globalActivity, R.string.CheckInternet, Toast.LENGTH_SHORT).show();
                                         }
                                 }
+
                         }
                 });
                 lv1.setAdapter(LocalService.channelsDevicesAdapter);

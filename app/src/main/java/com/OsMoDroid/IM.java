@@ -571,7 +571,7 @@ public class IM implements ResultsListener
                 m.time = jo.optString("time");
                 m.name = jo.optString("name");
                 String fromDevice = "Незнамо кто";
-                LocalService.addlog("Размер спсика групп " + LocalService.channelList.size());
+               // LocalService.addlog("Размер спсика групп " + LocalService.channelList.size());
                 for (final Channel channel : LocalService.channelList)
                     {
                         if (log)
@@ -582,7 +582,7 @@ public class IM implements ResultsListener
                             {
                                 if (!channel.messagesstringList.contains(m))
                                     {
-                                        if (!silent)
+                                        if (!silent&&channel.gu!=jo.optInt("gu"))
                                             {
                                                 fromDevice = jo.optString("name");
                                                 Intent intent = new Intent(localService, GPSLocalServiceClient.class).putExtra("channelpos", channel.u);
@@ -603,10 +603,10 @@ public class IM implements ResultsListener
                                                         notificationBuilder.setDefaults(Notification.DEFAULT_LIGHTS | Notification.DEFAULT_VIBRATE | Notification.DEFAULT_SOUND);
                                                     }
                                                 Notification notification = notificationBuilder.build();
-                                                LocalService.mNotificationManager.notify(OsMoDroid.mesnotifyid, notification);
+                                                LocalService.mNotificationManager.notify(OsMoDroid.mesnotifyid+channel.u, notification);
                                                 if (LocalService.channelsmessagesAdapter != null && LocalService.currentChannel != null && LocalService.currentChannel.u == channel.u && LocalService.chatVisible)
                                                     {
-                                                        LocalService.mNotificationManager.cancel(OsMoDroid.mesnotifyid);
+                                                        LocalService.mNotificationManager.cancel(OsMoDroid.mesnotifyid+channel.u);
                                                     }
                                             }
                                         channel.messagesstringList.add(m);
@@ -1003,7 +1003,8 @@ public class IM implements ResultsListener
                     }
                 if (command.equals("GCM"))
                     {
-                        OsMoDroid.editor.putBoolean("needsendgcmregid", false).apply();
+                        OsMoDroid.editor.putBoolean("needsendgcmregid", false);
+                        OsMoDroid.editor.commit();
                     }
                 if (command.equals("RC"))
                     {
@@ -1934,25 +1935,34 @@ public class IM implements ResultsListener
                         if(dev.devicePath.isEmpty())
                             {
                                 JSONArray devtrackpoints = jsonObject.optJSONArray("track");
+                                Log.d("osmo", "track json size="+devtrackpoints.length());
                                 for (int k = 0; k <devtrackpoints.length() ; k++)
                                     {
                                         JSONArray p = (JSONArray) devtrackpoints.opt(k);
-                                        int lat=0;
-                                        int lon=0;
+                                        float lat=0;
+                                        float lon=0;
                                         try
                                             {
-                                                lat = Integer.parseInt(p.optString(0).replace(".",""));
-                                                lon = Integer.parseInt(p.optString(1).replace(".",""));
+                                                //lat = Float.parseFloat(p.optString(0).replace(".",""));
+                                                //lon = Float.parseFloat(p.optString(1).replace(".",""));
+                                                lat = Float.parseFloat(p.optString(0));
+                                                lon = Float.parseFloat(p.optString(1));
                                             }
                                         catch (NumberFormatException e)
                                             {
                                                 e.printStackTrace();
                                             }
+
                                         if(lat!=0&&lon!=0)
                                             {
-                                                dev.devicePath.add(new SerPoint(new android.graphics.Point(lat, lon)));
+                                                GeoPoint gp = new GeoPoint(lat, lon);
+                                                dev.devicePath.add(new SerPoint(new android.graphics.Point(gp.getLatitudeE6(),gp.getLongitudeE6())));
+
                                             }
+
                                     }
+                                Log.d("osmo", "track size="+dev.devicePath.size());
+                                Log.d("osmo", "track size="+dev.devicePath.toString());
                             }
                     }
             }

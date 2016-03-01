@@ -7,7 +7,7 @@ android {
     archivesBaseName = "OsMoDroid"
     defaultConfig {
         applicationId "com.OsMoDroid"
-        minSdkVersion 9
+        minSdkVersion 7
         targetSdkVersion 19
     }
 
