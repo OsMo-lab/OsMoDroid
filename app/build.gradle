@@ -7,8 +7,8 @@ android {
     archivesBaseName = "OsMoDroid"
     defaultConfig {
         applicationId "com.OsMoDroid"
-        minSdkVersion 7
-        targetSdkVersion 19
+        minSdkVersion 9
+        targetSdkVersion 21
     }
 
     buildTypes {
@@ -29,7 +29,7 @@ dependencies {
 
 
     compile 'com.google.android.gms:play-services-gcm:8.4.0'
-    compile 'com.android.support:appcompat-v7:19.0.0'
+    compile 'com.android.support:appcompat-v7:21.0.0'
     compile 'org.osmdroid:osmdroid-android:4.3'
     compile 'org.slf4j:slf4j-simple:1.6.1'
 }
