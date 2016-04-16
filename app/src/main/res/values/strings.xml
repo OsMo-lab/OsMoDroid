@@ -302,4 +302,5 @@
     <string name="shortname">Short names</string>
     <string name="enterin">" enter in geozone "</string>
     <string name="exitfrom">" exit from geozone "</string>
+    <string name="warnewdevice">"This device was deleted from OSMO.MOBI\nWill create new, if you have been created links(URL) it will invalid now and need to reenter to groups\n You can contact support if like "</string>
 </resources>
