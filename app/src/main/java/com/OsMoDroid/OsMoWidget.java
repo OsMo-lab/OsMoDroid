@@ -73,11 +73,12 @@ public class OsMoWidget extends AppWidgetProvider
             {
                 Log.d(getClass().getSimpleName(), "on disabled");
             }
-        @Override
-        public void onRestored(Context context, int[] oldWidgetIds, int[] newWidgetIds)
-            {
-                Log.d(getClass().getSimpleName(), "on restored");
-                super.onRestored(context, oldWidgetIds, newWidgetIds);
-            }
+//        @Override
+//        public void onRestored(Context context, int[] oldWidgetIds, int[] newWidgetIds)
+//            {
+//                Log.d(getClass().getSimpleName(), "on restored");
+//
+//                //super.onRestored(context, oldWidgetIds, newWidgetIds);
+//            }
     }
 

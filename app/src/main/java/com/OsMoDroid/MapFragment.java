@@ -21,6 +21,7 @@ import org.osmdroid.tileprovider.tilesource.ITileSource;
 import org.osmdroid.tileprovider.tilesource.OnlineTileSourceBase;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.tileprovider.tilesource.XYTileSource;
+import org.osmdroid.tileprovider.tilesource.bing.BingMapTileSource;
 import org.osmdroid.tileprovider.util.SimpleRegisterReceiver;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.util.ResourceProxyImpl;
@@ -109,10 +110,12 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
         private BingMapTileSource bingTileSource;
         private ITileSource sputnikTileSource;
         private ITileSource outdoorTileSource;
+        private ITileSource chepeTileSource;
         private ChannelsOverlay choverlay;
         @Override
         public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
             {
+                MenuItem shortname = menu.add(0, 17, 0, R.string.shortname);
                 MenuItem fullgpx = menu.add(0, 16, 0, R.string.fullgpx);
                 MenuItem longpath = menu.add(0, 15, 0, R.string.longpath);
                 MenuItem arrows = menu.add(0, 14, 0, R.string.show_arrows);
@@ -125,11 +128,13 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
                 arrows.setCheckable(true);
                 longpath.setCheckable(true);
                 fullgpx.setCheckable(true);
+                shortname.setCheckable(true);
                 arrows.setChecked(OsMoDroid.settings.getBoolean("arrows", false));
                 traces.setChecked(OsMoDroid.settings.getBoolean("traces", true));
                 rotation.setChecked(OsMoDroid.settings.getBoolean("rotation", false));
                 longpath.setChecked(OsMoDroid.settings.getBoolean("longpath", true));
                 fullgpx.setChecked(OsMoDroid.settings.getBoolean("fullgpx", true));
+                shortname.setChecked(OsMoDroid.settings.getBoolean("shortname",false));
                 courserotation.setChecked(rotate);
                 SubMenu menu2 = menu.addSubMenu(Menu.NONE, 4, 4, R.string.map);
                 MenuItem mapsurfer = menu2.add(0, 5, 1, "MapSurfer");
@@ -141,6 +146,7 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
                 adjdpi.setChecked(OsMoDroid.settings.getBoolean("adjust_to_dpi", true));
                 MenuItem sputnik = menu2.add(0, 10, 1, "Sputnik");
                 MenuItem outdoor = menu2.add(0, 12, 1, "Outdoor");
+                MenuItem chepe = menu2.add(0, 18, 1, "Chepeck");
                 menu.add(0, 11, 1, R.string.size_of_point);
                 super.onCreateOptionsMenu(menu, inflater);
             }
@@ -187,7 +193,7 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
                             reinitchoverlay();
                             break;
                         case 7:
-                            BingMapTileSource.retrieveBingKey(globalActivity);
+                            org.osmdroid.tileprovider.tilesource.bing.BingMapTileSource.retrieveBingKey(globalActivity);
                             bingTileSource.setStyle(BingMapTileSource.IMAGERYSET_AERIAL);
                             mMapView.setTileSource(bingTileSource);
                             OsMoDroid.editor.putInt("selectedTileSourceInt", 3);
@@ -292,6 +298,20 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
                             item.setChecked(!item.isChecked());
                             OsMoDroid.editor.putBoolean("fullgpx", item.isChecked());
                             OsMoDroid.editor.commit();
+                            mMapView.invalidate();
+                            break;
+                        case 17:
+                            item.setChecked(!item.isChecked());
+                            OsMoDroid.editor.putBoolean("shortname", item.isChecked());
+                            OsMoDroid.editor.commit();
+                            mMapView.invalidate();
+                            break;
+                        case 18:
+                            mMapView.setTileSource(chepeTileSource);
+                            OsMoDroid.editor.putInt("selectedTileSourceInt", 8);
+                            OsMoDroid.editor.commit();
+
+                            reinitchoverlay();
                             mMapView.invalidate();
                             break;
                         default:
@@ -411,20 +431,24 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
                 final String[] aBaseUrl = new String[]{"http://korona.geog.uni-heidelberg.de/tiles/roads/"};
                 final String[] sputnikURL = new String[]{"http://b.tiles.maps.sputnik.ru/"};
                 final String[] outdoorURL = new String[]{"http://tile.thunderforest.com/outdoors/"};
+                final String[] chepeURL = new String[]{"http://ingreelab.net/C04AF0B62BEC112E8D7242FB848631D12D252728/"};
                 bingTileSource = new BingMapTileSource(null);
                 sputnikTileSource = new SputnikTileSource("Sputnik", string.unknown, aZoomMinLevel, aZoomMaxLevel, 512, aImageFilenameEnding, sputnikURL);
                 outdoorTileSource = new OutdoorTileSource("OutDoor", string.unknown, aZoomMinLevel, aZoomMaxLevel, aTileSizePixels, aImageFilenameEnding, outdoorURL);
+                chepeTileSource = new OutdoorTileSource("Chepe", string.unknown, aZoomMinLevel, aZoomMaxLevel, aTileSizePixels, aImageFilenameEnding, chepeURL);
                 mapSurferTileSource = new MAPSurferTileSource(name, string.unknown, aZoomMinLevel, aZoomMaxLevel, aTileSizePixels, aImageFilenameEnding, aBaseUrl);
                 View view = inflater.inflate(R.layout.map, container, false);
                 RelativeLayout rl = (RelativeLayout) view.findViewById(R.id.relative);
                 CustomTileProvider customTileProvider = new CustomTileProvider(getActivity());
-                mMapView = new MapView(getActivity(), 256, customTileProvider);
+
+                mMapView = new MapView(getActivity(), mResourceProxy,  customTileProvider);
                 RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.FILL_PARENT, RelativeLayout.LayoutParams.FILL_PARENT);
                 lp.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
                 lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
                 mMapView.setLayoutParams(lp);
                 mMapView.setTilesScaledToDpi(OsMoDroid.settings.getBoolean("adjust_to_dpi", true));
-                mMapView.setTilesScaledToDpi(true);
+
+                //mMapView.setTilesScaledToDpi(true);
                 rl.addView(mMapView, 0);
                 ImageButton centerImageButton = (ImageButton) view.findViewById(R.id.imageButtonCenter);
                 Button rotateButton = (Button) view.findViewById(R.id.buttonRotate);
@@ -450,6 +474,10 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
                             break;
                         case 7:
                             mMapView.setTileSource(outdoorTileSource);
+                            break;
+                        case 8:
+                            mMapView.setTileSource(chepeTileSource);
+                            break;
                         default:
                             break;
                     }
@@ -640,7 +668,7 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
                                     int aZoomMaxLevel, int aTileSizePixels,
                                     String aImageFilenameEnding, String... aBaseUrl)
                     {
-                        super(aName, aResourceId, aZoomMinLevel, aZoomMaxLevel,
+                        super(aName,  aZoomMinLevel, aZoomMaxLevel,
                                 aTileSizePixels, aImageFilenameEnding, aBaseUrl);
                     }
                 @Override
@@ -657,7 +685,7 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
                                   int aZoomMaxLevel, int aTileSizePixels,
                                   String aImageFilenameEnding, String... aBaseUrl)
                     {
-                        super(aName, aResourceId, aZoomMinLevel, aZoomMaxLevel,
+                        super(aName,  aZoomMinLevel, aZoomMaxLevel,
                                 aTileSizePixels, aImageFilenameEnding, aBaseUrl);
                     }
                 @Override
@@ -673,7 +701,7 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
                                   int aZoomMaxLevel, int aTileSizePixels,
                                   String aImageFilenameEnding, String... aBaseUrl)
                     {
-                        super(aName, aResourceId, aZoomMinLevel, aZoomMaxLevel,
+                        super(aName,  aZoomMinLevel, aZoomMaxLevel,
                                 aTileSizePixels, aImageFilenameEnding, aBaseUrl);
                     }
                 @Override
@@ -682,7 +710,7 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
                         return getBaseUrl() + aTile.getZoomLevel() + '/' + aTile.getX() + '/' + aTile.getY() + ".png";
                     }
             }
-        public class CustomTileProvider extends MapTileProviderBasic implements ResourceProxy
+        public class CustomTileProvider extends MapTileProviderBasic
             {
                 public CustomTileProvider(Context pContext)
                     {
@@ -700,31 +728,7 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
                     {
                         super.setTileSource(aTileSource);
                     }
-                @Override
-                public String getString(string pResId)
-                    {
-                        return null;
-                    }
-                @Override
-                public String getString(string pResId, Object... formatArgs)
-                    {
-                        return null;
-                    }
-                @Override
-                public Bitmap getBitmap(bitmap pResId)
-                    {
-                        return null;
-                    }
-                @Override
-                public Drawable getDrawable(bitmap pResId)
-                    {
-                        return null;
-                    }
-                @Override
-                public float getDisplayMetricsDensity()
-                    {
-                        return 0;
-                    }
+
             }
         public class CustomMapTileFilesystemProvider extends MapTileFilesystemProvider
             {

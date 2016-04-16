@@ -299,4 +299,6 @@
   <string name="hidefromnmap">Visa inte på kartan</string>
   <string name="longpath">Långa sökvägar</string>
   <string name="fullgpx">Fullständig GPX</string>
+  <string name="nogroupstosendpoint">Inga grupper att skicka punkter till</string>
+  <string name="agreesosno">OK att stänga av SOS?</string>
 </resources>

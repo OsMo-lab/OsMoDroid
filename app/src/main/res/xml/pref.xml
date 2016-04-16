@@ -3,7 +3,7 @@
     
     <PreferenceCategory android:title="@string/general">
         <CheckBoxPreference android:title="@string/dark_theme" android:defaultValue="true" android:key="darktheme" />
-        <EditTextPreference android:summary="@string/milliseconds" android:title="@string/gps_poll_period" android:key="refreshrate" android:defaultValue="1000"/>
+        <EditTextPreference android:summary="@string/milliseconds" android:title="@string/gps_poll_period" android:key="refreshrate" android:defaultValue="5000"/>
         <EditTextPreference android:summary="@string/seconds" android:title="@string/network_timeout" android:key="timeout" android:defaultValue="30"/>
     </PreferenceCategory>
     
@@ -21,7 +21,7 @@
                                 android:key="period"
                                 android:numeric="integer"
                                 android:summary="@string/milliseconds_how_often_to_send_location"
-                                android:title="@string/send_frequency" android:defaultValue="5000"/>
+                                android:title="@string/send_frequency" android:defaultValue="0"/>
                             <EditTextPreference
                                 android:digits="0123456789"
                                 android:inputType="number"
@@ -65,7 +65,7 @@
                                 android:key="usebuffer"
                                 android:title="@string/transfer_unsent"
                                 android:summary="@string/useful_with_unstable_internet_connections_may_use_more_data_"
-                                android:defaultValue="false"/>
+                                android:defaultValue="true"/>
                     </PreferenceScreen>
     </PreferenceCategory>
     
@@ -224,7 +224,8 @@
             android:title="@string/startup_at_boot"
             android:defaultValue="false"/>
         <CheckBoxPreference android:key="subscribebackground" android:title="@string/update_map_in_background" android:defaultValue="false"/>
-        <CheckBoxPreference android:key="tcpnodelay" android:title="@string/tcp_no_delay" android:defaultValue="false"/>
+        <!--<CheckBoxPreference android:key="tcpnodelay" android:title="@string/tcp_no_delay" android:defaultValue="false"/>-->
+        <!--<CheckBoxPreference android:key="tls" android:title="Use TLS Socket" android:defaultValue="false"/>-->
         
     </PreferenceCategory>
     

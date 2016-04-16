@@ -296,4 +296,7 @@
     <string name="fullgpx">Не разрывать gpx-треки</string>
     <string name="nogroupstosendpoint">Нет групп для отправки точки</string>
     <string name="agreesosno">Отключить SOS ?</string>
+    <string name="shortname">Короткие имена</string>
+    <string name="enterin">" вошел в геозону "</string>
+    <string name="exitfrom">" вышел из геозоны "</string>
 </resources>

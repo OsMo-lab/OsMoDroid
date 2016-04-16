@@ -16,8 +16,7 @@ public class OsMoDroid extends Application
         public static final String NOTIFIESFILENAME = "messagelist";
         public static final String DEVLIST = "devlist";
         public static final String CHANNELLIST = "chlist";
-        //public static final String app_code = "F33L_ds31Zklm";
-        public static final String app_code = "VA3h_va2j44fva";
+        public static final String app_code = "dsgIEGOef3539BfSAF_HR0z2da";
         public static final String TRACKER_GCM_ID = "80";
         public static final String TRACKER_BATTERY_INFO = "11";
         public static final String TRACKER_SATELLITES_INFO = "13";
@@ -60,6 +59,7 @@ public class OsMoDroid extends Application
         final static DecimalFormatSymbols dot = new DecimalFormatSymbols();
         public static final String GCMTODOLIST = "gcmtodolist";
         public static final String SOS ="99" ;
+        public static final String SOS_OFF ="100" ;
         public static boolean mesactivityVisible = false;
         public static boolean gpslocalserviceclientVisible = false;
         public static SharedPreferences settings;

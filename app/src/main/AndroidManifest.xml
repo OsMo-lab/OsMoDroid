@@ -3,8 +3,8 @@
           xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:tools="http://schemas.android.com/tools"
           android:installLocation="auto"
-          android:versionCode="280"
-          android:versionName="2.2.0">
+          android:versionCode="286"
+          android:versionName="2.3.1">
 
     <uses-sdk
         android:minSdkVersion="9"
@@ -73,6 +73,7 @@
         android:name=".OsMoDroid"
         android:icon="@drawable/eye"
         android:label="@string/app_name"
+        android:largeHeap="true"
         android:theme="@style/Theme.Osmodroid">
         <meta-data
             android:name="BING_KEY"

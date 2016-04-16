@@ -50,6 +50,7 @@ import android.media.AudioManager;
 import android.media.SoundPool;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.TrafficStats;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.BatteryManager;
@@ -229,6 +230,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
         public static boolean channelsupdated = false;
         public static boolean chatVisible = false;
         public static String currentItemName = "";
+        public static ArrayAdapter<String> adapter;
         final static Handler alertHandler = new Handler()
         {
             @Override
@@ -327,6 +329,17 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                         {
                             Toast.makeText(serContext, text, Toast.LENGTH_SHORT).show();
                             LocalService.messagelist.add(0, text);
+
+
+                            if(adapter!=null)
+                                {
+                                    adapter.clear();
+                                    for (String s:LocalService.messagelist)
+                                        {
+                                            adapter.add(s);
+                                        }
+                                    adapter.notifyDataSetChanged();
+                                }
 //			if(log)Log.d(this.getClass().getName(), "try to save messaglsit");
 //			saveObject(messagelist, OsMoDroid.NOTIFIESFILENAME);
 //		    if(log)Log.d(this.getClass().getName(), "Success saved messaglsit");
@@ -477,7 +490,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                         in.putExtra("executedlistsize", myIM.executedCommandArryaList.size());
                     }
                 in.putExtra("motd", motd);
-                in.putExtra("traffic", Long.toString((myIM.sendBytes + myIM.recievedBytes) / 1024) + OsMoDroid.dot.getDecimalSeparator() + Long.toString((myIM.sendBytes + myIM.recievedBytes) % 1000) + "KB " + myIM.connectcount + "|" + myIM.erorconenctcount);
+                in.putExtra("traffic", Long.toString((TrafficStats.getUidTxBytes(OsMoDroid.context.getApplicationInfo().uid)-myIM.startTraffic) / 1024) + OsMoDroid.dot.getDecimalSeparator() + Long.toString((TrafficStats.getUidTxBytes(OsMoDroid.context.getApplicationInfo().uid)-myIM.startTraffic) % 1000) + "KB " + myIM.connectcount + "|" + myIM.erorconenctcount);
                 in.putExtra("pro", pro);
 
                 sendBroadcast(in);
@@ -567,12 +580,12 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                             }
                         else
                             {
-                                sendlocation(forcenetworklocation);
+                                sendlocation(forcenetworklocation, false);
                             }
                     }
                 else
                     {
-                        sendlocation(forcelocation);
+                        sendlocation(forcelocation,false);
                     }
             }
         public int getSendCounter()
@@ -871,8 +884,16 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                     {
                         Object v = entry.getValue();
                         String key = entry.getKey();
-                        postjson.put(key, ((String) v));
+                        postjson.put(key,  v);
                     };
+                postjson.remove("tracker_id");
+                postjson.remove("device");
+                postjson.remove("GCMregId");
+                postjson.remove("newkey");
+                postjson.remove("modt");
+                postjson.remove("motdtime");
+
+
                 myIM.sendToServer("RCR:"+OsMoDroid.TRACKER_GET_PREFS+"|"+postjson.toString(),false);
             }
         void setpreferences(JSONObject jo, Context context) throws JSONException
@@ -911,6 +932,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                         }
                     OsMoDroid.editor.commit();
                 }
+                myIM.sendToServer("RCR:"+OsMoDroid.TRACKER_SET_PREFS+"|"+1,false);
             }
         void wifion(Context context)
             {
@@ -1644,7 +1666,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                             {
                                 LocalService.addlog("send on because networklocation");
                                 prevnetworklocationtime = System.currentTimeMillis();
-                                sendlocation(location);
+                                sendlocation(location,false);
                                 return;
                             }
                         else
@@ -1663,7 +1685,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                                 Log.d(this.getClass().getName(), "Первая отправка");
                             }
                         //LocalService.addlog("First send");
-                        sendlocation(location);
+                        sendlocation(location,true);
                         prevlocation.set(location);
                         prevlocation_gpx.set(location);
                         prevlocation_spd = new Location("");
@@ -1798,7 +1820,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                                                 prevlocation.set(location);
                                                 prevbrng = brng;
                                                 //if(log)Log.d(this.getClass().getName(), "send(location)="+location);
-                                                sendlocation(location);
+                                                sendlocation(location,true);
                                             }
                                         else
                                             {
@@ -1810,7 +1832,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                                                 prevlocation.set(location);
                                                 prevbrng = brng;
                                                 //if(log)Log.d(this.getClass().getName(), "send(location)="+location);
-                                                sendlocation(location);
+                                                sendlocation(location,true);
                                             }
                                         else
                                             {
@@ -1827,7 +1849,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                                                 //if(log)Log.d(this.getClass().getName(), "Accuracey"+location.getAccuracy()+"hdop"+hdop);
                                                 prevlocation.set(location);
                                                 //if(log)Log.d(this.getClass().getName(), "send(location)="+location);
-                                                sendlocation(location);
+                                                sendlocation(location,true);
                                             }
                                         else
                                             {
@@ -1839,7 +1861,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                                                 //if(log)Log.d(this.getClass().getName(), "Accuracey"+location.getAccuracy()+"hdop"+hdop);
                                                 prevlocation.set(location);
                                                 //if(log)Log.d(this.getClass().getName(), "send(location)="+location);
-                                                sendlocation(location);
+                                                sendlocation(location,true);
                                             }
                                         else
                                             {
@@ -2013,7 +2035,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                             }
                     }
             }
-        private void sendlocation(Location location)
+        private void sendlocation(Location location, boolean gps)
             {
                 LocalService.addlog("void sendlocation");
                 if (log)
@@ -2070,6 +2092,10 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                                     {
                                         sending = sending + "T" + location.getTime() / 1000;
                                     }
+                            }
+                        if(!gps)
+                            {
+                                sending=sending+"M";
                             }
                         LocalService.addlog("Send:AUTHED=" + myIM.authed + " Sending:" + sending);
                         myIM.sendToServer(sending, false);
@@ -2453,7 +2479,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                             //if(OsMoDroid.debug)ExceptionHandler.reportOnlyHandler(parent.getApplicationContext()).uncaughtException(Thread.currentThread(), new Throwable(str));
                             if (OsMoDroid.debug)
                                 {
-                                    debuglist.add(IM.sdf1.format(new Date(System.currentTimeMillis())) + " " + str + " S=" + IM.sendBytes + " R=" + IM.recievedBytes);
+                                    debuglist.add(IM.sdf1.format(new Date(System.currentTimeMillis())) + " " + str + " S=" + IM.sendBytes + " R=" + IM.recievedBytes+ " overall by netstat="+(TrafficStats.getUidTxBytes(OsMoDroid.context.getApplicationInfo().uid)-IM.startTraffic));
                                     if (debuglist.size() > 1500)
                                         {
                                             debuglist.remove(0);

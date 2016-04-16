@@ -4,11 +4,14 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -39,14 +42,6 @@ public class Channel implements Serializable, ResultsListener
         public List<ChatMessage> messagesstringList = new ArrayList<ChatMessage>();
         public boolean send = false;
         public int type=0;
-//	transient ResultsListener gpxdownloadListener = new ResultsListener() {
-//
-//		@Override
-//		public void onResultsSucceeded(APIComResult result) {
-//			Log.d(getClass().getSimpleName(),"download result="+result.load);
-//			result.load.initPathOverlay();
-//					}
-//	};
         public boolean chatconnected = false;
         ArrayList<Point> pointList = new ArrayList<Channel.Point>();
         File sdDir = android.os.Environment.getExternalStorageDirectory();
@@ -54,23 +49,6 @@ public class Channel implements Serializable, ResultsListener
         public Channel()
             {
             }
-//	public void addtrack(ColoredGPX load){
-//		if (!gpxList.contains(load)){
-//			gpxList.add(load);
-//			load.initPathOverlay();
-//
-//			Log.d(getClass().getSimpleName(),"add download result to gpxlist="+gpxList.size());
-//		}
-//	}
-//	public Channel(
-//	 String name,
-//	 String u,
-//	 String created){
-//		 this.u=Integer.parseInt(u);
-//		 this.name=name;
-//		 this.created=created;
-//		}
-        //{"uid":"173","lon":"30","count":"0","zoom":"14","track":"0","code":"zxc","url":"ByIWINB22Fj74452is","main":"0","private":"0","u":"51","created":"2013-02-20 12:54:18","color":"0","name":"zxc","me":{"channel_name":"zxc","uid":"173","icon":"1","u":"19","channel_url":"ByIWINB22Fj74452is","added":"2013-02-24 13:40:27","color":"FFFFFF","name":"TEST2","device":"1436","active":"1","role":"0","channel":"51"},"ch":"omc_RAzHkQ9JzY5","user":[{"uid":"173","icon":"1","lon":"41.332442","u":"1436","color":"FFFFFF","name":"TEST2","state":"0","active":"1","role":"0","lat":"54.95365","online":"1"},{"uid":"173","icon":"1","lon":"37.685934","u":"40","color":"FFFFFF","name":"Денис","state":"0","active":"1","role":"0","lat":"55.682043","online":"1"}],"lat":"60","zone":"0"},{"uid":"173","lon":"30","count":"0","zoom":"14","track":"0","code":"123","url":"w2GjFV1BcviZz6qo83","main":"0","private":"0","u":"54","created":"2013-02-25 14:46:35","color":"0","name":"Каналья","me":{"channel_name":"Каналья","uid":"173","icon":"1","u":"21","channel_url":"w2GjFV1BcviZz6qo83","added":"2013-02-25 18:48:42","color":"FFFFFF","name":"TEST2","device":"1436","active":"1","role":"0","channel":"54"},"ch":"omc_qg9q1W06aB6","user":[{"uid":"173","icon":"1","lon":"41.332442","u":"1436","color":"FFFFFF","name":"TEST2","state":"0","active":"1","role":"0","lat":"54.95365","online":"1"}],"lat":"60","zone":"0"}]}
         public void updChannel(JSONObject jo)
             {
                 this.name = jo.optString("name");
@@ -105,7 +83,11 @@ public class Channel implements Serializable, ResultsListener
                                                 dev.lat = Float.parseFloat(jsonObject.getString("lat"));
                                                 dev.lon = Float.parseFloat(jsonObject.getString("lon"));
                                             }
-                                        dev.updatated=System.currentTimeMillis();
+                                                dev.updatated=  1000*jsonObject.optLong("time");
+
+
+
+                                        //dev.updatated=System.currentTimeMillis();
                                         IM.getDevtrace(jsonObject,dev);
                                         recieveddeviceList.add(dev);
 
@@ -126,14 +108,16 @@ public class Channel implements Serializable, ResultsListener
                     {
                         dev.color = recieveddeviceList.get(recieveddeviceList.indexOf(dev)).color;
                         dev.name = recieveddeviceList.get(recieveddeviceList.indexOf(dev)).name;
+                        dev.updatated=recieveddeviceList.get(recieveddeviceList.indexOf(dev)).updatated;
+                        dev.lat=recieveddeviceList.get(recieveddeviceList.indexOf(dev)).lat;
+                        dev.lon=recieveddeviceList.get(recieveddeviceList.indexOf(dev)).lon;
+                        dev.state=recieveddeviceList.get(recieveddeviceList.indexOf(dev)).state;
+                        dev.online=recieveddeviceList.get(recieveddeviceList.indexOf(dev)).online;
+
                     }
                 recieveddeviceList.removeAll(this.deviceList);
                 this.deviceList.addAll(recieveddeviceList);
-        /*	ArrayList<Device> deleteDeviceList= new ArrayList<Device>(this.deviceList);
-			deleteDeviceList.removeAll(recieveddeviceList);
-			recieveddeviceList.removeAll(this.deviceList);
-			this.deviceList.addAll(recieveddeviceList);
-			this.deviceList.removeAll(deleteDeviceList);*/
+
                 Collections.sort(this.deviceList);
                 JSONArray points = jo.optJSONArray("point");
                 if (points != null)
@@ -166,7 +150,7 @@ public class Channel implements Serializable, ResultsListener
                                         fileName.mkdirs();
                                         Log.d(getClass().getSimpleName(), "filename=" + fileName);
                                         recievedgpxList.add(new ColoredGPX(jsonObject.getInt("u"), new File(sdDir, "OsMoDroid/channelsgpx/" + jsonObject.getString("u") + ".gpx"), jsonObject.getString("color"), jsonObject.getString("url")));
-                                        //this.downloadgpx(jsonObject.getString("url"), jsonObject.getString("u"),jsonObject.getString("color"));
+
                                     }
                                 catch (JSONException e)
                                     {
@@ -176,11 +160,7 @@ public class Channel implements Serializable, ResultsListener
                         gpxList.retainAll(recievedgpxList);
                         recievedgpxList.removeAll(gpxList);
                         gpxList.addAll(recievedgpxList);
-				/*ArrayList<ColoredGPX> deletegpxList = new ArrayList<ColoredGPX>(gpxList);
-				deletegpxList.removeAll(recievedgpxList);
-				recievedgpxList.removeAll(gpxList);
-				gpxList.addAll(recievedgpxList);
-				gpxList.removeAll(deletegpxList);*/
+
                         for (ColoredGPX cgpx : gpxList)
                             {
                                 if (cgpx.status == ColoredGPX.Statuses.EMPTY)
@@ -195,62 +175,7 @@ public class Channel implements Serializable, ResultsListener
                             }
                     }
             }
-//	public Channel(JSONObject jo, LocalService localService)
-//	{
-//		this.localService=localService;
-//
-//		this.name=jo.optJSONObject("group").optString("name");
-//		this.u=Integer.parseInt(jo.optJSONObject("group").optString("u"));
-//		this.created=jo.optJSONObject("group").optString("created");
-//		this.group_id=jo.optJSONObject("group").optString("group_id");
-//		this.url="http://osmo.mobi/g/"+jo.optJSONObject("group").optString("url");
-//		JSONArray users =jo.optJSONArray("users");
-//		for (int i = 0; i < users.length(); i++)
-//			{
-//	 			JSONObject jsonObject;
-//				try {
-//					jsonObject = users.getJSONObject(i);
-//					try {
-//						this.deviceList.add(new Device(jsonObject.getString("group_tracker_id"),jsonObject.getString("name"), jsonObject.getString("color") ) );
-//					} catch (NumberFormatException e) {
-//						Log.d(getClass().getSimpleName(),"Wrong device info");
-//						e.printStackTrace();
-//					}
-//					Collections.sort(this.deviceList);
-//				} catch (JSONException e) {
-//					e.printStackTrace();
-//				}
-//			}
-//
-//
-//
-//
-//		 JSONArray points =jo.optJSONArray("point");
-//			for (int i = 0; i < points.length(); i++) {
-//		 			JSONObject jsonObject;
-//					try {
-//						jsonObject = points.getJSONObject(i);
-//						this.pointList.add(new Point(jsonObject));
-//					}
-//					catch (JSONException e) {
-//						e.printStackTrace();
-//					}
-//
-//			}
-//			JSONArray tracks =jo.optJSONArray("track");
-//			for (int i = 0; i < tracks.length(); i++) {
-//	 			JSONObject jsonObject;
-//				try {
-//					jsonObject = tracks.getJSONObject(i);
-//	//				this.downloadgpx(jsonObject.getString("url"), jsonObject.getString("u"),jsonObject.getString("color"));
-//				}
-//				catch (JSONException e) {
-//					e.printStackTrace();
-//				}
-//
-//		}
-//
-//				}
+
         @Override
         public boolean equals(Object o)
             {
@@ -263,21 +188,7 @@ public class Channel implements Serializable, ResultsListener
                         return false;
                     }
             }
-//	public void downloadgpx(String url, String u, String color){
-//		 File sdDir = android.os.Environment.getExternalStorageDirectory();
-//			 File fileName = new File (sdDir, "OsMoDroid/channelsgpx/");
-//			 fileName.mkdirs();
-//			 fileName = new File(sdDir, "OsMoDroid/channelsgpx/"+u+".gpx");
-//			 Log.d(getClass().getSimpleName(),"filename="+fileName);
-//			 ColoredGPX load = new ColoredGPX(fileName,color);
-//			 if(!fileName.exists())
-//			 	{
-//				 Netutil.downloadfile(gpxdownloadListener, url, load);
-//			 	}	else
-//			 	{
-//			 		addtrack(load);
-//			 	}
-//	}
+
         @Override
         public String toString()
             {
@@ -313,10 +224,13 @@ public class Channel implements Serializable, ResultsListener
                 String description;
                 String color;
                 int clusterid=0;
+                String url="";
+                String time;
                 Point()
                     {
                         name = "";
                         description = "";
+                        url="";
                     }
                 Point(JSONObject json) throws JSONException
                     {
@@ -326,6 +240,8 @@ public class Channel implements Serializable, ResultsListener
                         description = json.optString("description");
                         color = json.optString("color");
                         name = json.getString("name");
+                        url=json.optString("url");
+                        time= OsMoDroid.sdf.format(new Date(json.optLong("time")*1000));
                     }
             }
     }

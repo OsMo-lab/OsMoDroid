@@ -12,13 +12,16 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
 import java.net.InetSocketAddress;
-//import java.security.SecureRandom;
-//import java.security.cert.X509Certificate;
+import java.security.SecureRandom;
+import java.security.cert.X509Certificate;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.Iterator;
+
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -39,6 +42,7 @@ import android.graphics.Color;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.TrafficStats;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
@@ -46,17 +50,18 @@ import android.os.Looper;
 import android.os.SystemClock;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.Settings;
 import android.speech.tts.TextToSpeech;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
 
-//import javax.net.ssl.SSLContext;
-//import javax.net.ssl.SSLSession;
-//import javax.net.ssl.SSLSocket;
-//import javax.net.ssl.SSLSocketFactory;
-//import javax.net.ssl.TrustManager;
-//import javax.net.ssl.X509TrustManager;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 /**
  * @author dfokin
@@ -76,8 +81,9 @@ public class IM implements ResultsListener
         static long recievedBytes = 0;
         private static int RECONNECT_TIMEOUT = 1000 * 30;
         final boolean log = true;
+        static  long startTraffic = 0;
         public Socket socket;
-//        public SSLSocket sslsocket;
+        public SSLSocket sslsocket;
         volatile public boolean authed = false;
         public BufferedReader rd;
         public PrintWriter wr;
@@ -111,6 +117,7 @@ public class IM implements ResultsListener
         private String workservername = "";
         private MyAsyncTask sendidtask;
         ArrayList<String> executedCommandArryaList = new ArrayList<String>();
+
         BroadcastReceiver keepAliveReceiver = new BroadcastReceiver()
         {
             @Override
@@ -133,8 +140,7 @@ public class IM implements ResultsListener
             public void onReceive(Context context, Intent intent)
                 {
                     LocalService.addlog("Network broadcast receive:");
-                    //	if(log)Log.d(this.getClass().getName(), "BCR"+this);
-                    //	if(log)Log.d(this.getClass().getName(), "BCR"+this+" Intent:"+intent);
+
                     if (intent.getAction().equals(android.net.ConnectivityManager.CONNECTIVITY_ACTION))
                         {
                             Bundle extras = intent.getExtras();
@@ -146,10 +152,7 @@ public class IM implements ResultsListener
                                             LocalService.addlog(String.format("%s %s (%s)", key, value.toString(), value.getClass().getName()));
                                         }
                                 }
-                            //	if(log)Log.d(this.getClass().getName(), "BCR"+this+ " "+intent.getExtras());
-                            //	NetworkInfo netinfo = (NetworkInfo) extras.get("networkInfo");
-                            //	if(log)Log.d(this.getClass().getName(), "BCR"+this+ " "+netinfo);
-                            //	if(log)Log.d(this.getClass().getName(), "BCR"+this+ " "+netinfo.getType());
+
                             if (localService.isOnline())
                                 {
                                     if (log)
@@ -225,6 +228,10 @@ public class IM implements ResultsListener
         public IM(String server, int port, LocalService service)
             {
                 RECONNECT_TIMEOUT = Integer.parseInt(OsMoDroid.settings.getString("timeout", "30")) * 1000;
+                if(RECONNECT_TIMEOUT<5000)
+                    {
+                        RECONNECT_TIMEOUT=5000;
+                    }
                 localService = service;
                 parent = service;
                 manager = (AlarmManager) (parent.getSystemService(Context.ALARM_SERVICE));
@@ -237,9 +244,7 @@ public class IM implements ResultsListener
                 iMWriter = new IMWriter();
                 writerThread = new Thread(iMWriter, "writer");
                 writerThread.start();
-//		if(!OsMoDroid.settings.getString("newkey", "").equals("")){
-//		start();
-//		}
+                startTraffic=TrafficStats.getUidTxBytes(OsMoDroid.context.getApplicationInfo().uid);
             }
         public void sendToServer(String str, boolean gui)
             {
@@ -389,7 +394,7 @@ public class IM implements ResultsListener
                         NetworkInfo mWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
                         try
                             {
-                                postjson.put("type", netinfo.getTypeName());
+                                postjson.put("type", netinfo.getSubtypeName());
                         if (mWifi.isConnected())
                             {
                                 WifiManager wifi = (WifiManager) localService.getSystemService(Context.WIFI_SERVICE);
@@ -408,15 +413,14 @@ public class IM implements ResultsListener
                                 }
                         gettokening = true;
                         APIcomParams params = null;
-                        //APIcomParams params = new APIcomParams("https://api.osmo.mobi/prepare","key="+OsMoDroid.settings.getString("newkey", "")+"&protocol=1","gettoken");
-                        //{"android_id":"660d7b862282066f","android_model":"HTC One S","imei":"0","android_product":"htc_europe","client":"OsmAnd~ 1.8.3","osmand":"OsmAnd~ 1.8.3"}
+
                         if (OsMoDroid.settings.getString("p", "").equals(""))
                             {
                                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB)
                                     {
                                         params = new APIcomParams("https://api.osmo.mobi/init?device=" + OsMoDroid.settings.getString("newkey", "")
                                                 //+"&protocol=2"
-                                                + "&app=" + OsMoDroid.app_code
+                                                + "&app=" +  OsMoDroid.app_code
                                                 //+"&version="+localService.getversion()
                                                 + "&network="+postjson.toString()
                                                 , "", "gettoken");
@@ -425,7 +429,7 @@ public class IM implements ResultsListener
                                     {
                                         params = new APIcomParams("http://api.osmo.mobi/init?device=" + OsMoDroid.settings.getString("newkey", "")
                                                 //+"&protocol=2"
-                                                + "&app=" + OsMoDroid.app_code + "&dinosaur=yes"
+                                                + "&app=" +  OsMoDroid.app_code + "&dinosaur=yes"
                                                 //+"&version="+localService.getversion()
                                                 + "&network="+postjson.toString()
                                                 , "", "gettoken");
@@ -438,7 +442,7 @@ public class IM implements ResultsListener
                                         params = new APIcomParams("https://api.osmo.mobi/init?device=" + OsMoDroid.settings.getString("newkey", "")
                                                 //+"&protocol=1"
                                                 + "&user=" + OsMoDroid.settings.getString("p", "")
-                                                + "&app=" + OsMoDroid.app_code
+                                                + "&app=" +  OsMoDroid.app_code
                                                 //+"&version="+localService.getversion()
                                                 + "&network="+postjson.toString()
                                                 , "", "gettoken");
@@ -448,7 +452,7 @@ public class IM implements ResultsListener
                                         params = new APIcomParams("http://api.osmo.mobi/init?device=" + OsMoDroid.settings.getString("newkey", "")
                                                 //+"&protocol=1"
                                                 + "&user=" + OsMoDroid.settings.getString("p", "")
-                                                + "&app=" + OsMoDroid.app_code + "&dinosaur=yes"
+                                                + "&app=" +  OsMoDroid.app_code  + "&dinosaur=yes"
                                                 //+"&version="+localService.getversion()
                                                 + "&network="+postjson.toString()
                                                 , "", "gettoken");
@@ -523,7 +527,7 @@ public class IM implements ResultsListener
                 ChatMessage m = new ChatMessage();
                 m.u = jo.optInt("u");
                 m.text = Netutil.unescape(jo.optString("text"));
-                m.time = jo.optString("time");
+                m.time = OsMoDroid.sdf.format(new Date(jo.optLong("time")*1000));
                 m.from = jo.optString("from");
                 for (Device dev : LocalService.deviceList)
                     {
@@ -568,7 +572,7 @@ public class IM implements ResultsListener
                 ChatMessage m = new ChatMessage();
                 m.u = jo.optInt("u");
                 m.text = Netutil.unescape(jo.optString("text"));
-                m.time = jo.optString("time");
+                m.time = OsMoDroid.sdf.format(new Date(jo.optLong("time")*1000));
                 m.name = jo.optString("name");
                 String fromDevice = "Незнамо кто";
                // LocalService.addlog("Размер спсика групп " + LocalService.channelList.size());
@@ -788,10 +792,10 @@ public class IM implements ResultsListener
 
 
 
-                                if (LocalService.deviceList.isEmpty())
-                                    {
-                                        sendToServer("DEVICE", false);
-                                    }
+//                                if (LocalService.deviceList.isEmpty())
+//                                    {
+//                                        sendToServer("DEVICE", false);
+//                                    }
                                 setkeepAliveAlarm();
                                 localService.internetnotify(true);
                                 if (!OsMoDroid.settings.getBoolean("subscribebackground", false))
@@ -1019,6 +1023,11 @@ public class IM implements ResultsListener
                                 dialogIntent.putExtra("message",addict);
                                 localService.startActivity(dialogIntent);
                             }
+                        if (param.equals(OsMoDroid.SOS_OFF))
+                            {
+                                localService.sendBroadcast(new Intent("closesos"));
+                            }
+
                         if (param.equals(OsMoDroid.TRACKER_GCM_ID))
                             {
                                 sendToServer("GCM|" + OsMoDroid.settings.getString("GCMRegId","no"), false);
@@ -1371,7 +1380,7 @@ public class IM implements ResultsListener
                         localService.saveObject(LocalService.deviceList, OsMoDroid.DEVLIST);
                         //sendToServer("PD");
                     }
-//	GROUP|[{"u":"2","nick":"IAMSUPERVISOR","url":"test","joined":"2015-03-27 21:57:41","name":"Group for testing","description":"Be careful when using the group, your location is available to everyone in it.","active":"1","policy":"No special rules","users":[{"u":"16304","device":"25527","name":"Vshcherb","connected":"1427322775","color":"#58e000"}],"id":"TESTALL","ch":"testall"}]
+
                 if (command.equals("GROUP"))
                     {
                         ArrayList<Channel> recievedChannelList = new ArrayList<Channel>();
@@ -1403,11 +1412,6 @@ public class IM implements ResultsListener
                         LocalService.channelList.retainAll(recievedChannelList);
                         recievedChannelList.removeAll(LocalService.channelList);
                         LocalService.channelList.addAll(recievedChannelList);
-            /*ArrayList<Channel> deleteChannelList=new ArrayList<Channel>(LocalService.channelList);
-            deleteChannelList.removeAll(recievedChannelList);
-			recievedChannelList.removeAll(LocalService.channelList);
-			LocalService.channelList.addAll(recievedChannelList);
-			LocalService.channelList.removeAll(deleteChannelList);*/
                         if (LocalService.channelsAdapter != null)
                             {
                                 LocalService.channelsAdapter.notifyDataSetChanged();
@@ -1485,7 +1489,7 @@ public class IM implements ResultsListener
                                 LocalService.simlinksadapter.notifyDataSetChanged();
                             }
                     }
-                // recive LINK_DEL:977|1
+
                 if (command.equals("LNKD"))
                     {
                         int positiontodel = -1;
@@ -1524,9 +1528,8 @@ public class IM implements ResultsListener
                                 writeException(e);
                             }
                     }
-                /*GP:MT|{"users":[{"name":"Dddddd","group_tracker_id":"WSlRasAgyD","color":"#ff9900"}]}
-                GP:MT|{"users":[{"name":"Dddddd","group_tracker_id":"WSlRasAgyD","deleted":"yes"}]}
-                */
+
+
                 if (command.equals("GP"))
                     {
                         if (jo.has("refresh"))
@@ -1543,6 +1546,57 @@ public class IM implements ResultsListener
                                         JSONArray users = jo.optJSONArray("users");
                                         JSONArray points = jo.optJSONArray("point");
                                         JSONArray tracks = jo.optJSONArray("track");
+                                        JSONArray announcements = jo.optJSONArray("announcement");
+                                        JSONArray geoevents = jo.optJSONArray("geoevent");
+                                        if(geoevents!=null)
+                                            {
+                                                for (int i = 0; i<geoevents.length();i++)
+                                                    {
+                                                        jsonObject=geoevents.getJSONObject(i);
+                                                        String name = jsonObject.optString("nick");
+                                                        String time="";
+
+                                                        time= OsMoDroid.sdf.format(new Date(jsonObject.optLong("time")*1000));
+
+
+                                                        String messageText =ch.name+": "+name+ (jsonObject.optInt("type")==1?parent.getString(R.string.enterin):parent.getString(R.string.exitfrom)) +" "+jsonObject.optString("name");
+
+
+                                                        Message msg = new Message();
+                                                                Bundle b = new Bundle();
+                                                                b.putBoolean("om_online", true);
+                                                                b.putString("MessageText",time + " " + messageText);
+                                                                msg.setData(b);
+                                                                if (log)
+                                                                    {
+                                                                        Log.d(this.getClass().getName(), "statenotify entered");
+                                                                    }
+                                                                localService.alertHandler.sendMessage(msg);
+
+                                                    }
+                                            }
+                                        if(announcements!=null)
+                                            {
+                                                for (int i = 0; i<announcements.length();i++)
+                                                    {
+                                                        jsonObject=announcements.getJSONObject(i);
+                                                        String messageText =ch.name+": "+jsonObject.optString("text");
+                                                        String time="";
+
+                                                        time= OsMoDroid.sdf.format(new Date(jsonObject.optLong("time")*1000));
+                                                                Message msg = new Message();
+                                                                Bundle b = new Bundle();
+                                                                b.putBoolean("om_online", true);
+                                                                b.putString("MessageText", time + " " + messageText);
+                                                                msg.setData(b);
+                                                                if (log)
+                                                                    {
+                                                                        Log.d(this.getClass().getName(), "statenotify entered");
+                                                                    }
+                                                                localService.alertHandler.sendMessage(msg);
+
+                                                    }
+                                            }
                                         if (tracks != null)
                                             {
                                                 for (int i = 0; i < tracks.length(); i++)
@@ -1637,10 +1691,6 @@ public class IM implements ResultsListener
                                                         try
                                                             {
                                                                 jsonObject = users.getJSONObject(i);
-//									if(jsonObject.getString("group_tracker_id").equals(OsMoDroid.settings.getString("device", "")))
-//										{
-//											ch.myNameInGroup=jsonObject.getString("name");
-//										}
                                                                 try
                                                                     {
                                                                         if (jsonObject.has("deleted"))
@@ -1676,7 +1726,6 @@ public class IM implements ResultsListener
                                                                                                         if (newlat != dev.lat & newlon != dev.lon && (System.currentTimeMillis() - dev.updatated) > 5 * 60 * 1000) {
                                                                                                             dev.lat = newlat;
                                                                                                             dev.lon = newlon;
-                                                                                                            dev.updatated=System.currentTimeMillis();
                                                                                                             notifydevicemonitoring(dev,true);
                                                                                                         }
                                                                                                     }
@@ -1687,6 +1736,17 @@ public class IM implements ResultsListener
                                                                                                     }
                                                                                                 }
                                                                                                 getDevtrace(jsonObject, dev);
+                                                                                                if(jsonObject.has("time"))
+                                                                                                    {
+                                                                                                        try
+                                                                                                            {
+                                                                                                                dev.updatated=  jsonObject.optLong("time")*1000;
+                                                                                                            }
+                                                                                                        catch (IllegalArgumentException e)
+                                                                                                            {
+                                                                                                                e.printStackTrace();
+                                                                                                            }
+                                                                                                    }
                                                                                                 if(jsonObject.has("color"))
                                                                                                     {
                                                                                                         dev.color = Color.parseColor(jsonObject.getString("color"));
@@ -1721,7 +1781,7 @@ public class IM implements ResultsListener
 
                                                                                                            dev.lat = Float.parseFloat(jsonObject.getString("lat"));
                                                                                                            dev.lon = Float.parseFloat(jsonObject.getString("lon"));
-                                                                                                           //notifydevicemonitoring(dev);
+
                                                                                                        }
                                                                                                        catch (NumberFormatException e)
                                                                                                        {
@@ -1766,15 +1826,14 @@ public class IM implements ResultsListener
                                 Log.d(getClass().getSimpleName(), "write group list to file");
                             }
                         localService.saveObject(LocalService.channelList, OsMoDroid.CHANNELLIST);
-                        //sendToServer("PG");
-                        sendToServer("GPR:"+param,false);
+                        sendToServer("GPR:" + param, false);
                     }
-/// recive GPC:2480|{"u":11,"gu":"1621","text":"\u043c\u0438\u0442\u0441\u043c\u0438\u0442\u043c\u0441\u0438\u0442","type":0,"time":"2015-08-09 22:55:23","name":"\u0414\u0435\u043d\u0438\u0441"}
+
                 if (command.equals("GPC"))
                     {
                         addToChannelChat(Integer.parseInt(param), jo, false);
                     }
-// DP:7909|["3","1"]
+
                 if (command.equals("DP"))
                     {
                         for (Device dev : LocalService.deviceList)
@@ -1851,10 +1910,6 @@ public class IM implements ResultsListener
                             }
                         localService.saveObject(LocalService.deviceList, OsMoDroid.DEVLIST);
                     }
-//		Example: D:412|L59.778999:30.348632S0A125H12C235
-//
-//		Example: G:742|["25800|L53.737626:17.512402S0.5","25797|L53.73763:17.512342S0"]
-                //LT:fI8qCrlvw6j0dEKZtB9h|L59.252465:30.324515S20.3A124.3H2.5C235
                 if (command.equals("G"))
                     {
                         for (Channel ch : LocalService.channelList)
@@ -1886,6 +1941,7 @@ public class IM implements ResultsListener
                                             }
                                     }
                             }
+
                         if (LocalService.channelsDevicesAdapter != null)
                             {
                                 if (log)
@@ -1943,8 +1999,6 @@ public class IM implements ResultsListener
                                         float lon=0;
                                         try
                                             {
-                                                //lat = Float.parseFloat(p.optString(0).replace(".",""));
-                                                //lon = Float.parseFloat(p.optString(1).replace(".",""));
                                                 lat = Float.parseFloat(p.optString(0));
                                                 lon = Float.parseFloat(p.optString(1));
                                             }
@@ -1966,7 +2020,7 @@ public class IM implements ResultsListener
                             }
                     }
             }
-        private void writeException(Exception e)
+        public static void writeException(Exception e)
             {
                 StringWriter sw = new StringWriter();
                 e.printStackTrace(new PrintWriter(sw));
@@ -2166,8 +2220,9 @@ public class IM implements ResultsListener
                                     {
                                         localService.internetnotify(false);
                                         close();
-                                        localService.notifywarnactivity(LocalService.unescape(result.Jo.optString("error_description")), true, OsMoDroid.NOTIFY_NO_DEVICE);
+                                        localService.notifywarnactivity(LocalService.unescape(result.Jo.optString("error_description")), false, OsMoDroid.NOTIFY_NO_DEVICE);
                                         //localService.motd=LocalService.unescape(result.Jo.optString("error_description"));
+                                        localService.sendid();
                                         localService.refresh();
                                     }
                                 else if (result.Jo.optInt("error") == 67 || result.Jo.optInt("error") == 68 || result.Jo.optInt("error") == 69)
@@ -2177,6 +2232,14 @@ public class IM implements ResultsListener
                                         localService.motd = LocalService.unescape(result.Jo.optString("error_description"));
                                         localService.refresh();
                                     }
+                                else if (result.Jo.optInt("error") == 21 )
+                                    {
+                                        close();
+                                        localService.notifywarnactivity(LocalService.unescape(result.Jo.optString("error_description")), true,0);
+                                        localService.motd = LocalService.unescape(result.Jo.optString("error_description"));
+                                        localService.refresh();
+                                    }
+
                             }
                     }
                 else
@@ -2332,70 +2395,74 @@ public class IM implements ResultsListener
                         connectcount++;
                         try
                             {
-                                if (workservername.equals(""))
-                                    {
-                                        InetAddress serverAddr = InetAddress.getByName(SERVER_IP);
-                                        sockAddr = new InetSocketAddress(serverAddr, SERVERPORT);
-                                    }
-                                else
-                                    {
+
                                         InetAddress serverAddr = InetAddress.getByName(workservername);
                                         sockAddr = new InetSocketAddress(serverAddr, workserverint);
-                                    }
-                                workserverint = -1;
-                                workservername = "";
+
+
                                 socket = new Socket();
 
-                                if (OsMoDroid.settings.getBoolean("tcpnodelay", false))
-                                    {
-                                        socket.setTcpNoDelay(true);
-                                        LocalService.addlog("TCP_NODELAY=" + Boolean.toString(socket.getTcpNoDelay()));
-                                    }
-                                socket.connect(sockAddr, 5000);
-                                //socket.connect(new InetSocketAddress( "osmo.mobi", 4249), 5000);
-                               // SSLContext sslContext= SSLContext.getInstance("TLS");
-                                //sslContext.init(null,null,null);
-                              //  TrustManager[] trustAllCerts = new TrustManager[] {
-                             //           new X509TrustManager() {
-                           //                 public X509Certificate[] getAcceptedIssuers() {
-                          //                      X509Certificate[] myTrustedAnchors = new X509Certificate[0];
-                          //                      return myTrustedAnchors;
-                         //                   }
-//
-//                                            @Override
-//                                            public void checkClientTrusted(X509Certificate[] certs, String authType) {}
-//
-//                                            @Override
-//                                            public void checkServerTrusted(X509Certificate[] certs, String authType) {}
-//                                        }
-//                                };
-//                                sslContext.init(null,trustAllCerts,new SecureRandom());
-//                                SSLSocketFactory socketFactory = sslContext.getSocketFactory();
-//                               sslsocket=(SSLSocket) socketFactory.createSocket(socket, "osmo.mobi", 4249, false);
-//                                sslsocket.setUseClientMode(true);
-//                                SSLSession sslSession=sslsocket.getSession();
-//                                if (log)
-//                                    {
-//                                        Log.d(this.getClass().getName(), "Secured="+sslSession.isValid());
-//                                    }
-//if(!sslSession.isValid()){
-//    throw new Exception();
-//}
+
+
+                                        socket.connect(sockAddr, 5000);
+                                        //socket.connect(new InetSocketAddress("osmo.mobi", 5050), 5000);
+                                        SSLContext sslContext = SSLContext.getInstance("TLS");
+                                        sslContext.init(null, null, null);
+                                        TrustManager[] trustAllCerts = new TrustManager[]{
+                                                new X509TrustManager()
+                                                    {
+                                                        public X509Certificate[] getAcceptedIssuers()
+                                                            {
+                                                                X509Certificate[] myTrustedAnchors = new X509Certificate[0];
+                                                                return myTrustedAnchors;
+                                                            }
+                                                        @Override
+                                                        public void checkClientTrusted(X509Certificate[] certs, String authType)
+                                                            {
+                                                            }
+                                                        @Override
+                                                        public void checkServerTrusted(X509Certificate[] certs, String authType)
+                                                            {
+                                                            }
+                                                    }
+                                        };
+                                        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB)
+                                            {
+                                                sslContext.init(null, trustAllCerts, new SecureRandom());
+                                            }
+                                        SSLSocketFactory socketFactory = sslContext.getSocketFactory();
+                                        sslsocket = (SSLSocket) socketFactory.createSocket(socket, workservername,workserverint, false);
+                                sslsocket.setUseClientMode(true);
+                                        SSLSession sslSession = sslsocket.getSession();
+                                        if (log)
+                                            {
+                                                Log.d(this.getClass().getName(), "Secured=" + sslSession.isValid());
+                                            }
+                                        if (!sslSession.isValid())
+                                            {
+                                                throw new Exception();
+                                            }
+                                workserverint = -1;
+                                workservername = "";
+                                        LocalService.addlog("SSL TCP Connected");
+                                        rd = new BufferedReader(new InputStreamReader(sslsocket.getInputStream()));
+                                        wr = new PrintWriter(new OutputStreamWriter(sslsocket.getOutputStream(), "UTF8"), true);
+
+
                                 socketRetryInt = 0;
                                 connOpened = true;
                                 connecting = false;
+
                                 localService.alertHandler.post(new Runnable()
-                                {
-                                    @Override
-                                    public void run()
-                                        {
-                                            LocalService.addlog("TCP Connected");
-                                            localService.refresh();
-                                        }
-                                });
+                                    {
+                                        @Override
+                                        public void run()
+                                            {
+
+                                                localService.refresh();
+                                            }
+                                    });
                                 setReconnectAlarm();
-                                rd = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                                wr = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF8"), true);
                                 readerThread.start();
                                 sendToServer("INIT|" + token, false);
                             }
@@ -2406,14 +2473,9 @@ public class IM implements ResultsListener
                                 e1.printStackTrace();
                                 connecting = false;
                                 setReconnectOnError();
-                                localService.alertHandler.post(new Runnable()
-                                {
-                                    @Override
-                                    public void run()
-                                        {
+
                                             LocalService.addlog("could no conenct to socket " + socketRetryInt + e1.getMessage());
-                                        }
-                                });
+
                                 if (socketRetryInt > 3 && !OsMoDroid.settings.getBoolean("understand", false))
                                     {
                                         localService.notifywarnactivity(localService.getString(R.string.checkfirewall), false, OsMoDroid.NOTIFY_NO_CONNECT);

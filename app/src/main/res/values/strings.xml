@@ -299,4 +299,7 @@
     <string name="fullgpx">Full gpx</string>
     <string name="nogroupstosendpoint">No groups to send point</string>
     <string name="agreesosno">Agree turn off SOS ?</string>
+    <string name="shortname">Short names</string>
+    <string name="enterin">" enter in geozone "</string>
+    <string name="exitfrom">" exit from geozone "</string>
 </resources>
