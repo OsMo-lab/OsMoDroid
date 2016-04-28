@@ -15,6 +15,7 @@ public class ChatMessage implements Comparable<ChatMessage>, Serializable
         public String text;
         public String time;
         public int color;
+        public int type;
         public ChatMessage(int u, int device, String from, String text, String time, int color)
             {
                 this.u = u;

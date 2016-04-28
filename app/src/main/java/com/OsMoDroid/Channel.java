@@ -23,6 +23,7 @@ import com.OsMoDroid.ColoredGPX.Statuses;
 import com.OsMoDroid.Netutil.InitTask;
 
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.location.Address;
 import android.os.AsyncTask;
 import android.provider.Settings.Global;
@@ -226,6 +227,7 @@ public class Channel implements Serializable, ResultsListener
                 int clusterid=0;
                 String url="";
                 String time;
+                Paint paint;
                 Point()
                     {
                         name = "";

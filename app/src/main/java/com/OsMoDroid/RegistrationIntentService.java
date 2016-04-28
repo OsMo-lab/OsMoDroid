@@ -41,15 +41,14 @@ public class RegistrationIntentService extends IntentService {
         LocalService.addlog("RegId=" + token);
         if(!OsMoDroid.settings.getString("GCMRegId","").equals(token))
             {
-                OsMoDroid.editor.putString("GCMRegId", token).apply();
+              OsMoDroid.tmpGCMRegId=token;
                 if (LocalService.myIM != null && LocalService.myIM.authed)
                     {
-                        LocalService.myIM.sendToServer("GCM|" + token, false);
+                        LocalService.myIM.sendToServer("GCM|" +  OsMoDroid.tmpGCMRegId, false);
                     }
-                else
-                    {
+
                         OsMoDroid.editor.putBoolean("needsendgcmregid", true).apply();
-                    }
+
             }
     }
 }

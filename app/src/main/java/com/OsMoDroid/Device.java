@@ -8,6 +8,7 @@ import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.overlay.PathOverlay;
 
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Point;
 import android.util.Log;
 public class Device implements Comparable<Device>, Serializable
@@ -33,6 +34,9 @@ public class Device implements Comparable<Device>, Serializable
         public int iprecomputed=0;
         public List<ChatMessage> messagesstringList = new ArrayList<ChatMessage>();
         int clusterid=0;
+        public Paint devpaint;
+        public Paint pathpaint;
+
         //public PathOverlay p;
         public Device()
             {
@@ -48,11 +52,13 @@ public class Device implements Comparable<Device>, Serializable
                 try
                     {
                         this.color = Color.parseColor(color);
+
                     }
                 catch (Exception e)
                     {
                         e.printStackTrace();
                     }
+
             }
         @Override
         public String toString()

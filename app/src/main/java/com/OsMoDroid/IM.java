@@ -574,6 +574,7 @@ public class IM implements ResultsListener
                 m.text = Netutil.unescape(jo.optString("text"));
                 m.time = OsMoDroid.sdf.format(new Date(jo.optLong("time")*1000));
                 m.name = jo.optString("name");
+                m.type = jo.optInt("type");
                 String fromDevice = "Незнамо кто";
                // LocalService.addlog("Размер спсика групп " + LocalService.channelList.size());
                 for (final Channel channel : LocalService.channelList)
@@ -607,11 +608,16 @@ public class IM implements ResultsListener
                                                         notificationBuilder.setDefaults(Notification.DEFAULT_LIGHTS | Notification.DEFAULT_VIBRATE | Notification.DEFAULT_SOUND);
                                                     }
                                                 Notification notification = notificationBuilder.build();
-                                                LocalService.mNotificationManager.notify(OsMoDroid.mesnotifyid+channel.u, notification);
-                                                if (LocalService.channelsmessagesAdapter != null && LocalService.currentChannel != null && LocalService.currentChannel.u == channel.u && LocalService.chatVisible)
+                                                if(OsMoDroid.settings.getBoolean("chatnotify", true)|| m.type!=0)
                                                     {
-                                                        LocalService.mNotificationManager.cancel(OsMoDroid.mesnotifyid+channel.u);
+                                                        LocalService.mNotificationManager.notify(OsMoDroid.mesnotifyid + channel.u, notification);
+                                                        if (LocalService.channelsmessagesAdapter != null && LocalService.currentChannel != null && LocalService.currentChannel.u == channel.u && LocalService.chatVisible)
+                                                            {
+                                                                LocalService.mNotificationManager.cancel(OsMoDroid.mesnotifyid+channel.u);
+                                                            }
                                                     }
+
+
                                             }
                                         channel.messagesstringList.add(m);
                                         Collections.sort(channel.messagesstringList);
@@ -773,7 +779,7 @@ public class IM implements ResultsListener
                                     }
                                 if(OsMoDroid.settings.getBoolean("needsendgcmregid",true))
                                     {
-                                        LocalService.myIM.sendToServer("GCM|" + OsMoDroid.settings.getString("GCMRegId","no"), false);
+                                        LocalService.myIM.sendToServer("GCM|" +OsMoDroid.tmpGCMRegId, false);
                                     }
                                 if (LocalService.channelList.isEmpty())
                                     {
@@ -1007,6 +1013,7 @@ public class IM implements ResultsListener
                     }
                 if (command.equals("GCM"))
                     {
+                        OsMoDroid.editor.putString("GCMRegId", OsMoDroid.tmpGCMRegId);
                         OsMoDroid.editor.putBoolean("needsendgcmregid", false);
                         OsMoDroid.editor.commit();
                     }
@@ -1030,8 +1037,16 @@ public class IM implements ResultsListener
 
                         if (param.equals(OsMoDroid.TRACKER_GCM_ID))
                             {
-                                sendToServer("GCM|" + OsMoDroid.settings.getString("GCMRegId","no"), false);
-                                sendToServer("RCR:" + OsMoDroid.TRACKER_GCM_ID + "|1", false);
+                                if(OsMoDroid.tmpGCMRegId.equals(""))
+                                    {
+                                        sendToServer("GCM|" + OsMoDroid.settings.getString("GCMRegId", "no"), false);
+                                        sendToServer("RCR:" + OsMoDroid.TRACKER_GCM_ID + "|1", false);
+                                    }
+                                else
+                                    {
+                                        sendToServer("GCM|" +OsMoDroid.tmpGCMRegId, false);
+                                        sendToServer("RCR:" + OsMoDroid.TRACKER_GCM_ID + "|1", false);
+                                    }
                             }
 
 
@@ -1736,17 +1751,17 @@ public class IM implements ResultsListener
                                                                                                     }
                                                                                                 }
                                                                                                 getDevtrace(jsonObject, dev);
-                                                                                                if(jsonObject.has("time"))
-                                                                                                    {
-                                                                                                        try
-                                                                                                            {
-                                                                                                                dev.updatated=  jsonObject.optLong("time")*1000;
-                                                                                                            }
-                                                                                                        catch (IllegalArgumentException e)
-                                                                                                            {
-                                                                                                                e.printStackTrace();
-                                                                                                            }
-                                                                                                    }
+//                                                                                                if(jsonObject.has("time"))
+//                                                                                                    {
+//                                                                                                        try
+//                                                                                                            {
+//                                                                                                                dev.updatated=  jsonObject.optLong("time")*1000;
+//                                                                                                            }
+//                                                                                                        catch (IllegalArgumentException e)
+//                                                                                                            {
+//                                                                                                                e.printStackTrace();
+//                                                                                                            }
+//                                                                                                    }
                                                                                                 if(jsonObject.has("color"))
                                                                                                     {
                                                                                                         dev.color = Color.parseColor(jsonObject.getString("color"));
@@ -1825,7 +1840,7 @@ public class IM implements ResultsListener
                             {
                                 Log.d(getClass().getSimpleName(), "write group list to file");
                             }
-                        localService.saveObject(LocalService.channelList, OsMoDroid.CHANNELLIST);
+                        //localService.saveObject(LocalService.channelList, OsMoDroid.CHANNELLIST);
                         sendToServer("GPR:" + param, false);
                     }
 
@@ -1954,7 +1969,7 @@ public class IM implements ResultsListener
                             {
                                 Log.d(getClass().getSimpleName(), "write group list to file");
                             }
-                        localService.saveObject(LocalService.channelList, OsMoDroid.CHANNELLIST);
+                        //localService.saveObject(LocalService.channelList, OsMoDroid.CHANNELLIST);
                     }
                 if (command.equals("D"))
                     {

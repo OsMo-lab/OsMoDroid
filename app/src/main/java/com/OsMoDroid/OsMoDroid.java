@@ -70,7 +70,7 @@ public class OsMoDroid extends Application
         static GPSLocalServiceClient activity;
         static InputMethodManager inputMethodManager;
         private static int notifyid = 1;
-
+        public static String tmpGCMRegId="";
         public static int notifyidApp()
             {
                 return notifyid++;

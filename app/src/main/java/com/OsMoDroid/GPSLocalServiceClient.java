@@ -907,6 +907,7 @@ public class GPSLocalServiceClient extends ActionBarActivity
                                         OsMoDroid.editor.putString(key, ((String) v));
                                     }
                             }
+                        OsMoDroid.editor.remove("GCMregId");
                         OsMoDroid.editor.commit();
                         Toast.makeText(this, R.string.prefloaded, Toast.LENGTH_SHORT).show();
                         setupDrawerList();

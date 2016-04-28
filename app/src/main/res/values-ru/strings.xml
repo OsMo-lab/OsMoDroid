@@ -300,4 +300,6 @@
     <string name="enterin">" вошел в геозону "</string>
     <string name="exitfrom">" вышел из геозоны "</string>
     <string name="warnewdevice">"Это устройство было удалено или сброшено на сервере\nБудет создано новое\nВсе ссылки и группы стали недействительны - нужно перезайти или пересоздать"</string>
+    <string name="usechatnotification">Оповещения в чате</string>
+    <string name="usechatsummary">выводить оповещения о сообщенеи в чате группы</string>
 </resources>

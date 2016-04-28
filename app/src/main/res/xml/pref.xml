@@ -176,6 +176,12 @@
                                 android:title="@string/notify_with_monitoring"
                                 android:defaultValue="false"
                                 android:summary="@string/status_notification_for_monitoring_your_devices"/>
+                        <CheckBoxPreference
+                            android:key="chatnotify"
+                            android:title="@string/usechatnotification"
+                            android:summary="@string/usechatsummary"
+                            android:defaultValue="true"/>
+
                             <CheckBoxPreference
                                 android:summary="@string/alarm_when_device_acceleration_exceeds_a_threshold"
                                 android:key="usealarm"

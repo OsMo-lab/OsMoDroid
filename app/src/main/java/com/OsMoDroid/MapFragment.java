@@ -530,7 +530,7 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
                             if (center != null)
                                 {
                                     mController.setCenter(new GeoPoint(MapFragment.this.getLastKnownLocation()));
-                                    mController.setZoom(16);
+                                   // mController.setZoom(16);
                                 }
                             myLoc.enableFollowLocation();
                         }

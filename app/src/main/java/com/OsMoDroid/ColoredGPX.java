@@ -13,6 +13,7 @@ import com.OsMoDroid.Netutil.InitTask;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.Rect;
@@ -23,6 +24,8 @@ public class ColoredGPX implements Serializable
         public int mPointsPrecomputed;
         File gpxfile;
         int color;
+        Paint paint;
+        Paint wpPaint;
         String url;
         Statuses status = Statuses.EMPTY;
         transient List<Point> points;// = new ArrayList<Point>(3000);
