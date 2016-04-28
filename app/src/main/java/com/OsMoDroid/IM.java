@@ -1169,6 +1169,9 @@ public class IM implements ResultsListener
                         if (param.equals(OsMoDroid.TRACKER_EXIT))
                             {
                                 sendToServer("RCR:" + OsMoDroid.TRACKER_EXIT + "|1", false);
+                                LocalService.gcmtodolist.clear();
+                                LocalService.connectcompleted =true;
+                                localService.saveObject(LocalService.gcmtodolist, OsMoDroid.GCMTODOLIST);
                                 localService.stopSelf();
                                 System.exit(0);
                             }
