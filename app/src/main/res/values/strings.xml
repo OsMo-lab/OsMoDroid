@@ -252,10 +252,10 @@
     <string name="play_a_sound_when_sending_each_location_update">Play a sound when sending each location update</string>
     <string name="disable_notification">Disable Notification</string>
     <string name="do_not_use_android_notifications">Do not use Android Notifications</string>
-    <string name="alert_on_online">Alert On Online</string>
-    <string name="notify_when_a_data_connection_is_established">Notify when a data connection is established</string>
-    <string name="notify_with_monitoring">Notify with monitoring</string>
-    <string name="status_notification_for_monitoring_your_devices">status notification for monitoring your devices</string>
+    <string name="alert_on_online">Online status</string>
+    <string name="notify_when_a_data_connection_is_established">Notification of the online status of group members</string>
+    <string name="notify_with_monitoring">Status monitoring</string>
+    <string name="status_notification_for_monitoring_your_devices">Notification of the status of monitoring group members</string>
     <string name="alarm_when_device_acceleration_exceeds_a_threshold">Alarm when device acceleration exceeds a threshold</string>
     <string name="acceleration_alarm">Acceleration Alarm</string>
     <string name="sensitivity">Sensitivity</string>
@@ -302,7 +302,7 @@
     <string name="shortname">Short names</string>
     <string name="enterin">" enter in geozone "</string>
     <string name="exitfrom">" exit from geozone "</string>
-    <string name="warnewdevice">"This device was deleted from OSMO.MOBI\nWill create new, if you have been created links(URL) it will invalid now and need to reenter to groups\n You can contact support if like "</string>
-    <string name="usechatnotification">Use chat notification</string>
-    <string name="usechatsummary">Use_android_notifications for chat</string>
+    <string name="warnewdevice">"This device was deleted from server\nWill create new, if you have been created links(URL) it will invalid now and need to reenter to groups\n You can contact support if like "</string>
+    <string name="usechatnotification">Notifications from chat groups</string>
+    <string name="usechatsummary">Shows Android notification when the chat is updated</string>
 </resources>
