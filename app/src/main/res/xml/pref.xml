@@ -40,7 +40,7 @@
                                 android:digits="0123456789"
                                 android:inputType="number"
                                 android:key="speedbearing"
-                                android:summary="@string/kilometers_per_hour"
+                                android:summary="@string/kilometers_per_hour_course"
                                 android:title="@string/speed_trigger_for_course_deviation" android:defaultValue="5" />
                             <EditTextPreference
                                 android:digits="0123456789"
@@ -52,7 +52,7 @@
                             <EditTextPreference
                                 android:key="speed"
                                 android:title="@string/minimum_send_speed"
-                                android:summary="@string/kilometers_per_hour"
+                                android:summary="@string/kilometers_per_hour_speed"
                                 android:digits="0123456789"
                                 android:inputType="number"
                                 android:defaultValue="0"/>
@@ -103,7 +103,7 @@
                             android:digits="0123456789"
                             android:inputType="number"
                             android:key="speedbearing_gpx"
-                            android:summary="@string/kilometers_per_hour"
+                            android:summary="@string/kilometers_per_hour_course"
                             android:title="@string/speed_trigger_for_course_deviation" android:defaultValue="0"/>
                         <EditTextPreference
                             android:digits="0123456789"
@@ -117,7 +117,7 @@
                             android:inputType="number"
                             android:key="speed_gpx"
                             android:numeric="integer"
-                            android:summary="@string/kilometers_per_hour"
+                            android:summary="@string/kilometers_per_hour_speed"
                             android:title="@string/minimum_speed_to_save_"
                             android:defaultValue="0"/>
                         <CheckBoxPreference

@@ -221,7 +221,8 @@
     <string name="send_distance">Send Distance</string>
     <string name="degrees">Degrees</string>
     <string name="course_deviation">Course Deviation</string>
-    <string name="kilometers_per_hour">Kilometers Per Hour</string>
+    <string name="kilometers_per_hour_course">км/ч. Если скорость ниже, то параметр `отклонение курса` не обрабатывается</string>
+    <string name="kilometers_per_hour_speed">км/ч. Если скорость ниже, то отправка не производится</string>
     <string name="speed_trigger_for_course_deviation">Speed Trigger for Course Deviation</string>
     <string name="acceptable_location_accuracy_horizontal_dilution_of_precision_location_signals_less_accurate_than_this_higher_numbers_will_not_be_sent_as_updates_">Acceptable Location Accuracy (Horizontal Dilution of Precision). Location signals less accurate than this (higher numbers) will not be sent as updates.</string>
     <string name="maximum_hdop">Maximum HDOP</string>

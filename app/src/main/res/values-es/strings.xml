@@ -212,7 +212,8 @@
   <string name="checkfirewall">No se ha podido conectar al servidor de seguimiento por su puerto. Compruebe que da total acceso a OsMoDroid por su firewall. También puede ser debido a una conexión de datos mala.</string>
   <string name="send_frequency">Frecuencia de envío</string>
   <string name="degrees">Grados</string>
-  <string name="kilometers_per_hour">Kilómetros Por Hora</string>
+  <string name="kilometers_per_hour_course">км/ч. Если скорость ниже, то параметр `отклонение курса` не обрабатывается</string>
+  <string name="kilometers_per_hour_speed">км/ч. Если скорость ниже, то отправка не производится</string>
   <string name="meters">Metros</string>
   <string name="memory_card_path">Ruta de tarjeta de memoria</string>
   <string name="notification">Notificación</string>

@@ -218,7 +218,8 @@
 <string name="send_distance">Дистанция отправки</string>
 <string name="degrees">Градусы. Порог азимута между текущей и предыдущей точкой, где азимут последний раз менялся</string>
 <string name="course_deviation">Порог курса</string>
-<string name="kilometers_per_hour">км/ч. Если скорость ниже, то параметр `отклонение курса` не обрабатывается</string>
+<string name="kilometers_per_hour_course">км/ч. Если скорость ниже, то параметр `отклонение курса` не обрабатывается</string>
+    <string name="kilometers_per_hour_speed">км/ч. Если скорость ниже, то отправка не производится</string>
 <string name="speed_trigger_for_course_deviation">Минимальная скорость реакции на курс</string>
 <string name="acceptable_location_accuracy_horizontal_dilution_of_precision_location_signals_less_accurate_than_this_higher_numbers_will_not_be_sent_as_updates_">Метры. Если погрешность выше, то данные не отправляются.</string>
 <string name="maximum_hdop">Максимальная погрешность HDOP</string>
