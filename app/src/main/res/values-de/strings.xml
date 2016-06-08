@@ -55,7 +55,7 @@
   <string name="message">Nachricht</string>
   <string name="sendsupport">Support melden</string>
   <string name="about">Über</string>
-  <string name="abouttext">OsMoDroid ist ein Überwachungsprogramm für Android. Benutzen sie ein Smartphone und den OsMo-Dienst, damit deine Freunde und Familie immer wissen wo du bist.\nEntwickler: Denis Folkin (c) 2012-2015\n\nWenn sie diese Applikation nutzen, stimmen sie den Nutzungsbedingungen auf http://osmo.mobi/terms zu\n\nHomepage OsMoDroid: http://osmodroid.mobi\n\nCopyright information http://osmodroid.mobi/copyright.html</string>
+  <string name="abouttext">OsMoDroid ist ein Überwachungsprogramm für Android. Benutzen sie ein Smartphone und den OsMo-Dienst, damit deine Freunde und Familie immer wissen wo du bist.\nEntwickler: Denis Folkin (c) 2012-2016\n\nWenn sie diese Applikation nutzen, stimmen sie den Nutzungsbedingungen auf http://osmo.mobi/terms zu\n\nHomepage OsMoDroid: http://osmodroid.mobi\n\nCopyright information http://osmodroid.mobi/copyright.html</string>
   <string name="send">&gt;&gt;</string>
   <string name="cancel">Rückgängig machen</string>
   <string name="speed">Geschwindigkeit: km/h</string>
