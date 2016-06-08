@@ -54,7 +54,7 @@
 <string name="message">Сообщение</string>
 <string name="sendsupport">Сообщить в техническую поддержку</string>
 <string name="about">О программе</string>
-<string name="abouttext">OsMoDroid это клиент мониторинга для Android. Используя смартфон и сервис OsMo ваши друзья и близкие всегда будут знать где вы.\nРазработчик: Денис Фокин (c) 2012-2015\n\nИспользуя данное приложение вы принимаете Условия Использования:\nhttp://osmo.mobi/terms\n\nОфициальный сайт OsMoDroid:\nhttp://osmodroid.ru\n\nИнформация о авторских правах: http://osmodroid.ru/copyright.html</string>
+<string name="abouttext">OsMoDroid это клиент мониторинга для Android. Используя смартфон и сервис OsMo ваши друзья и близкие всегда будут знать где вы.\nРазработчик: Денис Фокин (c) 2012-2016\n\nИспользуя данное приложение вы принимаете Условия Использования:\nhttp://osmo.mobi/terms\n\nОфициальный сайт OsMoDroid:\nhttp://osmodroid.ru\n\nИнформация о авторских правах: http://osmodroid.ru/copyright.html</string>
 <string name="send">>></string>
 <string name="cancel">Отмена</string>
 <string name="speed">Скорость: км/ч</string>
@@ -217,8 +217,8 @@
 <string name="meters_must_move_at_least_this_far_to_send_location_update">Метры. Минимальное расстояние между отправкой данных</string>
 <string name="send_distance">Дистанция отправки</string>
 <string name="degrees">Градусы. Порог азимута между текущей и предыдущей точкой, где азимут последний раз менялся</string>
-<string name="course_deviation">Порог курса</string>
-<string name="kilometers_per_hour">км/ч. Если скорость ниже, то параметр `отклонение курса` не обрабатывается</string>
+<string name="course_deviation">Порог изменения курса</string>
+<string name="kilometers_per_hour">км/ч. Если скорость ниже, то параметр "/Порог изменения курса"/ не обрабатывается</string>
 <string name="speed_trigger_for_course_deviation">Минимальная скорость реакции на курс</string>
 <string name="acceptable_location_accuracy_horizontal_dilution_of_precision_location_signals_less_accurate_than_this_higher_numbers_will_not_be_sent_as_updates_">Метры. Если погрешность выше, то данные не отправляются.</string>
 <string name="maximum_hdop">Максимальная погрешность HDOP</string>
@@ -226,7 +226,7 @@
 <string name="mode_and">Режим параметров И</string>
 <string name="if_checked_all_conditions_speed_time_distance_must_be_met_to_send_a_location_update_if_unchecked_any_condition_may_cause_an_update_">Если флажок установлен, все условия (скорость, время, расстояние) должны быть выполнены, чтобы отправить местоположение. Если не отмечено, любое состояние может привести обновления</string>
 <string name="transfer_unsent">Передавать неотправленное</string>
-<string name="useful_with_unstable_internet_connections_may_use_more_data_">Рекомендуем, если нестабильная связь с интернетом. Может повышать интернет-трафик.</string>
+<string name="useful_with_unstable_internet_connections_may_use_more_data_">Рекомендуем, если нестабильная связь с интернетом</string>
 <string name="recorded_tracks_are_stored_on_the_memory_card_by_default_sdcard_osmodroid_">Треки сохраняются на карте памяти по умолчанию (/sdcard/OsMoDroid/)</string>
 <string name="record_track">Запись трека</string>
 <string name="record_settings">Параметры записи</string>
@@ -281,8 +281,8 @@
 <string name="update_map_in_background">Постоянно получать данные групп</string>
 <string name="tcp_no_delay">Режим сокета "Без ожидания"</string>
 <string name="agree_sos_">Активировать режим SOS?</string>
-<string name="gpson">Пойман сигнал ГПС</string>
-<string name="gpsoff">Потерян сигнал ГПС</string>
+<string name="gpson">Пойман сигнал GPS</string>
+<string name="gpsoff">Потерян сигнал GPS</string>
 <string name="monitoring_started">Мониторинг запущен</string>
 <string name="monitoring_stopped">Мониторинг остановлен</string>
 <string name="inetoff">Интернет пропал</string>
