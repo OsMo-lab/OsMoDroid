@@ -125,7 +125,10 @@
                         	android:title="@string/mode_and"
                         	android:defaultValue="false"
                         	android:summary="@string/if_checked_all_conditions_speed_time_distance_must_be_met_to_save_a_location_update_if_unchecked_any_condition_may_cause_an_update_"/>
-                        <EditTextPreference android:title="@string/memory_card_path" android:key="sdpath"/>
+                        <EditTextPreference
+                            android:title="@string/memory_card_path"
+                            android:key="sdpath"
+                            android:onClick="startFileChooser"/>
                 </PreferenceScreen>
                     
     </PreferenceCategory>

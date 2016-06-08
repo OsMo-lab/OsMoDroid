@@ -383,7 +383,11 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
                 globalActivity.actionBar.setTitle(getString(R.string.map));
                 mMapView.getOverlays().add(myLoc);
                 myLoc.enableMyLocation();
-                globalActivity.mService.myIM.sendToServer("SM",false);
+                if (LocalService.myIM != null && LocalService.myIM.authed)
+                    {
+                        globalActivity.mService.myIM.sendToServer("SM", false);
+                    }
+
                 super.onResume();
             }
         @Override

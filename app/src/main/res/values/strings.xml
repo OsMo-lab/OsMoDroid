@@ -305,4 +305,9 @@
     <string name="warnewdevice">"This device was deleted from server\nWill create new, if you have been created links(URL) it will invalid now and need to reenter to groups\n You can contact support if like "</string>
     <string name="usechatnotification">Notifications from chat groups</string>
     <string name="usechatsummary">Shows Android notification when the chat is updated</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="altitude">Altitude: Meters</string>
+    <string name="pleasewait">Please wait...</string>
 </resources>

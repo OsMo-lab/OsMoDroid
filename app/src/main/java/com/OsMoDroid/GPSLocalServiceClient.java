@@ -159,6 +159,10 @@ public class GPSLocalServiceClient extends ActionBarActivity
                         }
                     if (mService.myIM != null)
                         {
+                            if(!mService.myIM.start)
+                                {
+                                    mService.myIM.start();
+                                }
                             if (mService.myIM.connOpened && !mService.myIM.connecting)
                                 {
                                     actionBar.setLogo(R.drawable.eyeo);
@@ -297,6 +301,7 @@ public class GPSLocalServiceClient extends ActionBarActivity
         public void onCreate(Bundle savedInstanceState)
             {
                 Log.d(this.getClass().getSimpleName(), "onCreate() gpsclient");
+                LocalService.alertHandler.removeCallbacksAndMessages(null);
                 super.onCreate(savedInstanceState);
                 actionBar = getSupportActionBar();
                 actionBar.setDisplayHomeAsUpEnabled(true);
@@ -424,6 +429,13 @@ public class GPSLocalServiceClient extends ActionBarActivity
                         }
                 };
                 registerReceiver(mIMstatusReciever, new IntentFilter("OsMoDroid"));
+                if (mService.myIM != null)
+                    {
+                        if (!mService.myIM.start)
+                            {
+                                mService.myIM.start();
+                            }
+                    }
 
             }
         void setupDrawerList()
@@ -523,16 +535,24 @@ public class GPSLocalServiceClient extends ActionBarActivity
                                             }
                                        // mService.myIM.sendToServer("PD:1", false);
                                     }
+                                mService.myIM.needtosendpreference=true;
+                                if(mService.myIM.authed)
+                                    {
+                                        mService.myIM.sendToServer("DCU",false);
+                                    }
+
                             }
                         if (requestCode == 1 && resultCode == Activity.RESULT_OK)
                             {
                                 Log.d(this.getClass().getSimpleName(), "void onActivityResult=auth");
                                 if (live&& mBound)
                                     {
-                                        mService.myIM.stop();
+                                        mService.myIM.close();
                                         LocalService.channelList.clear();
                                         LocalService.deviceList.clear();
+                                        mService.myIM.needtosendpreference=true;
                                         mService.myIM.start();
+
                                     }
                             }
                     }
@@ -553,6 +573,13 @@ public class GPSLocalServiceClient extends ActionBarActivity
                             }
 
                        // mService.myIM.sendToServer("PD:1", false);
+                    }
+                if (mService.myIM != null)
+                    {
+                        if (!mService.myIM.start)
+                            {
+                                mService.myIM.start();
+                            }
                     }
 //		if (hash.equals("") && live) {
 //			RequestAuthTask requestAuthTask = new RequestAuthTask();
@@ -761,6 +788,7 @@ public class GPSLocalServiceClient extends ActionBarActivity
         @Override
         protected void onDestroy()
             {
+                LocalService.addlog("gpslocalserviceclient ondestroy");
                 Log.d(this.getClass().getSimpleName(), "onDestroy() gpsclient");
                 OsMoDroid.activity = null;
                 if (mBound)

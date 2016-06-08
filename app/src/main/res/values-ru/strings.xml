@@ -302,4 +302,6 @@
 <string name="warnewdevice">"Это устройство было удалено или сброшено на сервере\nБудет создано новое\nВсе ссылки и группы стали недействительны - нужно перезайти или пересоздать"</string>
 <string name="usechatnotification">Уведомления чата</string>
 <string name="usechatsummary">Выводить андроид-уведомления, когда приходят сообщения в чат</string>
+    <string name="altitude">Высота: метры</string>
+    <string name="pleasewait">Пожалуйста подождите...</string>
 </resources>

@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -26,7 +27,7 @@ public class ChannelsAdapter extends ArrayAdapter<Channel>
         {
             public void onClick(View v)
                 {
-                    ((ToggleButton) v).toggle();
+                    ((CheckBox) v).toggle();
                     Channel channel = getItem((Integer) v.getTag());
                     //Netutil.newapicommand((ResultsListener)localservice,context, "om_device_channel_active:"+OsMoDroid.settings.getString("device", "")+","+channel.u+","+boolglobalsend);
                     if (channel.send)
@@ -50,13 +51,14 @@ public class ChannelsAdapter extends ArrayAdapter<Channel>
                 View row = convertView;
                 if (row == null)
                     {
-                        LayoutInflater inflater = (LayoutInflater) this.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                        //LayoutInflater inflater = (LayoutInflater) this.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                         row = inflater.inflate(R.layout.channelsitem, parent, false);
                     }
                 Channel channel = getItem(position);
                 TextView channelName = (TextView) row.findViewById(R.id.txtName);
                 TextView channelCreated = (TextView) row.findViewById(R.id.txtCreated);
-                ToggleButton tg = (ToggleButton) row.findViewById(R.id.toggleButton1);
+                CheckBox tg = (CheckBox) row.findViewById(R.id.checkBox);
                 tg.setOnClickListener(myCheckChangList);
                 tg.setTag(position);
                 if (channel.name != null)

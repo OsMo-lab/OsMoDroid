@@ -276,6 +276,11 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
 
                                                 canvas.drawRect(scrPoint.x - ten, scrPoint.y - ten, scrPoint.x + ten, scrPoint.y + ten, p.paint);
                                                // paint.setColor(Color.parseColor("#013220"));
+                                                blackpaint.setDither(true);
+                                                blackpaint.setAntiAlias(true);
+                                                blackpaint.setTextSize(twenty);
+                                                blackpaint.setTypeface(Typeface.DEFAULT_BOLD);
+                                                blackpaint.setTextAlign(Paint.Align.CENTER);
                                                 if(OsMoDroid.settings.getBoolean("shortname",false))
                                                     {
                                                         Rect textBounds = new Rect();

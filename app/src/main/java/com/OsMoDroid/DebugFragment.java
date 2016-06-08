@@ -1,6 +1,11 @@
 package com.OsMoDroid;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -14,6 +19,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.text.ClipboardManager;
 import android.util.Log;
@@ -87,6 +93,7 @@ public class DebugFragment extends Fragment
             {
                 MenuItem clear = menu.add(0, 1, 0, "Очистить");
                 MenuItem share = menu.add(0, 2, 0, "Отправить журнал");
+                MenuItem save = menu.add(0, 2, 0, "Сохранить журнал на sdcard");
                 super.onCreateOptionsMenu(menu, inflater);
             }
         @Override
@@ -123,6 +130,55 @@ public class DebugFragment extends Fragment
                             sendIntent.putExtra(android.content.Intent.EXTRA_TEXT, sendtext);
                             sendIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Debug log");
                             startActivity(Intent.createChooser(sendIntent, "Email"));
+                        case 3:
+                            final Date dumpDate = new Date(System.currentTimeMillis());
+                            final String state = Environment.getExternalStorageState();
+                            final DateFormat fileFormatter = new SimpleDateFormat("dd-MM-yy");
+                            StringBuilder stringBuilder = new StringBuilder();
+                            if (Environment.MEDIA_MOUNTED.equals(state))
+                                {
+                                    String stacktraceDir = String.format("/OsMoDroid/debuglog/");
+                                    File sd = Environment.getExternalStorageDirectory();
+                                    File stacktrace = new File(
+                                            sd.getPath() + stacktraceDir,
+                                            String.format(
+                                                    "debug-%s.txt",
+                                                    fileFormatter.format(dumpDate)));
+                                    File dumpdir = stacktrace.getParentFile();
+                                    boolean dirReady = dumpdir.isDirectory() || dumpdir.mkdirs();
+                                    if (dirReady)
+                                        {
+                                            FileWriter writer = null;
+                                            try
+                                                {
+                                                    writer = new FileWriter(stacktrace, true);
+                                                    for (String s : LocalService.debuglist)
+                                                        {
+                                                            stringBuilder.append(s);
+                                                            stringBuilder.append("\n");
+                                                        }
+                                                    writer.write(stringBuilder.toString());
+                                                }
+                                            catch (IOException e)
+                                                {
+                                                    // ignore
+                                                }
+                                            finally
+                                                {
+                                                    try
+                                                        {
+                                                            if (writer != null)
+                                                                {
+                                                                    writer.close();
+                                                                }
+                                                        }
+                                                    catch (IOException e)
+                                                        {
+                                                            // ignore
+                                                        }
+                                                }
+                                        }
+                                }
                         default:
                             break;
                     }

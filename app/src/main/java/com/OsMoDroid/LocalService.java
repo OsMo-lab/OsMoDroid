@@ -36,6 +36,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.graphics.Color;
 import android.graphics.Point;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -77,13 +78,17 @@ import android.widget.RemoteViews;
 import android.widget.Toast;
 
 import com.OsMoDroid.Netutil.MyAsyncTask;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
 public class LocalService extends Service implements LocationListener, GpsStatus.Listener, TextToSpeech.OnInitListener, ResultsListener, SensorEventListener
     {
         public static Device mydev = new Device();
         //public static List<Point> traceList = new ArrayList<Point>();
         public static ArrayList<ColoredGPX> showedgpxList = new ArrayList<ColoredGPX>();
-        static boolean connectcompleted
-                =false;
+        static boolean connectcompleted =false;
+
         boolean binded = false;
         private SensorManager mSensorManager;
         private Sensor mAccelerometer;
@@ -125,7 +130,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
         private boolean beepedoff = false;
         private boolean gpsbeepedon = false;
         private boolean gpsbeepedoff = false;
-        float maxspeed = 0;
+        static float  maxspeed = 0;
         float avgspeed;
         float currentspeed;
         long timeperiod = 0;
@@ -231,6 +236,11 @@ public class LocalService extends Service implements LocationListener, GpsStatus
         public static boolean chatVisible = false;
         public static String currentItemName = "";
         public static ArrayAdapter<String> adapter;
+        public static ArrayList<Entry> speeddistanceEntryList = new ArrayList<Entry>();
+        public static ArrayList<Entry> avgspeeddistanceEntryList = new ArrayList<Entry>();
+        public static ArrayList<Entry> altitudedistanceEntryList = new ArrayList<Entry>();
+        public static ArrayList<String> distanceStringList = new ArrayList<String>();
+
         final static Handler alertHandler = new Handler()
         {
             @Override
@@ -602,6 +612,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                 ttsManage();
                 getversion();
                 serContext = LocalService.this;
+
                 mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
                 mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
                 if (OsMoDroid.settings.contains("signalisation"))
@@ -767,7 +778,8 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                     {
                         gcmtodolist.addAll(loadedgcm);
                     }
-                myIM = new IM("osmo.mobi", 4245, this)
+                //myIM = new IM("osmo.mobi", 4254, this)
+                myIM = new IM("osmo.mobi", 4260, this)
                 {
                     @Override
                     void ondisconnect()
@@ -1140,6 +1152,11 @@ public class LocalService extends Service implements LocationListener, GpsStatus
         void handleStart(Intent intent, int startId)
             {
                 Log.d(getClass().getSimpleName(), "on handleStart"+intent);
+                if(myIM!=null&&!myIM.start)
+                    {
+                        myIM.start();
+                        addlog("starr connect because gcm");
+                    }
                 if (intent != null)
                     {
                         Bundle bundle = intent.getExtras();
@@ -1236,6 +1253,11 @@ public class LocalService extends Service implements LocationListener, GpsStatus
             {
                 if (!paused)
                     {
+                        altitudedistanceEntryList.clear();
+                        avgspeeddistanceEntryList.clear();;
+                        speeddistanceEntryList.clear();
+                        distanceStringList.clear();
+
                         firstsend = true;
                         avgspeed = 0;
                         maxspeed = 0;
@@ -1619,6 +1641,10 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                                 postjson.put("speed", location.getSpeed());
                                 postjson.put("hdop", location.getAccuracy());
                                 postjson.put("altitude", location.getAltitude());
+                                if(location.getProvider().equals(LocationManager.NETWORK_PROVIDER))
+                                    {
+                                        postjson.put("mobile",true);
+                                    }
                             }
                         catch (JSONException e)
                             {
@@ -1626,6 +1652,12 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                             }
                         myIM.sendToServer("RCR:" + OsMoDroid.WHERE + "|" + postjson.toString(), false);
                         where = false;
+                        if (!state)
+                            {
+                                //LocalService.addlog("remove updates because state");
+                                myManager.removeUpdates(this);
+                            }
+                        return;
                     }
                 if (!state)
                     {
@@ -1743,6 +1775,21 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                 //if (location.getTime()>lastfix+3000)notifygps(false);
                 //if (location.getTime()<lastfix+3000)notifygps(true);
                 timeperiod = System.currentTimeMillis() - workmilli;
+
+
+                for (int index = distanceStringList.size(); index <= (int) workdistance; index++)
+                    {
+                        distanceStringList.add(Integer.toString(index/1000)+','+Integer.toString(index%1000));
+                    }
+                Entry e = new Entry(currentspeed* 3.6f,(int) workdistance);
+                speeddistanceEntryList.add(e);
+                Entry avge = new Entry(avgspeed * 3600f,(int) workdistance);
+                avgspeeddistanceEntryList.add(avge);
+                Entry alte = new Entry((float) location.getAltitude(),(int) workdistance);
+                altitudedistanceEntryList.add(alte);
+
+
+                //speeddistanceEntryList.add(e);
                 refresh();
                 if (location.getProvider().equals(LocationManager.GPS_PROVIDER))
                     {
@@ -2480,7 +2527,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                             if (OsMoDroid.debug)
                                 {
                                     debuglist.add(IM.sdf1.format(new Date(System.currentTimeMillis())) + " " + str + " S=" + IM.sendBytes + " R=" + IM.recievedBytes+ " overall by netstat="+(TrafficStats.getUidTxBytes(OsMoDroid.context.getApplicationInfo().uid)-IM.startTraffic));
-                                    if (debuglist.size() > 1500)
+                                    if (debuglist.size() > 5000)
                                         {
                                             debuglist.remove(0);
                                         }

@@ -341,7 +341,12 @@ public class ChannelDevicesFragment extends Fragment implements ResultsListener
                                 LocalService.currentChannel = ch;
                             }
                     }
+
                 View view = inflater.inflate(R.layout.mychannelsdevices, container, false);
+                if(LocalService.currentChannel==null)
+                    {
+                        return view;
+                    }
                 //LocalService.currentchanneldeviceList= LocalService.channelList.get(channelpos).deviceList;
                 //LocalService.currentChannel= LocalService.channelList.get(channelpos);
                 LocalService.channelsDevicesAdapter = new ChannelsDevicesAdapter(getActivity(), R.layout.channelsdeviceitem, LocalService.currentchanneldeviceList);

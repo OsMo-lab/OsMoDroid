@@ -23,15 +23,15 @@ android {
         checkReleaseBuilds false
     }
 }
-
+repositories {
+    maven { url "https://jitpack.io" }
+}
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.google.android.gms:play-services-gcm:8.4.0'
-    compile 'com.android.support:appcompat-v7:19.0.0'
-
+    compile 'com.github.PhilJay:MPAndroidChart:v2.2.4'
     compile 'org.osmdroid:osmdroid-android:5.1@aar'
     compile 'org.osmdroid:osmdroid-third-party:5.0.1@aar'
-    // compile 'org.slf4j:slf4j-simple:1.6.1'
-    //compile 'com.android.support:appcompat-v7:21.0.0'
+    compile 'com.android.support:appcompat-v7:19.0.0'
 }
 apply plugin: 'com.google.gms.google-services'

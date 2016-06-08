@@ -23,6 +23,7 @@ public class DrawerItemClickListener implements OnItemClickListener
         TracFileListFragment trac;
         DeviceChatFragment devchat;
         ChannelDevicesFragment chandev;
+        TrackStatFragment trackStatFragment;
         DebugFragment debug;
         int currentItem = 0;
         ListView mDrawerList;
@@ -156,9 +157,21 @@ public class DrawerItemClickListener implements OnItemClickListener
                 else if (name.equals(OsMoDroid.context.getString(R.string.exit)))
                     {
                         //   android.os.Process.killProcess(android.os.Process.myPid());
+                        if(activity.mBound&&LocalService.myIM!=null&&LocalService.myIM.authed&&activity.mService.state)
+                            {
+                                activity.mService.stopServiceWork(true);
+                            }
+                        LocalService.alertHandler.postDelayed(new Runnable()
+                            {
+                                @Override
+                                public void run()
+                                    {
+
+                                        Intent i = new Intent(activity, LocalService.class);
+                                        LocalService.serContext.stopService(i);
+                                    }
+                            },5000);
                         LocalService.currentItemName = "";
-                        Intent i = new Intent(activity, LocalService.class);
-                        activity.stopService(i);
                         activity.finish();
                     }
                 else if (name.equals("debug"))
