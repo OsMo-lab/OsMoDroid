@@ -93,7 +93,7 @@ public class DebugFragment extends Fragment
             {
                 MenuItem clear = menu.add(0, 1, 0, "Очистить");
                 MenuItem share = menu.add(0, 2, 0, "Отправить журнал");
-                MenuItem save = menu.add(0, 2, 0, "Сохранить журнал на sdcard");
+                MenuItem save = menu.add(0, 3, 0, "Сохранить журнал на sdcard");
                 super.onCreateOptionsMenu(menu, inflater);
             }
         @Override
@@ -130,6 +130,7 @@ public class DebugFragment extends Fragment
                             sendIntent.putExtra(android.content.Intent.EXTRA_TEXT, sendtext);
                             sendIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Debug log");
                             startActivity(Intent.createChooser(sendIntent, "Email"));
+                            break;
                         case 3:
                             final Date dumpDate = new Date(System.currentTimeMillis());
                             final String state = Environment.getExternalStorageState();
@@ -158,6 +159,7 @@ public class DebugFragment extends Fragment
                                                             stringBuilder.append("\n");
                                                         }
                                                     writer.write(stringBuilder.toString());
+                                                    Toast.makeText(getActivity(), "Log saved to "+stacktrace, Toast.LENGTH_SHORT).show();
                                                 }
                                             catch (IOException e)
                                                 {
@@ -179,6 +181,7 @@ public class DebugFragment extends Fragment
                                                 }
                                         }
                                 }
+                            break;
                         default:
                             break;
                     }
