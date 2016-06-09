@@ -2272,8 +2272,8 @@ public class IM implements ResultsListener
                                     {
                                         if (!Character.toString(d.charAt(i)).equals(".") || i == (d.length() - 1))
                                             {
-                                                LocalService.addlog(d.substring(d.indexOf("S") + 1, i));
-                                                dev.speed = OsMoDroid.df0.format((((Float.parseFloat(d.substring(d.indexOf("S") + 1, i)) * 3.6))));
+                                                LocalService.addlog(d.substring(idxS + 1, i));
+                                                dev.speed = OsMoDroid.df0.format((((Float.parseFloat(d.substring(idxS + 1, i)) * 3.6))));
                                                 break;
                                             }
                                     }
@@ -2291,8 +2291,8 @@ public class IM implements ResultsListener
                                     {
                                         if (!Character.toString(d.charAt(i)).equals(".") || i == (d.length() - 1))
                                             {
-                                                LocalService.addlog(d.substring(d.indexOf("T") + 1, i));
-                                                dev.updatated = 1000 * Long.parseLong(d.substring(d.indexOf("S") + 1, i));
+                                                LocalService.addlog(d.substring(idxT + 1, i));
+                                                dev.updatated = 1000 * Long.parseLong(d.substring(idxT + 1, i));
                                                 break;
                                             }
                             }

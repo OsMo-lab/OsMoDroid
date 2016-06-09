@@ -1185,11 +1185,11 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                         if (intent.hasExtra("ACTION"))
                             {
                                 Log.d(getClass().getSimpleName(), "on handleStart intent has ACTION=" + intent.getStringExtra("ACTION"));
-                                if (intent.getStringExtra("ACTION").equals("STOP"))
+                                if (intent.getStringExtra("ACTION").equals("STOP")&& state)
                                     {
                                         stopServiceWork(true);
                                     }
-                                if (intent.getStringExtra("ACTION").equals("START"))
+                                if (intent.getStringExtra("ACTION").equals("START")&& !state)
                                     {
                                         startServiceWork(true);
                                     }
@@ -1257,6 +1257,9 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                         avgspeeddistanceEntryList.clear();;
                         speeddistanceEntryList.clear();
                         distanceStringList.clear();
+                        writecounter=0;
+                        sendingbuffer.clear();
+
 
                         firstsend = true;
                         avgspeed = 0;
