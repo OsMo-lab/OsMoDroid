@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -310,4 +311,5 @@ public class StatFragment extends Fragment implements OnChartGestureListener, On
         public void onNothingSelected()
             {
             }
+
     }

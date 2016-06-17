@@ -1,6 +1,7 @@
 package com.OsMoDroid;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.FragmentManager;
@@ -46,6 +47,7 @@ public class DrawerItemClickListener implements OnItemClickListener
                         LocalService.currentItemName = (String) arg0.getAdapter().getItem(arg2);
                     }
                 selectItem((String) arg0.getAdapter().getItem(arg2), null);
+                activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
             }
         public void selectItem(String name, Bundle bundle)
             {

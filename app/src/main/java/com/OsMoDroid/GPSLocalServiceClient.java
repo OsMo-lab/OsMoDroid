@@ -44,6 +44,7 @@ import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
@@ -159,7 +160,7 @@ public class GPSLocalServiceClient extends ActionBarActivity
                         }
                     if (mService.myIM != null)
                         {
-                            if(!mService.myIM.start)
+                            if(!mService.myIM.start&&OsMoDroid.settings.getBoolean("live", true))
                                 {
                                     mService.myIM.start();
                                 }
@@ -246,6 +247,14 @@ public class GPSLocalServiceClient extends ActionBarActivity
 //	}
         void showFragment(Fragment fragment, boolean backstack)
             {
+                if( fragment instanceof TrackStatFragment)
+                    {
+                        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                    }
+                else
+                    {
+                        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+                    }
                 FragmentTransaction ft = fMan.beginTransaction();
                 if (backstack)
                     {
@@ -258,6 +267,7 @@ public class GPSLocalServiceClient extends ActionBarActivity
                         fMan.popBackStack();
                     }
                 ft.commit();
+
             }
         protected void updateMainUI()
             {
@@ -394,6 +404,15 @@ public class GPSLocalServiceClient extends ActionBarActivity
                                         {
                                             actionBar.setLogo(R.drawable.eyeo);
                                             icon = R.drawable.eyeo;
+                                            if(intent.hasExtra("executedlistsize"))
+                                                {
+                                                    if(intent.getIntExtra("executedlistsize",0)>0)
+                                                        {
+
+                                                            actionBar.setLogo(R.drawable.anim);
+
+                                                        }
+                                                }
                                         }
                                     else if (intent.getBooleanExtra("connecting", false))
                                         {
@@ -410,28 +429,13 @@ public class GPSLocalServiceClient extends ActionBarActivity
                                             mService.updateNotification(icon);
                                         }
                                 }
-                            if(intent.hasExtra("executedlistsize"))
-                                {
-                                    if(intent.getIntExtra("executedlistsize",0)>0)
-                                        {
-                                            //Animation a = AnimationUtils.loadAnimation(GPSLocalServiceClient.this, R.anim.icon_rotate);
-                                            //findViewById(android.R.id.home).startAnimation(a);
-                                            actionBar.setLogo(R.drawable.anim);
-                                           // AnimationDrawable frameAnimation = (AnimationDrawable) findViewById(android.R.id.home).getBackground();
-                                            //frameAnimation.start();
-                                        }
-//                                    else
-//                                        {
-//                                            Animation a = AnimationUtils.loadAnimation(GPSLocalServiceClient.this, R.anim.icon_rotate);
-//                                            findViewById(android.R.id.home).clearAnimation();
-//                                        }
-                                }
+
                         }
                 };
                 registerReceiver(mIMstatusReciever, new IntentFilter("OsMoDroid"));
                 if (mService.myIM != null)
                     {
-                        if (!mService.myIM.start)
+                        if (!mService.myIM.start&&OsMoDroid.settings.getBoolean("live", true))
                             {
                                 mService.myIM.start();
                             }
@@ -987,8 +991,10 @@ public class GPSLocalServiceClient extends ActionBarActivity
                     }
                 else
                     {
+
                         super.onBackPressed();
                     }
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
             }
         public interface upd
             {

@@ -10,6 +10,7 @@ import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -307,4 +308,5 @@ public class TracFileListFragment extends Fragment implements ResultsListener
                * @see android.os.AsyncTask#onProgressUpdate(Progress[])
                */
             }
+
     }

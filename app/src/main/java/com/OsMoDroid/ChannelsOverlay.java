@@ -221,7 +221,7 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
                             {
                                 for (Device d : ch.deviceList)
                                     {
-                                        if (d.lat != 0f && d.lon != 0f&&d.clusterid==0&&(!(d.updatated < (curtime - 900000)) || ch.type==2 ||d.state!=0))
+                                        if (d.lat != 0f && d.lon != 0f&&d.clusterid==0)
                                             {
                                                 if (OsMoDroid.settings.getBoolean("traces", true))
                                                     {
@@ -313,13 +313,12 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
                                             {
                                                 dev.devpaint= new Paint();
                                                 dev.devpaint.setColor(dev.color);
-                                                dev.pathpaint= new Paint();
-                                                dev.pathpaint.setColor(dev.color);
+
                                             }
                                         if(dev.devpaint.getColor()!=dev.color)
                                             {
                                                 dev.devpaint.setColor(dev.color);
-                                                dev.pathpaint.setColor(dev.color);
+
                                             }
                                         if (dev.lat != 0f && dev.lon != 0f&&dev.clusterid==0&&(!(dev.updatated < (curtime - 900000)) || ch.type==2 ||dev.state!=0))
                                             {
@@ -741,14 +740,30 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
                             }
                         ArrayAdapter<Channel> dataAdapter = new ArrayAdapter<Channel>(map.getContext(), R.layout.spinneritem, activeChannelList);
                         groupSpinner.setAdapter(dataAdapter);
-                        AlertDialog alertdialog1 = new AlertDialog.Builder(map.getContext()).create();
+                        AlertDialog alertdialog1 = new AlertDialog.Builder(map.getContext()).setPositiveButton(R.string.yes, new DialogInterface.OnClickListener()
+                            {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which)
+                                    {
+                                    }
+                            }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener()
+                            {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which)
+                                    {
+                                    }
+                            }).create();
                         alertdialog1.setView(layout);
                         alertdialog1.setTitle(map.getContext().getString(R.string.point_create));
                         alertdialog1.setMessage(map.getContext().getString(R.string.point_create_description));
-                        alertdialog1.setButton(map.getContext().getString(R.string.yes),
-                                new DialogInterface.OnClickListener()
+
+                        alertdialog1.show();
+                        alertdialog1.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(new CustomListener(alertdialog1)
+                            {
+                                @Override
+                                public void onClick(View v)
                                     {
-                                        public void onClick(DialogInterface dialog, int which)
+                                        if (LocalService.myIM.authed)
                                             {
                                                 try
                                                     {
@@ -760,18 +775,17 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
                                                         e1.printStackTrace();
                                                     }
                                                 LocalService.myIM.sendToServer("GPA|" + jo.toString(), true);
-                                                return;
+                                                super.dialog.dismiss();
                                             }
-                                    });
-                        alertdialog1.setButton2(map.getContext().getString(R.string.No),
-                                new DialogInterface.OnClickListener()
-                                    {
-                                        public void onClick(DialogInterface dialog, int which)
+                                        else
                                             {
-                                                return;
+                                                Toast.makeText(map.getContext(), R.string.CheckInternet, Toast.LENGTH_SHORT).show();
+
                                             }
-                                    });
-                        alertdialog1.show();
+                                    }
+                            });
+
+
                     }
                 else
                     {

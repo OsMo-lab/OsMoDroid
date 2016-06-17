@@ -14,6 +14,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.database.DataSetObserver;
 import android.graphics.Color;
 import android.net.Uri;
@@ -463,4 +464,5 @@ public class ChannelDevicesFragment extends Fragment implements ResultsListener
             {
                 Log.d(getClass().getSimpleName(), "OnResultListener Command:" + result.Command + ",Jo=" + result.Jo);
             }
+
     }

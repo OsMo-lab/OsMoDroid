@@ -1,9 +1,11 @@
 package com.OsMoDroid;
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -15,9 +17,12 @@ import android.util.Xml;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.RotateAnimation;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
@@ -66,7 +71,13 @@ public class TrackStatFragment extends Fragment
                         eleDataSet.notifyDataSetChanged();
                         mChart.notifyDataSetChanged();
                         mChart.invalidate();
-                        dialog.dismiss();
+                       if(dialog.isShowing()){
+                           try {
+                               dialog.dismiss();
+                           }catch (Exception e){
+
+                           }
+                       }
 
                     }
                 @Override
@@ -201,9 +212,14 @@ public class TrackStatFragment extends Fragment
                 Log.d(getClass().getSimpleName(), "TrackStatFragment onCreateView");
                 final View view = inflater.inflate(R.layout.fragment_track_stat, container, false);
                 mChart = (LineChart) view.findViewById(R.id.tracklineChart);
+
+
                 speedDataSet = new LineDataSet(speeddistanceEntryList,  getString(R.string.speed));
                 avgspeedDataSet = new LineDataSet(avgspeeddistanceEntryList, getString(R.string.average));
                 eleDataSet = new LineDataSet(eledistanceEntryList,  getString(R.string.altitude));
+                speedDataSet.setLineWidth(3);
+                avgspeedDataSet.setLineWidth(2);
+                eleDataSet.setLineWidth(4);
                 speedDataSet.setAxisDependency(YAxis.AxisDependency.LEFT);
                 speedDataSet.setColor(Color.RED);
                 //speedDataSet.setDrawCubic(true);
@@ -252,6 +268,7 @@ public class TrackStatFragment extends Fragment
                         StatfromFile s = new StatfromFile();
                         s.execute(file);
                     }
+
                 return view;
             }
 

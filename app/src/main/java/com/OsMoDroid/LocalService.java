@@ -240,6 +240,57 @@ public class LocalService extends Service implements LocationListener, GpsStatus
         public static ArrayList<Entry> avgspeeddistanceEntryList = new ArrayList<Entry>();
         public static ArrayList<Entry> altitudedistanceEntryList = new ArrayList<Entry>();
         public static ArrayList<String> distanceStringList = new ArrayList<String>();
+        LocationListener singleLocationListener = new LocationListener()
+            {
+                @Override
+                public void onLocationChanged(Location location)
+                    {
+                        if (where)
+                            {
+
+                                //  тогда RCR:12 вроде (пример опять же с батарейки) и json lat lon hdop altitude (остальное не знаю надо ли, можно и speed)
+                                //  RCR:12|{"lat"60.534543,"lon":30.1244,"speed":4.2,"hdop":500,"altitude":1200}
+                                LocalService.addlog("send on where");
+                                JSONObject postjson = new JSONObject();
+                                try
+                                    {
+                                        postjson.put("lat", location.getLatitude());
+                                        postjson.put("lon", location.getLongitude());
+                                        postjson.put("speed", location.getSpeed());
+                                        postjson.put("hdop", location.getAccuracy());
+                                        postjson.put("altitude", location.getAltitude());
+                                        if(location.getProvider().equals(LocationManager.NETWORK_PROVIDER))
+                                            {
+                                                postjson.put("mobile",true);
+                                            }
+                                    }
+                                catch (JSONException e)
+                                    {
+                                        e.printStackTrace();
+                                    }
+                                myIM.sendToServer("RCR:" + OsMoDroid.WHERE + "|" + postjson.toString(), false);
+                                where = false;
+                                if (!state)
+                                    {
+                                        //LocalService.addlog("remove updates because state");
+                                        myManager.removeUpdates(this);
+                                    }
+                                return;
+                            }
+                    }
+                @Override
+                public void onStatusChanged(String provider, int status, Bundle extras)
+                    {
+                    }
+                @Override
+                public void onProviderEnabled(String provider)
+                    {
+                    }
+                @Override
+                public void onProviderDisabled(String provider)
+                    {
+                    }
+            };
 
         final static Handler alertHandler = new Handler()
         {
@@ -764,7 +815,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                                                 cgpx.initPathOverlay();
                                             }
                                     }
-                                connectcompleted =true;
+                                //connectcompleted =true;
                             }
                     }
                 List<Device> loaded = (List<Device>) loadObject(OsMoDroid.DEVLIST, deviceList.getClass());
@@ -1152,7 +1203,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
         void handleStart(Intent intent, int startId)
             {
                 Log.d(getClass().getSimpleName(), "on handleStart"+intent);
-                if(myIM!=null&&!myIM.start)
+                if(myIM!=null&&!myIM.start&&OsMoDroid.settings.getBoolean("live", true))
                     {
                         myIM.start();
                         addlog("starr connect because gcm");
@@ -1530,7 +1581,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                 OsMoDroid.editor.putFloat("lon", (float) currentLocation.getLongitude());
                 OsMoDroid.editor.commit();
                 firstgpsbeepedon = false;
-                buffer.clear();
+
                 if (OsMoDroid.settings.getBoolean("playsound", false))
                     {
                         //soundPool.play(stopsound, 1f, 1f, 1, 0, 1f);
@@ -1547,6 +1598,12 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                         //new Netutil.MyAsyncTask(this).execute(params);
                         if (myIM.authed)
                             {
+                                if (sendingbuffer.size() == 0 && buffer.size() != 0)
+                                    {
+                                        sendingbuffer.addAll(buffer);
+                                        buffer.clear();
+                                        myIM.sendToServer("B|" + new JSONArray(sendingbuffer), false);
+                                    }
                                 myIM.sendToServer("TC", false);
                                 myIM.needclosesession = true;
                                 myIM.needopensession = false;
@@ -1556,6 +1613,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                                 myIM.needclosesession = true;
                                 myIM.needopensession = false;
                             }
+                        buffer.clear();
                     }
                 if (gpx && fileheaderok && stopsession)
                     {
@@ -1630,38 +1688,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
             }
         public void onLocationChanged(Location location)
             {
-                if (where)
-                    {
 
-                      //  тогда RCR:12 вроде (пример опять же с батарейки) и json lat lon hdop altitude (остальное не знаю надо ли, можно и speed)
-                      //  RCR:12|{"lat"60.534543,"lon":30.1244,"speed":4.2,"hdop":500,"altitude":1200}
-                        LocalService.addlog("send on where");
-                        JSONObject postjson = new JSONObject();
-                        try
-                            {
-                                postjson.put("lat", location.getLatitude());
-                                postjson.put("lon", location.getLongitude());
-                                postjson.put("speed", location.getSpeed());
-                                postjson.put("hdop", location.getAccuracy());
-                                postjson.put("altitude", location.getAltitude());
-                                if(location.getProvider().equals(LocationManager.NETWORK_PROVIDER))
-                                    {
-                                        postjson.put("mobile",true);
-                                    }
-                            }
-                        catch (JSONException e)
-                            {
-                                e.printStackTrace();
-                            }
-                        myIM.sendToServer("RCR:" + OsMoDroid.WHERE + "|" + postjson.toString(), false);
-                        where = false;
-                        if (!state)
-                            {
-                                //LocalService.addlog("remove updates because state");
-                                myManager.removeUpdates(this);
-                            }
-                        return;
-                    }
                 if (!state)
                     {
                         //LocalService.addlog("remove updates because state");

@@ -15,8 +15,11 @@ public class MyGcmListenerService extends GcmListenerService
         @Override
         public void onMessageReceived(String from, Bundle data)
             {
-                Intent is = new Intent(this, LocalService.class);
-                is.putExtras(data);
-                startService(is);
+                if(OsMoDroid.settings.getBoolean("live", true))
+                    {
+                        Intent is = new Intent(this, LocalService.class);
+                        is.putExtras(data);
+                        startService(is);
+                    }
             }
     }

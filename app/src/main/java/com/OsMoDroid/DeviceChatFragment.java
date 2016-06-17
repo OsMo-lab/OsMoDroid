@@ -13,6 +13,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.database.DataSetObserver;
 import android.net.Uri;
 import android.os.Bundle;
@@ -211,4 +212,5 @@ public class DeviceChatFragment extends Fragment
                 //Log.d(this.getClass().getSimpleName(),"getSherlockActivity:"+getSherlockActivity()+" deviceU="+deviceU+" getdevicebyU="+getDeviceByU(deviceU).u);
                 return view;
             }
+
     }

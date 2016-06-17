@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.location.LocationManager;
 import android.opengl.Visibility;
@@ -225,6 +226,7 @@ public class MainFragment extends Fragment implements GPSLocalServiceClient.upd
                             {
                                 globalActivity.mService.myIM.stop();
                                 globalActivity.mService.myIM.start();
+                                globalActivity.mService.sendid();
                             }
                         globalActivity.mService.refresh();
                     }
@@ -745,4 +747,5 @@ public class MainFragment extends Fragment implements GPSLocalServiceClient.upd
             {
                 updateMainUI();
             }
+
     }

@@ -37,7 +37,7 @@ public class RegistrationIntentService extends IntentService {
 
 
     private void sendRegistrationToServer(String token) {
-
+        Log.d(this.getClass().getName(), "sendRegistrationToServer: "+token);
         LocalService.addlog("RegId=" + token);
         if(!OsMoDroid.settings.getString("GCMRegId","").equals(token))
             {

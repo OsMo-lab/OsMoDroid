@@ -122,8 +122,23 @@ public class IM implements ResultsListener
                 @Override
                 public void onReceive(Context context, Intent intent)
                     {
-                        LocalService.addlog("Online timeout onReceive, OsmodroidVisible="+OsMoDroid.gpslocalserviceclientVisible);
-                        if(OsMoDroid.gpslocalserviceclientVisible||localService.state||localService.gcmtodolist.size()>0)
+                        boolean existactiveDevice=false;
+                        for(Channel ch : LocalService.channelList)
+                            {
+                                for(Device dev : ch.deviceList)
+                                    {
+                                        if(dev.state!=0)
+                                            {
+                                                if((System.currentTimeMillis()-dev.updatated)<15*60*1000)
+                                                    {
+                                                        existactiveDevice=true;
+                                                    }
+                                            }
+                                    }
+                            }
+                        LocalService.addlog("Online timeout onReceive, OsmodroidVisible="+OsMoDroid.gpslocalserviceclientVisible +" gcmtodo="+localService.gcmtodolist.size()+" where="+localService.where+" existactivedevice="+existactiveDevice);
+                        if(OsMoDroid.gpslocalserviceclientVisible||localService.state||localService.gcmtodolist.size()>0||localService.where
+                                ||(OsMoDroid.settings.getBoolean("subscribebackground", false)&&existactiveDevice  )   )
                             {
                                 setOnlineTimeout();
                             }
@@ -460,52 +475,7 @@ public class IM implements ResultsListener
                         checkadressing = true;
                         APIcomParams params = null;
                         params = new APIcomParams("https://api.osmo.mobi/serv", "", "checkaddres");
-//                        if (OsMoDroid.settings.getString("p", "").equals(""))
-//                            {
-//
-//                                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB)
-//                                    {
-//                                        params = new APIcomParams("https://api.osmo.mobi/init?device=" + OsMoDroid.settings.getString("newkey", "")
-//                                                //+"&protocol=2"
-//                                                + "&app=" +  OsMoDroid.app_code
-//                                                //+"&version="+localService.getversion()
-//                                                + "&network="+postjson.toString()
-//                                                , "", "checkaddres");
-//
-//                                    }
-//                                else
-//                                    {
-//                                        params = new APIcomParams("http://api.osmo.mobi/init?device=" + OsMoDroid.settings.getString("newkey", "")
-//                                                //+"&protocol=2"
-//                                                + "&app=" +  OsMoDroid.app_code + "&dinosaur=yes"
-//                                                //+"&version="+localService.getversion()
-//                                                + "&network="+postjson.toString()
-//                                                , "", "checkaddres");
-//                                    }
-//                            }
-//                        else
-//                            {
-//                                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB)
-//                                    {
-//                                        params = new APIcomParams("https://api.osmo.mobi/init?device=" + OsMoDroid.settings.getString("newkey", "")
-//                                                //+"&protocol=1"
-//                                                + "&user=" + OsMoDroid.settings.getString("p", "")
-//                                                + "&app=" +  OsMoDroid.app_code
-//                                                //+"&version="+localService.getversion()
-//                                                + "&network="+postjson.toString()
-//                                                , "", "checkaddres");
-//                                    }
-//                                else
-//                                    {
-//                                        params = new APIcomParams("http://api.osmo.mobi/init?device=" + OsMoDroid.settings.getString("newkey", "")
-//                                                //+"&protocol=1"
-//                                                + "&user=" + OsMoDroid.settings.getString("p", "")
-//                                                + "&app=" +  OsMoDroid.app_code  + "&dinosaur=yes"
-//                                                //+"&version="+localService.getversion()
-//                                                + "&network="+postjson.toString()
-//                                                , "", "checkaddres");
-//                                    }
-//                            }
+
                         sendidtask = new Netutil.MyAsyncTask(this);
                         sendidtask.execute(params);
                         Log.d(getClass().getSimpleName(), "get token start to execute");
@@ -515,33 +485,39 @@ public class IM implements ResultsListener
             }
         void start()
             {
-                start = true;
-                if (log)
-                    {
-                        Log.d(this.getClass().getName(), "void IM.start");
-                    }
-                LocalService.addlog("Socket void start");
-                running = true;
-                connecting = true;
-                localService.refresh();
-                iMReader = new IMReader();
-                connectThread = new Thread(new IMConnect(), "connecter");
-                readerThread = new Thread(iMReader, "reader");
-                connectThread.setPriority(Thread.MIN_PRIORITY);
-                readerThread.setPriority(Thread.MIN_PRIORITY);
-                writerThread.setPriority(Thread.MIN_PRIORITY);
-                if(workserverint==-1)
-                    {
-                        checkaddres();
-                    }
+                if(OsMoDroid.settings.getBoolean("live", true))
+                {
+                    start = true;
+                    if (log)
+                        {
+                            Log.d(this.getClass().getName(), "void IM.start");
+                        }
+                    LocalService.addlog("Socket void start");
+                    running = true;
+                    connecting = true;
+                    localService.refresh();
+                    iMReader = new IMReader();
+                    connectThread = new Thread(new IMConnect(), "connecter");
+                    readerThread = new Thread(iMReader, "reader");
+                    connectThread.setPriority(Thread.MIN_PRIORITY);
+                    readerThread.setPriority(Thread.MIN_PRIORITY);
+                    writerThread.setPriority(Thread.MIN_PRIORITY);
+                    if (workserverint == -1)
+                        {
+                            checkaddres();
+                        }
+                    else
+                        {
+                            connectThread.start();
+                        }
+                    //
+                    parent.registerReceiver(bcr, new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"));
+                    setOnlineTimeout();
+                }
                 else
                     {
-                        connectThread.start();
+                        LocalService.addlog("Socket void start - but offline mode enabled");
                     }
-                //
-                parent.registerReceiver(bcr, new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"));
-                setOnlineTimeout();
-
             }
         void stop()
             {
@@ -555,6 +531,7 @@ public class IM implements ResultsListener
                 connOpened = false;
                 authed = false;
                 connecting = false;
+                LocalService.connectcompleted=false;
                 localService.alertHandler.post(new Runnable()
                 {
                     @Override
@@ -746,14 +723,14 @@ public class IM implements ResultsListener
                     }
                 if(!gcm)
                     {
-                    parseremovefromcommandlist(command, param);
-                }
+                        parseremovefromcommandlist(command, param);
+                    }
 
                 if (jo.has("error"))
                     {
                         if(OsMoDroid.gpslocalserviceclientVisible)
                             {
-                                final String str = jo.optString("error_description");
+                                final String str = jo.optString("error")+ ' '+ jo.optString("error_description");
                                 Toast.makeText(localService, str, Toast.LENGTH_LONG).show();
                             }
                     }
@@ -880,6 +857,12 @@ public class IM implements ResultsListener
                                     }
                                 if (needclosesession)
                                     {
+                                        if (localService.sendingbuffer.size() == 0 && localService.buffer.size() != 0)
+                                            {
+                                                localService.sendingbuffer.addAll(localService.buffer);
+                                                localService.buffer.clear();
+                                                localService.myIM.sendToServer("B|" + new JSONArray(localService.sendingbuffer), false);
+                                            }
                                         sendToServer("TC", false);
                                     }
                                 if(OsMoDroid.settings.getBoolean("needsendgcmregid",true))
@@ -1212,17 +1195,27 @@ public class IM implements ResultsListener
                             }
                         if (param.equals(OsMoDroid.TRACKER_SESSION_STOP))
                             {
-                                localService.stopServiceWork(true);
+                                if(localService.state)
+                                    {
+                                        localService.stopServiceWork(true);
+                                    }
                                 sendToServer("RCR:" + OsMoDroid.TRACKER_SESSION_STOP + "|1", false);
                             }
                         if (param.equals(OsMoDroid.TRACKER_SESSION_CONTINUE))
                         {
-                            localService.startServiceWork(false);
+                            if(localService.paused)
+                                {
+                                    localService.startServiceWork(false);
+                                }
                             sendToServer("RCR:" + OsMoDroid.TRACKER_SESSION_PAUSE + "|1", false);
                         }
                         if (param.equals(OsMoDroid.TRACKER_SESSION_PAUSE))
                             {
-                                localService.stopServiceWork(false);
+                                if(localService.state)
+                                    {
+                                        localService.setPause(true);
+                                        localService.stopServiceWork(false);
+                                    }
                                 sendToServer("RCR:" + OsMoDroid.TRACKER_SESSION_PAUSE + "|1", false);
                             }
                         if (param.equals(OsMoDroid.TTS))
@@ -1338,7 +1331,7 @@ public class IM implements ResultsListener
                                         {
                                             public void run()
                                                 {
-                                                    localService.myManager.requestSingleUpdate(LocationManager.GPS_PROVIDER, localService, null);
+                                                    localService.myManager.requestSingleUpdate(LocationManager.GPS_PROVIDER, localService.singleLocationListener, null);
 
                                                     if (log)
                                                         {
@@ -1351,7 +1344,7 @@ public class IM implements ResultsListener
                                 {
                                     public void run()
                                         {
-                                            localService.myManager.requestSingleUpdate(LocationManager.NETWORK_PROVIDER, localService, null);
+                                            localService.myManager.requestSingleUpdate(LocationManager.NETWORK_PROVIDER, localService.singleLocationListener, null);
                                             if (log)
                                                 {
                                                     Log.d(this.getClass().getName(), "подписались на NETWORK");
@@ -1362,23 +1355,8 @@ public class IM implements ResultsListener
                                 {
                                     public void run()
                                         {
-                                            if (localService.state)
-                                                {
-                                                    localService.myManager.removeUpdates(localService);
-                                                    localService.requestLocationUpdates();
-                                                    if (log)
-                                                        {
-                                                            Log.d(this.getClass().getName(), "Переподписались");
-                                                        }
-                                                }
-                                            else
-                                                {
-                                                    localService.myManager.removeUpdates(localService);
-                                                    if (log)
-                                                        {
-                                                            Log.d(this.getClass().getName(), "Отписались");
-                                                        }
-                                                }
+                                            localService.myManager.removeUpdates(localService.singleLocationListener);
+                                            localService.where=false;
                                         }
                                 }, 90000);
                             }
@@ -2282,20 +2260,19 @@ public class IM implements ResultsListener
                 int idxT = d.indexOf("T");
                 if(idxT!=-1)
                     {
-                        for (int i = idxT + 1; i <= d.length() - 1; i++)
+                        for (int i = idxT + 1; i < d.length() ; i++)
 
                             {
 
-                                if (!Character.isDigit(d.charAt(i)) || i == (d.length() - 1))
+                                if (!Character.isDigit(d.charAt(i)) || i == (d.length() ))
 
                                     {
-                                        if (!Character.toString(d.charAt(i)).equals(".") || i == (d.length() - 1))
-                                            {
+
                                                 LocalService.addlog(d.substring(idxT + 1, i));
                                                 dev.updatated = 1000 * Long.parseLong(d.substring(idxT + 1, i));
                                                 break;
-                                            }
-                            }
+
+                                    }
                     }
                 }
                 localService.alertHandler.post(new Runnable()
@@ -2362,6 +2339,7 @@ public class IM implements ResultsListener
                 authed = false;
                 connecting = false;
                 connOpened = false;
+                LocalService.connectcompleted=false;
                 localService.alertHandler.post(new Runnable()
                 {
                     @Override

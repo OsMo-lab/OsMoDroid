@@ -37,6 +37,7 @@ import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.IMyLocationConsumer;
 import org.osmdroid.views.overlay.mylocation.IMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
+import org.w3c.dom.Text;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -45,6 +46,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences.Editor;
+import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -86,7 +88,7 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
         Handler mHandler = new Handler();
         ResourceProxyImpl mResourceProxy;
         MapView mMapView;
-        boolean rotate = false;
+
         private Runnable mRunnable = new Runnable()
         {
             @Override
@@ -112,6 +114,7 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
         private ITileSource outdoorTileSource;
         private ITileSource chepeTileSource;
         private ChannelsOverlay choverlay;
+        private TextView speddTextView;
         @Override
         public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
             {
@@ -135,7 +138,8 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
                 longpath.setChecked(OsMoDroid.settings.getBoolean("longpath", true));
                 fullgpx.setChecked(OsMoDroid.settings.getBoolean("fullgpx", true));
                 shortname.setChecked(OsMoDroid.settings.getBoolean("shortname",false));
-                courserotation.setChecked(rotate);
+
+                courserotation.setChecked(OsMoDroid.settings.getBoolean("courserotation",false));
                 SubMenu menu2 = menu.addSubMenu(Menu.NONE, 4, 4, R.string.map);
                 MenuItem mapsurfer = menu2.add(0, 5, 1, "MapSurfer");
                 MenuItem mapnik = menu2.add(0, 6, 2, "Mapnik");
@@ -172,7 +176,9 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
                             break;
                         case 3:
                             item.setChecked(!item.isChecked());
-                            rotate = !rotate;
+
+                            OsMoDroid.editor.putBoolean("courserotation", item.isChecked());
+                            OsMoDroid.editor.commit();
                             mMapView.setMapOrientation(0);
                             reinitchoverlay();
                             mMapView.invalidate();
@@ -456,6 +462,8 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
                 rl.addView(mMapView, 0);
                 ImageButton centerImageButton = (ImageButton) view.findViewById(R.id.imageButtonCenter);
                 Button rotateButton = (Button) view.findViewById(R.id.buttonRotate);
+                speddTextView=(TextView)view.findViewById(R.id.mapSpeedtextView);
+
                 switch (OsMoDroid.settings.getInt("selectedTileSourceInt",1))
                     {
                         case 1:
@@ -546,8 +554,9 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
                         {
                             mMapView.setMapOrientation(0);
                             Log.d(getClass().getSimpleName(), "map click on compas");
-                            rotate = !rotate;
-                            courserotation.setChecked(rotate);
+                            OsMoDroid.editor.putBoolean("courserotation", !OsMoDroid.settings.getBoolean("courserotation",false));
+                            OsMoDroid.editor.commit();
+                            courserotation.setChecked(OsMoDroid.settings.getBoolean("courserotation",false));
                         }
                 });
                 CompassOverlay compas = new CompassOverlay(getActivity(), mMapView);
@@ -628,7 +637,7 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
         @Override
         public void onLocationChanged(Location location)
             {
-                if (myLoc != null && myLoc.isFollowLocationEnabled() && location.hasBearing() && rotate && location.getSpeed() > 1)
+                if (myLoc != null && myLoc.isFollowLocationEnabled() && location.hasBearing() && OsMoDroid.settings.getBoolean("courserotation",false) && location.getSpeed() > 1)
                     {
                         mMapView.setMapOrientation(-location.getBearing());
                     }
@@ -648,6 +657,14 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
                         else
                             {
                                 myLocationConumer.onLocationChanged(location, this);
+                            }
+                    }
+                if(speddTextView!=null)
+                    {
+                        speddTextView.setText(OsMoDroid.df0.format(location.getSpeed()*3.6));
+                        if(location.getSpeed()*3.6<1)
+                            {
+                                speddTextView.setText("");
                             }
                     }
             }
@@ -741,4 +758,5 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
                         super(pRegisterReceiver, pTileSource, OpenStreetMapTileProviderConstants.ONE_DAY * 30);
                     }
             }
+
     }
