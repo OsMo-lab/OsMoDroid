@@ -76,8 +76,8 @@
     <string name="copylink">Copy this link</string>
     <string name="openinbrowser">Open in Browser</string>
     <string name="exitfromchanal">Leave group</string>
-    <string name="createchanel">Create</string>
-    <string name="enterchanal">Join</string>
+    <string name="createchanel">Create group</string>
+    <string name="enterchanal">Join the group</string>
     <string name="chanalname">Name:</string>
     <string name="chanalcode">ID:</string>
     <string name="privatechanal">Private group</string>
@@ -144,7 +144,7 @@
     <string name="closesession">Close session?</string>
     <string name="loading">Loading...</string>
     <string name="uploadtrera">Upload to OsMo?</string>
-    <string name="servermessage">Message of the day</string>
+    <string name="servermessage">Message from the server</string>
     <string name="deletelink">Remove link</string>
     <string name="uploadtotrera">Upload to OsMo</string>
     <string name="delete">Delete</string>
@@ -157,7 +157,7 @@
     <string name="inway">On the Way</string>
     <string name="ingoing2">Distance</string>
     <string name="sended">Sent</string>
-    <string name="writen">Recorded:</string>
+    <string name="writen">Recorded</string>
     <string name="wekksends">Week sends:</string>
     <string name="from_undefined">from anonymous</string>
     <string name="map">Map</string>
@@ -210,7 +210,7 @@
     <string name="empty_links">On this screen has a permanent reference for monitoring your device from the site. Available actions can be found in the context menu.</string>
     <string name="understand">OK, Do not report bad connections more</string>
     <string name="checkfirewall">Could not connect to tracker server by it port. Check what you allow OsMoDroid full access in you firewall. Also it could because bad data connection quality.</string>
-    <string name="size_of_point">The scale of the objects</string>
+    <string name="size_of_point">Size of point</string>
     <string name="follow_">"Follow "</string>
     <string name="no_follow_">"No Follow "</string>
     <string name="adjust_to_dpi">Adjust to DPI</string>
@@ -221,8 +221,8 @@
     <string name="send_distance">Send Distance</string>
     <string name="degrees">Degrees</string>
     <string name="course_deviation">Course Deviation</string>
-    <string name="kilometers_per_hour_course">km/h. If the speed is below the parameter `Course Deviation` is not processed</string>
-    <string name="kilometers_per_hour_speed">km/h. If the speed is lower, then sending is not performed</string>
+    <string name="kilometers_per_hour_course">км/ч. Если скорость ниже, то параметр `отклонение курса` не обрабатывается</string>
+    <string name="kilometers_per_hour_speed">км/ч. Если скорость ниже, то отправка не производится</string>
     <string name="speed_trigger_for_course_deviation">Speed Trigger for Course Deviation</string>
     <string name="acceptable_location_accuracy_horizontal_dilution_of_precision_location_signals_less_accurate_than_this_higher_numbers_will_not_be_sent_as_updates_">Acceptable Location Accuracy (Horizontal Dilution of Precision). Location signals less accurate than this (higher numbers) will not be sent as updates.</string>
     <string name="maximum_hdop">Maximum HDOP</string>
@@ -297,7 +297,7 @@
     <string name="show_arrows">Show arrows</string>
     <string name="hidefromnmap">Hide from map</string>
     <string name="longpath">Long paths</string>
-    <string name="fullgpx">Draw tracks entirely</string>
+    <string name="fullgpx">Full gpx</string>
     <string name="nogroupstosendpoint">No groups to send point</string>
     <string name="agreesosno">Agree turn off SOS ?</string>
     <string name="shortname">Short names</string>
@@ -306,7 +306,12 @@
     <string name="warnewdevice">"This device was deleted from server\nWill create new, if you have been created links(URL) it will invalid now and need to reenter to groups\n You can contact support if like "</string>
     <string name="usechatnotification">Notifications from chat groups</string>
     <string name="usechatsummary">Shows Android notification when the chat is updated</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="altitude">Altitude: Meters</string>
+ <string name="altitude">Altitude: Meters</string>
     <string name="pleasewait">Please wait...</string>
+    <string name="malt">Max Altitude</string>
+    <string name="minalt">Min Altitude</string>
+    <string name="maxspeed">Max Speed</string>
+    <string name="milage">Milage</string>
+    <string name="time">Time</string>
+    <string name="averagespeed">Average Speed</string>
 </resources>

@@ -275,7 +275,10 @@ public class ChannelDevicesFragment extends Fragment implements ResultsListener
             {
                 Log.d(getClass().getSimpleName(), "ChannelDevicesFragment onResume");
                 LocalService.chatVisible = true;
-                globalActivity.actionBar.setTitle(getString(R.string.chanal) +' '+ LocalService.currentChannel.name);
+                if(LocalService.currentChannel!=null)
+                    {
+                        globalActivity.actionBar.setTitle(getString(R.string.chanal) + ' ' + LocalService.currentChannel.name);
+                    }
                 super.onResume();
             }
         @Override

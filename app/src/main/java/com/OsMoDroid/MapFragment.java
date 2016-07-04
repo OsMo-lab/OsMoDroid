@@ -524,6 +524,7 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
                                                 {
                                                     mController.setZoom(OsMoDroid.settings.getInt("zoom", 10));
                                                     mController.animateTo(new GeoPoint(OsMoDroid.settings.getInt("centerlat", 0), OsMoDroid.settings.getInt("centerlon", 0)));
+                                                    Log.d(this.getClass().getName(), "Center map on ="+OsMoDroid.settings.getInt("centerlat", 0)+ OsMoDroid.settings.getInt("centerlon", 0));
                                                 }
                                         }
                                 }

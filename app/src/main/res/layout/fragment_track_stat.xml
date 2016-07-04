@@ -1,10 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:gravity="center_horizontal|center_vertical|fill_vertical"
-              android:orientation="vertical" >
+              android:orientation="horizontal" >
 
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:id="@+id/statTextView"
+        android:textAlignment="center"
+        android:gravity="center"/>
 
     <com.github.mikephil.charting.charts.LineChart
         android:id="@+id/tracklineChart"
@@ -12,5 +21,6 @@
         android:layout_height="match_parent"
 
         android:background="#ffffff"/>
+
 </LinearLayout>
 

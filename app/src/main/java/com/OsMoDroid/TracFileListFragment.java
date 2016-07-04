@@ -134,43 +134,55 @@ public class TracFileListFragment extends Fragment implements ResultsListener
                     }
                 if (item.getItemId() == 3)
                     {
-                        File fileName = new File(sdDir, "OsMoDroid/" + trackFileList.get((int) acmi.id).fileName);
-                        Log.d(getClass().getSimpleName(), "filename=" + fileName);
-                        ColoredGPX load = new ColoredGPX(0, fileName, "#0000FF", null);
-                        Iterator<ColoredGPX> it = LocalService.showedgpxList.iterator();
-                        boolean exist = false;
-                        while (it.hasNext())
-                            {
-                                ColoredGPX cg = it.next();
-                                if (cg.gpxfile.equals(load.gpxfile))
+                        int indexoftrack=0;
+
+
+                                File fileName = new File(sdDir, "OsMoDroid/" + trackFileList.get((int) acmi.id).fileName);
+                                Log.d(getClass().getSimpleName(), "filename=" + fileName);
+                                ColoredGPX load = new ColoredGPX(0, fileName, "#0000FF", null);
+                                Iterator<ColoredGPX> it = LocalService.showedgpxList.iterator();
+                                boolean exist = false;
+
+                                while (it.hasNext())
                                     {
-                                        exist = true;
+                                        ColoredGPX cg = it.next();
+                                        if (cg.gpxfile.equals(load.gpxfile))
+                                            {
+                                                exist = true;
+                                                break;
+                                            }
+                                        indexoftrack++;
                                     }
-                            }
-                        if (!exist)
-                            {
-                                LocalService.showedgpxList.add(load);
-                                load.initPathOverlay();
-                                trackFileList.get((int) acmi.id).showedonmap = true;
-                            }
-                        trackFileAdapter.notifyDataSetChanged();
-                    }
-                if (item.getItemId() == 4)
-                    {
-                        File fileName = new File(sdDir, "OsMoDroid/" + trackFileList.get((int) acmi.id).fileName);
-                        ColoredGPX load = new ColoredGPX(0, fileName, "#0000FF", null);
-                        Iterator<ColoredGPX> it = LocalService.showedgpxList.iterator();
-                        while (it.hasNext())
-                            {
-                                ColoredGPX cg = it.next();
-                                if (cg.gpxfile.equals(load.gpxfile))
+                                if (!exist)
                                     {
-                                        it.remove();
+                                        LocalService.showedgpxList.add(load);
+                                        load.initPathOverlay();
+                                        trackFileList.get((int) acmi.id).showedonmap = true;
                                     }
-                            }
-                        trackFileList.get((int) acmi.id).showedonmap = false;
+
+
                         trackFileAdapter.notifyDataSetChanged();
+                        if(LocalService.showedgpxList.get(indexoftrack).centerGeoPoint!=null)
+                            {
+                                Log.d(this.getClass().getName(), "TrackFileListFragment centerGeoPoint="+LocalService.showedgpxList.get(indexoftrack).centerGeoPoint);
+                                OsMoDroid.editor.putInt("centerlat", LocalService.showedgpxList.get(indexoftrack).centerGeoPoint.getLatitudeE6());
+                                OsMoDroid.editor.putInt("centerlon", LocalService.showedgpxList.get(indexoftrack).centerGeoPoint.getLongitudeE6());
+                                OsMoDroid.editor.putInt("zoom", 10);
+                                OsMoDroid.editor.putBoolean("isfollow", false);
+                                OsMoDroid.editor.commit();
+                                globalActivity.drawClickListener.selectItem(OsMoDroid.context.getString(R.string.map), null);
+                                LocalService.currentItemName = OsMoDroid.context.getString(R.string.map);
+
+                            }
+                        else
+                            {
+
+                            }
+
+
+
                     }
+
                 if (item.getItemId()==5)
                     {
                         globalActivity.drawClickListener.trackStatFragment = new TrackStatFragment();
@@ -187,11 +199,16 @@ public class TracFileListFragment extends Fragment implements ResultsListener
         public void onCreateContextMenu(ContextMenu menu, View v,
                                         ContextMenuInfo menuInfo)
             {
+                final AdapterContextMenuInfo acmi = (AdapterContextMenuInfo) menuInfo;
                 //menu.add(0, 1, 1, R.string.uploadtotrera).setIcon(android.R.drawable.arrow_up_float);
                 menu.add(0, 2, 3, R.string.delete).setIcon(android.R.drawable.ic_menu_delete);
-                menu.add(0, 3, 1, R.string.showonmap).setIcon(android.R.drawable.ic_menu_directions);
-                menu.add(0, 4, 2, R.string.hidefromnmap).setIcon(android.R.drawable.ic_menu_manage);
-                menu.add(0, 5, 4, R.string.stat);
+                if(trackFileList.get((int) acmi.id).showedonmap)
+                    {
+                        menu.add(0, 3, 1, R.string.showonmap).setIcon(android.R.drawable.ic_menu_directions);
+                    }
+                //menu.add(0, 4, 3, R.string.hidefromnmap).setIcon(android.R.drawable.ic_menu_manage);
+                menu.add(0, 5, 2, R.string.stat);
+
                 super.onCreateContextMenu(menu, v, menuInfo);
             }
         @Override

@@ -655,12 +655,18 @@ public class GPSLocalServiceClient extends ActionBarActivity
                                         drawClickListener.selectItem(getString(R.string.tracker), null);
                                     }
                             }
-                        else if (intent.getAction().equals(Intent.ACTION_VIEW))
+                        else if (intent.getAction().equals(Intent.ACTION_VIEW)&&intent.getScheme().equals("https"))
                             {
                                 Bundle bundle = new Bundle();
                                 bundle.putString("groupurl", intent.getData().toString());
                                 drawClickListener.selectItem(getString(R.string.chanals), bundle);
                                 Log.d(this.getClass().getSimpleName(), "on new intent=cation_view");
+                            }
+                        else if (intent.getAction().equals(Intent.ACTION_VIEW)&&intent.getScheme().equals("geo"))
+                            {
+
+                                drawClickListener.selectItem(getString(R.string.map),null);
+                                Log.d(this.getClass().getSimpleName(), "on new intent=cation_view geo");
                             }
                         Intent i = getIntent();
                         i.setAction(null);

@@ -48,25 +48,42 @@ public class ChannelsDevicesAdapter extends ArrayAdapter<Device>
                     {
                         channelDeviceName.setText(device.name);
                     }
-                if (device.speed != null)
+                if (!device.speed.equals(""))
                     {
-                        channelDeviceSpeed.setText(device.speed);
-                    }
-                //if (device.lat!=null&device.lon!=null){
-                if (device.updatated > 0)
-                    {
-                        channelDeviceWhere.setText(context.getString(R.string.coordinats) + device.lat + " " + device.lon + ' ' + LocalService.formatInterval(System.currentTimeMillis() - device.updatated));
+                        channelDeviceSpeed.setVisibility(View.VISIBLE);
+                        channelDeviceSpeed.setText(context.getString(R.string.speed)+':'+device.speed);
                     }
                 else
                     {
-                        channelDeviceWhere.setText(context.getString(R.string.coordinats) + device.lat + " " + device.lon + " -");
+                        channelDeviceSpeed.setVisibility(View.GONE);
                     }
-                //}
-                if (LocalService.currentLocation != null)
+                if (device.lat != 0f && device.lon != 0f)
                     {
-                        channelDeviceLocation.setLatitude((device.lat));
-                        channelDeviceLocation.setLongitude((device.lon));
-                        channelDeviceDistance.setText(context.getString(R.string.Distantion) + Integer.toString((int) LocalService.currentLocation.distanceTo(channelDeviceLocation) / 1000) + context.getString(R.string.Km) + Integer.toString((int) (1000 * (LocalService.currentLocation.distanceTo(channelDeviceLocation) / 1000 - (int) LocalService.currentLocation.distanceTo(channelDeviceLocation) / 1000))) + context.getString(R.string.m));
+
+                        if (device.updatated > 0)
+                            {
+                                channelDeviceWhere.setText(context.getString(R.string.coordinats) + device.lat + " " + device.lon + ' ' + LocalService.formatInterval(System.currentTimeMillis() - device.updatated));
+                            }
+                        else
+                            {
+                                channelDeviceWhere.setText(context.getString(R.string.coordinats) + device.lat + " " + device.lon + " -");
+                            }
+                        if (LocalService.currentLocation != null)
+                            {
+                                channelDeviceDistance.setVisibility(View.VISIBLE);
+                                channelDeviceLocation.setLatitude((device.lat));
+                                channelDeviceLocation.setLongitude((device.lon));
+                                channelDeviceDistance.setText(context.getString(R.string.Distantion) + Integer.toString((int) LocalService.currentLocation.distanceTo(channelDeviceLocation) / 1000) + context.getString(R.string.Km) + Integer.toString((int) (1000 * (LocalService.currentLocation.distanceTo(channelDeviceLocation) / 1000 - (int) LocalService.currentLocation.distanceTo(channelDeviceLocation) / 1000))) + context.getString(R.string.m));
+                            }
+                        else
+                            {
+                                channelDeviceDistance.setVisibility(View.GONE);
+                            }
+                    }
+                else
+                    {
+                        channelDeviceWhere.setText(context.getString(R.string.unknown_location_now));
+                        channelDeviceDistance.setVisibility(View.GONE);
                     }
                 return row;
             }

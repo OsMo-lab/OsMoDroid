@@ -172,6 +172,10 @@ public class StatFragment extends Fragment implements OnChartGestureListener, On
                 speedDataSet = new LineDataSet(LocalService.speeddistanceEntryList,  getString(R.string.speed));
                 avgspeedDataSet = new LineDataSet(LocalService.avgspeeddistanceEntryList, getString(R.string.average));
                 altitudeDataSet = new LineDataSet(LocalService.altitudedistanceEntryList , globalActivity.getString(R.string.altitude));
+                speedDataSet.setLineWidth(3);
+                avgspeedDataSet.setLineWidth(3);
+                altitudeDataSet.setLineWidth(3);
+
                 speedDataSet.setAxisDependency(YAxis.AxisDependency.LEFT);
                 speedDataSet.setColor(Color.RED);
                 //speedDataSet.setDrawCubic(true);
@@ -259,12 +263,19 @@ public class StatFragment extends Fragment implements OnChartGestureListener, On
                                 writeTextView.setText(Integer.toString(intent.getIntExtra("writecounter", 0)));
                                 if(mChart!=null)
                                     {
-                                        speedDataSet.notifyDataSetChanged();
-                                        avgspeedDataSet.notifyDataSetChanged();
-                                        altitudeDataSet.notifyDataSetChanged();
-                                        speedLineData.notifyDataChanged();
-                                        mChart.notifyDataSetChanged();
-                                        mChart.invalidate();
+                                        try
+                                            {
+                                                speedDataSet.notifyDataSetChanged();
+                                                avgspeedDataSet.notifyDataSetChanged();
+                                                altitudeDataSet.notifyDataSetChanged();
+                                                speedLineData.notifyDataChanged();
+                                                mChart.notifyDataSetChanged();
+                                                mChart.invalidate();
+                                            }
+                                            catch (IllegalArgumentException e)
+                                                {
+                                                    LocalService.addlog("strange exception "+speedDataSet.getEntryCount() +' '+avgspeedDataSet.getEntryCount()+' '+altitudeDataSet.getEntryCount()+' '+speedLineData.getXValCount());
+                                                }
                                     }
                             }
                     };

@@ -1,4 +1,4 @@
-﻿﻿<resources>
+﻿<resources>
 <string name="app_name">OsMoDroid</string>
 <string name="start">Запустить</string>
 <string name="stop">Остановить</string>
@@ -305,4 +305,10 @@
 <string name="usechatsummary">Выводить уведомления, когда приходят сообщения в чат какой-либо группы</string>
     <string name="altitude">Высота: метры</string>
     <string name="pleasewait">Пожалуйста подождите...</string>
+    <string name="malt">Макс.Высота</string>
+    <string name="minalt">Мин.Высота</string>
+    <string name="maxspeed">Макс.Скорость</string>
+    <string name="milage">Расстояние</string>
+    <string name="time">Время</string>
+    <string name="averagespeed">Средняя скорость</string>
 </resources>

@@ -31,6 +31,8 @@ public class ColoredGPX implements Serializable
         transient List<Point> points;// = new ArrayList<Point>(3000);
         List<Channel.Point> waypoints = new ArrayList<Channel.Point>(100);
         transient Rect mLineBounds;// = new Rect();
+        transient IGeoPoint centerGeoPoint;
+
         public ColoredGPX(int u, File fileName, String scolor, String url)
             {
                 gpxfile = fileName;

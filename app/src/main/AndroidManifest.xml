@@ -3,7 +3,7 @@
           xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:tools="http://schemas.android.com/tools"
           android:installLocation="auto"
-          android:versionCode="312"
+          android:versionCode="323"
           android:versionName="2.4.0">
 
     <uses-sdk
@@ -67,7 +67,7 @@
         android:name="android.hardware.telephony"
         android:required="false"/>
 
-    <android:uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 
     <application
         android:name=".OsMoDroid"
@@ -98,6 +98,12 @@
                     android:host="osmo.mobi"
                     android:pathPattern="/g/..*"
                     android:scheme="https"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:scheme="geo"/>
             </intent-filter>
         </activity>
         <activity android:name=".PrefActivity"/>

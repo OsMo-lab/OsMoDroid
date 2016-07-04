@@ -254,11 +254,11 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                                 JSONObject postjson = new JSONObject();
                                 try
                                     {
-                                        postjson.put("lat", location.getLatitude());
-                                        postjson.put("lon", location.getLongitude());
-                                        postjson.put("speed", location.getSpeed());
-                                        postjson.put("hdop", location.getAccuracy());
-                                        postjson.put("altitude", location.getAltitude());
+                                        postjson.put("lat",  OsMoDroid.df6.format(location.getLatitude()));
+                                        postjson.put("lon",  OsMoDroid.df6.format(location.getLongitude()));
+                                        postjson.put("speed",  OsMoDroid.df0.format(location.getSpeed()));
+                                        postjson.put("hdop",  OsMoDroid.df0.format(location.getAccuracy()));
+                                        postjson.put("altitude",  OsMoDroid.df0.format(location.getAltitude()));
                                         if(location.getProvider().equals(LocationManager.NETWORK_PROVIDER))
                                             {
                                                 postjson.put("mobile",true);
@@ -1251,10 +1251,12 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                                     {
                                        if(connectcompleted)
                                            {
+                                               addlog("parse because connectcompleted");
                                                myIM.parseEx(intent.getStringExtra("GCM"),true);
                                            }
                                         else
                                            {
+                                               addlog("addtogcmtodo because not connectcompleted");
                                                gcmtodolist.add(intent.getStringExtra("GCM"));
                                                saveObject(gcmtodolist, OsMoDroid.GCMTODOLIST);
                                            }

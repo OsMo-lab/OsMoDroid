@@ -44,10 +44,17 @@ public class TrackStatFragment extends Fragment
         LineDataSet eleDataSet;
         double prevlat;
         double prevlon;
+        float maxspeed;
+        float averagespeed;
+        float maxele;
+        float minele;
+        float milage;
+        long timeinway;
         public  ArrayList<Entry> speeddistanceEntryList = new ArrayList<Entry>();
         public  ArrayList<Entry> avgspeeddistanceEntryList = new ArrayList<Entry>();
         public  ArrayList<Entry> eledistanceEntryList = new ArrayList<Entry>();
         public  ArrayList<String> distanceStringList = new ArrayList<String>();
+        private TextView t;
         class StatfromFile extends AsyncTask<File,Void,Void>
             {
                 ProgressDialog dialog;
@@ -71,6 +78,11 @@ public class TrackStatFragment extends Fragment
                         eleDataSet.notifyDataSetChanged();
                         mChart.notifyDataSetChanged();
                         mChart.invalidate();
+                        averagespeed=3600f*milage/timeinway;
+                        t.setText(getString(R.string.malt)+'\n'+OsMoDroid.df0.format(maxele)+'\n' + getString(R.string.minalt)+'\n'+OsMoDroid.df0.format(minele)+'\n'
+                                +getString(R.string.maxspeed)+'\n'+OsMoDroid.df2.format(maxspeed)+'\n'+getString(R.string.milage)+'\n'+OsMoDroid.df2.format(milage/1000)+'\n'+
+                                getString(R.string.time)+'\n'+LocalService.formatInterval(timeinway)+'\n'
+                                +getString(R.string.averagespeed)+'\n'+OsMoDroid.df2.format(averagespeed));
                        if(dialog.isShowing()){
                            try {
                                dialog.dismiss();
@@ -171,6 +183,21 @@ public class TrackStatFragment extends Fragment
                                             Entry avgspeedentry= new Entry( 3600f*workdistance / (curtime - firsttime),(int) workdistance );
                                             avgspeeddistanceEntryList.add(avgspeedentry);
                                         }
+                                    if(maxspeed==0||Float.parseFloat(speed)* 3.6f>maxspeed)
+                                        {
+                                            maxspeed=Float.parseFloat(speed)* 3.6f;
+                                        }
+                                    if(maxele==0||Float.parseFloat(ele)>maxele)
+                                        {
+                                            maxele=Float.parseFloat(ele);
+                                        }
+                                    if(minele==0||Float.parseFloat(ele)<minele)
+                                        {
+                                            minele=Float.parseFloat(ele);
+                                        }
+                                    timeinway=curtime-firsttime;
+                                    milage=workdistance;
+
 
 
 
@@ -211,6 +238,8 @@ public class TrackStatFragment extends Fragment
 
                 Log.d(getClass().getSimpleName(), "TrackStatFragment onCreateView");
                 final View view = inflater.inflate(R.layout.fragment_track_stat, container, false);
+                t = (TextView) view.findViewById(R.id.statTextView);
+
                 mChart = (LineChart) view.findViewById(R.id.tracklineChart);
 
 
@@ -218,18 +247,18 @@ public class TrackStatFragment extends Fragment
                 avgspeedDataSet = new LineDataSet(avgspeeddistanceEntryList, getString(R.string.average));
                 eleDataSet = new LineDataSet(eledistanceEntryList,  getString(R.string.altitude));
                 speedDataSet.setLineWidth(3);
-                avgspeedDataSet.setLineWidth(2);
-                eleDataSet.setLineWidth(4);
+                avgspeedDataSet.setLineWidth(3);
+                eleDataSet.setLineWidth(3);
                 speedDataSet.setAxisDependency(YAxis.AxisDependency.LEFT);
                 speedDataSet.setColor(Color.RED);
                 //speedDataSet.setDrawCubic(true);
-                speedDataSet.setDrawFilled(true);
+                speedDataSet.setDrawFilled(false);
                 speedDataSet.setDrawCircles(false);
                 speedDataSet.setDrawValues(false);
                 avgspeedDataSet.setAxisDependency(YAxis.AxisDependency.LEFT);
                 avgspeedDataSet.setColor(Color.GREEN);
                 //avgspeedDataSet.setDrawCubic(true);
-                avgspeedDataSet.setDrawFilled(true);
+                avgspeedDataSet.setDrawFilled(false);
                 avgspeedDataSet.setDrawCircles(false);
                 avgspeedDataSet.setDrawValues(false);
                 eleDataSet.setAxisDependency(YAxis.AxisDependency.RIGHT);

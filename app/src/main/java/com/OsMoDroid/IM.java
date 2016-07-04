@@ -531,6 +531,7 @@ public class IM implements ResultsListener
                 connOpened = false;
                 authed = false;
                 connecting = false;
+                localService.addlog("set connectcompleted=false");
                 LocalService.connectcompleted=false;
                 localService.alertHandler.post(new Runnable()
                 {
@@ -734,10 +735,9 @@ public class IM implements ResultsListener
                                 Toast.makeText(localService, str, Toast.LENGTH_LONG).show();
                             }
                     }
-                else
-                    {
+
                         parsedata(jo, ja, command, param, addict);
-                    }
+
             }
         private void parseremovefromcommandlist(String command, String param)
             {
@@ -884,6 +884,7 @@ public class IM implements ResultsListener
                                                 parseEx(s,true);
                                             }
                                         LocalService.gcmtodolist.clear();
+                                        localService.addlog("set connectcompleted=true");
                                         LocalService.connectcompleted =true;
                                         localService.saveObject(LocalService.gcmtodolist, OsMoDroid.GCMTODOLIST);
                                     }
@@ -1308,6 +1309,7 @@ public class IM implements ResultsListener
                             {
                                 sendToServer("RCR:" + OsMoDroid.TRACKER_EXIT + "|1", false);
                                 LocalService.gcmtodolist.clear();
+                                localService.addlog("set connectcompleted=true");
                                 LocalService.connectcompleted =true;
                                 localService.saveObject(LocalService.gcmtodolist, OsMoDroid.GCMTODOLIST);
                                 localService.stopSelf();
@@ -1577,9 +1579,21 @@ public class IM implements ResultsListener
                         //sendToServer("PG");
                         for (String s: LocalService.gcmtodolist)
                             {
-                                parseEx(s,true);
+                                try
+                                    {
+                                        parseEx(s,true);
+                                    }
+                                catch (Exception e)
+                                    {
+                                        e.printStackTrace();
+                                        StringWriter sw = new StringWriter();
+                                        e.printStackTrace(new PrintWriter(sw));
+                                        String exceptionAsString = sw.toString();
+                                        LocalService.addlog(exceptionAsString);
+                                    }
                             }
                         LocalService.gcmtodolist.clear();
+                        localService.addlog("set connectcompleted=true");
                         LocalService.connectcompleted =true;
                         localService.saveObject(LocalService.gcmtodolist, OsMoDroid.GCMTODOLIST);
                     }
@@ -2339,6 +2353,8 @@ public class IM implements ResultsListener
                 authed = false;
                 connecting = false;
                 connOpened = false;
+
+                localService.addlog("set connectcompleted=false");
                 LocalService.connectcompleted=false;
                 localService.alertHandler.post(new Runnable()
                 {
