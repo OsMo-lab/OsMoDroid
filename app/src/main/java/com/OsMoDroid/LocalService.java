@@ -2550,6 +2550,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
             }
         static void addlog(final String str)
             {
+                Log.d("OsMoDroid", str);
                 alertHandler.post(new Runnable()
                 {
                     @Override

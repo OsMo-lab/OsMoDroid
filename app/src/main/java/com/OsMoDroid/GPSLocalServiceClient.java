@@ -530,7 +530,7 @@ public class GPSLocalServiceClient extends ActionBarActivity
                                 intent.addCategory(Intent.CATEGORY_LAUNCHER);
                                 finish();
                                 startActivity(intent);
-                                if (!OsMoDroid.settings.getBoolean("subscribebackground", false) && mBound)
+                                if ( mBound)
                                     {
                                         if(mService.myIM.authed)
 
@@ -562,10 +562,10 @@ public class GPSLocalServiceClient extends ActionBarActivity
                     }
             }
         @Override
-        protected void onResume()
+        protected void onStart()
             {
-                super.onResume();
-                Log.d(this.getClass().getSimpleName(), "onResume() gpsclient");
+                super.onStart();
+                Log.d(this.getClass().getSimpleName(), "onStart() gpsclient");
                 OsMoDroid.gpslocalserviceclientVisible = true;
                 ReadPref();
                 started = checkStarted();
@@ -576,7 +576,7 @@ public class GPSLocalServiceClient extends ActionBarActivity
                                 mService.myIM.sendToServer("PG:1", false);
                             }
 
-                       // mService.myIM.sendToServer("PD:1", false);
+                        // mService.myIM.sendToServer("PD:1", false);
                     }
                 if (mService.myIM != null)
                     {
@@ -585,6 +585,13 @@ public class GPSLocalServiceClient extends ActionBarActivity
                                 mService.myIM.start();
                             }
                     }
+            }
+        @Override
+        protected void onResume()
+            {
+                super.onResume();
+                Log.d(this.getClass().getSimpleName(), "onResume() gpsclient");
+
 //		if (hash.equals("") && live) {
 //			RequestAuthTask requestAuthTask = new RequestAuthTask();
 //			requestAuthTask.execute();

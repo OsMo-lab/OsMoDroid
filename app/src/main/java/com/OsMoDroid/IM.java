@@ -43,6 +43,7 @@ import android.net.NetworkInfo;
 import android.net.TrafficStats;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
 import android.os.SystemClock;
@@ -53,6 +54,8 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
 
+import javax.net.ssl.KeyManager;
+import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSession;
 import javax.net.ssl.SSLSocket;
@@ -252,7 +255,7 @@ public class IM implements ResultsListener
                     localService.internetnotify(false);
                     localService.refresh();
                     start();
-                    context.unregisterReceiver(this);
+                    //context.unregisterReceiver(this);
                 }
         };
         public boolean needtosendpreference=false;
@@ -267,9 +270,9 @@ public class IM implements ResultsListener
                 parent = service;
                 manager = (AlarmManager) (parent.getSystemService(Context.ALARM_SERVICE));
                 reconnectPIntent = PendingIntent.getBroadcast(parent, 0, new Intent(RECONNECT_INTENT), 0);
-                keepAlivePIntent = PendingIntent.getBroadcast(parent, 0, new Intent(KEEPALIVE_INTENT), 0);
-                getTokenTimeoutPIntent = PendingIntent.getBroadcast(parent, 0, new Intent(GET_TOKEN_TIMEOUT_INTENT), 0);
-                onlineTimeoutPIntent = PendingIntent.getBroadcast(parent, 0, new Intent(ONLINE_TIMEOUT_INTENT), 0);
+                keepAlivePIntent = PendingIntent.getBroadcast(parent, 1, new Intent(KEEPALIVE_INTENT), 0);
+                getTokenTimeoutPIntent = PendingIntent.getBroadcast(parent, 2, new Intent(GET_TOKEN_TIMEOUT_INTENT), 0);
+                onlineTimeoutPIntent = PendingIntent.getBroadcast(parent, 3, new Intent(ONLINE_TIMEOUT_INTENT), 0);
                 SERVER_IP = server;
                 SERVERPORT = port;
                 LocalService.addlog("IM create");
@@ -327,21 +330,21 @@ public class IM implements ResultsListener
         public void setOnlineTimeout()
             {
                 LocalService.addlog("Socket void setOnlineTimeOut");
-                parent.registerReceiver(onlineTimeoutReceiver, new IntentFilter(ONLINE_TIMEOUT_INTENT));
+                //parent.registerReceiver(onlineTimeoutReceiver, new IntentFilter(ONLINE_TIMEOUT_INTENT));
                 manager.cancel(onlineTimeoutPIntent);
                 manager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + ONLINE_TIMEOUT,  onlineTimeoutPIntent);
             }
         public void disableOnlineTimeout()
             {
                 LocalService.addlog("Socket void setOnlineTimeOut");
-                try
-                    {
-                        parent.unregisterReceiver(onlineTimeoutReceiver);
-                    }
-                catch (Exception e)
-                    {
-                        e.printStackTrace();
-                    }
+//                try
+//                    {
+//                        parent.unregisterReceiver(onlineTimeoutReceiver);
+//                    }
+//                catch (Exception e)
+//                    {
+//                        e.printStackTrace();
+//                    }
                 manager.cancel(onlineTimeoutPIntent);
             }
 
@@ -352,7 +355,7 @@ public class IM implements ResultsListener
                         Log.d(this.getClass().getName(), "void setKeepAliveAlarm");
                     }
                 LocalService.addlog("Socket void setkeepalive");
-                parent.registerReceiver(keepAliveReceiver, new IntentFilter(KEEPALIVE_INTENT));
+                //parent.registerReceiver(keepAliveReceiver, new IntentFilter(KEEPALIVE_INTENT));
                 manager.cancel(keepAlivePIntent);
                 manager.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + KEEP_ALIVE, KEEP_ALIVE, keepAlivePIntent);
             }
@@ -363,14 +366,14 @@ public class IM implements ResultsListener
                         Log.d(this.getClass().getName(), "void disableKeepAliveAlarm");
                     }
                 LocalService.addlog("Socket void disablekeepalive");
-                try
-                    {
-                        parent.unregisterReceiver(keepAliveReceiver);
-                    }
-                catch (Exception e)
-                    {
-                        e.printStackTrace();
-                    }
+//                try
+//                    {
+//                        parent.unregisterReceiver(keepAliveReceiver);
+//                    }
+//                catch (Exception e)
+//                    {
+//                        e.printStackTrace();
+//                    }
                 manager.cancel(keepAlivePIntent);
             }
         synchronized public void setReconnectAlarm()
@@ -387,9 +390,17 @@ public class IM implements ResultsListener
                             LocalService.addlog("Socket setReconnectAlarm");
                         }
                 });
-                parent.registerReceiver(reconnectReceiver, new IntentFilter(RECONNECT_INTENT));
+                //parent.registerReceiver(reconnectReceiver, new IntentFilter(RECONNECT_INTENT));
                 manager.cancel(reconnectPIntent);
-                manager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + RECONNECT_TIMEOUT, reconnectPIntent);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
+                    {
+                        manager.setExact(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + RECONNECT_TIMEOUT, reconnectPIntent);
+                    }
+                else
+                    {
+                        manager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + RECONNECT_TIMEOUT, reconnectPIntent);
+                    }
+
             }
         /**
          * Выключает IM
@@ -474,7 +485,7 @@ public class IM implements ResultsListener
                                 }
                         checkadressing = true;
                         APIcomParams params = null;
-                        params = new APIcomParams("https://api.osmo.mobi/serv", "", "checkaddres");
+                        params = new APIcomParams("https://api.osmo.mobi/serv?app=o12gEq2Qyl", "", "checkaddres");
 
                         sendidtask = new Netutil.MyAsyncTask(this);
                         sendidtask.execute(params);
@@ -512,6 +523,10 @@ public class IM implements ResultsListener
                         }
                     //
                     parent.registerReceiver(bcr, new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"));
+                    parent.registerReceiver(onlineTimeoutReceiver, new IntentFilter(ONLINE_TIMEOUT_INTENT));
+                    parent.registerReceiver(keepAliveReceiver, new IntentFilter(KEEPALIVE_INTENT));
+                    parent.registerReceiver(reconnectReceiver, new IntentFilter(RECONNECT_INTENT));
+
                     setOnlineTimeout();
                 }
                 else
@@ -899,10 +914,14 @@ public class IM implements ResultsListener
                                 localService.internetnotify(true);
                                 if (!OsMoDroid.settings.getBoolean("subscribebackground", false))
                                     {
-                                        if(!OsMoDroid.gpslocalserviceclientVisible)
+                                        if(OsMoDroid.gpslocalserviceclientVisible)
                                         {
-                                            sendToServer("PG:-1", false);
+                                            sendToServer("PG:1", false);
                                         }
+                                    }
+                                else
+                                    {
+                                        sendToServer("PG:1", false);
                                     }
 
                                 if (jo.has("group"))
@@ -928,6 +947,12 @@ public class IM implements ResultsListener
                                                 localService.sos = false;
                                             }
                                         localService.refresh();
+                                    }
+                                if (localService.sendingbuffer.size() == 0 && localService.buffer.size() != 0)
+                                    {
+                                        localService.sendingbuffer.addAll(localService.buffer);
+                                        localService.buffer.clear();
+                                        sendToServer("B|" + new JSONArray(localService.sendingbuffer), false);
                                     }
                             }
                         else
@@ -1920,7 +1945,17 @@ public class IM implements ResultsListener
                                                                                                 if (jsonObject.has("lat") && jsonObject.has("lon")) {
                                                                                                     try {
 
-
+                                                                                                        if(jsonObject.has("time"))
+                                                                                                            {
+                                                                                                                try
+                                                                                                                    {
+                                                                                                                        dev.updatated=  jsonObject.optLong("time")*1000;
+                                                                                                                    }
+                                                                                                                catch (IllegalArgumentException e)
+                                                                                                                    {
+                                                                                                                        e.printStackTrace();
+                                                                                                                    }
+                                                                                                            }
                                                                                                         float newlat = Float.parseFloat(jsonObject.getString("lat"));
                                                                                                         float newlon = Float.parseFloat(jsonObject.getString("lon"));
                                                                                                         if (newlat != dev.lat & newlon != dev.lon && (System.currentTimeMillis() - dev.updatated) > 5 * 60 * 1000) {
@@ -1936,17 +1971,7 @@ public class IM implements ResultsListener
                                                                                                     }
                                                                                                 }
                                                                                                 getDevtrace(jsonObject, dev);
-                                                                                                if(jsonObject.has("time"))
-                                                                                                    {
-                                                                                                        try
-                                                                                                            {
-                                                                                                                dev.updatated=  jsonObject.optLong("time")*1000;
-                                                                                                            }
-                                                                                                        catch (IllegalArgumentException e)
-                                                                                                            {
-                                                                                                                e.printStackTrace();
-                                                                                                            }
-                                                                                                    }
+
                                                                                                 if(jsonObject.has("color"))
                                                                                                     {
                                                                                                         dev.color = Color.parseColor(jsonObject.getString("color"));
@@ -2028,7 +2053,7 @@ public class IM implements ResultsListener
                             {
                                 Log.d(getClass().getSimpleName(), "write group list to file");
                             }
-                        //localService.saveObject(LocalService.channelList, OsMoDroid.CHANNELLIST);
+                        localService.saveObject(LocalService.channelList, OsMoDroid.CHANNELLIST);
                         sendToServer("GPR:" + param, false);
                     }
 
@@ -2295,7 +2320,10 @@ public class IM implements ResultsListener
                     public void run()
                         {
                             GeoPoint gp = new GeoPoint(dev.lat, dev.lon);
-                            dev.devicePath.add(new SerPoint(new android.graphics.Point(gp.getLatitudeE6(),gp.getLongitudeE6())));
+                            if(dev.state==1)
+                                {
+                                    dev.devicePath.add(new SerPoint(new android.graphics.Point(gp.getLatitudeE6(), gp.getLongitudeE6())));
+                                }
                             if (LocalService.devlistener != null)
                                 {
                                     LocalService.devlistener.onDeviceChange(dev);
@@ -2374,10 +2402,21 @@ public class IM implements ResultsListener
                             public void run()
                                 {
                                     LocalService.addlog("setReconnectAlarm on error");
-                                    parent.registerReceiver(reconnectReceiver, new IntentFilter(RECONNECT_INTENT));
-                                    manager.cancel(reconnectPIntent);
-                                    manager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + ERROR_RECONNECT_TIMEOUT, reconnectPIntent);
+                                    //parent.registerReceiver(reconnectReceiver, new IntentFilter(RECONNECT_INTENT));
+//                                    manager.cancel(reconnectPIntent);
+//
+//                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
+//                                        {
+//                                            manager.setExact(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + ERROR_RECONNECT_TIMEOUT, reconnectPIntent);
+//                                        }
+//                                    else
+//                                        {
+//                                            manager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + ERROR_RECONNECT_TIMEOUT, reconnectPIntent);
+//                                        }
+                                    setReconnectAlarm();
                                     LocalService.addlog("setReconnectAlarm on error setted " + SystemClock.elapsedRealtime());
+
+
                                 }
                         });
                     }
@@ -2416,6 +2455,7 @@ public class IM implements ResultsListener
                                             }
                                         catch (IllegalThreadStateException e)
                                             {
+                                                Log.d(getClass().getSimpleName(), "hernya");
                                                 setReconnectOnError();
                                                 writeException(e);
                                                 e.printStackTrace();
@@ -2481,6 +2521,7 @@ public class IM implements ResultsListener
                             {
                                 localService.notifywarnactivity(localService.getString(R.string.checkfirewall), false, OsMoDroid.NOTIFY_NO_CONNECT);
                             }
+                        Log.d(getClass().getSimpleName(), "herrrr");
                         setReconnectOnError();
                     }
             }
@@ -2526,6 +2567,7 @@ public class IM implements ResultsListener
                                                         {
                                                             if (running)
                                                                 {
+                                                                    Log.d(this.getClass().getName(), "set recconect in error in writer");
                                                                     setReconnectOnError();
                                                                 }
                                                             //Looper.myLooper().quit();
@@ -2609,6 +2651,7 @@ public class IM implements ResultsListener
                                     {
                                         if (running)
                                             {
+                                                Log.d(this.getClass().getName(), "set recconectonerror in reader");
                                                 setReconnectOnError();
                                             }
                                         writeException(e);
@@ -2623,6 +2666,7 @@ public class IM implements ResultsListener
                 public void run()
                     {
                         SocketAddress sockAddr;
+                        SSLContext sslContext;
                         connectcount++;
                         try
                             {
@@ -2639,8 +2683,8 @@ public class IM implements ResultsListener
                                 if (log){Log.d(this.getClass().getName(), "sockAddr=" + sockAddr);}
                                         socket.connect(sockAddr, 5000);
                                         //socket.connect(new InetSocketAddress("osmo.mobi", 5050), 5000);
-                                        //SSLContext sslContext = SSLContext.getInstance("TLS");
-                                SSLContext sslContext = SSLContext.getDefault();
+
+                                //
                                // TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
 
                               //  trustManagerFactory.init((KeyStore)null);
@@ -2666,7 +2710,12 @@ public class IM implements ResultsListener
                                         };
                                         if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB)
                                             {
-                                                sslContext.init(null, trustAllCerts, new SecureRandom());
+                                                 sslContext = SSLContext.getInstance("TLS");
+                                                sslContext.init(null,trustAllCerts,null);
+                                            }
+                                else
+                                            {
+                                                 sslContext = SSLContext.getDefault();
                                             }
                                         SSLSocketFactory socketFactory = sslContext.getSocketFactory();
                                       //  sslsocket = (SSLSocket) socketFactory.createSocket(socket, workservername,workserverint, false);

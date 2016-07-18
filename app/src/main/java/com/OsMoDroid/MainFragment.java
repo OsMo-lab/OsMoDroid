@@ -168,14 +168,22 @@ public class MainFragment extends Fragment implements GPSLocalServiceClient.upd
                 if (OsMoDroid.settings.getString("p", "").equals(""))
                     {
                         //globalsendToggle.setVisibility(View.GONE);
-                        sosButton.setVisibility(View.GONE);
+
                         auth.setVisibility(View.VISIBLE);
                     }
                 else
                     {
                         auth.setVisibility(View.GONE);
-                        sosButton.setVisibility(View.VISIBLE);
+
                         //globalsendToggle.setVisibility(View.GONE);
+                    }
+                if(LocalService.channelList.size()==0)
+                    {
+                        sosButton.setVisibility(View.GONE);
+                    }
+                else
+                    {
+                        sosButton.setVisibility(View.VISIBLE);
                     }
             }
         /* (non-Javadoc)

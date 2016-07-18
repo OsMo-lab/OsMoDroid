@@ -32,7 +32,7 @@ public class OsMoDroid extends Application
         public static final String TRACKER_SESSION_PAUSE = "6";
         public static final String TRACKER_SESSION_START = "1";
         public static final String TRACKER_SESSION_STOP = "2";
-        public static final String TTS = "TTS";
+        public static final String TTS = "46";
         public static final String WHERE = "12";
         public static final String SIGNAL_OFF = "32";
         public static final String SIGNAL_ON = "31";
