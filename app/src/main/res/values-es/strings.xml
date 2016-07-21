@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <resources>
   <string name="app_name">OsMoDroid</string>
   <string name="start">Iniciar</string>
@@ -16,7 +16,6 @@
   <string name="NoConnection">Sin conexión</string>
   <string name="Unknow">Desconocido</string>
   <string name="NotDefined">Indefinido</string>
-  <string name="Sended">Enviando:</string>
   <string name="Adres">Dirección:</string>
   <string name="RepeatAuth">Reiniciar información de login</string>
   <string name="warnhash">No se ha podido conseguir la clave del Servidor, comprueba la conexión de datos o contacta con el soporte</string>
@@ -24,8 +23,6 @@
   <string name="EqualsParameters">Igualar opciones</string>
   <string name="AgreeRepeatAuth">Confirmar petición de re-autorización</string>
   <string name="ChangeAdresMonitor">¡Esto cambia la dirección de monitoreo!</string>
-  <string name="yes">Sí</string>
-  <string name="No">No</string>
   <string name="AgreeParameterEqual">Confirmar equiparar los parámetros de transmisión y grabación</string>
   <string name="TrackRecordParameterChanges">Los parámetros de grabación de pista cambiarán</string>
   <string name="Running">Iniciado</string>
@@ -55,13 +52,11 @@
   <string name="message">Mensaje</string>
   <string name="sendsupport">Reportar a soporte</string>
   <string name="about">Acerca de</string>
-  <string name="abouttext">OsMoDroid es un cliente de monitorización de localización para Android. Usando un smartphone y el servicio de OsMo, tus amigos y familiar puede saber siempre donde estás.\nDesarrollador principal: Denis Fokin (c) 2012-2016\nUsando esta aplicación acepta los Terminos de Uso: http://osmo.mobi/terms\nSitio OsMoDroid: http://osmodroid.mobi\nInformación de Copyright http://osmodroid.mobi/copyright.html</string>
   <string name="send">&gt;&gt;</string>
   <string name="cancel">Cancelar</string>
   <string name="speed">Velocidad: km/h</string>
   <string name="auth">Autorización</string>
   <string name="nomapapp">No hay instalada ninguna aplicación como Maps</string>
-  <string name="showonmap">Mostrar en el mapa</string>
   <string name="chanal">Canal</string>
   <string name="refresh">Actualizar</string>
   <string name="coordinats">Localización:</string>
@@ -72,23 +67,17 @@
   <string name="yourmessage">Tu mensaje:</string>
   <string name="sendingmessage">Enviando un mensaje</string>
   <string name="sharelink">Compartir</string>
-  <string name="chat">Mensajes</string>
   <string name="messagetochat">Mensaje al canal</string>
   <string name="copylink">Copiar este enlace</string>
   <string name="openinbrowser">Abrir en Navegador</string>
   <string name="exitfromchanal">Dejar grupo</string>
-  <string name="createchanel">Crear grupo</string>
-  <string name="enterchanal">Unirse al grupo</string>
   <string name="chanalname">Nombre:</string>
   <string name="chanalcode">ID:</string>
   <string name="privatechanal">Grupo privado</string>
   <string name="chanalkey">Clave de grupo</string>
-  <string name="createchanal">Registro de grupo aquí</string>
   <string name="noallenter">No incluye todos los datos</string>
-  <string name="bindtochanal">Conexión al grupo</string>
   <string name="requestdevicebefore">Antes de solicitar dispositivo</string>
   <string name="chatwith">Chatear con</string>
-  <string name="devices">Dispositivos</string>
   <string name="writemessage">Escribir mensaje</string>
   <string name="messages">Mensajes</string>
   <string name="binddevice">Emparejar dispositivo</string>
@@ -136,20 +125,14 @@
   <string name="dayssend">envíos por día:</string>
   <string name="monthsends">envíos por mes:</string>
   <string name="exit">Salir</string>
-  <string name="savepref">Guardar Configuraciones a la tarjeta SD</string>
-  <string name="loadpref">Cargar configuraciones de tarjeta SD</string>
   <string name="more">Más</string>
   <string name="iamhere">¡Estoy aquí!</string>
   <string name="linkcopied">Enlaces copiados a portapapeles</string>
   <string name="Stoping">Parar</string>
   <string name="closesession">¿Cerrar sesión?</string>
   <string name="loading">Cargando ...</string>
-  <string name="uploadtrera">¿Subir a TReRa?</string>
-  <string name="servermessage">Mensajes del servidor</string>
   <string name="deletelink">Eliminar enlace</string>
-  <string name="uploadtotrera">Subido a TReRa</string>
   <string name="delete">Eliminar</string>
-  <string name="channelsend">Enviar a canales</string>
   <string name="alarm">Alarma</string>
   <string name="recivedmessages">Mensajes recibidos:</string>
   <string name="spd">Velocidad</string>
@@ -158,13 +141,11 @@
   <string name="inway">en el camino</string>
   <string name="ingoing2">Distancia</string>
   <string name="sended">Enviado</string>
-  <string name="writen">Grabado:</string>
   <string name="wekksends">Envíos semana:</string>
   <string name="from_undefined">de anónimo</string>
   <string name="map">Mapa</string>
   <string name="drawer_open">abrir</string>
   <string name="drawer_close">cerrar</string>
-  <string name="iam">Yo</string>
   <string name="needgps">Necesario GPS activado</string>
   <string name="enablegps">Por favor, active GPS</string>
   <string name="showtraces">Mostrar trazas</string>
@@ -192,7 +173,6 @@
   <string name="play_alarm_off">Apagar zumbador</string>
   <string name="signalisation_set_on">Activar alarma</string>
   <string name="signalisation_set_off">Apagar alarma</string>
-  <string name="approximate_traffic">Trafico aproximado</string>
   <string name="online">Online</string>
   <string name="offline">Offline</string>
   <string name="monitoring_on">Monitoreo on</string>
@@ -207,24 +187,12 @@
   <string name="point_create">Enviar punto al servidor</string>
   <string name="point_create_description">Introduce el nombre del punto a enviar</string>
   <string name="empty_channels">En esta pantalla, puede observar el grupo al que a entrado. Para empezar a usar grupos, use el menú contextual.</string>
-  <string name="empty_devices">En esta pantalla hay una lista de sus dispositivos, y suscripciones a sus dispositivos. Las acciones disponibles con sus dispositivos están en el menú contextual.</string>
   <string name="empty_links">En esta pantalla hay una referencia permanente para monitorear su dispositivo desde la web. Las acciones disponibles se pueden encontrar en el menú contextual.</string>
   <string name="checkfirewall">No se ha podido conectar al servidor de seguimiento por su puerto. Compruebe que da total acceso a OsMoDroid por su firewall. También puede ser debido a una conexión de datos mala.</string>
   <string name="send_frequency">Frecuencia de envío</string>
   <string name="degrees">Grados</string>
-  <string name="kilometers_per_hour_course">км/ч. Если скорость ниже, то параметр `отклонение курса` не обрабатывается</string>
-  <string name="kilometers_per_hour_speed">км/ч. Если скорость ниже, то отправка не производится</string>
   <string name="meters">Metros</string>
   <string name="memory_card_path">Ruta de tarjeta de memoria</string>
   <string name="notification">Notificación</string>
   <string name="vibrate_on_signal_loss">Vibrar al Perder Señal</string>
-  <string name="gpson">GPS signal detected!</string>
-  <string name="gpsoff">GPS signal lost</string>
-  <string name="monitoring_started">Monitoring started</string>
-  <string name="monitoring_stopped">Monitoring stopped</string>
-  <string name="inetoff">Data connection lost</string>
-  <string name="ineton">Data connection restored</string>
-  <string name="startmonitoringfirst">To get URL, start monitoring first</string>
-  <string name="show_arrows">Show arrows</string>
-  <string name="longpath">Long paths</string>
 </resources>

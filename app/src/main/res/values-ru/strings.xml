@@ -161,7 +161,7 @@
 <string name="map">Карта</string>
 <string name="iam">Ник</string>
 <string name="needgps">Нужен включенный GPS</string>
-<string name="enablegps">Пожалуйста включите GPS, без него не будет достаточной точности. Перейти к настройкам местоположения?</string>
+<string name="enablegps">Пожалуйста включите GPS. Перейти к настройкам местоположения?</string>
 <string name="showtraces">Показывать следы</string>
 <string name="enable_manual_rotation">Вращение карты жестами</string>
 <string name="enable_course_rotation">Вращение по курсу</string>

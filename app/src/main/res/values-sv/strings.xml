@@ -55,8 +55,6 @@
   <string name="message">Meddelande</string>
   <string name="sendsupport">Rapportera till supporten</string>
   <string name="about">Om</string>
-  <string name="abouttext">OsMoDroid är en platsspårningsklient för Android. Med en smartphone och OsMo-tjänsten kan dina vänner och din familj alltid veta var du är.\nUtvecklare: Denis Fokin (c) 2012-2016\n\nGenom att använda denna app godkänner du användarvillkoren på http://osmodroid.mobi/copyright.html
-</string>
   <string name="send">&gt;&gt;</string>
   <string name="cancel">Avbryt</string>
   <string name="speed">Hastighet: km/h</string>
@@ -78,8 +76,6 @@
   <string name="copylink">Kopiera denna länk</string>
   <string name="openinbrowser">Öppna i webbläsare</string>
   <string name="exitfromchanal">Lämna gruppen</string>
-  <string name="createchanel">Skapa grupp</string>
-  <string name="enterchanal">Anslut till gruppen</string>
   <string name="chanalname">Namn:</string>
   <string name="chanalcode">ID:</string>
   <string name="privatechanal">Privat grupp</string>
@@ -146,7 +142,6 @@
   <string name="closesession">Stänga session?</string>
   <string name="loading">Laddar ...</string>
   <string name="uploadtrera">Skicka till OsMo?</string>
-  <string name="servermessage">Meddelande från servern</string>
   <string name="deletelink">Ta bort länk</string>
   <string name="uploadtotrera">Skicka till OsMo</string>
   <string name="delete">Ta bort</string>
@@ -159,7 +154,6 @@
   <string name="inway">På väg</string>
   <string name="ingoing2">Sträcka</string>
   <string name="sended">Skickat</string>
-  <string name="writen">Inspelat:</string>
   <string name="wekksends">Sändningar per vecka:</string>
   <string name="from_undefined">från anonym</string>
   <string name="map">Karta</string>
@@ -212,7 +206,6 @@
   <string name="empty_links">Här finns en permanent referens för att övervaka din enhet från sajten. Tillgängliga åtgärder hittar du i kontextmenyn.</string>
   <string name="understand">OK. Rapportera inte dåliga anslutningar längre</string>
   <string name="checkfirewall">Kan inte ansluta till spårningsservern. Kolla att du gett OsMoDroid fullständig access i din brandvägg. Detta kan också bero på dålig kvalitet på dataanslutningen.</string>
-  <string name="size_of_point">Storlek på punkten</string>
   <string name="follow_">Följ</string>
   <string name="no_follow_">Följ inte</string>
   <string name="adjust_to_dpi">Justera till DPI</string>
@@ -223,8 +216,6 @@
   <string name="send_distance">Sändningsavstånd</string>
   <string name="degrees">Grader</string>
   <string name="course_deviation">Kursavvikelse</string>
-  <string name="kilometers_per_hour_course">км/ч. Если скорость ниже, то параметр `отклонение курса` не обрабатывается</string>
-  <string name="kilometers_per_hour_speed">км/ч. Если скорость ниже, то отправка не производится</string>
   <string name="speed_trigger_for_course_deviation">Hastighetsutlösare för kursavvikelse</string>
   <string name="acceptable_location_accuracy_horizontal_dilution_of_precision_location_signals_less_accurate_than_this_higher_numbers_will_not_be_sent_as_updates_">Acceptabel platsnoggrannhet (Horizontal Dilution of Precision). Platssignaler som är mindre noggranna än detta (högre siffror) sänds inte som uppdateringar.</string>
   <string name="maximum_hdop">Maximal HDOP</string>
@@ -255,10 +246,9 @@
   <string name="play_a_sound_when_sending_each_location_update">Spela upp ett ljud när varje uppdatering av platsen sänds</string>
   <string name="disable_notification">Inaktivera aviseringar</string>
   <string name="do_not_use_android_notifications">Använd inte Android-aviseringar</string>
-  <string name="alert_on_online">Meddela när online</string>
-  <string name="notify_when_a_data_connection_is_established">Avisera när dataförbindelse etablerats</string>
-  <string name="notify_with_monitoring">Avisera vid spårning</string>
-  <string name="status_notification_for_monitoring_your_devices">Statusavisering för spårning av dina enheter</string>
+  <string name="alert_on_online">Online-status</string>
+  <string name="notify_when_a_data_connection_is_established">Avisering om gruppmedlemmars online-status</string>
+  <string name="notify_with_monitoring">Statusspårning</string>
   <string name="alarm_when_device_acceleration_exceeds_a_threshold">Larma när enhetsaccelerationen överskrider ett tröskelvärde</string>
   <string name="acceleration_alarm">Accerlerationslarm</string>
   <string name="sensitivity">Känslighet</string>
@@ -299,7 +289,11 @@
   <string name="show_arrows">Visa pilar</string>
   <string name="hidefromnmap">Visa inte på kartan</string>
   <string name="longpath">Långa sökvägar</string>
-  <string name="fullgpx">Fullständig GPX</string>
   <string name="nogroupstosendpoint">Inga grupper att skicka punkter till</string>
   <string name="agreesosno">OK att stänga av SOS?</string>
+  <string name="shortname">Korta namn</string>
+  <string name="usechatnotification">Aviseringar från chattgrupper</string>
+  <string name="usechatsummary">Visa Android-avisering när chatten uppdateras</string>
+  <string name="altitude">Höjd: meter</string>
+  <string name="pleasewait">Vänta ...</string>
 </resources>

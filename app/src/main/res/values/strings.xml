@@ -157,7 +157,7 @@
     <string name="inway">On the Way</string>
     <string name="ingoing2">Distance</string>
     <string name="sended">Sent</string>
-    <string name="writen">Recorded</string>
+    <string name="writen">Recorded:</string>
     <string name="wekksends">Week sends:</string>
     <string name="from_undefined">from anonymous</string>
     <string name="map">Map</string>

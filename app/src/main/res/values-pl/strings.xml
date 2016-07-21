@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <resources>
   <string name="app_name">OsMoDroid</string>
   <string name="start">Start</string>
@@ -16,7 +16,6 @@
   <string name="NoConnection">Brak połączenia</string>
   <string name="Unknow">Nieznana</string>
   <string name="NotDefined">Nie określono</string>
-  <string name="Sended">Wysyłanie:</string>
   <string name="Adres">Adres:</string>
   <string name="RepeatAuth">Reset autoryzacji</string>
   <string name="warnhash">Nie udało się uzyskać klucz z serwera. Sprawdź połączenie internetowe albo napisz do supportu</string>
@@ -24,8 +23,6 @@
   <string name="EqualsParameters">Zrównaj parametry</string>
   <string name="AgreeRepeatAuth">Potwierdź ponowną próbę logowania</string>
   <string name="ChangeAdresMonitor">Adres monitoringu zostanie zmieniony!</string>
-  <string name="yes">Tak</string>
-  <string name="No">Nie</string>
   <string name="AgreeParameterEqual">Potwierdź zrównanie parametrów wysyłania i zapisu</string>
   <string name="TrackRecordParameterChanges">Parametry zapisu ścieżki zostaną zmienione</string>
   <string name="Running">Włączony</string>
@@ -55,22 +52,11 @@
   <string name="message">Wiadomość</string>
   <string name="sendsupport">Zgłoś do supportu</string>
   <string name="about">О programie</string>
-  <string name="abouttext">OsMoDroid to aplikacja do monitoringu na Android. Korzystając ze smartfonu i serwisu OsMo Twoi przyjaciele i bliscy zawsze będą wiedzieć gdzie jesteś.
-Deweloper: Denis Fokin (c) 2012-2016
-
-Korzystając z tej aplikacji zgadzasz się z Warunkami Użytkowania:
-http://osmo.mobi/terms
-
-Oficjalna strona OsMoDroid:
-http://osmodroid.mobi
-
-Informacja o prawach autorskich: http://osmodroid.mobi/copyright.html</string>
   <string name="send">&gt;&gt;</string>
   <string name="cancel">Anuluj</string>
   <string name="speed">Prędkość: km/h</string>
   <string name="auth">Logowanie</string>
   <string name="nomapapp">Nie zainstalowano żadnej aplikacji typu Mapy</string>
-  <string name="showonmap">Wyświetlić na mapach</string>
   <string name="chanal">Grupa</string>
   <string name="refresh">Odśwież</string>
   <string name="coordinats">Współrzędne:</string>
@@ -81,23 +67,17 @@ Informacja o prawach autorskich: http://osmodroid.mobi/copyright.html</string>
   <string name="yourmessage">Twoja wiadomość:</string>
   <string name="sendingmessage">Wysyłanie wiadomości</string>
   <string name="sharelink">Udostępnij link</string>
-  <string name="chat">Lista urządzeń</string>
   <string name="messagetochat">Wiadomość do grupy</string>
   <string name="copylink">Kopiuj link</string>
   <string name="openinbrowser">Otwórz w przeglądarce</string>
   <string name="exitfromchanal">Wyjdź z grupy</string>
-  <string name="createchanel">Utwórz grupę</string>
-  <string name="enterchanal">Dołącz do grupy</string>
   <string name="chanalname">Nazwa grupy:</string>
   <string name="chanalcode">ID grupy:</string>
   <string name="privatechanal">Prywatna grupa</string>
   <string name="chanalkey">Klucz grupy</string>
-  <string name="createchanal">Utwórz grupę</string>
   <string name="noallenter">Nie podano wszystkich danych</string>
-  <string name="bindtochanal">Podłączenie do grupy</string>
   <string name="requestdevicebefore">Prior request device</string>
   <string name="chatwith">Czat z </string>
-  <string name="devices">Urządzenia</string>
   <string name="writemessage">Napisz wiadomość</string>
   <string name="messages">Wiadomości</string>
   <string name="binddevice">Przywiązanie urządzenia</string>
@@ -146,20 +126,14 @@ Informacja o prawach autorskich: http://osmodroid.mobi/copyright.html</string>
   <string name="dayssend">Wysłano za dzień:</string>
   <string name="monthsends">Wysłano za miesiąc:</string>
   <string name="exit">Wyjście</string>
-  <string name="savepref">Zapisz ustawienia na kartę</string>
-  <string name="loadpref">Wczytaj ustawienia z karty</string>
   <string name="more">Więcej</string>
   <string name="iamhere">Jestem tutaj! </string>
   <string name="linkcopied">Link został skopiowany do schowka</string>
   <string name="Stoping">Zatrzymanie</string>
   <string name="closesession">Zamknąć sesję?</string>
   <string name="loading">Pobieranie...</string>
-  <string name="uploadtrera">Wysłać na serwer?</string>
-  <string name="servermessage">Wiadomość z serwera</string>
   <string name="deletelink">Usuń link</string>
-  <string name="uploadtotrera">Pobierz w ТреРа</string>
   <string name="delete">Usuń</string>
-  <string name="channelsend">Wiadomość do grup</string>
   <string name="alarm">Alarm</string>
   <string name="recivedmessages">Otrzymane wiadomości:</string>
   <string name="spd">Prędkość</string>
@@ -168,13 +142,11 @@ Informacja o prawach autorskich: http://osmodroid.mobi/copyright.html</string>
   <string name="inway">W drodze</string>
   <string name="ingoing2">Odległość</string>
   <string name="sended">Wysłano</string>
-  <string name="writen">Zapisano:</string>
   <string name="wekksends">Wysłano za tydzień:</string>
   <string name="from_undefined">od nieokreślonego</string>
   <string name="map">Mapa</string>
   <string name="drawer_open">otwórz</string>
   <string name="drawer_close">zamknij</string>
-  <string name="iam">Nick</string>
   <string name="needgps">Wymagane połączenie GPS</string>
   <string name="enablegps">Proszę włączyć GPS, bez niego nie będzie wystarczającej dokładności. Przejść do ustawień lokalizacji?</string>
   <string name="showtraces">Pokazać ślady</string>
@@ -202,7 +174,6 @@ Informacja o prawach autorskich: http://osmodroid.mobi/copyright.html</string>
   <string name="play_alarm_off">Wyłącz alarm</string>
   <string name="signalisation_set_on">Ustaw alarm</string>
   <string name="signalisation_set_off">Wyłącz alarm</string>
-  <string name="approximate_traffic">Użycie danych</string>
   <string name="online">W sieci</string>
   <string name="offline">Nie w sieci</string>
   <string name="monitoring_on">Monitoring uruchomiony</string>
@@ -217,23 +188,12 @@ Informacja o prawach autorskich: http://osmodroid.mobi/copyright.html</string>
   <string name="point_create">Wyślij punkt na serwer</string>
   <string name="point_create_description">Wprowadź nazwę punktu przed wysłaniem na serwer</string>
   <string name="empty_channels">W tym oknie możesz obserwować grupy do których należysz. By rozpocząć korzystanie z grup, skorzystaj z menu kontekstowego.</string>
-  <string name="empty_devices">W tym oknie będzie lista Twoich urządzeń i subskrypcji na urządzenia. Możliwe działania z urządzeniami dostępne w menu kontekstowym.</string>
   <string name="empty_links">W tym oknie są stałe linki do monitoringu tego urządzenia ze strony internetowej. Możliwe działania znajdiesz w menu kontekstowym.</string>
   <string name="understand">Zrozumiałem, nie powiadamiaj więcej o słabym połączeniu</string>
   <string name="checkfirewall">Nie udało się połączyć z serwerem na odpowiednim porcie. Sprawdź pełny dostęp OsMoDroid do internetu w firewallu lub antywirusie. Być może błąd wynika ze słabej jakości połączenia z siecią.</string>
-  <string name="size_of_point">Rozmiar punktu</string>
   <string name="follow_">Śledzę</string>
   <string name="no_follow_">Nie śledzę</string>
   <string name="adjust_to_dpi">Dostosuj do DPI</string>
   <string name="monitoring_settings">Parametry monitoringu</string>
   <string name="milliseconds_how_often_to_send_location">Milisekundy. Czas pomiędzy wysyłaniem danych</string>
-  <string name="gpson">GPS signal detected!</string>
-  <string name="gpsoff">GPS signal lost</string>
-  <string name="monitoring_started">Monitoring started</string>
-  <string name="monitoring_stopped">Monitoring stopped</string>
-  <string name="inetoff">Data connection lost</string>
-  <string name="ineton">Data connection restored</string>
-  <string name="startmonitoringfirst">To get URL, start monitoring first</string>
-  <string name="show_arrows">Show arrows</string>
-  <string name="longpath">Long paths</string>
 </resources>

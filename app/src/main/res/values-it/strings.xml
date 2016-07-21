@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <resources>
   <string name="app_name">OsMoDroid</string>
   <string name="start">Inizia</string>
@@ -16,7 +16,6 @@
   <string name="NoConnection">Nessuna connessione</string>
   <string name="Unknow">Sconosciuto</string>
   <string name="NotDefined">Indefinito</string>
-  <string name="Sended">Inviando:</string>
   <string name="Adres">Indirizzo:</string>
   <string name="RepeatAuth">Reset delle informazioni di login</string>
   <string name="warnhash">Impossibile recuperare la chiave dal server, controlla la connessione dati o contatta il supporto</string>
@@ -24,8 +23,6 @@
   <string name="EqualsParameters">Uguagliare le impostazioni</string>
   <string name="AgreeRepeatAuth">Conferma richiesta nuova autorizzazione </string>
   <string name="ChangeAdresMonitor">Questo cambia l\'indirizzo del monitoraggio</string>
-  <string name="yes">Si</string>
-  <string name="No">No</string>
   <string name="AgreeParameterEqual">Conferma l\'equiparazione dei parametri di trasmissione e registrazione</string>
   <string name="TrackRecordParameterChanges">I parametri di registrazione tracce sono cambiati</string>
   <string name="Running">Lanciato</string>
@@ -55,13 +52,11 @@
   <string name="message">Messaggio</string>
   <string name="sendsupport">Notifica al supporto</string>
   <string name="about">Informazioni</string>
-  <string name="abouttext">OsMoDroid è un client di monitoraggio della posizione per Android. Utilizzando uno smartphone e il servizio Osmo, i tuoi amici e la tua famiglia possono sempre sapere dove siete. \n Sviluppatore principale: Denis Fokin (c) 2012-2016 \n\n Utilizzando questa applicazione si accettano le Condizioni di utilizzo http://osmo.mobi/terms \n\n Sito OsMoDroid: http://osmodroid.mobi \n\n informazioni di Copyright http://osmodroid.mobi/copyright.html</string>
   <string name="send">&gt;&gt;</string>
   <string name="cancel">Cancella</string>
   <string name="speed">Velocità: km/h</string>
   <string name="auth">Autorizzazione</string>
   <string name="nomapapp">Nessuna applicazione tipo Maps sembra essere installata.</string>
-  <string name="showonmap">Mostra sulla mappa</string>
   <string name="chanal">Gruppo</string>
   <string name="refresh">Aggiorna</string>
   <string name="coordinats">Posizione:</string>
@@ -72,23 +67,17 @@
   <string name="yourmessage">Tuo messaggio:</string>
   <string name="sendingmessage">Invio di un messaggio</string>
   <string name="sharelink">Condividi</string>
-  <string name="chat">Messaggi</string>
   <string name="messagetochat">Messaggio al gruppo</string>
   <string name="copylink">Copia questo link</string>
   <string name="openinbrowser">Apri nel browser</string>
   <string name="exitfromchanal">Lascia il gruppo</string>
-  <string name="createchanel">Crea gruppo</string>
-  <string name="enterchanal">Unisciti al gruppo</string>
   <string name="chanalname">Nome:</string>
   <string name="chanalcode">ID:</string>
   <string name="privatechanal">Gruppo privato</string>
   <string name="chanalkey">Chiave del gruppo</string>
-  <string name="createchanal">Registro del gruppo qui</string>
   <string name="noallenter">Non include tutti i dati</string>
-  <string name="bindtochanal">Connessione al gruppo</string>
   <string name="requestdevicebefore">Dispositivo con richiesta prioritaria</string>
   <string name="chatwith">Chatta con</string>
-  <string name="devices">Dispositivi</string>
   <string name="writemessage">Scrivi messaggio</string>
   <string name="messages">Messaggi</string>
   <string name="binddevice">Dispositivo collegato</string>
@@ -136,20 +125,14 @@
   <string name="dayssend">invii al giorno:</string>
   <string name="monthsends">invii al mese:</string>
   <string name="exit">Esci</string>
-  <string name="savepref">Salva le impostazioni su SD</string>
-  <string name="loadpref">Carica impostazioni dalla SD</string>
   <string name="more">Altro</string>
   <string name="iamhere">Io sono qui! </string>
   <string name="linkcopied">Link copiato negli appunti</string>
   <string name="Stoping">Stop</string>
   <string name="closesession">Chiudere la sessione?</string>
   <string name="loading">Caricamento...</string>
-  <string name="uploadtrera">Caricare su TReRa?</string>
-  <string name="servermessage">Messaggio dal server</string>
   <string name="deletelink">Rimuovi link</string>
-  <string name="uploadtotrera">Carica su TReRa</string>
   <string name="delete">Cancella</string>
-  <string name="channelsend">Invia ai canali</string>
   <string name="alarm">Allarme</string>
   <string name="recivedmessages">Messaggi ricevuti:</string>
   <string name="spd">Velocità</string>
@@ -158,13 +141,11 @@
   <string name="inway">Sulla strada</string>
   <string name="ingoing2">Distanza</string>
   <string name="sended">Inviato</string>
-  <string name="writen">Registrato:</string>
   <string name="wekksends">invii settimanali:</string>
   <string name="from_undefined">da anonimo</string>
   <string name="map">Mappa</string>
   <string name="drawer_open">aprire</string>
   <string name="drawer_close">chiudi</string>
-  <string name="iam">Me</string>
   <string name="needgps">È necessario il GPS attivo</string>
   <string name="enablegps">Per favore, abilita il GPS</string>
   <string name="showtraces">Visualizza tracce</string>
@@ -192,7 +173,6 @@
   <string name="play_alarm_off">Spegni buzzer</string>
   <string name="signalisation_set_on">Attiva allarme</string>
   <string name="signalisation_set_off">Spegni allarme</string>
-  <string name="approximate_traffic">Traffico approssimato</string>
   <string name="online">Online</string>
   <string name="offline">Offline</string>
   <string name="monitoring_on">Monitoraggio attivo</string>
@@ -207,11 +187,9 @@
   <string name="point_create">Invia punto al server</string>
   <string name="point_create_description">Inserisci il nome del punto da inviare</string>
   <string name="empty_channels">In questa schermata, è possibile vedere i gruppi in cui sei entrato. Per iniziare a usare i gruppi, usa il menu contestuale.</string>
-  <string name="empty_devices">In questa schermata c\'è la lista dei tuoi dispositivi, e la sottoscrizione ai dispositivi. Le azioni sui dispositivi sono disponibili nel menu contestuale.</string>
   <string name="empty_links">In questa scherma ci sono i link per monitorare il tuo dispositivo dal sito. Le azioni disponibili si possono trovare nel menu contestuale.</string>
   <string name="understand">OK, non segnalare più errori di connessione</string>
   <string name="checkfirewall">Impossibile connettersi al server tracker server sulla sua porta. Controllare che il firewall dia accesso completo a OsMoDroid. È possibile che questo sia dovuto anche alla bassa qualità della connessione.</string>
-  <string name="size_of_point">Dimensione del punto</string>
   <string name="follow_">Segui</string>
   <string name="no_follow_">Non seguire</string>
   <string name="adjust_to_dpi">Adatta ai DPI</string>
@@ -222,8 +200,6 @@
   <string name="send_distance">Distanza d\'invio</string>
   <string name="degrees">Gradi</string>
   <string name="course_deviation">Deviazione della corsa</string>
-  <string name="kilometers_per_hour_course">км/ч. Если скорость ниже, то параметр `отклонение курса` не обрабатывается</string>
-  <string name="kilometers_per_hour_speed">км/ч. Если скорость ниже, то отправка не производится</string>
   <string name="speed_trigger_for_course_deviation">Velocità d\'innesco della deviazione della corsa</string>
   <string name="acceptable_location_accuracy_horizontal_dilution_of_precision_location_signals_less_accurate_than_this_higher_numbers_will_not_be_sent_as_updates_">Precisione accettabile per la posizione (diluizione di precisione orizzontale). I segnali di posizionamento meno precisi di questo (i numeri più alti) non saranno inviati come aggiornamenti.</string>
   <string name="maximum_hdop">HDOP massimo</string>
@@ -254,10 +230,6 @@
   <string name="play_a_sound_when_sending_each_location_update">Riproduci un  suono quando invii ogni aggiornamento della posizione</string>
   <string name="disable_notification">Disabilita le notifiche</string>
   <string name="do_not_use_android_notifications">Non usare le notifiche di Android</string>
-  <string name="alert_on_online">Avvisa quando è online</string>
-  <string name="notify_when_a_data_connection_is_established">Notifica quando una connessione dati è stabilita</string>
-  <string name="notify_with_monitoring">Notifica con il monitoraggio</string>
-  <string name="status_notification_for_monitoring_your_devices">notifica di stato per il monitoraggio dei tuoi dispositivi</string>
   <string name="alarm_when_device_acceleration_exceeds_a_threshold">Allarme quando l\'accelerazione del dispositivo supera la soglia</string>
   <string name="acceleration_alarm">Allarme accelerazione</string>
   <string name="sensitivity">Sensibilità</string>
@@ -268,21 +240,10 @@
   <string name="speak_current_speed">Pronuncia la velocità attuale</string>
   <string name="speak_average_speed">Pronuncia la velocità media</string>
   <string name="speak_remote_commands">Pronuncia il comando remoto</string>
-  <string name="increases_battery_consumption">Aumenta il consumo della batteria</string>
   <string name="keep_screen_on">Mantieni lo schermo acceso</string>
   <string name="determine_location_by_gps_provides_best_accuracy_but_uses_more_battery_">Determina la posizione con il GPS. Fornisce una posizione più accurata, ma usa più batteria.</string>
   <string name="use_gps">Usa il GPS</string>
-  <string name="determine_location_by_cellular_networks_and_wifi_not_very_accurate_but_easier_on_battery_">Determina la posizione attraverso la rete cellulare e WiFi. Non è molto accurato, ma consuma meno la batteria.</string>
   <string name="use_mobile_networks">Utilizza la rete mobile</string>
   <string name="launch_background_service_when_the_phone_starts_up_">Avviare il servizio in background all\'accensione del telefono.</string>
   <string name="startup_at_boot">Accendi all\'avvio</string>
-  <string name="gpson">GPS signal detected!</string>
-  <string name="gpsoff">GPS signal lost</string>
-  <string name="monitoring_started">Monitoring started</string>
-  <string name="monitoring_stopped">Monitoring stopped</string>
-  <string name="inetoff">Data connection lost</string>
-  <string name="ineton">Data connection restored</string>
-  <string name="startmonitoringfirst">To get URL, start monitoring first</string>
-  <string name="show_arrows">Show arrows</string>
-  <string name="longpath">Long paths</string>
 </resources>

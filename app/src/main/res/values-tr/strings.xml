@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <resources>
   <string name="app_name">OsMoDroid</string>
   <string name="start">Başla</string>
@@ -16,7 +16,6 @@
   <string name="NoConnection">Bağlantı yok</string>
   <string name="Unknow">Bilinmeyen</string>
   <string name="NotDefined">Tanımlanmamış</string>
-  <string name="Sended">Gönderme:</string>
   <string name="Adres">Adres:</string>
   <string name="RepeatAuth">Giriş bilgilerini temizle</string>
   <string name="warnhash">Sunucu anahtarı alınamadı, veri bağlantısını kontrol edin veya destek birimi ile iletişime geçiniz</string>
@@ -24,8 +23,6 @@
   <string name="EqualsParameters">Ayarları eşitle</string>
   <string name="AgreeRepeatAuth">Yeniden izin isteğinizi onaylayın</string>
   <string name="ChangeAdresMonitor">Bu izleme adresini değiştirir!</string>
-  <string name="yes">Evet</string>
-  <string name="No">Hayır</string>
   <string name="AgreeParameterEqual">İletim parametrelerini ve kayıtları eşitleyerek onayla</string>
   <string name="TrackRecordParameterChanges">Parça kayıt parametreleri değişecek</string>
   <string name="Running">Başlatılan</string>
@@ -55,19 +52,11 @@
   <string name="message">Mesaj</string>
   <string name="sendsupport">Destek birimine raporla</string>
   <string name="about">Hakkında</string>
-  <string name="abouttext">OsMoDroid Android için oluşturulmuş bir konum izleme istemcisidir. 
-Osmo hizmetini kullanarak, akıllı bir telefon ile ailenizin ve arkadaşlarınızın nerede olduklarını öğrenebilirsiniz. Ana geliştirici: Denis Fokin (c) 2012-2016
-Bu uygulamayı kullanarak, http://osmo.mobi/terms adresindeki kullanım şartlarını kabul etmiş olursunuz.
-
-OsMoDroid İnternet Sitesi: http://osmodroid.mobi
-
-Telif Hakkı Bilgileri: http://osmodroid.mobi/copyright.html</string>
   <string name="send">  &lt; =&lt; =</string>
   <string name="cancel">İptal</string>
   <string name="speed">Hız: km/s</string>
   <string name="auth">Yetki</string>
   <string name="nomapapp">Haritalar gibi bir uygulama yüklü görünüyor.</string>
-  <string name="showonmap">Haritada gösterilen</string>
   <string name="chanal">Grup</string>
   <string name="refresh">Güncelle</string>
   <string name="coordinats">Konum:</string>
@@ -78,23 +67,17 @@ Telif Hakkı Bilgileri: http://osmodroid.mobi/copyright.html</string>
   <string name="yourmessage">Mesajın:</string>
   <string name="sendingmessage">Bir mesaj gönderme</string>
   <string name="sharelink">Paylaş</string>
-  <string name="chat">Mesajlar</string>
   <string name="messagetochat">Gruba mesaj at</string>
   <string name="copylink">Linki kopyala</string>
   <string name="openinbrowser">Tarayıcıda Aç</string>
   <string name="exitfromchanal">Gruptan ayrıl</string>
-  <string name="createchanel">Grup oluştur</string>
-  <string name="enterchanal">Gruba katıl</string>
   <string name="chanalname">İsim:</string>
   <string name="chanalcode">ID:</string>
   <string name="privatechanal">Özel grup</string>
   <string name="chanalkey">Grup anahtarı</string>
-  <string name="createchanal">Grubu buraya kaydet</string>
   <string name="noallenter">Tüm verileri içermez</string>
-  <string name="bindtochanal">Grubuna bağlantı</string>
   <string name="requestdevicebefore">Önceki cihaz isteği</string>
   <string name="chatwith">Sohbet</string>
-  <string name="devices">Cihazlar</string>
   <string name="writemessage">Mesaj yaz</string>
   <string name="messages">Mesajlar</string>
   <string name="binddevice">Cihaza bağlanmak</string>
@@ -142,20 +125,14 @@ Telif Hakkı Bilgileri: http://osmodroid.mobi/copyright.html</string>
   <string name="dayssend">günlük gönderiler:</string>
   <string name="monthsends">aylık gönderiler:</string>
   <string name="exit">Çıkış</string>
-  <string name="savepref">Ayarları hafıza kartına kaydet</string>
-  <string name="loadpref">Ayarları hafıza kartından yükle</string>
   <string name="more">Daha fazla</string>
   <string name="iamhere">Ben buradayım!</string>
   <string name="linkcopied">Link panoya kopyalandı</string>
   <string name="Stoping">Dur</string>
   <string name="closesession">Oturum kapatılsın mı?</string>
   <string name="loading">Yükleniyor...</string>
-  <string name="uploadtrera">TReRa güncellensin mi?</string>
-  <string name="servermessage">Sunucudan mesaj</string>
   <string name="deletelink">Bağlantıyı kaldır</string>
-  <string name="uploadtotrera">TReRa güncellensin mi?</string>
   <string name="delete">Sil</string>
-  <string name="channelsend">Kanalları gönder</string>
   <string name="alarm">Alarm</string>
   <string name="recivedmessages">Alınan mesajlar:</string>
   <string name="spd">Hız</string>
@@ -164,13 +141,11 @@ Telif Hakkı Bilgileri: http://osmodroid.mobi/copyright.html</string>
   <string name="inway">Yolda</string>
   <string name="ingoing2">Mesafe</string>
   <string name="sended">Gönder</string>
-  <string name="writen">Kaydedilmiş:</string>
   <string name="wekksends">Hafta gönder:</string>
   <string name="from_undefined">Anonimden</string>
   <string name="map">Harita</string>
   <string name="drawer_open">Aç</string>
   <string name="drawer_close">Kapat</string>
-  <string name="iam">Ben</string>
   <string name="needgps">GPS\'in etkin olmasına ihtiyaç var</string>
   <string name="enablegps">Lütfen, GPS\'i etkinleştir</string>
   <string name="showtraces">İzleri göster</string>
@@ -198,7 +173,6 @@ Telif Hakkı Bilgileri: http://osmodroid.mobi/copyright.html</string>
   <string name="play_alarm_off">Zili kapat</string>
   <string name="signalisation_set_on">Alarmı etkinleştir</string>
   <string name="signalisation_set_off">Alarmı kapat</string>
-  <string name="approximate_traffic">Yaklaşık trafik</string>
   <string name="online">Çevrimiçi</string>
   <string name="offline">Çevrimdışı</string>
   <string name="monitoring_on">İzleme açık</string>
@@ -212,15 +186,5 @@ Telif Hakkı Bilgileri: http://osmodroid.mobi/copyright.html</string>
   <string name="point_name_">Nokta adı:</string>
   <string name="point_create">Noktayı sunucuya gönder</string>
   <string name="empty_channels">Bu ekranda, hangi gruba girdiğinizi izleyebilirsiniz. Grupları kullanmaya başlamak için, bağlam menüsünü kullanabilirsiniz.</string>
-  <string name="empty_devices">Bu ekranda cihazların listesi ve cihaz aboneliklerini görüntüleyebilirsiniz. Cihazlar üzerinde işlem yapmak için bağlam menüsünü kullanabilirsiniz.</string>
   <string name="empty_links">Bu ekranda siteden cihazı izlemek için kalıcı bir referans vardır. Mevcut eylemler bağlam menüsünde bulunmaktadır.</string>
-  <string name="gpson">GPS signal detected!</string>
-  <string name="gpsoff">GPS signal lost</string>
-  <string name="monitoring_started">Monitoring started</string>
-  <string name="monitoring_stopped">Monitoring stopped</string>
-  <string name="inetoff">Data connection lost</string>
-  <string name="ineton">Data connection restored</string>
-  <string name="startmonitoringfirst">To get URL, start monitoring first</string>
-  <string name="show_arrows">Show arrows</string>
-  <string name="longpath">Long paths</string>
 </resources>
