@@ -64,6 +64,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -311,6 +312,20 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
                             OsMoDroid.editor.putBoolean("shortname", item.isChecked());
                             OsMoDroid.editor.commit();
                             mMapView.invalidate();
+                            if(OsMoDroid.settings.getBoolean("shortname",false))
+                                {
+                             //       RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)speddTextView.getLayoutParams();
+                               //     params.addRule(RelativeLayout.RIGHT_OF, R.id.imageButtonCenter);
+                                //    speddTextView.setLayoutParams(params);
+                                    speddTextView.setTextSize(8);
+                                }
+                            else
+                                {
+                                  //  RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)speddTextView.getLayoutParams();
+                                  //  params.addRule(RelativeLayout.CENTER_HORIZONTAL);
+                                  //  speddTextView.setLayoutParams(params);
+                                    speddTextView.setTextSize(100);
+                                }
                             break;
                         case 18:
                             mMapView.setTileSource(chepeTileSource);
@@ -463,6 +478,20 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
                 ImageButton centerImageButton = (ImageButton) view.findViewById(R.id.imageButtonCenter);
                 Button rotateButton = (Button) view.findViewById(R.id.buttonRotate);
                 speddTextView=(TextView)view.findViewById(R.id.mapSpeedtextView);
+                if(OsMoDroid.settings.getBoolean("shortname",false))
+                    {
+     //                   RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)speddTextView.getLayoutParams();
+       //                 params.addRule(RelativeLayout.RIGHT_OF, R.id.imageButtonCenter);
+         //               speddTextView.setLayoutParams(params);
+                       speddTextView.setTextSize(8);
+                    }
+                else
+                    {
+    //                    RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)speddTextView.getLayoutParams();
+     ///                   params.addRule(RelativeLayout.CENTER_HORIZONTAL);
+        //                speddTextView.setLayoutParams(params);
+                        speddTextView.setTextSize(100);
+                    }
 
                 switch (OsMoDroid.settings.getInt("selectedTileSourceInt",1))
                     {
@@ -663,7 +692,7 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
                 if(speddTextView!=null)
                     {
                         speddTextView.setText(OsMoDroid.df0.format(location.getSpeed()*3.6));
-                        if(location.getSpeed()*3.6<1)
+                        if(location.getSpeed()*3.6<1&&(int)location.getAccuracy()<Integer.parseInt(OsMoDroid.settings.getString("hdop_gpx", "30").equals("") ? "30" : OsMoDroid.settings.getString("hdop_gpx", "30")))
                             {
                                 speddTextView.setText("");
                             }

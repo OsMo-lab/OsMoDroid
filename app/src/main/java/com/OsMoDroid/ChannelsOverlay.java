@@ -765,17 +765,24 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
                                     {
                                         if (LocalService.myIM.authed)
                                             {
-                                                try
+                                                if(groupSpinner.getSelectedItem()!=null)
                                                     {
-                                                        jo.put("name", pointName.getText().toString());
-                                                        jo.put("group", ((Channel) groupSpinner.getSelectedItem()).u);
+                                                        try
+                                                            {
+                                                                jo.put("name", pointName.getText().toString());
+                                                                jo.put("group", ((Channel) groupSpinner.getSelectedItem()).u);
+                                                            }
+                                                        catch (JSONException e1)
+                                                            {
+                                                                e1.printStackTrace();
+                                                            }
+                                                        LocalService.myIM.sendToServer("GPA|" + jo.toString(), true);
+                                                        super.dialog.dismiss();
                                                     }
-                                                catch (JSONException e1)
+                                                else
                                                     {
-                                                        e1.printStackTrace();
+                                                        Toast.makeText(map.getContext(), R.string.needselectpoint, Toast.LENGTH_SHORT).show();
                                                     }
-                                                LocalService.myIM.sendToServer("GPA|" + jo.toString(), true);
-                                                super.dialog.dismiss();
                                             }
                                         else
                                             {

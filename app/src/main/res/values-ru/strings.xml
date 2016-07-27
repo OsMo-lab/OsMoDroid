@@ -311,4 +311,6 @@
     <string name="milage">Расстояние</string>
     <string name="time">Время</string>
     <string name="averagespeed">Средняя скорость</string>
+    <string name="nomounted">Память не смонтирована</string>
+    <string name="needselectpoint">Нужна группа для отправки точки</string>
 </resources>

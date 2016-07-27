@@ -314,4 +314,6 @@
     <string name="milage">Milage</string>
     <string name="time">Time</string>
     <string name="averagespeed">Average Speed</string>
+    <string name="nomounted">Storage not mounted</string>
+    <string name="needselectpoint">Need select group to send point</string>
 </resources>

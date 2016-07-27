@@ -1541,7 +1541,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                                 fileName = new File(sdDir, "OsMoDroid/" + OsMoDroid.settings.getString("gpxname", ""));
                                 fileheaderok = true;
                             }
-                    }
+
                 if (!fileName.exists())
                     {
                         try
@@ -1558,7 +1558,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                         try
                             {
                                 // SimpleDateFormat sdf = new SimpleDateFormat("yyyy-mm-dd'T'HH:mm:ssZ");
-                                String time = OsMoDroid.sdf1.format(new Date(System.currentTimeMillis())) + "Z";
+                                time = OsMoDroid.sdf1.format(new Date(System.currentTimeMillis())) + "Z";
                                 FileWriter trackwr = new FileWriter(fileName);
                                 trackwr.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
                                 trackwr.write("<gpx xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" version=\"1.1\" xmlns=\"http://www.topografix.com/GPX/1/1\" creator=\"OsMoDroid\" xsi:schemaLocation=\"http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd\">");
@@ -1575,6 +1575,11 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                                 //e.printStackTrace();
                                 Toast.makeText(LocalService.this, getString(R.string.CanNotWriteHeader), Toast.LENGTH_SHORT).show();
                             }
+                    }
+                }
+                else
+                    {
+                        Toast.makeText(LocalService.this, R.string.nomounted, Toast.LENGTH_SHORT).show();
                     }
             }
         public void stopServiceWork(Boolean stopsession)

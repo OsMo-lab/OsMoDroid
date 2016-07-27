@@ -3,7 +3,7 @@
           xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:tools="http://schemas.android.com/tools"
           android:installLocation="auto"
-          android:versionCode="336"
+          android:versionCode="338"
           android:versionName="2.4.0">
 
     <uses-sdk
