@@ -2394,6 +2394,12 @@ public class IM implements ResultsListener
                 });
                 running = false;
                 localService.refresh();
+                localService.alertHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        ondisconnect();
+                    }
+                });
                 if (localService.isOnline())
                     {
                         localService.alertHandler.post(new Runnable()

@@ -835,6 +835,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                     @Override
                     void ondisconnect()
                         {
+                            addlog("ondisconnect, sending="+sending);
                             LocalService.addlog("ondisconnect");
                             if (log)
                                 {
