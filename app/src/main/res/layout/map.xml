@@ -49,10 +49,8 @@
         android:id="@+id/mapSpeedtextView"
         android:textSize="100sp"
         android:textColor="#7f000000"
-        android:text="555"
         android:layout_above="@+id/mapCopyright"
-        android:layout_alignRight="@+id/imageButtonCenter"
-        android:layout_alignEnd="@+id/imageButtonCenter"/>
+        android:layout_centerHorizontal="true"/>
 
 </RelativeLayout>
 

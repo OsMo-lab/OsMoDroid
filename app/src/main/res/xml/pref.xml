@@ -128,7 +128,7 @@
                         <EditTextPreference
                             android:title="@string/memory_card_path"
                             android:key="sdpath"
-                            android:onClick="startFileChooser"/>
+                            />
                 </PreferenceScreen>
                     
     </PreferenceCategory>

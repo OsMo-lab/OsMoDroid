@@ -59,6 +59,10 @@ public class TracFileListFragment extends Fragment implements ResultsListener
         @Override
         public void onResume()
             {
+                if (!OsMoDroid.settings.getString("sdpath", "").equals(""))
+                    {
+                        sdDir = new File(OsMoDroid.settings.getString("sdpath", ""));
+                    }
                 getFileList();
                 globalActivity.actionBar.setTitle(getString(R.string.tracks));
                 super.onResume();
@@ -267,6 +271,7 @@ public class TracFileListFragment extends Fragment implements ResultsListener
                         String sdState = android.os.Environment.getExternalStorageState();
                         if (sdState.equals(android.os.Environment.MEDIA_MOUNTED))
                             {
+
                                 path = new File(sdDir, "OsMoDroid/");
                                 File[] fileArray = path.listFiles(new FilenameFilter()
                                 {
@@ -276,23 +281,26 @@ public class TracFileListFragment extends Fragment implements ResultsListener
                                             return filename.toLowerCase().endsWith(".gpx");
                                         }
                                 });
-                                for (File file : fileArray)
+                                if(fileArray!=null)
                                     {
-                                        //tempTrackFileList.add(new TrackFile(file.getName(),file.lastModified(),file.length()));
-                                        count++;
-                                        progress += ((float) count / (float) fileArray.length) * 100;
-                                        TrackFile tr = new TrackFile(file.getName(), file.lastModified(), file.length());
-                                        ColoredGPX load = new ColoredGPX(0, file, "#0000FF", null);
-                                        Iterator<ColoredGPX> it = LocalService.showedgpxList.iterator();
-                                        while (it.hasNext())
+                                        for (File file : fileArray)
                                             {
-                                                ColoredGPX cg = it.next();
-                                                if (cg.gpxfile.equals(load.gpxfile))
+                                                //tempTrackFileList.add(new TrackFile(file.getName(),file.lastModified(),file.length()));
+                                                count++;
+                                                progress += ((float) count / (float) fileArray.length) * 100;
+                                                TrackFile tr = new TrackFile(file.getName(), file.lastModified(), file.length());
+                                                ColoredGPX load = new ColoredGPX(0, file, "#0000FF", null);
+                                                Iterator<ColoredGPX> it = LocalService.showedgpxList.iterator();
+                                                while (it.hasNext())
                                                     {
-                                                        tr.showedonmap = true;
+                                                        ColoredGPX cg = it.next();
+                                                        if (cg.gpxfile.equals(load.gpxfile))
+                                                            {
+                                                                tr.showedonmap = true;
+                                                            }
                                                     }
+                                                publishProgress(tr);
                                             }
-                                        publishProgress(tr);
                                     }
                             }
                         return null;

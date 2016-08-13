@@ -317,7 +317,7 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
                              //       RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)speddTextView.getLayoutParams();
                                //     params.addRule(RelativeLayout.RIGHT_OF, R.id.imageButtonCenter);
                                 //    speddTextView.setLayoutParams(params);
-                                    speddTextView.setTextSize(8);
+                                    speddTextView.setTextSize(20);
                                 }
                             else
                                 {
@@ -483,7 +483,7 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
      //                   RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)speddTextView.getLayoutParams();
        //                 params.addRule(RelativeLayout.RIGHT_OF, R.id.imageButtonCenter);
          //               speddTextView.setLayoutParams(params);
-                       speddTextView.setTextSize(8);
+                       speddTextView.setTextSize(20);
                     }
                 else
                     {
@@ -691,8 +691,16 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
                     }
                 if(speddTextView!=null)
                     {
-                        speddTextView.setText(OsMoDroid.df0.format(location.getSpeed()*3.6));
-                        if(location.getSpeed()*3.6<1&&(int)location.getAccuracy()<Integer.parseInt(OsMoDroid.settings.getString("hdop_gpx", "30").equals("") ? "30" : OsMoDroid.settings.getString("hdop_gpx", "30")))
+                        if(myLoc!=null&&myLoc.isFollowLocationEnabled())
+                            {
+                                speddTextView.setText(OsMoDroid.df0.format(location.getSpeed() * 3.6));
+                            }
+                        else
+                            {
+                                speddTextView.setText("");
+                            }
+
+                        if(location.getSpeed()*3.6<2&&(int)location.getAccuracy()<Integer.parseInt(OsMoDroid.settings.getString("hdop_gpx", "30").equals("") ? "30" : OsMoDroid.settings.getString("hdop_gpx", "30")))
                             {
                                 speddTextView.setText("");
                             }

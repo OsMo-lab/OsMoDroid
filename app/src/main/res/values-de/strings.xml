@@ -2,14 +2,14 @@
 <resources>
   <string name="app_name">OsMoDroid</string>
   <string name="start">Starten</string>
-  <string name="stop">Stop</string>
+  <string name="stop">Stoppen</string>
   <string name="serviceStatus">Staat:</string>
-  <string name="location">Aufenthaltsort:</string>
+  <string name="location">Standort:</string>
   <string name="sends">Status:</string>
   <string name="url">Adresse:</string>
   <string name="settings">Einstellungen</string>
-  <string name="period">Versuche GPS zu finden</string>
-  <string name="succes">Geschafft!</string>
+  <string name="period">Suche GPS Signal</string>
+  <string name="succes">Erfolgreich</string>
   <string name="error">Fehler:</string>
   <string name="Sputniki">Satelliten:</string>
   <string name="GlonasFindString">verwendet Glonass</string>
@@ -26,8 +26,8 @@
   <string name="ChangeAdresMonitor">Dadurch ändert sich die Überwachungsadresse!</string>
   <string name="yes">Ok</string>
   <string name="No">Abbrechen</string>
-  <string name="AgreeParameterEqual">Bestätigen Sie die Abgleichung der Übertragungsparameter und aufnehmen</string>
-  <string name="TrackRecordParameterChanges">Spur-Aufnahme -Parameter ändern</string>
+  <string name="AgreeParameterEqual">Bestätigen Sie den Abgleich der Übertragungsparameter und Aufnahmen</string>
+  <string name="TrackRecordParameterChanges">Track Aufnahme Parameter werden geändert</string>
   <string name="Running">Gestartet</string>
   <string name="NotRunning">Nicht gestartet</string>
   <string name="Status">Status:</string>
@@ -35,7 +35,7 @@
   <string name="ErrorRecieve">Fehler beim Abrufen</string>
   <string name="AuthWait">Autorisierung wird beantragt...</string>
   <string name="CheckInternet">Es ist etwas schief gelaufen! Überprüfe deine Datenverbindung.</string>
-  <string name="CanNotWriteHeader">Konnte deine Aufnahme nicht auf die Speicherkarte speichern.</string>
+  <string name="CanNotWriteHeader">Konnte deine Track nicht auf die Speicherkarte speichern.</string>
   <string name="CanNotWriteEnd">Ich konnte den Speichervorgang auf die Speicherkarte nicht fertigstellen.</string>
   <string name="SendCourseChange">Ändern Sie die Übertragungsrate:</string>
   <string name="TrackCourseChange">Ändern sie die Spur:</string>
@@ -56,10 +56,10 @@
   <string name="sendsupport">Support melden</string>
   <string name="about">Über</string>
   <string name="send">&gt;&gt;</string>
-  <string name="cancel">Rückgängig machen</string>
+  <string name="cancel">Abbrechen</string>
   <string name="speed">Geschwindigkeit: km/h</string>
   <string name="auth">Autorisierung</string>
-  <string name="nomapapp">Es ist keine Karten-Anwendung installiert.</string>
+  <string name="nomapapp">Es ist keine Kartenanwendung installiert.</string>
   <string name="showonmap">Auf der Karte zeigen</string>
   <string name="chanal">Gruppe</string>
   <string name="refresh">Aktualisieren</string>
@@ -85,10 +85,10 @@
   <string name="createchanal">Gruppe erstellen</string>
   <string name="noallenter">Enthält nicht alle Daten</string>
   <string name="bindtochanal">Gruppe beitreten</string>
-  <string name="requestdevicebefore">Vorheriges Anfrage-Gerät</string>
+  <string name="requestdevicebefore">Vorheriges Anfragegerät</string>
   <string name="chatwith">Chatte mit</string>
   <string name="devices">Familie</string>
-  <string name="writemessage">Schreibt...</string>
+  <string name="writemessage">Schreibe Nachricht</string>
   <string name="messages">Nachrichten</string>
   <string name="binddevice">Gerät verbinden</string>
   <string name="esya_ru_notrespond">OsMoDroid kann nicht auf den Server zugreifen</string>
@@ -98,7 +98,7 @@
   <string name="notifications">Benachrichtigungen</string>
   <string name="stat">Statistik</string>
   <string name="appauth">Applikation autorisieren</string>
-  <string name="inbuffer">Puffer</string>
+  <string name="inbuffer">gepufferd:</string>
   <string name="authpleasewait">Autorisierung wird angefragt, bitte warten ...</string>
   <string name="commandpleasewait">Befehl ausgeführt, bitte warten ...</string>
   <string name="resultenterchanalnoget">Keine Serverantwort zur Kanalanfrage erhalten</string>
@@ -113,7 +113,7 @@
   <string name="enternet">Netzwerk beigetreten</string>
   <string name="exitnet">Netzwerk verlassen</string>
   <string name="device">Das Gerät</string>
-  <string name="accuracy">Genauigkeit</string>
+  <string name="accuracy">Genauigkeit:</string>
   <string name="maximal">Max:</string>
   <string name="kmch">km/h</string>
   <string name="average">Durchschnitt:</string>
@@ -154,10 +154,9 @@
   <string name="spd">Geschwindigkeit</string>
   <string name="max">Max</string>
   <string name="avg">Durchschnitt</string>
-  <string name="inway">Auf dem Weg</string>
+  <string name="inway">Zeit Unterwegs</string>
   <string name="ingoing2">Entfernung</string>
   <string name="sended">Gesendet</string>
-  <string name="writen">Aufgezeichnet</string>
   <string name="wekksends">Woche gesendet:</string>
   <string name="from_undefined">von Anonym</string>
   <string name="map">Karte</string>
@@ -168,7 +167,7 @@
   <string name="enablegps">Bitte GPS einschalten</string>
   <string name="showtraces">Aufzeichnungen zeigen</string>
   <string name="enable_manual_rotation">Manuelle Drehung auswählen</string>
-  <string name="enable_course_rotation">Auswahl Kursrichtung</string>
+  <string name="enable_course_rotation">Anwahl Kursrichtung</string>
   <string name="copychID">ID kopieren</string>
   <string name="shareID">ID teilen</string>
   <string name="needauthtocreategroup">Zur Gruppenerstellung wird eine Autorisierung benötigt</string>
@@ -219,6 +218,7 @@
   <string name="send_distance">Entfernung senden</string>
   <string name="degrees">Grad</string>
   <string name="course_deviation">Kursabweichung</string>
+  <string name="kilometers_per_hour_speed"> km/h. Wenn die Geschwindigkeit geringer ist, werden keine Daten versendet </string>
   <string name="speed_trigger_for_course_deviation">Geschwindigkeitstrigger für Kursabweichung</string>
   <string name="maximum_hdop">Maximale HDOP</string>
   <string name="minimum_send_speed">Minimale Sendegeschwindigkeit</string>
@@ -234,7 +234,7 @@
   <string name="acceptable_location_accuracy">Akzeptierte Positionsgenauigkeit</string>
   <string name="minimum_speed_to_save_">Minimale Geschwindigkeit zum speichern</string>
   <string name="memory_card_path">Pfad zur Speicherkarte</string>
-  <string name="notification">Benachrichtigung</string>
+  <string name="notification">Benachrichtigungen</string>
   <string name="vibrate_on_signal_loss">Vibration beim verlieren des Signals</string>
   <string name="vibrate_when_internet_or_gps_signal_is_lost">Vibiriere wenn Internet oder GPS Signal verloren wird</string>
   <string name="milliseconds">Millisekunden</string>
@@ -270,7 +270,7 @@ Ton wenn Internet oder GPS Signal verloren wird</string>
   <string name="launch_background_service_when_the_phone_starts_up_">Hintergrunddienst beim Telefonstart aktivieren</string>
   <string name="startup_at_boot">Start beim booten</string>
   <string name="general">Generell</string>
-  <string name="dark_theme">Dunkles Theme</string>
+  <string name="dark_theme">Dunkles Thema</string>
   <string name="gps_poll_period">GPS Aktualisierungsintervall</string>
   <string name="seconds">Sekunden</string>
   <string name="network_timeout">Netzwerk timeout</string>

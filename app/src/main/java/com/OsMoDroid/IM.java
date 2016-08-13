@@ -1040,7 +1040,7 @@ public class IM implements ResultsListener
                         localService.saveObject(LocalService.channelList, OsMoDroid.CHANNELLIST);
                         //sendToServer("GROUP", false);
                     }
-                if (command.equals("GD"))
+                if (command.equals("GD")&&!jo.has("error"))
                     {
                         for (Channel ch : LocalService.channelList)
                             {
@@ -1728,11 +1728,11 @@ public class IM implements ResultsListener
                                                                         {
                                                                             if (jsonObject.has("state"))
                                                                                 {
-                                                                                    if (dev.state != 1 && jsonObject.getInt("state") == 1)
+                                                                                    if (dev.state != 1 && jsonObject.getInt("state") == 1 &&dev.state!=-1)
                                                                                         {
                                                                                             notifydevicemonitoring(dev, true);
                                                                                         }
-                                                                                    if (dev.state == 1 && jsonObject.getInt("state") == 0)
+                                                                                    if ((dev.state == 1||dev.state==-1) && jsonObject.getInt("state") == 0)
                                                                                         {
                                                                                             notifydevicemonitoring(dev, false);
                                                                                         }

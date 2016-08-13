@@ -6,6 +6,8 @@ import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
 import android.view.inputmethod.InputMethodManager;
 
+import org.osmdroid.tileprovider.constants.OpenStreetMapTileProviderConstants;
+
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.SimpleDateFormat;
@@ -94,6 +96,7 @@ public class OsMoDroid extends Application
                 context = getApplicationContext();
                 Thread.setDefaultUncaughtExceptionHandler(ExceptionHandler.inContext(context));
                 inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                OpenStreetMapTileProviderConstants.setUserAgentValue(BuildConfig.APPLICATION_ID);
                 super.onCreate();
             }
     }
