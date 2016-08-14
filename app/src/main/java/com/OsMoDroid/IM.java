@@ -71,7 +71,7 @@ public class IM implements ResultsListener
     {
         final static SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         private static final int KEEP_ALIVE = 1000 * 270;
-        private static final long ERROR_RECONNECT_TIMEOUT = 10 * 1000;
+        private static final long ERROR_RECONNECT_TIMEOUT = 3 * 1000;
         private static final long ONLINE_TIMEOUT = 60 * 1000;
         private static final String RECONNECT_INTENT = "com.osmodroid.reconnect";
         private static final String GET_TOKEN_TIMEOUT_INTENT = "com.osmodroid.gettokentimeout";
@@ -332,7 +332,7 @@ public class IM implements ResultsListener
                 LocalService.addlog("Socket void setOnlineTimeOut");
                 //parent.registerReceiver(onlineTimeoutReceiver, new IntentFilter(ONLINE_TIMEOUT_INTENT));
                 manager.cancel(onlineTimeoutPIntent);
-                manager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + ONLINE_TIMEOUT,  onlineTimeoutPIntent);
+                manager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + ONLINE_TIMEOUT, onlineTimeoutPIntent);
             }
         public void disableOnlineTimeout()
             {
@@ -376,30 +376,45 @@ public class IM implements ResultsListener
 //                    }
                 manager.cancel(keepAlivePIntent);
             }
-        synchronized public void setReconnectAlarm()
+        synchronized public void setReconnectAlarm(final boolean fast)
             {
                 if (log)
                     {
-                        Log.d(this.getClass().getName(), "void setReconnectAlarm");
+                        Log.d(this.getClass().getName(), "void setReconnectAlarm fast="+fast);
                     }
                 localService.alertHandler.post(new Runnable()
                 {
                     @Override
                     public void run()
                         {
-                            LocalService.addlog("Socket setReconnectAlarm");
+                            LocalService.addlog("Socket setReconnectAlarm fast="+fast);
                         }
                 });
                 //parent.registerReceiver(reconnectReceiver, new IntentFilter(RECONNECT_INTENT));
                 manager.cancel(reconnectPIntent);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
+                if(fast)
+                {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
+                    {
+                        manager.setExact(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + ERROR_RECONNECT_TIMEOUT, reconnectPIntent);
+                    }
+                    else
+                    {
+                        manager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + ERROR_RECONNECT_TIMEOUT, reconnectPIntent);
+                    }
+                }
+                else
+                {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
                     {
                         manager.setExact(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + RECONNECT_TIMEOUT, reconnectPIntent);
                     }
-                else
+                    else
                     {
                         manager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + RECONNECT_TIMEOUT, reconnectPIntent);
                     }
+
+                }
 
             }
         /**
@@ -2419,7 +2434,7 @@ public class IM implements ResultsListener
 //                                        {
 //                                            manager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + ERROR_RECONNECT_TIMEOUT, reconnectPIntent);
 //                                        }
-                                    setReconnectAlarm();
+                                    setReconnectAlarm(true);
                                     LocalService.addlog("setReconnectAlarm on error setted " + SystemClock.elapsedRealtime());
 
 
@@ -2551,7 +2566,7 @@ public class IM implements ResultsListener
                                                 {
                                                     if (!b.getBoolean("pp"))
                                                         {
-                                                            setReconnectAlarm();
+                                                            setReconnectAlarm(false);
                                                         }
                                                     try
                                                         {
@@ -2671,6 +2686,7 @@ public class IM implements ResultsListener
                 @Override
                 public void run()
                     {
+
                         SocketAddress sockAddr;
                         SSLContext sslContext;
                         connectcount++;
@@ -2687,6 +2703,7 @@ public class IM implements ResultsListener
 
 
                                 if (log){Log.d(this.getClass().getName(), "sockAddr=" + sockAddr);}
+                                LocalService.addlog("SSL TCP Try to connect sockAddr=" + sockAddr);
                                         socket.connect(sockAddr, 5000);
                                         //socket.connect(new InetSocketAddress("osmo.mobi", 5050), 5000);
 
@@ -2753,7 +2770,7 @@ public class IM implements ResultsListener
                                                 localService.refresh();
                                             }
                                     });
-                                setReconnectAlarm();
+                                setReconnectAlarm(false);
                                 readerThread.start();
                                 //sendToServer("INIT|" + token, false);
                                 sendToServer("AUTH|" + OsMoDroid.settings.getString("newkey", ""), false);
