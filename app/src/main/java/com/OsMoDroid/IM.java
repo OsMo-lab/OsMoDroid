@@ -2704,7 +2704,8 @@ public class IM implements ResultsListener
 
                                 if (log){Log.d(this.getClass().getName(), "sockAddr=" + sockAddr);}
                                 LocalService.addlog("SSL TCP Try to connect sockAddr=" + sockAddr);
-                                        socket.connect(sockAddr, 5000);
+                                        socket.connect(sockAddr, RECONNECT_TIMEOUT);
+                                setReconnectAlarm(false);
                                         //socket.connect(new InetSocketAddress("osmo.mobi", 5050), 5000);
 
                                 //
@@ -2761,16 +2762,14 @@ public class IM implements ResultsListener
                                 connOpened = true;
                                 connecting = false;
 
-                                localService.alertHandler.post(new Runnable()
-                                    {
-                                        @Override
-                                        public void run()
-                                            {
+                                localService.alertHandler.post(new Runnable() {
+                                    @Override
+                                    public void run() {
 
-                                                localService.refresh();
-                                            }
-                                    });
-                                setReconnectAlarm(false);
+                                        localService.refresh();
+                                    }
+                                });
+
                                 readerThread.start();
                                 //sendToServer("INIT|" + token, false);
                                 sendToServer("AUTH|" + OsMoDroid.settings.getString("newkey", ""), false);
