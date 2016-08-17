@@ -25,6 +25,6 @@
         android:id="@+id/textViewWidget"
         android:layout_alignBottom="@+id/imageButtonWidget"
         android:layout_centerHorizontal="true"
-        android:textSize="@dimen/speed_text_size" />
+        />
 
 </RelativeLayout>
