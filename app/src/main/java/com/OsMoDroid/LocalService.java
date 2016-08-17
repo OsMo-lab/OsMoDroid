@@ -555,6 +555,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                 in.putExtra("pro", pro);
 
                 sendBroadcast(in);
+                updatewidgets();
             }
         public void startcomand()
             {
@@ -2467,6 +2468,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                     //PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, is, PendingIntent.FLAG_UPDATE_CURRENT);
                     remoteViews.setOnClickPendingIntent(R.id.imageButtonWidget, stop);
                     appWidgetManager.updateAppWidget(widgetId, remoteViews);
+                    remoteViews.setTextViewText(R.id.textViewWidget, OsMoDroid.df2.format(workdistance / 1000) );
                 }
             }
         public void onAccuracyChanged(Sensor sensor, int accuracy)
