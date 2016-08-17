@@ -157,6 +157,7 @@
   <string name="inway">Zeit Unterwegs</string>
   <string name="ingoing2">Entfernung</string>
   <string name="sended">Gesendet</string>
+  <string name="writen">Aufgezeichnet</string>
   <string name="wekksends">Woche gesendet:</string>
   <string name="from_undefined">von Anonym</string>
   <string name="map">Karte</string>
@@ -206,7 +207,10 @@
   <string name="point_create_description">Name des Punktes zum Senden eingeben</string>
   <string name="empty_channels">Auf dieser Seite sehen Sie, in die beigetretenen Gruppe. Zum starten von Gruppen, benutze das context Menü.</string>
   <string name="empty_devices">Auf dem Bildschirm werden die  Geräte aufgelistet von der Gruppe \"z.B. Familie\". Aktiver Geräte sind im Kontext Menü sichtbar</string>
+  <string name="empty_links">  	
+Diese Anzeige hat eine permanente Referenz zum Überwachen Ihres Gerätes. Verfügbare Aktionen können im Contex Menü gefunden werden. </string>
   <string name="understand">Ok, schlechte Verbindung nicht mehr Aufzeichnen</string>
+  <string name="checkfirewall">Keine Verbindung zum Tracker Server. Prüfe dass die Firewall den Port nicht blockiert. </string>
   <string name="size_of_point">Größe des Punktes</string>
   <string name="follow_">Folgen</string>
   <string name="no_follow_">nicht folgen</string>
@@ -218,11 +222,14 @@
   <string name="send_distance">Entfernung senden</string>
   <string name="degrees">Grad</string>
   <string name="course_deviation">Kursabweichung</string>
+  <string name="kilometers_per_hour_course">km/h, Wenn die Geschwindigkeit geringer ist, wird der Parameter `Kursabweichung\' nicht überarbeitet </string>
   <string name="kilometers_per_hour_speed"> km/h. Wenn die Geschwindigkeit geringer ist, werden keine Daten versendet </string>
   <string name="speed_trigger_for_course_deviation">Geschwindigkeitstrigger für Kursabweichung</string>
+  <string name="acceptable_location_accuracy_horizontal_dilution_of_precision_location_signals_less_accurate_than_this_higher_numbers_will_not_be_sent_as_updates_">Annehmbare Standortgenauigkeit  (Horizontal Dilution of Precision). Standort Signale, weniger genau als die (höhere Zahlen), Aktualisierungen werden nicht als geschickt. </string>
   <string name="maximum_hdop">Maximale HDOP</string>
   <string name="minimum_send_speed">Minimale Sendegeschwindigkeit</string>
   <string name="mode_and">AND Modus</string>
+  <string name="if_checked_all_conditions_speed_time_distance_must_be_met_to_send_a_location_update_if_unchecked_any_condition_may_cause_an_update_">Wenn alle Bedingungen geprüft (Geschwindigkeit, Zeit, Entfernung) wird eine Standortaktualisierung gesendet. Wenn deaktiviert, kann irgendeine Bedingung eine Aktualisierung verursachen. </string>
   <string name="transfer_unsent">Nicht gesendete</string>
   <string name="useful_with_unstable_internet_connections_may_use_more_data_">Nutzvoll bei unstabilen Internetverbindung, Verwendet vielleicht mehr Daten</string>
   <string name="recorded_tracks_are_stored_on_the_memory_card_by_default_sdcard_osmodroid_">Standardmäßig werden Tracls auf der Speicherkarte gespeichert (/sdcard/OsMoDroid/)</string>
@@ -233,6 +240,7 @@
   <string name="meters">Meter</string>
   <string name="acceptable_location_accuracy">Akzeptierte Positionsgenauigkeit</string>
   <string name="minimum_speed_to_save_">Minimale Geschwindigkeit zum speichern</string>
+  <string name="if_checked_all_conditions_speed_time_distance_must_be_met_to_save_a_location_update_if_unchecked_any_condition_may_cause_an_update_">Wenn alle Bedingungen geprüft (Geschwindigkeit, Zeit, Entfernung) wird eine Standortaktualisierung gesendet. Wenn deaktiviert, kann irgendeine Bedingung eine Aktualisierung verursachen. </string>
   <string name="memory_card_path">Pfad zur Speicherkarte</string>
   <string name="notification">Benachrichtigungen</string>
   <string name="vibrate_on_signal_loss">Vibration beim verlieren des Signals</string>
@@ -297,6 +305,7 @@ Ton wenn Internet oder GPS Signal verloren wird</string>
   <string name="shortname">Kurzname</string>
   <string name="enterin">Eingabe einer Geozone</string>
   <string name="exitfrom">Geozone verlassen</string>
+  <string name="warnewdevice">Dieses Gerät wurde vom server\n entfernt, wird neu erstellt. Wenn Sie eine links(URL) erstellt haben, ist diese nun ungültig. Sie müssen der Gruppe erneut beitreten. Wenn Sie wollen können Sie den Support kontaktieren.</string>
   <string name="usechatnotification">Mitteilung von Chat Gruppe</string>
   <string name="usechatsummary">Zeige Android Benachrichtigungen wenn der Chat aktualisiert wird</string>
   <string name="altitude">Höhe: Meter</string>
@@ -304,7 +313,9 @@ Ton wenn Internet oder GPS Signal verloren wird</string>
   <string name="malt">Maximale Höhe</string>
   <string name="minalt">Minimale Höhe</string>
   <string name="maxspeed">Maximal Geschwindigkeit</string>
-  <string name="milage">Meilen</string>
+  <string name="milage">Kilometer</string>
   <string name="time">Zeit</string>
   <string name="averagespeed">Durchschnittsgeschwindigkeit</string>
+  <string name="nomounted">Speicher nicht gemounted</string>
+  <string name="needselectpoint">Benötige angewählte Gruppe um einen Punkt zu senden</string>
 </resources>
