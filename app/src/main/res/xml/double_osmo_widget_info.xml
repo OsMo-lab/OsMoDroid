@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:initialKeyguardLayout="@layout/double_osmo_widget"
+                    android:initialLayout="@layout/double_osmo_widget"
+                    android:minHeight="40dp"
+                    android:minWidth="110dp"
+                    android:previewImage="@drawable/preview2"
+                    android:resizeMode="horizontal|vertical"
+                    android:updatePeriodMillis="86400000"
+                    android:widgetCategory="home_screen|keyguard">
+</appwidget-provider>

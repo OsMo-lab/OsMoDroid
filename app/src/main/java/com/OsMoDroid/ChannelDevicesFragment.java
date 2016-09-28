@@ -243,6 +243,8 @@ public class ChannelDevicesFragment extends Fragment implements ResultsListener
                 Log.d(getClass().getSimpleName(), "ChannelDevicesFragment onDestroy");
                 LocalService.currentchanneldeviceList = null;
                 LocalService.currentChannel = null;
+                LocalService.channelsmessagesAdapter=null;
+                LocalService.channelsDevicesAdapter=null;
                 super.onDestroy();
             }
         @Override

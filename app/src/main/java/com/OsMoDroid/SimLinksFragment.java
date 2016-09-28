@@ -59,6 +59,12 @@ public class SimLinksFragment extends Fragment
             {
                 globalActivity.mService.myIM.sendToServer("LNKD:" + u, true);
             }
+        @Override
+        public void onDestroy()
+            {
+                LocalService.simlinksadapter=null;
+                super.onDestroy();
+            }
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
             {
                 View view = inflater.inflate(R.layout.simlinks, container, false);
@@ -152,7 +158,7 @@ public class SimLinksFragment extends Fragment
                     }
                 if (item.getItemId() == 3)
                     {
-                        ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+                        ClipboardManager clipboard = (ClipboardManager) getActivity().getApplicationContext().getSystemService(Context.CLIPBOARD_SERVICE);
                         clipboard.setText(LocalService.simlinksadapter.getItem(acmi.position).url);
                         return true;
                     }

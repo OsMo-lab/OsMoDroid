@@ -3,10 +3,18 @@ public class PermLink
     {
         int u;
         String url;
+        String description;
         @Override
         public String toString()
             {
                 // TODO Auto-generated method stub
-                return url;
+                if(description.equals(""))
+                    {
+                        return url;
+                    }
+                else
+                    {
+                        return description + ":\n" + url;
+                    }
             }
     }

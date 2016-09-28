@@ -155,7 +155,7 @@ public class IM implements ResultsListener
         BroadcastReceiver keepAliveReceiver = new BroadcastReceiver()
         {
             @Override
-            public void onReceive(Context context, Intent _)
+            public void onReceive(Context context, Intent intent)
                 {
                     if (connOpened)
                         {
@@ -183,7 +183,7 @@ public class IM implements ResultsListener
                                     Object value = extras.get(key);
                                     if(value!=null)
                                         {
-                                            //LocalService.addlog(String.format("%s %s (%s)", key, value.toString(), value.getClass().getName()));
+                                            LocalService.addlog(String.format("%s %s (%s)", key, value.toString(), value.getClass().getName()));
                                         }
                                 }
 
@@ -230,7 +230,7 @@ public class IM implements ResultsListener
         BroadcastReceiver getTokenTimeoutReceiver = new BroadcastReceiver()
         {
             @Override
-            public void onReceive(Context context, Intent _)
+            public void onReceive(Context context, Intent intent)
                 {
                     context.unregisterReceiver(this);
                     if (log)
@@ -247,7 +247,7 @@ public class IM implements ResultsListener
         BroadcastReceiver reconnectReceiver = new BroadcastReceiver()
         {
             @Override
-            public void onReceive(Context context, Intent _)
+            public void onReceive(Context context, Intent intent)
                 {
                     LocalService.addlog("Socket reconnect receiver trigged");
                     disablekeepAliveAlarm();
@@ -259,6 +259,7 @@ public class IM implements ResultsListener
                 }
         };
         public boolean needtosendpreference=false;
+        private boolean warnedsocketconnecterror=false;
         public IM(String server, int port, LocalService service)
             {
                 RECONNECT_TIMEOUT = Integer.parseInt(OsMoDroid.settings.getString("timeout", "30")) * 1000;
@@ -587,43 +588,7 @@ public class IM implements ResultsListener
                 manager.cancel(reconnectPIntent);
                 localService.refresh();
             }
-        public void addtoDeviceChat(int u, JSONObject jo)
-            {
-                // IM:7909|[{"u":"17","from":"45694","text":"xcvxcvz","time":"2015-04-11 22:35:18"}]
-                ChatMessage m = new ChatMessage();
-                m.u = jo.optInt("u");
-                m.text = Netutil.unescape(jo.optString("text"));
-                m.time = OsMoDroid.sdf.format(new Date(jo.optLong("time")*1000));
-                m.from = jo.optString("from");
-                for (Device dev : LocalService.deviceList)
-                    {
-                        if ((dev.u) == u)
-                            {
-                                if (!dev.messagesstringList.contains(m))
-                                    {
-                                        dev.messagesstringList.add(m);
-                                    }
-                            }
-                    }
-                if (LocalService.currentDevice != null && u == LocalService.currentDevice.u)
-                    {
-                        localService.alertHandler.post(new Runnable()
-                        {
-                            public void run()
-                                {
-                                    if (LocalService.chatmessagesAdapter != null)
-                                        {
-                                            LocalService.chatmessagesAdapter.notifyDataSetChanged();
-                                        }
-                                }
-                        });
-                    }
-                Message msg = new Message();
-                Bundle b = new Bundle();
-                b.putInt("deviceU", u);
-                msg.setData(b);
-                localService.alertHandler.sendMessage(msg);
-            }
+
         private void addToChannelChat(int channelU, JSONObject jo, boolean silent) throws JSONException
             {
                 if (log)
@@ -766,7 +731,7 @@ public class IM implements ResultsListener
                             }
                     }
 
-                        parsedata(jo, ja, command, param, addict);
+                        parsedata(jo, ja, command, param, addict, gcm);
 
             }
         private void parseremovefromcommandlist(String command, String param)
@@ -805,7 +770,7 @@ public class IM implements ResultsListener
                         localService.refresh();
                     }
             }
-        private void parsedata(JSONObject jo, JSONArray ja, String command, String param, String addict) throws JSONException
+        private void parsedata(JSONObject jo, JSONArray ja, String command, String param, String addict, boolean gcm) throws JSONException
             {
 
                 JSONObject jsonObject;
@@ -883,7 +848,7 @@ public class IM implements ResultsListener
 
                                 if (needopensession)
                                     {
-                                        sendToServer("TO", false);
+                                        sendToServer("TO|"+localService.sessionopentime, false);
                                     }
                                 if (needclosesession)
                                     {
@@ -963,12 +928,7 @@ public class IM implements ResultsListener
                                             }
                                         localService.refresh();
                                     }
-                                if (localService.sendingbuffer.size() == 0 && localService.buffer.size() != 0)
-                                    {
-                                        localService.sendingbuffer.addAll(localService.buffer);
-                                        localService.buffer.clear();
-                                        sendToServer("B|" + new JSONArray(localService.sendingbuffer), false);
-                                    }
+
                             }
                         else
                             {
@@ -1090,34 +1050,9 @@ public class IM implements ResultsListener
                             }
                     }
                 // IM:7909|[{"u":"17","from":"45694","text":"xcvxcvz","time":"2015-04-11 22:35:18"}]
-                if (command.equals("IM"))
-                    {
-                        for (int k = 0; k < ja.length(); k++)
-                            {
-                                try
-                                    {
-                                        addtoDeviceChat(Integer.parseInt(param), ja.getJSONObject(k));
-                                    }
-                                catch (Exception e)
-                                    {
-                                        writeException(e);
-                                        e.printStackTrace();
-                                    }
-                            }
-                    }
+
                 //recive IMP|["46191","\u043f\u0432\u0438\u044c\u0431\u043b\u0440","2015-04-16 22:52:13"]
-                if (command.equals("IMP"))
-                    {
-                        addict = addict.replace("\"", "");
-                        addict = addict.replace("[", "");
-                        addict = addict.replace("]", "");
-                        String[] data = addict.split(",");
-                        JSONObject j = new JSONObject();
-                        j.put("from", data[0]);
-                        j.put("text", data[1]);
-                        j.put("time", data[2]);
-                        addtoDeviceChat(Integer.parseInt(data[0]), new JSONObject(addict));
-                    }
+
                 if (command.equals("GRPA"))
                     {
                         sendToServer("GROUP", false);
@@ -1132,6 +1067,12 @@ public class IM implements ResultsListener
                         needopensession = false;
                         OsMoDroid.editor.putString("viewurl", "https://osmo.mobi/s/" + jo.optString("url"));
                         OsMoDroid.editor.commit();
+                        if (localService.sendingbuffer.size() == 0 && localService.buffer.size() != 0)
+                            {
+                                localService.sendingbuffer.addAll(localService.buffer);
+                                localService.buffer.clear();
+                                sendToServer("B|" + new JSONArray(localService.sendingbuffer), false);
+                            }
                         localService.refresh();
                     }
                 if (command.equals("TC"))
@@ -1430,140 +1371,7 @@ public class IM implements ResultsListener
                     {
                         sendToServer("DEVICE", false);
                     }
-                if (command.equals("DEVICE"))
-                    {
-                        Iterator<Device> i = LocalService.deviceList.iterator();
-                        while (i.hasNext())
-                            {
-                                Device dev = i.next(); // must be called before you can call i.remove()
-                                boolean exist = false;
-                                for (int k = 0; k < ja.length(); k++)
-                                    {
-                                        try
-                                            {
-                                                jsonObject = ja.getJSONObject(k);
-                                                if (dev.u == jsonObject.optInt("u"))
-                                                    {
-                                                        exist = true;
-                                                        dev.name = jsonObject.optString("name");
-                                                        dev.tracker_id = jsonObject.optString("id");
-                                                        dev.subscribed = jsonObject.has("sub");
-                                                        dev.u = jsonObject.optInt("u");
-                                                        dev.online = jsonObject.optInt("online");
-                                                        dev.state = jsonObject.optInt("state");
-                                                        if (jsonObject.has("data"))
-                                                            {
-                                                                if (jsonObject.optJSONObject("data") != null && !jsonObject.optJSONObject("data").optString("color").equals(""))
-                                                                    {
-                                                                        String color = jsonObject.optJSONObject("data").optString("color");
-                                                                        try
-                                                                            {
-                                                                                dev.color = Color.parseColor(color);
-                                                                            }
-                                                                        catch (Exception e)
-                                                                            {
-                                                                                writeException(e);
-                                                                                e.printStackTrace();
-                                                                            }
-                                                                        if (log)
-                                                                            {
-                                                                                Log.d(this.getClass().getName(), "detected color " + color);
-                                                                            }
-                                                                    }
-                                                            }
-                                                    }
-                                            }
-                                        catch (Exception e)
-                                            {
-                                                e.printStackTrace();
-                                                writeException(e);
-                                            }
-                                    }
-                                if (!exist)
-                                    {
-                                        i.remove();
-                                    }
-                            }
-                        for (int n = 0; n < ja.length(); n++)
-                            {
-                                try
-                                    {
-                                        jsonObject = ja.getJSONObject(n);
-                                        boolean exist = false;
-                                        Device newdev = new Device();
-                                        newdev.name = jsonObject.optString("name");
-                                        newdev.tracker_id = jsonObject.optString("id");
-                                        newdev.subscribed = jsonObject.has("sub");
-                                        newdev.u = jsonObject.optInt("u");
-                                        newdev.online = jsonObject.optInt("online");
-                                        newdev.state = jsonObject.optInt("state");
-                                        if (jsonObject.has("data"))
-                                            {
-                                                if (jsonObject.optJSONObject("data") != null && !jsonObject.optJSONObject("data").optString("color").equals(""))
-                                                    {
-                                                        String color = jsonObject.optJSONObject("data").optString("color");
-                                                        try
-                                                            {
-                                                                newdev.color = Color.parseColor(color);
-                                                            }
-                                                        catch (Exception e)
-                                                            {
-                                                                writeException(e);
-                                                                e.printStackTrace();
-                                                            }
-                                                        if (log)
-                                                            {
-                                                                Log.d(this.getClass().getName(), "detected color " + color);
-                                                            }
-                                                    }
-                                            }
-                                        for (Device dev : LocalService.deviceList)
-                                            {
-                                                if (newdev.u == dev.u)
-                                                    {
-                                                        exist = true;
-                                                    }
-                                            }
-                                        if (!exist)
-                                            {
-                                                LocalService.deviceList.add(newdev);
-                                                if (!newdev.tracker_id.equals(OsMoDroid.settings.getString("tracker_id", "")))
-                                                    {
-                                                    }
-                                            }
-                                    }
-                                catch (Exception e)
-                                    {
-                                        e.printStackTrace();
-                                        writeException(e);
-                                    }
-                            }
-                        Collections.sort(LocalService.deviceList);
-                        int mypos = -1;
-                        for (Device dev : LocalService.deviceList)
-                            {
-                                if (dev.tracker_id.equals(OsMoDroid.settings.getString("tracker_id", "")))
-                                    {
-                                        mypos = LocalService.deviceList.indexOf(dev);
-                                    }
-                            }
-                        if (mypos != -1)
-                            {
-                                Device mydev = LocalService.deviceList.get(mypos);
-                                LocalService.deviceList.remove(mypos);
-                                LocalService.deviceList.add(0, mydev);
-                            }
-                        if (LocalService.deviceAdapter != null)
-                            {
-                                LocalService.deviceAdapter.notifyDataSetChanged();
-                            }
-                        if (log)
-                            {
-                                Log.d(getClass().getSimpleName(), "write device list to file");
-                            }
-                        localService.saveObject(LocalService.deviceList, OsMoDroid.DEVLIST);
-                        //sendToServer("PD");
-                    }
+
 
                 if (command.equals("GROUP"))
                     {
@@ -1672,6 +1480,7 @@ public class IM implements ResultsListener
                                         PermLink pl = new PermLink();
                                         pl.u = jsonObject.getInt("u");
                                         pl.url = "https://osmo.mobi/u/" + jsonObject.optString("url");
+                                        pl.description=jsonObject.optString("description");
                                         LocalService.simlimkslist.add(pl);
                                     }
                                 catch (JSONException e)
@@ -1712,6 +1521,7 @@ public class IM implements ResultsListener
                             {
                                 pl.u = jo.getInt("u");
                                 pl.url = "https://osmo.mobi/u/" + jo.getString("url");
+                                pl.description = jo.optString("description","");
                                 LocalService.simlimkslist.add(pl);
                                 if (LocalService.simlinksadapter != null)
                                     {
@@ -2069,7 +1879,14 @@ public class IM implements ResultsListener
                                 Log.d(getClass().getSimpleName(), "write group list to file");
                             }
                         localService.saveObject(LocalService.channelList, OsMoDroid.CHANNELLIST);
-                        sendToServer("GPR:" + param, false);
+                        if(gcm)
+                            {
+                                sendToServer("GPI:" + param, false);
+                            }
+                        else
+                            {
+                                sendToServer("GPR:" + param, false);
+                            }
                     }
 
                 if (command.equals("GPC"))
@@ -2077,82 +1894,7 @@ public class IM implements ResultsListener
                         addToChannelChat(Integer.parseInt(param), jo, false);
                     }
 
-                if (command.equals("DP"))
-                    {
-                        for (Device dev : LocalService.deviceList)
-                            {
-                                if (dev.u == Integer.parseInt(param))
-                                    {
-                                        if (Integer.parseInt(addict.substring(2, 3)) == 2)
-                                            {
-                                                dev.state = Integer.parseInt(addict.substring(6, 7));
-                                                String status;
-                                                String messageText = "";
-                                                if (dev.state == 1)
-                                                    {
-                                                        status = localService.getString(R.string.started);
-                                                    }
-                                                else
-                                                    {
-                                                        status = localService.getString(R.string.stoped);
-                                                    }
-                                                messageText = messageText + localService.getString(R.string.monitoringondevice) + dev.name + "\" " + status;
-                                                if (OsMoDroid.settings.getBoolean("statenotify", true))
-                                                    {
-                                                        Message msg = new Message();
-                                                        Bundle b = new Bundle();
-                                                        b.putBoolean("om_online", true);
-                                                        b.putString("MessageText", sdf1.format(new Date()) + " " + messageText);
-                                                        msg.setData(b);
-                                                        if (log)
-                                                            {
-                                                                Log.d(this.getClass().getName(), "statenotify entered");
-                                                            }
-                                                        localService.alertHandler.sendMessage(msg);
-                                                    }
-                                            }
-                                        {
-                                            if (Integer.parseInt(addict.substring(2, 3)) == 3)
-                                                {
-                                                    dev.online = Integer.parseInt(addict.substring(6, 7));
-                                                    String status = "";
-                                                    String messageText = "";
-                                                    if (dev.online == 1)
-                                                        {
-                                                            status = localService.getString(R.string.enternet);
-                                                        }
-                                                    if (dev.online == 0)
-                                                        {
-                                                            status = localService.getString(R.string.exitnet);
-                                                        }
-                                                    messageText = messageText + localService.getString(R.string.device) + dev.name + "\" " + status;
-                                                    if (OsMoDroid.settings.getBoolean("onlinenotify", false))
-                                                        {
-                                                            if (log)
-                                                                {
-                                                                    Log.d(this.getClass().getName(), "statenotify onlaine entered");
-                                                                }
-                                                            Message msg = new Message();
-                                                            Bundle b = new Bundle();
-                                                            b.putBoolean("om_online", true);
-                                                            b.putString("MessageText", sdf1.format(new Date()) + " " + messageText);
-                                                            msg.setData(b);
-                                                            localService.alertHandler.sendMessage(msg);
-                                                        }
-                                                }
-                                        }
-                                        if (LocalService.deviceAdapter != null)
-                                            {
-                                                LocalService.deviceAdapter.notifyDataSetChanged();
-                                            }
-                                    }
-                            }
-                        if (log)
-                            {
-                                Log.d(getClass().getSimpleName(), "write device list to file");
-                            }
-                        localService.saveObject(LocalService.deviceList, OsMoDroid.DEVLIST);
-                    }
+
                 if (command.equals("G"))
                     {
                         for (Channel ch : LocalService.channelList)
@@ -2199,33 +1941,7 @@ public class IM implements ResultsListener
                             }
                         //localService.saveObject(LocalService.channelList, OsMoDroid.CHANNELLIST);
                     }
-                if (command.equals("D"))
-                    {
-                        for (Device dev : LocalService.deviceList)
-                            {
-                                if (Integer.parseInt(param) == dev.u)
-                                    {
-                                        try
-                                            {
-                                                updateCoordinates(addict, dev);
-                                            }
-                                        catch (Exception e)
-                                            {
-                                                writeException(e);
-                                                e.printStackTrace();
-                                            }
-                                    }
-                            }
-                        if (LocalService.deviceAdapter != null)
-                            {
-                                LocalService.deviceAdapter.notifyDataSetChanged();
-                            }
-                        if (log)
-                            {
-                                Log.d(getClass().getSimpleName(), "write group list to file");
-                            }
-                        localService.saveObject(LocalService.deviceList, OsMoDroid.DEVLIST);
-                    }
+
             }
         static void  getDevtrace(JSONObject jsonObject, Device dev)
             {
@@ -2773,6 +2489,7 @@ public class IM implements ResultsListener
                                 readerThread.start();
                                 //sendToServer("INIT|" + token, false);
                                 sendToServer("AUTH|" + OsMoDroid.settings.getString("newkey", ""), false);
+                                warnedsocketconnecterror=false;
                             }
                         catch (final Exception e1)
                             {
@@ -2784,8 +2501,9 @@ public class IM implements ResultsListener
 
                                             LocalService.addlog("could no conenct to socket " + socketRetryInt + e1.getMessage());
 
-                                if (socketRetryInt > 3 && !OsMoDroid.settings.getBoolean("understand", false))
+                                if (socketRetryInt > 3 && !OsMoDroid.settings.getBoolean("understand", false)&&!warnedsocketconnecterror)
                                     {
+                                        warnedsocketconnecterror=true;
                                         localService.notifywarnactivity(localService.getString(R.string.checkfirewall), false, OsMoDroid.NOTIFY_NO_CONNECT);
                                     }
                             }

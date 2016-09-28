@@ -45,6 +45,12 @@ public class DebugFragment extends Fragment
     {
         final private static SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-mm-dd HH:mm:ss");
         private GPSLocalServiceClient globalActivity;
+        @Override
+        public void onDestroy()
+            {
+                LocalService.debugAdapter=null;
+                super.onDestroy();
+            }
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
             {
                 View view = inflater.inflate(R.layout.simlinks, container, false);

@@ -6,6 +6,8 @@ import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
 import android.view.inputmethod.InputMethodManager;
 
+import com.squareup.leakcanary.LeakCanary;
+
 import org.osmdroid.tileprovider.constants.OpenStreetMapTileProviderConstants;
 
 import java.text.DecimalFormat;
@@ -98,5 +100,6 @@ public class OsMoDroid extends Application
                 inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 OpenStreetMapTileProviderConstants.setUserAgentValue(BuildConfig.APPLICATION_ID);
                 super.onCreate();
+                LeakCanary.install(this);
             }
     }

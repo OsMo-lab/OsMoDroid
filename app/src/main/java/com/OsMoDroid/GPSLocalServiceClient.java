@@ -10,6 +10,7 @@ import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Field;
 import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
@@ -344,7 +345,7 @@ public class GPSLocalServiceClient extends ActionBarActivity
                 setContentView(R.layout.activity_main);
                 mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
                 mDrawerList = (ListView) findViewById(R.id.left_drawer);
-                // Set the adapter for the list view
+                // Set the notificationStringsAdapter for the list view
                 setupDrawerList();
                 mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
                 //mDrawerLayout.setBackgroundColor(Color.WHITE);
@@ -553,7 +554,7 @@ public class GPSLocalServiceClient extends ActionBarActivity
                                     {
                                         mService.myIM.close();
                                         LocalService.channelList.clear();
-                                        LocalService.deviceList.clear();
+
                                         mService.myIM.needtosendpreference=true;
                                         mService.myIM.start();
 
@@ -832,6 +833,21 @@ public class GPSLocalServiceClient extends ActionBarActivity
                         unregisterReceiver(mIMstatusReciever);
                     }
                 //
+                final Field sHelperField;
+                try
+                    {
+                        Class<?> bubbleClass = Class.forName("android.widget.BubblePopupHelper");
+                        sHelperField = bubbleClass.getDeclaredField("sHelper");
+                        sHelperField.setAccessible(true);
+                        sHelperField.set(null, null);
+                        Log.d(this.getClass().getName(), "LG Bubble clearing succes" );
+                    }
+                catch (Exception ignored)
+                    {
+                        Log.d(this.getClass().getName(), "LG Bubble clearing exception" + ignored.getMessage());
+                    }
+
+                getSupportActionBar().setCustomView(null);
                 super.onDestroy();
             }
         public String inputStreamToString(InputStream in) throws IOException
@@ -1013,4 +1029,5 @@ public class GPSLocalServiceClient extends ActionBarActivity
             {
                 void update();
             }
+
     }

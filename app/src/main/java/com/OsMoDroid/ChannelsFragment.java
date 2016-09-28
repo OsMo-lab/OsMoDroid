@@ -180,7 +180,7 @@ public class ChannelsFragment extends Fragment
                     }
                 if (item.getItemId() == 3)
                     {
-                        ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+                        ClipboardManager clipboard = (ClipboardManager) getActivity().getApplicationContext().getSystemService(Context.CLIPBOARD_SERVICE);
                         if (LocalService.channelList.get((int) acmi.id).url != null)
                             {
                                 clipboard.setText(LocalService.channelList.get((int) acmi.id).url);
@@ -225,7 +225,7 @@ public class ChannelsFragment extends Fragment
                     }
                 if (item.getItemId() == 7)
                     {
-                        ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+                        ClipboardManager clipboard = (ClipboardManager) getActivity().getApplicationContext().getSystemService(Context.CLIPBOARD_SERVICE);
                         clipboard.setText(LocalService.channelList.get((int) acmi.id).group_id);
                         return true;
                     }
@@ -480,13 +480,22 @@ public class ChannelsFragment extends Fragment
 
 
             }
+        @Override
+        public void onDestroy()
+            {
+                LocalService.channelsAdapter=null;
+
+                super.onDestroy();
+            }
         /* (non-Javadoc)
-         * @see android.support.v4.app.Fragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)
-         */
+                 * @see android.support.v4.app.Fragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)
+                 */
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
             {
-                LocalService.channelsAdapter.context = getActivity();
+                globalActivity = (GPSLocalServiceClient) getActivity();
+                LocalService.channelsAdapter = new ChannelsAdapter(globalActivity, R.layout.deviceitem, LocalService.channelList, globalActivity.mService);
+
                 View view = inflater.inflate(R.layout.mychannels, container, false);
                 ListView lv1 = (ListView) view.findViewById(R.id.mychannelslistView);
                 lv1.setEmptyView(view.findViewById(android.R.id.empty));

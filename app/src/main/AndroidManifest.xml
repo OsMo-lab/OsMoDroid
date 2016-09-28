@@ -3,15 +3,12 @@
           xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:tools="http://schemas.android.com/tools"
           android:installLocation="auto"
-          android:versionCode="350"
-          android:versionName="2.4.1">
+          android:versionCode="361"
+          android:versionName="2.4.3">
 
     <uses-sdk
         android:minSdkVersion="9"
-        android:targetSdkVersion="19"
-
-
-        />
+        android:targetSdkVersion="19"/>
 
     <uses-feature
         android:name="android.hardware.camera"
@@ -101,8 +98,10 @@
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
+
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
+
                 <data android:scheme="geo"/>
             </intent-filter>
         </activity>
@@ -186,12 +185,21 @@
             android:exported="false">
         </service>
 
-        <activity android:name=".SosActivity"
-                  android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen"
-                  android:configChanges="keyboardHidden|orientation|screenSize"
-            >
-
+        <activity
+            android:name=".SosActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen">
         </activity>
+
+        <receiver android:name=".DoubleOsmoWidget">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/double_osmo_widget_info"/>
+        </receiver>
     </application>
 
 </manifest>

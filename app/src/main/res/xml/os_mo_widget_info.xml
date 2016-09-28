@@ -3,7 +3,7 @@
                     android:minWidth="40dp"
                     android:minHeight="40dp"
                     android:updatePeriodMillis="86400000"
-                    android:previewImage="@drawable/eyeo"
+                    android:previewImage="@drawable/preview1"
                     android:initialLayout="@layout/os_mo_widget"
                     android:widgetCategory="home_screen"
                     android:initialKeyguardLayout="@layout/os_mo_widget">

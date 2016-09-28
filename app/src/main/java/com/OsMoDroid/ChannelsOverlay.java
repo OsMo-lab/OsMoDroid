@@ -148,73 +148,7 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
                             }
                     }
 
-                for (Device dev : LocalService.deviceList)
-                    {
-                        if(dev.devpaint==null)
-                            {
-                                dev.devpaint= new Paint();
-                                dev.devpaint.setColor(dev.color);
-                                dev.pathpaint= new Paint();
-                                dev.pathpaint.setColor(dev.color);
-                            }
-                        if(dev.devpaint.getColor()!=dev.color)
-                            {
-                                dev.devpaint.setColor(dev.color);
-                                dev.pathpaint.setColor(dev.color);
-                            }
-                        if (OsMoDroid.settings.getBoolean("traces", true))
-                            {
-                                drawdevicepath(canvas,pj,dev);
-                            }
-                        if (dev.lat != 0f && dev.lon != 0f)
-                            {
-                                if (theBoundingBox.contains(new GeoPoint(dev.lat, dev.lon)))
-                                    {
-                                        pj.toPixels(new GeoPoint(dev.lat, dev.lon), scrPoint);
-                                        dev.devpaint.setDither(true);
-                                        dev.devpaint.setAntiAlias(true);
-                                        dev.devpaint.setTextSize(twenty);
-                                        dev.devpaint.setTypeface(Typeface.DEFAULT_BOLD);
-                                        dev.devpaint.setTextAlign(Paint.Align.CENTER);
-                                       // paint.setColor(Color.parseColor("#013220"));
-                                        canvas.save();
-                                        canvas.rotate(-mapView.getMapOrientation(), scrPoint.x, scrPoint.y);
-                                        if (dev.updatated < (curtime - 60000))
-                                            {
-                                                if (dev.name.equals(""))
-                                                    {
-                                                        canvas.drawText(Integer.toString(dev.u), scrPoint.x, scrPoint.y - ten, graypaint);
-                                                    }
-                                                else
-                                                    {
-                                                        canvas.drawText(dev.name, scrPoint.x, scrPoint.y - ten, graypaint);
-                                                    }
-                                                canvas.drawText(dev.speed, scrPoint.x, scrPoint.y +ten+twenty, graypaint);
-                                            }
-                                        else
-                                            {
-                                                if (dev.name.equals(""))
-                                                    {
-                                                        canvas.drawText(Integer.toString(dev.u), scrPoint.x, scrPoint.y - ten, blackpaint);
-                                                    }
-                                                else
-                                                    {
-                                                        canvas.drawText(dev.name, scrPoint.x, scrPoint.y - ten, blackpaint);
-                                                    }
-                                                canvas.drawText(dev.speed, scrPoint.x, scrPoint.y +ten+twenty, blackpaint);
-                                            }
 
-                                       // paint.setColor(dev.color);
-                                        canvas.drawCircle(scrPoint.x, scrPoint.y, ten, dev.devpaint);
-                                        if (dev.u == followdev)
-                                            {
-                                                //paint.setColor(Color.RED);
-                                                canvas.drawCircle(scrPoint.x, scrPoint.y, ten / 3, redpaint);
-                                            }
-                                        canvas.restore();
-                                    }
-                            }
-                    }
                 for (Channel ch : LocalService.channelList)
                     {
                         if (ch.send)
@@ -806,7 +740,7 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
             {
                 final Projection pj = mapView.getProjection();
                 final Rect screenRect = pj.getIntrinsicScreenRect();
-                final int size = LocalService.deviceList.size();
+
 //                for(Cluster c:clusters)
 //                    {
 //
@@ -885,31 +819,7 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
                                 }
                             }
 
-                for (int i = 0; i < size; i++)
-                    {
-                        final Device dev = LocalService.deviceList.get(i);
-                        if (dev.lat == 0f)
-                            {
-                                continue;
-                            }
-                        pj.toPixels(new GeoPoint(dev.lat, dev.lon), mCurScreenCoords);
-                        if (mCurScreenCoords.x <= (e.getX() + 2 * ten) && mCurScreenCoords.x >= (e.getX() - 2 * ten)
-                                && mCurScreenCoords.y <= (e.getY() + ten) && mCurScreenCoords.y >= (e.getY() - ten))
-                            {
-                                if (followdev != dev.u)
-                                    {
-                                        Toast.makeText(mapView.getContext(), map.getContext().getString(R.string.follow_) + dev.name, Toast.LENGTH_SHORT).show();
-                                        followdev = dev.u;
-                                    }
-                                else
-                                    {
-                                        Toast.makeText(mapView.getContext(), map.getContext().getString(R.string.no_follow_) + dev.name, Toast.LENGTH_SHORT).show();
-                                        followdev = -1;
-                                    }
-                                mapView.invalidate();
-                                return true;
-                            }
-                    }
+
                 return super.onSingleTapConfirmed(e, mapView);
             }
     }

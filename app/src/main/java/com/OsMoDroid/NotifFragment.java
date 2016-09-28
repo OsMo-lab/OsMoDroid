@@ -2,7 +2,6 @@ package com.OsMoDroid;
 import java.util.ArrayList;
 
 import android.app.Activity;
-import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.util.Linkify;
@@ -26,6 +25,12 @@ public class NotifFragment extends Fragment
                 setHasOptionsMenu(true);
                 //setRetainInstance(true);
                 super.onCreate(savedInstanceState);
+            }
+        @Override
+        public void onDestroy()
+            {
+                LocalService.notificationStringsAdapter =null;
+                super.onDestroy();
             }
         @Override
         public void onResume()
@@ -54,7 +59,7 @@ public class NotifFragment extends Fragment
                 list = new ArrayList<String>();
                 list.clear();
                 list.addAll(LocalService.messagelist);
-                LocalService.adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, list)
+                LocalService.notificationStringsAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, list)
                     {
                         @Override
                         public View getView(int position, View convertView, ViewGroup parent)
@@ -66,8 +71,8 @@ public class NotifFragment extends Fragment
                             }
                     }
                 ;
-                lv1.setAdapter(LocalService.adapter);
-                LocalService.adapter.notifyDataSetChanged();
+                lv1.setAdapter(LocalService.notificationStringsAdapter);
+                LocalService.notificationStringsAdapter.notifyDataSetChanged();
                 return view;
             }
 

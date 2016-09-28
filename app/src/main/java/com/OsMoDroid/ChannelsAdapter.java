@@ -52,7 +52,7 @@ public class ChannelsAdapter extends ArrayAdapter<Channel>
                 if (row == null)
                     {
                         //LayoutInflater inflater = (LayoutInflater) this.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                        LayoutInflater inflater = (LayoutInflater) this.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                         row = inflater.inflate(R.layout.channelsitem, parent, false);
                     }
                 Channel channel = getItem(position);

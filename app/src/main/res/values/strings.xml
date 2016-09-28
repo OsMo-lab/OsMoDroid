@@ -306,7 +306,7 @@
     <string name="warnewdevice">"This device was deleted from server\nWill create new, if you have been created links(URL) it will invalid now and need to reenter to groups\n You can contact support if like "</string>
     <string name="usechatnotification">Notifications from chat groups</string>
     <string name="usechatsummary">Shows Android notification when the chat is updated</string>
- <string name="altitude">Altitude: Meters</string>
+    <string name="altitude">Altitude: Meters</string>
     <string name="pleasewait">Please wait...</string>
     <string name="malt">Max Altitude</string>
     <string name="minalt">Min Altitude</string>
@@ -316,4 +316,5 @@
     <string name="averagespeed">Average Speed</string>
     <string name="nomounted">Storage not mounted</string>
     <string name="needselectpoint">Need select group to send point</string>
+    <string name="surebufferlost">Buffer not empty and no connection to server. Are you sure (buffer will lost) ?</string>
 </resources>

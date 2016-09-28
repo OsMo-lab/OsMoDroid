@@ -18,11 +18,9 @@ public class DrawerItemClickListener implements OnItemClickListener
         StatFragment stat;
         MapFragment map;
         ChannelsFragment chans;
-        DevicesFragment devs;
         SimLinksFragment links;
         NotifFragment notif;
         TracFileListFragment trac;
-        DeviceChatFragment devchat;
         ChannelDevicesFragment chandev;
         TrackStatFragment trackStatFragment;
         DebugFragment debug;

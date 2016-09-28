@@ -208,7 +208,7 @@ public class MainFragment extends Fragment implements GPSLocalServiceClient.upd
                 //MenuItem shareID = menu.add(0, 12, 12, R.string.shareid);
                 MenuItem about = menu.add(0, 13, 14, R.string.about);
                 about.setIcon(android.R.drawable.ic_menu_info_details);
-                about.setIntent(new Intent(getActivity(), AboutActivity.class));
+                about.setIntent(new Intent(getContext(), AboutActivity.class));
                 //MenuItem exit = menu.add(0, 14, 13, R.string.copytrackerid);
                 MenuItem save = menu2.add(0, 18, 18, R.string.savepref);
                 MenuItem load = menu2.add(0, 19, 19, R.string.loadpref);
@@ -316,7 +316,7 @@ public class MainFragment extends Fragment implements GPSLocalServiceClient.upd
                     }
                 if (item.getItemId() == 11)
                     {
-                        ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+                        ClipboardManager clipboard = (ClipboardManager) getActivity().getApplicationContext().getSystemService(Context.CLIPBOARD_SERVICE);
                         if (!OsMoDroid.settings.getString("viewurl", "").equals(""))
                             {
                                 clipboard.setText(OsMoDroid.settings.getString("viewurl", ""));
@@ -332,7 +332,7 @@ public class MainFragment extends Fragment implements GPSLocalServiceClient.upd
                     }
                 if (item.getItemId() == 14)
                     {
-                        ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+                        ClipboardManager clipboard = (ClipboardManager) getActivity().getApplicationContext().getSystemService(Context.CLIPBOARD_SERVICE);
                         if (!OsMoDroid.settings.getString("tracker_id", "").equals(""))
                             {
                                 clipboard.setText(OsMoDroid.settings.getString("tracker_id", ""));
@@ -356,7 +356,6 @@ public class MainFragment extends Fragment implements GPSLocalServiceClient.upd
                         if (globalActivity.fileName != null && globalActivity.fileName.exists())
                             {
                                 globalActivity.loadSharedPreferencesFromFile(globalActivity.fileName);
-                                globalActivity.mService.deviceList.clear();
                                 globalActivity.mService.channelList.clear();
                                 globalActivity.mService.myIM.stop();
                                 globalActivity.mService.myIM.start();
@@ -494,11 +493,35 @@ public class MainFragment extends Fragment implements GPSLocalServiceClient.upd
                                             {
                                                 public void onClick(DialogInterface dialog, int which)
                                                     {
-                                                        stopsession = true;
-                                                        LocalService.uploadto = false;
-                                                        globalActivity.stop(stopsession);
-                                                        updateServiceStatus(view);
-                                                        return;
+                                                        if(globalActivity.mService.buffer.size()==0||globalActivity.mService.myIM.authed)
+                                                            {
+                                                                stopsession = true;
+                                                                LocalService.uploadto = false;
+                                                                globalActivity.stop(stopsession);
+                                                                updateServiceStatus(view);
+                                                                return;
+                                                            }
+                                                        else
+                                                            {
+                                                                AlertDialog alertdialog = new AlertDialog.Builder(
+                                                                        getActivity()).create();
+                                                                alertdialog.setTitle(getActivity().getString(R.string.Stoping));
+                                                                alertdialog.setMessage(getString(R.string.surebufferlost));
+                                                                alertdialog.setButton(getString(R.string.yes),
+                                                                        new DialogInterface.OnClickListener()
+                                                                            {
+                                                                                public void onClick(DialogInterface dialog, int which)
+                                                                                    {
+                                                                                        stopsession = true;
+                                                                                        LocalService.uploadto = false;
+                                                                                        globalActivity.stop(stopsession);
+                                                                                        updateServiceStatus(view);
+                                                                                        return;
+                                                                                    }
+                                                                            });
+                                                            }
+
+
                                                     }
                                             });
                                     alertdialog.setButton2(getString(R.string.No),
@@ -528,36 +551,55 @@ public class MainFragment extends Fragment implements GPSLocalServiceClient.upd
                 {
                     public void onClick(View v)
                         {
-                            if (OsMoDroid.settings.getBoolean("usegps", true))
+                            if(globalActivity.mService.buffer.size()==0)
                                 {
-                                    if (!globalActivity.mService.myManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
+                                    if (OsMoDroid.settings.getBoolean("usegps", true))
                                         {
-                                            AlertDialog alertdialog1 = new AlertDialog.Builder(
-                                                    getActivity()).create();
-                                            alertdialog1.setTitle(getActivity().getString(R.string.needgps));
-                                            alertdialog1.setMessage(getActivity().getString(R.string.enablegps));
-                                            alertdialog1.setButton(getString(R.string.yes),
-                                                    new DialogInterface.OnClickListener()
-                                                    {
-                                                        public void onClick(DialogInterface dialog, int which)
-                                                            {
-                                                                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                                                                startActivity(intent);
-                                                                return;
-                                                            }
-                                                    });
-                                            alertdialog1.setButton2(getString(R.string.No),
-                                                    new DialogInterface.OnClickListener()
-                                                    {
-                                                        public void onClick(DialogInterface dialog, int which)
-                                                            {
-                                                                return;
-                                                            }
-                                                    });
-                                            alertdialog1.show();
+                                            if (!globalActivity.mService.myManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
+                                                {
+                                                    AlertDialog alertdialog1 = new AlertDialog.Builder(
+                                                            getActivity()).create();
+                                                    alertdialog1.setTitle(getActivity().getString(R.string.needgps));
+                                                    alertdialog1.setMessage(getActivity().getString(R.string.enablegps));
+                                                    alertdialog1.setButton(getString(R.string.yes),
+                                                            new DialogInterface.OnClickListener()
+                                                                {
+                                                                    public void onClick(DialogInterface dialog, int which)
+                                                                        {
+                                                                            Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                                                                            startActivity(intent);
+                                                                            return;
+                                                                        }
+                                                                });
+                                                    alertdialog1.setButton2(getString(R.string.No),
+                                                            new DialogInterface.OnClickListener()
+                                                                {
+                                                                    public void onClick(DialogInterface dialog, int which)
+                                                                        {
+                                                                            return;
+                                                                        }
+                                                                });
+                                                    alertdialog1.show();
+                                                }
                                         }
+                                    globalActivity.startlocalservice();
                                 }
-                            globalActivity.startlocalservice();
+                            else
+                                {
+                                    AlertDialog alertdialog = new AlertDialog.Builder(
+                                            getActivity()).create();
+                                    alertdialog.setTitle(getActivity().getString(R.string.Stoping));
+                                    alertdialog.setMessage(getString(R.string.surebufferlost));
+                                    alertdialog.setButton(getString(R.string.yes),
+                                            new DialogInterface.OnClickListener()
+                                                {
+                                                    public void onClick(DialogInterface dialog, int which)
+                                                        {
+                                                            globalActivity.startlocalservice();
+                                                            return;
+                                                        }
+                                                });
+                                }
                         }
                 });
                 receiver = new BroadcastReceiver()
