@@ -16,7 +16,6 @@ import java.util.Locale;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.osmdroid.util.ResourceProxyImpl;
 import org.osmdroid.views.overlay.PathOverlay;
 
 import com.OsMoDroid.ColoredGPX.Statuses;

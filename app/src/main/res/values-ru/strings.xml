@@ -314,4 +314,7 @@
     <string name="nomounted">Память не смонтирована</string>
     <string name="needselectpoint">Нужна группа для отправки точки</string>
     <string name="surebufferlost">Буфер не пуст и нет соединения к серверу. Продолжить (буфер будет потерян) ?</string>
+    <string name="plot">Plot</string>
+    <string name="totalclimb">Набор высоты</string>
+    <string name="altitude_">Высота</string>
 </resources>

@@ -15,6 +15,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.content.res.Resources;
 import android.database.DataSetObserver;
 import android.graphics.Color;
 import android.net.Uri;
@@ -70,10 +71,9 @@ public class ChannelDevicesFragment extends Fragment implements ResultsListener
                     {
                         subacmi = acmi;
                     }
-
-
-
-//                if (item.getItemId() == 7)
+                try
+                    {
+                        //                if (item.getItemId() == 7)
 //                    {
 //                        ColorDialog.OnClickListener cl = new ColorDialog.OnClickListener()
 //                        {
@@ -107,94 +107,96 @@ public class ChannelDevicesFragment extends Fragment implements ResultsListener
 //                        ColorDialog dialog = new ColorDialog(globalActivity, false, getView(), LocalService.deviceList.get((int) acmi.id).color, cl, R.drawable.wheel);
 //                        dialog.show();
 //                    }
-                if (item.getItemId() == 8)
-                    {
-                        //REMOTE_CONTROL:[tracker_id]|DESTROY_DEVICE
-                        LocalService.myIM.sendToServer("SRC:" + LocalService.currentchanneldeviceList.get((int) subacmi.id).u + "|" + OsMoDroid.TRACKER_SESSION_START, true);
-                    }
-                if (item.getItemId() == 9)
-                    {
-                        //REMOTE_CONTROL:[tracker_id]|DESTROY_DEVICE
-                        globalActivity.mService.myIM.sendToServer("SRC:" + LocalService.currentchanneldeviceList.get((int) subacmi.id).u + "|" + OsMoDroid.TRACKER_SESSION_STOP, true);
-                    }
-                if (item.getItemId() == 10)
-                    {
-                        //REMOTE_CONTROL:[tracker_id]|DESTROY_DEVICE
-                        LinearLayout layout = new LinearLayout(getActivity());
-                        layout.setOrientation(LinearLayout.VERTICAL);
-                        final TextView txv5 = new TextView(getActivity());
-                        txv5.setText("Enter text to TTS");
-                        layout.addView(txv5);
-                        final EditText inputhash = new EditText(getActivity());
-                        layout.addView(inputhash);
-                        AlertDialog alertdialog3 = new AlertDialog.Builder(
-                                getActivity())
-                                .setTitle("Remote TTS")
-                                .setView(layout)
-                                .setPositiveButton(R.string.yes,
-                                        new DialogInterface.OnClickListener()
-                                        {
-                                            public void onClick(DialogInterface dialog,
-                                                                int whichButton)
+                        if (item.getItemId() == 8)
+                            {
+                                //REMOTE_CONTROL:[tracker_id]|DESTROY_DEVICE
+                                LocalService.myIM.sendToServer("SRC:" + LocalService.currentchanneldeviceList.get((int) subacmi.id).u + "|" + OsMoDroid.TRACKER_SESSION_START, true);
+                            }
+                        if (item.getItemId() == 9)
+                            {
+                                //REMOTE_CONTROL:[tracker_id]|DESTROY_DEVICE
+                                globalActivity.mService.myIM.sendToServer("SRC:" + LocalService.currentchanneldeviceList.get((int) subacmi.id).u + "|" + OsMoDroid.TRACKER_SESSION_STOP, true);
+                            }
+                        if (item.getItemId() == 10)
+                            {
+                                //REMOTE_CONTROL:[tracker_id]|DESTROY_DEVICE
+                                LinearLayout layout = new LinearLayout(getActivity());
+                                layout.setOrientation(LinearLayout.VERTICAL);
+                                final TextView txv5 = new TextView(getActivity());
+                                txv5.setText("Enter text to TTS");
+                                layout.addView(txv5);
+                                final EditText inputhash = new EditText(getActivity());
+                                layout.addView(inputhash);
+                                AlertDialog alertdialog3 = new AlertDialog.Builder(
+                                        getActivity())
+                                        .setTitle("Remote TTS")
+                                        .setView(layout)
+                                        .setPositiveButton(R.string.yes,
+                                                new DialogInterface.OnClickListener()
                                                 {
-                                                    if (!(inputhash.getText().toString().equals("")))
+                                                    public void onClick(DialogInterface dialog,
+                                                                        int whichButton)
                                                         {
-                                                            //REMOTE_CONTROL|TTS:Привет жена)
-                                                            globalActivity.mService.myIM.sendToServer("SRC:" + LocalService.currentchanneldeviceList.get((int) subacmi.id).u + "|" + "TTS:" + inputhash.getText().toString(), true);
+                                                            if (!(inputhash.getText().toString().equals("")))
+                                                                {
+                                                                    globalActivity.mService.myIM.sendToServer("SRC:" + LocalService.currentchanneldeviceList.get((int) subacmi.id).u + "|" + "TTS:" + inputhash.getText().toString(), true);
+                                                                }
                                                         }
-                                                }
-                                        })
-                                .setNegativeButton(R.string.No,
-                                        new DialogInterface.OnClickListener()
-                                        {
-                                            public void onClick(DialogInterface dialog,
-                                                                int whichButton)
+                                                })
+                                        .setNegativeButton(R.string.No,
+                                                new DialogInterface.OnClickListener()
                                                 {
+                                                    public void onClick(DialogInterface dialog,
+                                                                        int whichButton)
+                                                        {
 
-								/* User clicked cancel so do some stuff */
-                                                }
-                                        }).create();
-                        alertdialog3.show();
-                    }
-                if (item.getItemId() == 11)
-                    {
-                        globalActivity.mService.myIM.sendToServer("SRC:" + LocalService.currentchanneldeviceList.get((int) subacmi.id).u + "|" + OsMoDroid.ALARM_ON, true);
-                    }
-                if (item.getItemId() == 12)
-                    {
-                        globalActivity.mService.myIM.sendToServer("SRC:" + LocalService.currentchanneldeviceList.get((int) subacmi.id).u + "|" + OsMoDroid.ALARM_OFF, true);
-                    }
-                if (item.getItemId() == 13)
-                    {
-                        globalActivity.mService.myIM.sendToServer("SRC:" + LocalService.currentchanneldeviceList.get((int) subacmi.id).u + "|" + OsMoDroid.SIGNAL_ON, true);
-                    }
-                if (item.getItemId() == 14)
-                    {
-                        globalActivity.mService.myIM.sendToServer("SRC:" + LocalService.currentchanneldeviceList.get((int) subacmi.id).u + "|" + OsMoDroid.SIGNAL_OFF, true);
-                    }
-                if (item.getItemId() == 15)
-                    {
-                        globalActivity.mService.myIM.sendToServer("SRC:" + LocalService.currentchanneldeviceList.get((int) subacmi.id).u + "|" + OsMoDroid.WHERE, true);
-                    }
-
-
-                if (item.getItemId() == 6)
-                    {
-                        if (LocalService.channelsDevicesAdapter.getItem(acmi.position).lat != 0)
-                            {
-                                Log.d(getClass().getSimpleName(), "move to map to device");
-                                OsMoDroid.editor.putInt("centerlat", (int) ((LocalService.channelsDevicesAdapter.getItem(acmi.position).lat) * 1E6));
-                                OsMoDroid.editor.putInt("centerlon", (int) ((LocalService.channelsDevicesAdapter.getItem(acmi.position).lon) * 1E6));
-                                OsMoDroid.editor.putInt("zoom", 16);
-                                OsMoDroid.editor.putBoolean("isfollow", false);
-                                OsMoDroid.editor.commit();
-                                globalActivity.drawClickListener.selectItem(OsMoDroid.context.getString(R.string.map), null);
-                                LocalService.currentItemName = OsMoDroid.context.getString(R.string.map);
+                                        /* User clicked cancel so do some stuff */
+                                                        }
+                                                }).create();
+                                alertdialog3.show();
                             }
-                        else
+                        if (item.getItemId() == 11)
                             {
-                                Toast.makeText(globalActivity, R.string.unknown_location_now, Toast.LENGTH_SHORT).show();
+                                globalActivity.mService.myIM.sendToServer("SRC:" + LocalService.currentchanneldeviceList.get((int) subacmi.id).u + "|" + OsMoDroid.ALARM_ON, true);
                             }
+                        if (item.getItemId() == 12)
+                            {
+                                globalActivity.mService.myIM.sendToServer("SRC:" + LocalService.currentchanneldeviceList.get((int) subacmi.id).u + "|" + OsMoDroid.ALARM_OFF, true);
+                            }
+                        if (item.getItemId() == 13)
+                            {
+                                globalActivity.mService.myIM.sendToServer("SRC:" + LocalService.currentchanneldeviceList.get((int) subacmi.id).u + "|" + OsMoDroid.SIGNAL_ON, true);
+                            }
+                        if (item.getItemId() == 14)
+                            {
+                                globalActivity.mService.myIM.sendToServer("SRC:" + LocalService.currentchanneldeviceList.get((int) subacmi.id).u + "|" + OsMoDroid.SIGNAL_OFF, true);
+                            }
+                        if (item.getItemId() == 15)
+                            {
+                                globalActivity.mService.myIM.sendToServer("SRC:" + LocalService.currentchanneldeviceList.get((int) subacmi.id).u + "|" + OsMoDroid.WHERE, true);
+                            }
+                        if (item.getItemId() == 6)
+                            {
+                                if (LocalService.channelsDevicesAdapter.getItem(acmi.position).lat != 0)
+                                    {
+                                        Log.d(getClass().getSimpleName(), "move to map to device");
+                                        OsMoDroid.editor.putInt("centerlat", (int) ((LocalService.channelsDevicesAdapter.getItem(acmi.position).lat) * 1E6));
+                                        OsMoDroid.editor.putInt("centerlon", (int) ((LocalService.channelsDevicesAdapter.getItem(acmi.position).lon) * 1E6));
+                                        OsMoDroid.editor.putInt("zoom", 16);
+                                        OsMoDroid.editor.putBoolean("isfollow", false);
+                                        OsMoDroid.editor.commit();
+                                        globalActivity.drawClickListener.selectItem(OsMoDroid.context.getString(R.string.map), null);
+                                        LocalService.currentItemName = OsMoDroid.context.getString(R.string.map);
+                                    }
+                                else
+                                    {
+                                        Toast.makeText(globalActivity, R.string.unknown_location_now, Toast.LENGTH_SHORT).show();
+                                    }
+                            }
+                    }
+                catch (Exception e)
+                    {
+                        e.printStackTrace();
                     }
                 return super.onContextItemSelected(item);
             }

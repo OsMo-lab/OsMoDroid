@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
-
+import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -63,6 +63,7 @@ import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
+import static com.OsMoDroid.LocalService.myManager;
 /**
  * @author dfokin
  *         Class for work with osmo server
@@ -1207,6 +1208,10 @@ public class IM implements ResultsListener
                                         localService.tts.speak(addict, TextToSpeech.QUEUE_ADD, null);
                                     }
                             }
+                        if(param.equals(OsMoDroid.SIGNAL_STATUS))
+                            {
+                                sendToServer("RCR:"+OsMoDroid.SIGNAL_STATUS+localService.signalisationOn,false);
+                            }
                         if (param.equals(OsMoDroid.ALARM_ON))
                             {
                                 localService.playAlarmOn();
@@ -1308,40 +1313,52 @@ public class IM implements ResultsListener
                             {
                                 sendToServer("RCR:" + OsMoDroid.WHERE + "|1", false);
                                 localService.where = true;
-                                if (!localService.state)
+                                List<String> list = myManager.getAllProviders();
+                                if (list.contains(LocationManager.GPS_PROVIDER))
                                     {
-                                        localService.alertHandler.post(new Runnable()
-                                        {
-                                            public void run()
-                                                {
-                                                    localService.myManager.requestSingleUpdate(LocationManager.GPS_PROVIDER, localService.singleLocationListener, null);
+                                        if (!localService.state)
+                                            {
+                                                localService.alertHandler.post(new Runnable()
+                                                    {
+                                                        public void run()
+                                                            {
+                                                                myManager.requestSingleUpdate(LocationManager.GPS_PROVIDER, localService.singleLocationListener, null);
 
-                                                    if (log)
-                                                        {
-                                                            Log.d(this.getClass().getName(), "подписались на GPS");
-                                                        }
-                                                }
-                                        });
+                                                                if (log)
+                                                                    {
+                                                                        Log.d(this.getClass().getName(), "подписались на GPS");
+                                                                    }
+                                                            }
+                                                    });
+                                            }
+                                    }
+                                if (list.contains(LocationManager.NETWORK_PROVIDER))
+                                    {
+                                        localService.alertHandler.postDelayed(new Runnable()
+                                            {
+                                                public void run()
+                                                    {
+                                                        myManager.requestSingleUpdate(LocationManager.NETWORK_PROVIDER, localService.singleLocationListener, null);
+                                                        if (log)
+                                                            {
+                                                                Log.d(this.getClass().getName(), "подписались на NETWORK");
+                                                            }
+                                                    }
+                                            }, 30000);
                                     }
                                 localService.alertHandler.postDelayed(new Runnable()
                                 {
                                     public void run()
                                         {
-                                            localService.myManager.requestSingleUpdate(LocationManager.NETWORK_PROVIDER, localService.singleLocationListener, null);
-                                            if (log)
-                                                {
-                                                    Log.d(this.getClass().getName(), "подписались на NETWORK");
-                                                }
-                                        }
-                                }, 30000);
-                                localService.alertHandler.postDelayed(new Runnable()
-                                {
-                                    public void run()
-                                        {
-                                            localService.myManager.removeUpdates(localService.singleLocationListener);
+                                            myManager.removeUpdates(localService.singleLocationListener);
                                             localService.where=false;
                                         }
                                 }, 90000);
+                            }
+                        if(param.equals(OsMoDroid.SOS_DEPRESS))
+                            {
+                                localService.sos=false;
+                                localService.refresh();
                             }
                     }
                 if (command.equals("MOTD"))
@@ -1580,6 +1597,7 @@ public class IM implements ResultsListener
 
                 if (command.equals("GP"))
                     {
+                        long eid=0;
                         if (jo.has("refresh"))
                             {
                                 if (jo.getBoolean("refresh"))
@@ -1601,6 +1619,11 @@ public class IM implements ResultsListener
                                                 for (int i = 0; i<geoevents.length();i++)
                                                     {
                                                         jsonObject=geoevents.getJSONObject(i);
+                                                        long e1=jsonObject.optLong("e");
+                                                        if (e1>eid)
+                                                            {
+                                                                eid=e1;
+                                                            }
                                                         String name = jsonObject.optString("nick");
                                                         String time="";
 
@@ -1628,6 +1651,11 @@ public class IM implements ResultsListener
                                                 for (int i = 0; i<announcements.length();i++)
                                                     {
                                                         jsonObject=announcements.getJSONObject(i);
+                                                        long e1=jsonObject.optLong("e");
+                                                        if (e1>eid)
+                                                            {
+                                                                eid=e1;
+                                                            }
                                                         String messageText =ch.name+": "+jsonObject.optString("text");
                                                         String time="";
 
@@ -1650,6 +1678,11 @@ public class IM implements ResultsListener
                                                 for (int i = 0; i < tracks.length(); i++)
                                                     {
                                                         jsonObject = tracks.getJSONObject(i);
+                                                        long e1=jsonObject.optLong("e");
+                                                        if (e1>eid)
+                                                            {
+                                                                eid=e1;
+                                                            }
                                                         boolean exist = false;
                                                         if (jsonObject.has("deleted"))
                                                             {
@@ -1685,6 +1718,11 @@ public class IM implements ResultsListener
                                                         try
                                                             {
                                                                 jsonObject = points.getJSONObject(i);
+                                                                long e1=jsonObject.optLong("e");
+                                                                if (e1>eid)
+                                                                    {
+                                                                        eid=e1;
+                                                                    }
                                                                 boolean exist = false;
                                                                 if (jsonObject.has("deleted"))
                                                                     {
@@ -1741,6 +1779,11 @@ public class IM implements ResultsListener
                                                         try
                                                             {
                                                                 jsonObject = users.getJSONObject(i);
+                                                                long e1=jsonObject.optLong("e");
+                                                                if (e1>eid)
+                                                                    {
+                                                                        eid=e1;
+                                                                    }
                                                                 try
                                                                     {
                                                                         if (jsonObject.has("deleted"))
@@ -1842,6 +1885,17 @@ public class IM implements ResultsListener
                                                                                                            e.printStackTrace();
                                                                                                        }
                                                                                                     }
+                                                                                                if(jsonObject.has("time"))
+                                                                                                    {
+                                                                                                        try
+                                                                                                            {
+                                                                                                                dev.updatated=  jsonObject.optLong("time")*1000;
+                                                                                                            }
+                                                                                                        catch (IllegalArgumentException e)
+                                                                                                            {
+                                                                                                                e.printStackTrace();
+                                                                                                            }
+                                                                                                    }
                                                                                                 getDevtrace(jsonObject, dev);
                                                                                                 ch.deviceList.add(dev);
                                                                                                 Collections.sort(ch.deviceList);
@@ -1885,7 +1939,7 @@ public class IM implements ResultsListener
                             }
                         else
                             {
-                                sendToServer("GPR:" + param, false);
+                                sendToServer("GPR:" + param+'|'+eid, false);
                             }
                     }
 

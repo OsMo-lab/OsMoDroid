@@ -38,12 +38,14 @@ public class OsMoDroid extends Application
         public static final String TRACKER_SESSION_STOP = "2";
         public static final String TTS = "46";
         public static final String WHERE = "12";
+        public static final String SIGNAL_STATUS = "30";
         public static final String SIGNAL_OFF = "32";
         public static final String SIGNAL_ON = "31";
         public static final String ALARM_OFF = "34";
         public static final String ALARM_ON = "33";
         public static final String REFRESH_DEVICES = "91";
         public static final String REFRESH_GROUPS = "92";
+        public static final String SOS_DEPRESS = "95";
         public static final int NOTIFY_ERROR_SENDID = 0;
         public static final int NOTIFY_NO_DEVICE = 1;
         public static final int NOTIFY_EXPIRY_USER = 2;

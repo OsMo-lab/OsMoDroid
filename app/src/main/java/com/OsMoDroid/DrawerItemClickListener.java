@@ -77,7 +77,16 @@ public class DrawerItemClickListener implements OnItemClickListener
                         if (map == null)
                             {
                                 map = new MapFragment();
+                                if(bundle!=null&&bundle.size()>0)
+                                    {
+                                        map.setArguments(bundle);
+                                    }
+                                else
+                                    {
+                                        map.setArguments(null);
+                                    }
                             }
+
                         ft.replace(R.id.fragment_container, map);
                         currentItem = 2;
                     }

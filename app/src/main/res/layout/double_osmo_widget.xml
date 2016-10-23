@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:id="@+id/textViewWidget"
-        android:background="@android:color/background_dark"
+        android:background="@drawable/rounded_background"
         android:textColor="#FA8D10"
 
         />

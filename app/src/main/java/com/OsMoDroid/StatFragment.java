@@ -19,6 +19,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.LineChart;
@@ -30,6 +31,8 @@ import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.ChartTouchListener;
 import com.github.mikephil.charting.listener.OnChartGestureListener;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
+
+import org.w3c.dom.Text;
 public class StatFragment extends Fragment implements OnChartGestureListener, OnChartValueSelectedListener
     {
         private GPSLocalServiceClient globalActivity;
@@ -39,7 +42,11 @@ public class StatFragment extends Fragment implements OnChartGestureListener, On
         LineDataSet speedDataSet;
         LineDataSet avgspeedDataSet;
         LineDataSet altitudeDataSet;
-
+        private View l1;
+        private View l2;
+        private View l3;
+        private View l4;
+        private MenuItem plot;
         @Override
         public void onDestroy()
             {
@@ -84,8 +91,18 @@ public class StatFragment extends Fragment implements OnChartGestureListener, On
         public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
             {
                 MenuItem bind = menu.add(0, 1, 0, R.string.reset);
+                plot = menu.add(0, 2, 0, R.string.plot);
                 MenuItemCompat.setShowAsAction(bind, MenuItemCompat.SHOW_AS_ACTION_IF_ROOM);
+                MenuItemCompat.setShowAsAction(plot, MenuItemCompat.SHOW_AS_ACTION_IF_ROOM);
                 bind.setIcon(android.R.drawable.ic_menu_revert);
+                if(mChart.getVisibility()==View.GONE)
+                    {
+                        plot.setIcon(android.R.drawable.ic_menu_gallery);
+                    }
+                else
+                    {
+                        plot.setIcon(android.R.drawable.ic_menu_info_details);
+                    }
                 super.onCreateOptionsMenu(menu, inflater);
             }
         @Override
@@ -108,6 +125,7 @@ public class StatFragment extends Fragment implements OnChartGestureListener, On
                                                 globalActivity.mService.avgspeed = 0;
                                                 globalActivity.mService.maxspeed = 0;
                                                 globalActivity.mService.intKM = 0;
+                                                globalActivity.mService.totalclimb = 0;
                                                 globalActivity.mService.workdistance = 0;
                                                 globalActivity.mService.timeperiod = 0;
                                                 globalActivity.mService.workmilli = System.currentTimeMillis();
@@ -137,6 +155,27 @@ public class StatFragment extends Fragment implements OnChartGestureListener, On
                                     });
                             alertdialog1.show();
                             break;
+                        case 2:
+                            if(mChart.getVisibility()==View.VISIBLE)
+                                {
+                                    mChart.setVisibility(View.GONE);
+                                    l1.setVisibility(View.VISIBLE);
+                                    l2.setVisibility(View.VISIBLE);
+                                    l3.setVisibility(View.VISIBLE);
+                                    l4.setVisibility(View.VISIBLE);
+                                    plot.setIcon(android.R.drawable.ic_menu_gallery);
+                                }
+                            else
+                                {
+                                    mChart.setVisibility(View.VISIBLE);
+                                    l1.setVisibility(View.GONE);
+                                    l2.setVisibility(View.GONE);
+                                    l3.setVisibility(View.GONE);
+                                    l4.setVisibility(View.GONE);
+                                    plot.setIcon(android.R.drawable.ic_menu_info_details);
+
+                                }
+                            getActivity().supportInvalidateOptionsMenu();
                         default:
                             break;
                     }
@@ -148,6 +187,10 @@ public class StatFragment extends Fragment implements OnChartGestureListener, On
             {
                 if(OsMoDroid.debug) Log.d(getClass().getSimpleName(), "StatFragment onCreateView");
                 final View view = inflater.inflate(R.layout.status, container, false);
+                l1=view.findViewById(R.id.l1);
+                l2=view.findViewById(R.id.l2);
+                l3=view.findViewById(R.id.l3);
+                l4=view.findViewById(R.id.l4);
                 if (globalActivity.mService != null)
                     {
                         TextView currentSpeedTextView = (TextView) view.findViewById(R.id.CurrentSpeedTextView);
@@ -157,6 +200,8 @@ public class StatFragment extends Fragment implements OnChartGestureListener, On
                         TextView timeperiodTextView = (TextView) view.findViewById(R.id.timeperiodTextView);
                         TextView sendTextView = (TextView) view.findViewById(R.id.sendTextView);
                         TextView writeTextView = (TextView) view.findViewById(R.id.WriteTextView);
+                        TextView altTextView = (TextView)view.findViewById(R.id.altTextView);
+                        TextView climbTextView = (TextView) view.findViewById(R.id.climbTextView);
                         currentSpeedTextView.setText(OsMoDroid.df0.format(globalActivity.mService.currentspeed * 3.6));
                         maxSpeedTextView.setText(OsMoDroid.df1.format(globalActivity.mService.maxspeed * 3.6));
                         avgSpeedTextView.setText(OsMoDroid.df1.format(globalActivity.mService.avgspeed * 3600));
@@ -164,9 +209,17 @@ public class StatFragment extends Fragment implements OnChartGestureListener, On
                         timeperiodTextView.setText(LocalService.formatInterval(globalActivity.mService.timeperiod));
                         sendTextView.setText(Integer.toString(globalActivity.mService.sendcounter));
                         writeTextView.setText(Integer.toString(globalActivity.mService.writecounter));
+                        if(globalActivity.mService.altitude!=Integer.MIN_VALUE)
+                            {
+                                altTextView.setText(Integer.toString(globalActivity.mService.altitude));
+                            }
+
+                        climbTextView.setText(Integer.toString(globalActivity.mService.totalclimb));
+
                     }
 
                 mChart = (LineChart) view.findViewById(R.id.lineChart1);
+                mChart.setVisibility(View.GONE);
 
 
                 speedDataSet = new LineDataSet(LocalService.speeddistanceEntryList,  getString(R.string.speed));
@@ -261,6 +314,14 @@ public class StatFragment extends Fragment implements OnChartGestureListener, On
                                 timeperiodTextView.setText(intent.getStringExtra("timeperiod"));
                                 sendTextView.setText(Integer.toString(intent.getIntExtra("sendcounter", 0)));
                                 writeTextView.setText(Integer.toString(intent.getIntExtra("writecounter", 0)));
+
+                                TextView altTextView = (TextView)view.findViewById(R.id.altTextView);
+                                TextView climbTextView = (TextView) view.findViewById(R.id.climbTextView);
+                                if((intent.getIntExtra("altitude",0)!=Integer.MIN_VALUE))
+                                    {
+                                        altTextView.setText(intent.getStringExtra("altitude"));
+                                    }
+                                climbTextView.setText(intent.getStringExtra("totalclimb"));
                                 if(mChart!=null)
                                     {
                                         try

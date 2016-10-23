@@ -3,10 +3,10 @@ import java.util.ArrayList;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.osmdroid.ResourceProxy;
-import org.osmdroid.ResourceProxy.string;
+
 import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.api.IMapController;
+import org.osmdroid.events.DelayedMapListener;
 import org.osmdroid.events.MapListener;
 import org.osmdroid.events.ScrollEvent;
 import org.osmdroid.events.ZoomEvent;
@@ -24,10 +24,11 @@ import org.osmdroid.tileprovider.tilesource.XYTileSource;
 import org.osmdroid.tileprovider.tilesource.bing.BingMapTileSource;
 import org.osmdroid.tileprovider.util.SimpleRegisterReceiver;
 import org.osmdroid.util.GeoPoint;
-import org.osmdroid.util.ResourceProxyImpl;
+
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.ItemizedIconOverlay;
 import org.osmdroid.views.overlay.ItemizedOverlay;
+import org.osmdroid.views.overlay.ItemizedOverlayWithFocus;
 import org.osmdroid.views.overlay.Overlay;
 import org.osmdroid.views.overlay.OverlayItem;
 import org.osmdroid.views.overlay.OverlayItem.HotspotPlace;
@@ -87,7 +88,7 @@ import com.OsMoDroid.MapFragment.MAPSurferTileSource;
 public class MapFragment extends Fragment implements DeviceChange, IMyLocationProvider, LocationListener
     {
         Handler mHandler = new Handler();
-        ResourceProxyImpl mResourceProxy;
+
         MapView mMapView;
 
         private Runnable mRunnable = new Runnable()
@@ -116,6 +117,8 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
         private ITileSource chepeTileSource;
         private ChannelsOverlay choverlay;
         private TextView speddTextView;
+        private MapListener wrappedListener;
+        private GeoPoint prevGeoPoint;
         @Override
         public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
             {
@@ -362,7 +365,7 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
         public void onDetach()
             {
                 LocalService.devlistener = null;
-                mResourceProxy = null;
+
                 mMapView = null;
                 mController = null;
                 myLoc.disableMyLocation();
@@ -395,6 +398,7 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
                 Log.d(getClass().getSimpleName(), "map onpause");
                 mMapView.getOverlays().remove(myLoc);
                 myLoc.disableMyLocation();
+                mMapView.setMapListener(null);
                 super.onPause();
             }
         @Override
@@ -404,12 +408,48 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
                 globalActivity.actionBar.setTitle(getString(R.string.map));
                 mMapView.getOverlays().add(myLoc);
                 myLoc.enableMyLocation();
+                sendcentercoords();
+                wrappedListener = new MapListener()
+                    {
+                        @Override
+                        public boolean onScroll(ScrollEvent scrollEvent)
+                            {
+                                GeoPoint mapCenter = (GeoPoint) scrollEvent.getSource().getMapCenter();
+                                if(prevGeoPoint==null||mapCenter.distanceTo(prevGeoPoint)>5000)
+                                    {
+                                        prevGeoPoint=mapCenter;
+                                        sendcentercoords();
+                                    };
+
+                                return false;
+                            }
+                        @Override
+                        public boolean onZoom(ZoomEvent zoomEvent)
+                            {
+                                return false;
+                            }
+                    };
+                mMapView.setMapListener(wrappedListener);
+                super.onResume();
+            }
+        private void sendcentercoords()
+            {
                 if (LocalService.myIM != null && LocalService.myIM.authed)
                     {
-                        globalActivity.mService.myIM.sendToServer("SM", false);
-                    }
 
-                super.onResume();
+                        JSONObject json = new JSONObject();
+                        try
+                            {
+                                json.put("lat",mMapView.getMapCenter().getLatitude());
+                                json.put("lon",mMapView.getMapCenter().getLongitude());
+                                json.put("zoom",mMapView.getZoomLevel());
+                            }
+                        catch (JSONException e)
+                            {
+
+                            }
+                        globalActivity.mService.myIM.sendToServer("SM|"+json.toString(), false);
+                    }
             }
         @Override
         public void onStart()
@@ -447,7 +487,7 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
                                  Bundle savedInstanceState)
             {
                 Log.d(getClass().getSimpleName(), "map oncreateview");
-                mResourceProxy = new ResourceProxyImpl(inflater.getContext().getApplicationContext());
+
                 final String name = "MapSurfer";
                 final int aZoomMinLevel = 0;
                 final int aZoomMaxLevel = 18;
@@ -458,15 +498,15 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
                 final String[] outdoorURL = new String[]{"http://tile.thunderforest.com/outdoors/"};
                 final String[] chepeURL = new String[]{"http://ingreelab.net/C04AF0B62BEC112E8D7242FB848631D12D252728/"};
                 bingTileSource = new BingMapTileSource(null);
-                sputnikTileSource = new SputnikTileSource("Sputnik", string.unknown, aZoomMinLevel, aZoomMaxLevel, 512, aImageFilenameEnding, sputnikURL);
-                outdoorTileSource = new OutdoorTileSource("OutDoor", string.unknown, aZoomMinLevel, aZoomMaxLevel, aTileSizePixels, aImageFilenameEnding, outdoorURL);
-                chepeTileSource = new OutdoorTileSource("Chepe", string.unknown, aZoomMinLevel, aZoomMaxLevel, aTileSizePixels, aImageFilenameEnding, chepeURL);
-                mapSurferTileSource = new MAPSurferTileSource(name, string.unknown, aZoomMinLevel, aZoomMaxLevel, aTileSizePixels, aImageFilenameEnding, aBaseUrl);
+                sputnikTileSource = new SputnikTileSource("Sputnik",  aZoomMinLevel, aZoomMaxLevel, 512, aImageFilenameEnding, sputnikURL);
+                outdoorTileSource = new OutdoorTileSource("OutDoor",  aZoomMinLevel, aZoomMaxLevel, aTileSizePixels, aImageFilenameEnding, outdoorURL);
+                chepeTileSource = new OutdoorTileSource("Chepe",  aZoomMinLevel, aZoomMaxLevel, aTileSizePixels, aImageFilenameEnding, chepeURL);
+                mapSurferTileSource = new MAPSurferTileSource(name, aZoomMinLevel, aZoomMaxLevel, aTileSizePixels, aImageFilenameEnding, aBaseUrl);
                 View view = inflater.inflate(R.layout.map, container, false);
                 RelativeLayout rl = (RelativeLayout) view.findViewById(R.id.relative);
                 CustomTileProvider customTileProvider = new CustomTileProvider(getActivity());
 
-                mMapView = new MapView(getActivity(), mResourceProxy,  customTileProvider);
+                mMapView = new MapView(getActivity(),   customTileProvider);
                 RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.FILL_PARENT, RelativeLayout.LayoutParams.FILL_PARENT);
                 lp.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
                 lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
@@ -532,7 +572,7 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
 //				myTracePathOverlay.addPoints(LocalService.traceList);
 //			}
                 //mMapView.getOverlays().add(myTracePathOverlay);
-                myLoc = new MyLocationNewOverlay(getActivity(), this, mMapView);
+                myLoc = new MyLocationNewOverlay( this, mMapView);
                 myLoc.setOptionsMenuEnabled(true);
                 if (OsMoDroid.settings.getBoolean("isfollow", true))
                     {
@@ -542,7 +582,8 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
                 mMapView.setBuiltInZoomControls(true);
                 mMapView.setMultiTouchControls(true);
                 mController = mMapView.getController();
-                if (OsMoDroid.settings.getInt("centerlat", -1) != -1)
+                Bundle bundle = getArguments();
+                if (OsMoDroid.settings.getInt("centerlat", -1) != -1&&bundle==null)
                     {
                         new Handler(Looper.getMainLooper()).post(
                                 new Runnable()
@@ -590,17 +631,39 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
                         }
                 });
                 CompassOverlay compas = new CompassOverlay(getActivity(), mMapView);
-                choverlay = new ChannelsOverlay(mResourceProxy, mMapView);
+                choverlay = new ChannelsOverlay( mMapView);
                 mMapView.getOverlays().add(choverlay);
                 mMapView.getOverlays().add(compas);
                 compas.enableCompass();
                 mMapView.setKeepScreenOn(true);
+
+                if (bundle != null)
+                    {
+                        mController.setCenter(new GeoPoint(bundle.getFloat("lat"),bundle.getFloat("lon")));
+                        mController.animateTo(new GeoPoint(bundle.getFloat("lat"),bundle.getFloat("lon")));
+                        ArrayList<OverlayItem> items = new ArrayList<OverlayItem>();
+                        items.add(new OverlayItem("", "", new GeoPoint(bundle.getFloat("lat"),bundle.getFloat("lon"))));
+                        ItemizedOverlayWithFocus<OverlayItem> mOverlay = new ItemizedOverlayWithFocus<OverlayItem>(items,
+                                new ItemizedIconOverlay.OnItemGestureListener<OverlayItem>() {
+                                    @Override
+                                    public boolean onItemSingleTapUp(final int index, final OverlayItem item) {
+                                        return true;
+                                    }
+                                    @Override
+                                    public boolean onItemLongPress(final int index, final OverlayItem item) {
+                                        return false;
+                                    }
+                                },getContext());
+                        mOverlay.setFocusItemsOnTap(true);
+                        mMapView.getOverlays().add(mOverlay);
+                    }
+
                 return view;
             }
         private void reinitchoverlay()
             {
                 mMapView.getOverlays().remove(choverlay);
-                choverlay = new ChannelsOverlay(mResourceProxy, mMapView);
+                choverlay = new ChannelsOverlay( mMapView);
                 mMapView.getOverlays().add(choverlay);
             }
         @Override
@@ -639,6 +702,10 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
                     {
                         return forcenetworklocation;
                     }
+            }
+        @Override
+        public void destroy()
+            {
             }
         @Override
         public boolean startLocationProvider(IMyLocationConsumer locationConsumer)
@@ -723,7 +790,7 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
             }
         class MAPSurferTileSource extends OnlineTileSourceBase
             {
-                MAPSurferTileSource(String aName, string aResourceId, int aZoomMinLevel,
+                MAPSurferTileSource(String aName, int aZoomMinLevel,
                                     int aZoomMaxLevel, int aTileSizePixels,
                                     String aImageFilenameEnding, String... aBaseUrl)
                     {
@@ -740,7 +807,7 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
             }
         class SputnikTileSource extends OnlineTileSourceBase
             {
-                SputnikTileSource(String aName, string aResourceId, int aZoomMinLevel,
+                SputnikTileSource(String aName,  int aZoomMinLevel,
                                   int aZoomMaxLevel, int aTileSizePixels,
                                   String aImageFilenameEnding, String... aBaseUrl)
                     {
@@ -756,7 +823,7 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
             }
         class OutdoorTileSource extends OnlineTileSourceBase
             {
-                OutdoorTileSource(String aName, string aResourceId, int aZoomMinLevel,
+                OutdoorTileSource(String aName, int aZoomMinLevel,
                                   int aZoomMaxLevel, int aTileSizePixels,
                                   String aImageFilenameEnding, String... aBaseUrl)
                     {
@@ -779,7 +846,8 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
                 public CustomTileProvider(IRegisterReceiver pRegisterReceiver, INetworkAvailablityCheck aNetworkAvailablityCheck,
                                           ITileSource pTileSource)
                     {
-                        super(pRegisterReceiver, aNetworkAvailablityCheck, pTileSource, getActivity());
+
+                        super(pRegisterReceiver, aNetworkAvailablityCheck, pTileSource, getActivity(),null  );
                         mTileProviderList.set(0, new CustomMapTileFilesystemProvider(pRegisterReceiver, pTileSource));
                     }
                 @Override

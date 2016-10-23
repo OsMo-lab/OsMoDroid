@@ -79,6 +79,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
@@ -586,11 +587,20 @@ public class GPSLocalServiceClient extends ActionBarActivity
                                 mService.myIM.start();
                             }
                     }
+
             }
         @Override
         protected void onResume()
             {
                 super.onResume();
+                if(OsMoDroid.settings.getBoolean("usewake",false))
+                    {
+                        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+                    }
+                else
+                    {
+                        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+                    }
                 Log.d(this.getClass().getSimpleName(), "onResume() gpsclient");
 
 //		if (hash.equals("") && live) {
@@ -673,8 +683,22 @@ public class GPSLocalServiceClient extends ActionBarActivity
                         else if (intent.getAction().equals(Intent.ACTION_VIEW)&&intent.getScheme().equals("geo"))
                             {
 
-                                drawClickListener.selectItem(getString(R.string.map),null);
+
                                 Log.d(this.getClass().getSimpleName(), "on new intent=cation_view geo");
+                                Bundle b = new Bundle();
+                                try
+                                    {
+                                        LocalService.addlog("geo="+intent.getData().getSchemeSpecificPart());
+                                        b.putFloat("lat",Float.parseFloat(intent.getData().getSchemeSpecificPart().split("=")[1].split(",")[0]));
+                                        b.putFloat("lon",Float.parseFloat(intent.getData().getSchemeSpecificPart().split("=")[1].split(",")[1]));
+                                    }
+                                catch (Exception e)
+
+                                    {
+                                        LocalService.addlog("cant parse geo ");
+                                        e.printStackTrace();
+                                    }
+                                drawClickListener.selectItem(getString(R.string.map),b);
                             }
                         Intent i = getIntent();
                         i.setAction(null);

@@ -130,6 +130,9 @@ public class LocalService extends Service implements LocationListener, GpsStatus
         private boolean gpsbeepedon = false;
         private boolean gpsbeepedoff = false;
         static float  maxspeed = 0;
+        int totalclimb;
+        int altitude=Integer.MIN_VALUE;
+        int prevaltitude=Integer.MIN_VALUE;
         float avgspeed;
         float currentspeed;
         long timeperiod = 0;
@@ -514,6 +517,16 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                 in.putExtra("maxspeed", OsMoDroid.df1.format(maxspeed * 3.6));
                 in.putExtra("workdistance", OsMoDroid.df2.format(workdistance / 1000));
                 in.putExtra("timeperiod", formatInterval(timeperiod));
+                if(altitude!=Integer.MIN_VALUE)
+                    {
+                        in.putExtra("altitude", OsMoDroid.df0.format(altitude));
+                    }
+                else
+                    {
+                        in.putExtra("altitude", "");
+                    }
+
+                in.putExtra("totalclimb",OsMoDroid.df0.format(totalclimb));
                 if (myIM != null)
                     {
                         in.putExtra("connect", myIM.connOpened);
@@ -603,8 +616,18 @@ public class LocalService extends Service implements LocationListener, GpsStatus
             }
         public void sendPosition()
             {
-                Location forcelocation = myManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                Location forcenetworklocation = myManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                Location forcelocation=null;
+                Location forcenetworklocation=null;
+                List<String> list = myManager.getAllProviders();
+                if (list.contains(LocationManager.GPS_PROVIDER))
+                    {
+                        forcelocation = myManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                        if (list.contains(LocationManager.NETWORK_PROVIDER))
+                            {
+                                forcenetworklocation = myManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                            }
+                    }
+
                 if (forcelocation == null)
                     {
                         if (forcenetworklocation == null)
@@ -1281,6 +1304,8 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                         distanceStringList.clear();
                         writecounter=0;
                         sendingbuffer.clear();
+                        totalclimb=0;
+                        altitude=Integer.MIN_VALUE;
 
 
                         firstsend = true;
@@ -1786,6 +1811,20 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                 if ((int) location.getAccuracy() < hdop_gpx)
                     {
                         currentspeed = location.getSpeed();
+                        altitude= (int) location.getAltitude();
+                        if(prevaltitude==Integer.MIN_VALUE)
+                            {
+                                prevaltitude=altitude;
+                            }
+                        else
+                            {
+                                if((altitude-prevaltitude)>2)
+                                    {
+                                        totalclimb=altitude-prevaltitude;
+                                        prevaltitude=altitude;
+                                    }
+                            }
+
                         if (location.getSpeed() > maxspeed)
                             {
                                 maxspeed = location.getSpeed();
@@ -2478,6 +2517,13 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                     PendingIntent stop = PendingIntent.getService(this, 0, is, PendingIntent.FLAG_UPDATE_CURRENT);
                     remoteViews.setOnClickPendingIntent(R.id.imageButtonWidget, stop);
                     remoteViews.setTextViewText(R.id.textViewWidget, OsMoDroid.df2.format(workdistance / 1000)+'\n'+OsMoDroid.df0.format(avgspeed*3600)+'\n'+formatInterval(timeperiod));
+
+                    Intent notificationIntent = new Intent(this, GPSLocalServiceClient.class);
+                    notificationIntent.setAction(Intent.ACTION_MAIN);
+                    notificationIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+                    osmodroidLaunchIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+                    remoteViews.setOnClickPendingIntent(R.id.textViewWidget, osmodroidLaunchIntent);
+
                     appWidgetManager.updateAppWidget(widgetId, remoteViews);
 
                 }

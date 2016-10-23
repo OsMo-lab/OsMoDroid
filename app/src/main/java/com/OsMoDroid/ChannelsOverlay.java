@@ -5,9 +5,10 @@ import java.util.List;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.osmdroid.ResourceProxy;
+
 import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.api.IMapView;
+import org.osmdroid.util.BoundingBox;
 import org.osmdroid.util.BoundingBoxE6;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
@@ -76,9 +77,9 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
                 int size=0;
             }
         ArrayList<Cluster> clusters=new ArrayList<Cluster>();
-        public ChannelsOverlay(ResourceProxy pResourceProxy, MapView map)
+        public ChannelsOverlay( MapView map)
             {
-                super(pResourceProxy);
+
                 this.map = map;
 
                 this.mapFragment = mapFragment;
@@ -134,7 +135,7 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
                     }
                 //pathpaint.setAlpha(128);
 
-                final BoundingBoxE6 theBoundingBox = mapView.getBoundingBox();
+                final BoundingBox theBoundingBox = mapView.getBoundingBox();
                 final Projection pj = mapView.getProjection();
                 final Point scrPoint = new Point();
                 final Point scrPoint1 = new Point();
@@ -458,7 +459,7 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
                             }
                     }
             }
-        private void drawGPX(Canvas canvas, final Projection pj, ColoredGPX gpx, BoundingBoxE6 theBoundingBox, Point scrPoint, MapView mapView)
+        private void drawGPX(Canvas canvas, final Projection pj, ColoredGPX gpx, BoundingBox theBoundingBox, Point scrPoint, MapView mapView)
             {
                 if(gpx.paint==null)
                     {
@@ -509,11 +510,11 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
                         Point projectedPoint0; // points from the points list
                         Point projectedPoint1;
                         // clipping rectangle in the intermediate projection, to avoid performing projection.
-                        BoundingBoxE6 boundingBox = pj.getBoundingBox();
-                        Point topLeft = pj.toProjectedPixels(boundingBox.getLatNorthE6(),
-                                boundingBox.getLonWestE6(), null);
-                        Point bottomRight = pj.toProjectedPixels(boundingBox.getLatSouthE6(),
-                                boundingBox.getLonEastE6(), null);
+                        BoundingBox boundingBox = pj.getBoundingBox();
+                        Point topLeft = pj.toProjectedPixels(boundingBox.getLatNorth(),
+                                boundingBox.getLonWest(), null);
+                        Point bottomRight = pj.toProjectedPixels(boundingBox.getLatSouth(),
+                                boundingBox.getLonEast(), null);
                         final Rect clipBounds = new Rect(topLeft.x, topLeft.y, bottomRight.x, bottomRight.y);
                         //gpx.mPath.rewind();
                         projectedPoint0 = gpx.points.get(size - 1);
