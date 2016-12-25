@@ -682,7 +682,8 @@ public class GPSLocalServiceClient extends ActionBarActivity
                             }
                         else if (intent.getAction().equals(Intent.ACTION_VIEW)&&intent.getScheme().equals("geo"))
                             {
-
+                                //2016-10-24 20:42:57 geo=59.988184,30.426023?z=18&q=59.988184,30.426023 S=1564 R=47190 overall by netstat=11022
+                                //2016-10-24 20:42:57 cant parse geo  S=1564 R=47190 overall by netstat=11022
 
                                 Log.d(this.getClass().getSimpleName(), "on new intent=cation_view geo");
                                 Bundle b = new Bundle();
@@ -695,6 +696,17 @@ public class GPSLocalServiceClient extends ActionBarActivity
                                 catch (Exception e)
 
                                     {
+                                        try
+                                            {
+                                                String s = intent.getData().getSchemeSpecificPart();
+                                                b.putFloat("lat",Float.parseFloat(s.substring(s.indexOf("q=")+2,s.indexOf("q=")+21).split(",")[0]));
+                                                b.putFloat("lon",Float.parseFloat(s.substring(s.indexOf("q=")+2,s.indexOf("q=")+21).split(",")[1]));
+
+                                            }
+                                            catch (Exception e1)
+                                                {
+
+                                                }
                                         LocalService.addlog("cant parse geo ");
                                         e.printStackTrace();
                                     }

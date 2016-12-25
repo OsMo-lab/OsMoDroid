@@ -317,4 +317,9 @@
     <string name="plot">Plot</string>
     <string name="totalclimb">Набор высоты</string>
     <string name="altitude_">Высота</string>
+    <string name="near">рядом</string>
+    <string name="alarmengaged">Сработала сигнализация у</string>
+    <string name="approached">approached</string>
+    <string name="getaway">get away</string>
+    <string name="you">You</string>
 </resources>

@@ -3,8 +3,8 @@
           xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:tools="http://schemas.android.com/tools"
           android:installLocation="auto"
-          android:versionCode="368"
-          android:versionName="2.4.4">
+          android:versionCode="394"
+          android:versionName="2.4.6">
 
     <uses-sdk
         android:minSdkVersion="9"
@@ -128,6 +128,12 @@
             </intent-filter>
         </receiver>
 
+        <receiver android:name=".PowerConnectionReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.ACTION_POWER_CONNECTED"/>
+                <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED"/>
+            </intent-filter>
+        </receiver>
         <activity android:name=".AuthActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
@@ -148,38 +154,21 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/os_mo_widget_info"/>
         </receiver>
-        <!-- [START gcm_receiver] -->
-        <receiver
-            android:name="com.google.android.gms.gcm.GcmReceiver"
-            android:exported="true"
-            android:permission="com.google.android.c2dm.permission.SEND">
-            <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE"/>
-
-                <category android:name="gcm.play.android.samples.com.gcmquickstart"/>
-            </intent-filter>
-        </receiver>
-        <!-- [END gcm_receiver] -->
 
 
-        <!-- [START gcm_listener] -->
+
         <service
-            android:name=".MyGcmListenerService"
-            android:exported="false">
+            android:name=".MyFcmListenerService">
             <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE"/>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-        <!-- [END gcm_listener] -->
-        <!-- [START instanceId_listener] -->
         <service
-            android:name=".MyInstanceIDListenerService"
-            android:exported="false">
+            android:name=".MyInstanceIDListenerService">
             <intent-filter>
-                <action android:name="com.google.android.gms.iid.InstanceID"/>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
-        <!-- [END instanceId_listener] -->
         <service
             android:name=".RegistrationIntentService"
             android:exported="false">

@@ -320,4 +320,9 @@
     <string name="plot">Plot</string>
     <string name="totalclimb">TotalClimb</string>
     <string name="altitude_">Altitude</string>
+    <string name="near">near</string>
+    <string name="alarmengaged">Alarm engaged at</string>
+    <string name="approached">approached</string>
+    <string name="getaway">get away</string>
+    <string name="you">You</string>
 </resources>

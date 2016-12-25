@@ -81,6 +81,8 @@ import android.widget.Toast;
 
 import com.OsMoDroid.Netutil.MyAsyncTask;
 import com.github.mikephil.charting.data.Entry;
+
+import static java.lang.Math.abs;
 public class LocalService extends Service implements LocationListener, GpsStatus.Listener, TextToSpeech.OnInitListener, ResultsListener, SensorEventListener
     {
         public static Device mydev = new Device();
@@ -133,6 +135,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
         int totalclimb;
         int altitude=Integer.MIN_VALUE;
         int prevaltitude=Integer.MIN_VALUE;
+        int[] altitudesamples = {Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE};
         float avgspeed;
         float currentspeed;
         long timeperiod = 0;
@@ -652,8 +655,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
             {
                 super.onCreate();
                 Log.d(this.getClass().getName(), "localserviceoncreate");
-                Intent gcmregintent = new Intent(this, RegistrationIntentService.class);
-                startService(gcmregintent);
+
                 ttsManage();
                 getversion();
                 serContext = LocalService.this;
@@ -678,11 +680,12 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                 prevlocation_gpx = new Location("");
                 currentLocation.setLatitude((double) OsMoDroid.settings.getFloat("lat", 0f));
                 currentLocation.setLongitude((double) OsMoDroid.settings.getFloat("lon", 0f));
-                OsMoDroid.dot.setDecimalSeparator('.');
-                OsMoDroid.df1.setDecimalSeparatorAlwaysShown(false);
-                OsMoDroid.df6.setDecimalSeparatorAlwaysShown(false);
-                OsMoDroid.df1.setDecimalFormatSymbols(OsMoDroid.dot);
-                OsMoDroid.df6.setDecimalFormatSymbols(OsMoDroid.dot);
+
+//                OsMoDroid.dot.setDecimalSeparator('.');
+//                OsMoDroid.df1.setDecimalSeparatorAlwaysShown(false);
+//                OsMoDroid.df6.setDecimalSeparatorAlwaysShown(false);
+//                OsMoDroid.df1.setDecimalFormatSymbols(OsMoDroid.dot);
+//                OsMoDroid.df6.setDecimalFormatSymbols(OsMoDroid.dot);
                 ReadPref();
 
 
@@ -989,13 +992,13 @@ public class LocalService extends Service implements LocationListener, GpsStatus
             }
         void wifion(Context context)
             {
-                WifiManager wifi = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+                WifiManager wifi = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
                 wifi.setWifiEnabled(true);
                 myIM.sendToServer("RCR:" + OsMoDroid.TRACKER_WIFI_ON + "|1", false);
             }
         void wifioff(Context context)
             {
-                WifiManager wifi = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+                WifiManager wifi = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
                 wifi.setWifiEnabled(false);
                 myIM.sendToServer("RCR:" + OsMoDroid.TRACKER_WIFI_OFF + "|1", false);
             }
@@ -1006,7 +1009,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                 NetworkInfo mWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
                 if (mWifi.isConnected())
                     {
-                        WifiManager wifi = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+                        WifiManager wifi = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
                         WifiInfo wifiInfo = wifi.getConnectionInfo();
                         String wifiname = wifiInfo.getSSID();
                         String mac = wifiInfo.getMacAddress();
@@ -1306,6 +1309,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                         sendingbuffer.clear();
                         totalclimb=0;
                         altitude=Integer.MIN_VALUE;
+
 
 
                         firstsend = true;
@@ -1812,16 +1816,42 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                     {
                         currentspeed = location.getSpeed();
                         altitude= (int) location.getAltitude();
-                        if(prevaltitude==Integer.MIN_VALUE)
-                            {
-                                prevaltitude=altitude;
-                            }
-                        else
-                            {
-                                if((altitude-prevaltitude)>2)
+                        boolean filled=true;
+                        int summ=0;
+                        int meanaltitude=Integer.MIN_VALUE;
+
+
+                        altitudesamples[altitudesamples.length-1] = altitude;
+
+                                for( int index =0; index < altitudesamples.length-1 ; index++ )
                                     {
-                                        totalclimb=altitude-prevaltitude;
-                                        prevaltitude=altitude;
+
+                                        altitudesamples[index]=altitudesamples[index+1];
+                                        if(altitudesamples[index]==Integer.MIN_VALUE)
+                                            {
+                                                filled=false;
+                                            }
+                                        summ=summ+altitudesamples[index];
+                                    }
+
+
+                        if(filled)
+                            {
+                                meanaltitude = summ / altitudesamples.length;
+                                if (prevaltitude == Integer.MIN_VALUE)
+                                    {
+                                        prevaltitude = meanaltitude;
+                                    }
+                                else
+                                    {
+                                        if (abs(meanaltitude - prevaltitude) > 5)
+                                            {
+                                                if (meanaltitude > prevaltitude)
+                                                    {
+                                                        totalclimb = totalclimb + meanaltitude - prevaltitude;
+                                                    }
+                                                prevaltitude = meanaltitude;
+                                            }
                                     }
                             }
 
@@ -1884,15 +1914,15 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                                         double y = Math.sin(dLon) * Math.cos(lat2);
                                         double x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLon);
                                         brng_gpx = Math.toDegrees(Math.atan2(y, x)); //.toDeg();
-                                        position = position + "\n" + getString(R.string.TrackCourseChange) + OsMoDroid.df1.format(Math.abs(brng_gpx - prevbrng_gpx));
+                                        position = position + "\n" + getString(R.string.TrackCourseChange) + OsMoDroid.df1.format(abs(brng_gpx - prevbrng_gpx));
                                         refresh();
-                                        if (OsMoDroid.settings.getBoolean("modeAND_gpx", false) && (int) location.getAccuracy() < hdop_gpx && location.getSpeed() >= speed_gpx / 3.6 && (location.distanceTo(prevlocation_gpx) > distance_gpx && location.getTime() > (prevlocation_gpx.getTime() + period_gpx) && (location.getSpeed() >= speedbearing_gpx / 3.6 && Math.abs(brng_gpx - prevbrng_gpx) >= bearing_gpx)))
+                                        if (OsMoDroid.settings.getBoolean("modeAND_gpx", false) && (int) location.getAccuracy() < hdop_gpx && location.getSpeed() >= speed_gpx / 3.6 && (location.distanceTo(prevlocation_gpx) > distance_gpx && location.getTime() > (prevlocation_gpx.getTime() + period_gpx) && (location.getSpeed() >= speedbearing_gpx / 3.6 && abs(brng_gpx - prevbrng_gpx) >= bearing_gpx)))
                                             {
                                                 prevlocation_gpx.set(location);
                                                 prevbrng_gpx = brng_gpx;
                                                 writegpx(location);
                                             }
-                                        if (!OsMoDroid.settings.getBoolean("modeAND_gpx", false) && (int) location.getAccuracy() < hdop_gpx && location.getSpeed() >= speed_gpx / 3.6 && (location.distanceTo(prevlocation_gpx) > distance_gpx || location.getTime() > (prevlocation_gpx.getTime() + period_gpx) || (location.getSpeed() >= speedbearing_gpx / 3.6 && Math.abs(brng_gpx - prevbrng_gpx) >= bearing_gpx)))
+                                        if (!OsMoDroid.settings.getBoolean("modeAND_gpx", false) && (int) location.getAccuracy() < hdop_gpx && location.getSpeed() >= speed_gpx / 3.6 && (location.distanceTo(prevlocation_gpx) > distance_gpx || location.getTime() > (prevlocation_gpx.getTime() + period_gpx) || (location.getSpeed() >= speedbearing_gpx / 3.6 && abs(brng_gpx - prevbrng_gpx) >= bearing_gpx)))
                                             {
                                                 prevlocation_gpx.set(location);
                                                 prevbrng_gpx = brng_gpx;
@@ -1935,9 +1965,9 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                                         double y = Math.sin(dLon) * Math.cos(lat2);
                                         double x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLon);
                                         brng = Math.toDegrees(Math.atan2(y, x)); //.toDeg();
-                                        position = position + "\n" + getString(R.string.SendCourseChange) + OsMoDroid.df1.format(Math.abs(brng - prevbrng));
+                                        position = position + "\n" + getString(R.string.SendCourseChange) + OsMoDroid.df1.format(abs(brng - prevbrng));
                                         refresh();
-                                        if (OsMoDroid.settings.getBoolean("modeAND", false) && (int) location.getAccuracy() < hdop && location.getSpeed() >= speed / 3.6 && (location.distanceTo(prevlocation) > distance && location.getTime() > (prevlocation.getTime() + period) && (location.getSpeed() >= (speedbearing / 3.6) && Math.abs(brng - prevbrng) >= bearing)))
+                                        if (OsMoDroid.settings.getBoolean("modeAND", false) && (int) location.getAccuracy() < hdop && location.getSpeed() >= speed / 3.6 && (location.distanceTo(prevlocation) > distance && location.getTime() > (prevlocation.getTime() + period) && (location.getSpeed() >= (speedbearing / 3.6) && abs(brng - prevbrng) >= bearing)))
                                             {
                                                 //LocalService.addlog("modeAND and accuracy and speed");
                                                 prevlocation.set(location);
@@ -1949,7 +1979,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                                             {
                                                 //LocalService.addlog("modeAND and accuracy and speed -ELSE");
                                             }
-                                        if (!OsMoDroid.settings.getBoolean("modeAND", false) && (int) location.getAccuracy() < hdop && location.getSpeed() >= speed / 3.6 && (location.distanceTo(prevlocation) > distance || location.getTime() > (prevlocation.getTime() + period) || (location.getSpeed() >= (speedbearing / 3.6) && Math.abs(brng - prevbrng) >= bearing)))
+                                        if (!OsMoDroid.settings.getBoolean("modeAND", false) && (int) location.getAccuracy() < hdop && location.getSpeed() >= speed / 3.6 && (location.distanceTo(prevlocation) > distance || location.getTime() > (prevlocation.getTime() + period) || (location.getSpeed() >= (speedbearing / 3.6) && abs(brng - prevbrng) >= bearing)))
                                             {
                                                 //LocalService.addlog("not modeAND and accuracy and speed");
                                                 prevlocation.set(location);
@@ -2136,10 +2166,10 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                     {
                         gpxbuffer = gpxbuffer + "<trkpt lat=\"" + OsMoDroid.df6.format(location.getLatitude()) + "\""
                                 + " lon=\"" + OsMoDroid.df6.format(location.getLongitude())
-                                + "\"><ele>" + OsMoDroid.df1.format(location.getAltitude())
+                                + "\"><ele>" + OsMoDroid.df0.format(location.getAltitude())
                                 + "</ele><time>" + strgpstime
-                                + "</time><speed>" + OsMoDroid.df1.format(location.getSpeed())
-                                + "</speed>" + "<hdop>" + OsMoDroid.df1.format(location.getAccuracy() / 4) + "</hdop>" + "</trkpt>";
+                                + "</time><speed>" + OsMoDroid.df0.format(location.getSpeed())
+                                + "</speed>" + "<hdop>" + OsMoDroid.df0.format(location.getAccuracy() / 4) + "</hdop>" + "</trkpt>";
                     }
                 else
                     {
@@ -2459,6 +2489,10 @@ public class LocalService extends Service implements LocationListener, GpsStatus
             }
         public void disableSignalisation()
             {
+                if(myIM!=null)
+                    {
+                        myIM.sendToServer("DISALARM",true);
+                    }
                 OsMoDroid.editor.remove("signalisation");
                 OsMoDroid.editor.commit();
                 mSensorManager.unregisterListener(this);
@@ -2539,7 +2573,8 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                 double z = event.values[2];
                 double a = Math.round(Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2)
                         + Math.pow(z, 2)));
-                currentAcceleration = Math.abs((float) (a - calibration));
+                currentAcceleration = abs((float) (a - calibration));
+                addlog("Current accseleration="+Float.toString(currentAcceleration));
                 try
                     {
                         sensivity = ((float) Integer.parseInt(OsMoDroid.settings.getString("sensivity", "5"))) / 10f;
@@ -2548,12 +2583,15 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                     {
                         sensivity = 0.5f;
                     }
-                if (OsMoDroid.settings.contains("signalisation") && OsMoDroid.settings.getLong("signalisation", 0) + 10000 < System.currentTimeMillis() && currentAcceleration > sensivity)
+                if (OsMoDroid.settings.contains("signalisation") && OsMoDroid.settings.getLong("signalisation", 0) + 60000 < System.currentTimeMillis() && currentAcceleration > sensivity)
                     {
                         OsMoDroid.editor.putLong("signalisation", System.currentTimeMillis());
                         OsMoDroid.editor.commit();
                         //myIM.sendToServer("REMOTE_CONTROL:"+OsMoDroid.settings.getString("tracker_id", "") +"|"+"ALARM");
-                        myIM.sendToServer("ALARM", false);
+                        //myIM.sendToServer("ALARM", false);
+                        Intent is = new Intent(this, LocalService.class);
+                        is.putExtra("GCM","NEEDSENDALARM");
+                        handleStart(is,0);
                         if (log)
                             {
                                 Log.d(this.getClass().getName(), "Alarm Alarm Alarm " + Float.toString(currentAcceleration));

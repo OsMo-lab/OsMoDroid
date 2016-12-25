@@ -42,6 +42,8 @@ import org.xmlpull.v1.XmlPullParser;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.ArrayList;
+
+import static java.lang.Math.abs;
 public class TrackStatFragment extends Fragment
     {
         private File sdDir = android.os.Environment.getExternalStorageDirectory();
@@ -58,6 +60,7 @@ public class TrackStatFragment extends Fragment
         float minele;
         float milage;
         long timeinway;
+        int totalclimb;
         public  ArrayList<Entry> speeddistanceEntryList = new ArrayList<Entry>();
         public  ArrayList<Entry> avgspeeddistanceEntryList = new ArrayList<Entry>();
         public  ArrayList<Entry> eledistanceEntryList = new ArrayList<Entry>();
@@ -233,9 +236,10 @@ public class TrackStatFragment extends Fragment
                         mChart.invalidate();
                         averagespeed=3600f*milage/timeinway;
                         t.setText(context.getString(R.string.malt)+'\n'+OsMoDroid.df0.format(maxele)+'\n' + context.getString(R.string.minalt)+'\n'+OsMoDroid.df0.format(minele)+'\n'
-                                +context.getString(R.string.maxspeed)+'\n'+OsMoDroid.df2.format(maxspeed)+'\n'+context.getString(R.string.milage)+'\n'+OsMoDroid.df2.format(milage/1000)+'\n'+
-                                context.getString(R.string.time)+'\n'+LocalService.formatInterval(timeinway)+'\n'
-                                +context.getString(R.string.averagespeed)+'\n'+OsMoDroid.df2.format(averagespeed));
+                                  +context.getString(R.string.maxspeed)+'\n'+OsMoDroid.df2.format(maxspeed)+'\n'+context.getString(R.string.milage)+'\n'+OsMoDroid.df2.format(milage/1000)+'\n'
+                                  +context.getString(R.string.time)+'\n'+LocalService.formatInterval(timeinway)+'\n'
+                                  +context.getString(R.string.averagespeed)+'\n'+OsMoDroid.df2.format(averagespeed)+'\n'
+                                  +context.getString(R.string.totalclimb)+'\n'+totalclimb);
                        if(dialog.isShowing()){
                            try {
                                dialog.dismiss();
@@ -256,6 +260,8 @@ public class TrackStatFragment extends Fragment
                         int currentroundeddistance=0;
                         prevlat=0;
                         prevlon=0;
+                        int prevaltitude=Integer.MIN_VALUE;
+                        int[] altitudesamples = {Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE,Integer.MIN_VALUE};
 
                         try {
                             FileInputStream is = new FileInputStream(params[0]);
@@ -372,6 +378,45 @@ public class TrackStatFragment extends Fragment
                                     if(minele==0||Float.parseFloat(ele)<minele)
                                         {
                                             minele=Float.parseFloat(ele);
+                                        }
+                                    int altitude = (int) Float.parseFloat(ele);
+                                    boolean filled=true;
+                                    int summ=0;
+                                    int meanaltitude=Integer.MIN_VALUE;
+
+
+                                    altitudesamples[altitudesamples.length-1] = altitude;
+
+                                    for( int index =0; index < altitudesamples.length-1 ; index++ )
+                                        {
+
+                                            altitudesamples[index]=altitudesamples[index+1];
+                                            if(altitudesamples[index]==Integer.MIN_VALUE)
+                                                {
+                                                    filled=false;
+                                                }
+                                            summ=summ+altitudesamples[index];
+                                        }
+
+
+                                    if(filled)
+                                        {
+                                            meanaltitude = summ / altitudesamples.length;
+                                            if (prevaltitude == Integer.MIN_VALUE)
+                                                {
+                                                    prevaltitude = meanaltitude;
+                                                }
+                                            else
+                                                {
+                                                    if (abs(meanaltitude - prevaltitude) > 5)
+                                                        {
+                                                            if (meanaltitude > prevaltitude)
+                                                                {
+                                                                    totalclimb = totalclimb + meanaltitude - prevaltitude;
+                                                                }
+                                                            prevaltitude = meanaltitude;
+                                                        }
+                                                }
                                         }
                                     timeinway=curtime-firsttime;
                                     milage=workdistance;

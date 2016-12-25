@@ -486,7 +486,7 @@ public class IM implements ResultsListener
                                 postjson.put("type", netinfo.getSubtypeName());
                         if (mWifi.isConnected())
                             {
-                                WifiManager wifi = (WifiManager) localService.getSystemService(Context.WIFI_SERVICE);
+                                WifiManager wifi = (WifiManager) localService.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
                                 WifiInfo wifiInfo = wifi.getConnectionInfo();
                                 String wifiname = wifiInfo.getSSID();
                                 String mac = wifiInfo.getMacAddress();
@@ -669,6 +669,7 @@ public class IM implements ResultsListener
                         Log.d(this.getClass().getName(), "recive " + toParse);
                     }
 
+
                 if (toParse.equals("P|"))
                     {
                         LocalService.addlog("recieve pong");
@@ -790,7 +791,7 @@ public class IM implements ResultsListener
                                         postjson.put("type", netinfo.getSubtypeName());
                                         if (mWifi.isConnected())
                                             {
-                                                WifiManager wifi = (WifiManager) localService.getSystemService(Context.WIFI_SERVICE);
+                                                WifiManager wifi = (WifiManager) localService.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
                                                 WifiInfo wifiInfo = wifi.getConnectionInfo();
                                                 String wifiname = wifiInfo.getSSID();
                                                 String mac = wifiInfo.getMacAddress();
@@ -1058,6 +1059,14 @@ public class IM implements ResultsListener
                     {
                         sendToServer("GROUP", false);
                     }
+                if (command.equals("NEEDSENDALARM"))
+                    {
+                        sendToServer("ALARM", false);
+                    }
+                if(command.equals("NEEDSENDCHARGE"))
+                    {
+                        sendToServer("CHARGE|"+addict,false);
+                    }
                 if (command.equals("TO"))
                     {
                         localService.sessionstarted = true;
@@ -1210,7 +1219,7 @@ public class IM implements ResultsListener
                             }
                         if(param.equals(OsMoDroid.SIGNAL_STATUS))
                             {
-                                sendToServer("RCR:"+OsMoDroid.SIGNAL_STATUS+localService.signalisationOn,false);
+                                sendToServer("RCR:"+OsMoDroid.SIGNAL_STATUS+'|'+(localService.signalisationOn?1:0),false);
                             }
                         if (param.equals(OsMoDroid.ALARM_ON))
                             {
@@ -1614,6 +1623,99 @@ public class IM implements ResultsListener
                                         JSONArray tracks = jo.optJSONArray("track");
                                         JSONArray announcements = jo.optJSONArray("announcement");
                                         JSONArray geoevents = jo.optJSONArray("geoevent");
+                                        JSONArray near = jo.optJSONArray("near");
+                                        JSONArray alarm = jo.optJSONArray("alarm");
+                                        //GP:1234|{"alarm":{"gu"=>123,"name"=>"Vasya"}
+                                        if(alarm!=null)
+                                            {
+                                                for (int i=0; i<alarm.length();i++)
+                                                    {
+                                                        jsonObject=alarm.getJSONObject(i);
+                                                        long e1=jsonObject.optLong("e");
+                                                        if (e1>eid)
+                                                            {
+                                                                eid=e1;
+                                                            }
+                                                        String name = jsonObject.optString("name");
+                                                        String time="";
+
+                                                        time= OsMoDroid.sdf.format(new Date(jsonObject.optLong("time")*1000));
+
+
+                                                        String messageText =ch.name+": "+parent.getString(R.string.alarmengaged)+' '+name;
+
+
+                                                        Message msg = new Message();
+                                                        Bundle b = new Bundle();
+                                                        b.putBoolean("om_online", true);
+                                                        b.putString("MessageText",time + " " + messageText);
+                                                        msg.setData(b);
+                                                        if (log)
+                                                            {
+                                                                Log.d(this.getClass().getName(), "statenotify entered");
+                                                            }
+                                                        localService.alertHandler.sendMessage(msg);
+                                                    }
+                                            }
+
+                                        if(near!=null)
+                                            {
+                                                for (int i=0; i<near.length();i++)
+                                                    {
+                                                        jsonObject=near.getJSONObject(i);
+                                                        long e1=jsonObject.optLong("e");
+                                                        if (e1>eid)
+                                                            {
+                                                                eid=e1;
+                                                            }
+                                                        String type = jsonObject.optString("type");
+                                                        String name = jsonObject.optString("name");
+                                                        String nick = jsonObject.optString("nick");
+                                                        int mode = jsonObject.optInt("mode");
+                                                        String time="";
+                                                        String messageText="";
+                                                        time= OsMoDroid.sdf.format(new Date(jsonObject.optLong("time")*1000));
+                                                        if(type.equals("user"))
+                                                            {
+                                                                if(mode==1)
+                                                                    {
+                                                                         messageText = ch.name + ": " + nick + ' ' + parent.getString(R.string.approached) + ' ' + jsonObject.optString("dst");
+                                                                    }
+                                                                if(mode==0)
+                                                                    {
+                                                                         messageText = ch.name + ": " + nick + ' ' + parent.getString(R.string.getaway) + ' ' + jsonObject.optString("dst");
+                                                                    }
+                                                            }
+                                                        if(type.equals("waypoint"))
+                                                            {
+                                                                if(mode==1)
+                                                                    {
+                                                                         messageText = ch.name + ": "+parent.getString(R.string.you) + ' ' + parent.getString(R.string.approached) + ' ' +name +' '+ jsonObject.optString("dst");
+                                                                    }
+                                                                if(mode==0)
+                                                                    {
+                                                                         messageText = ch.name + ": "+parent.getString(R.string.you) + ' ' +parent.getString(R.string.getaway) + ' ' +name +' '+ jsonObject.optString("dst");
+                                                                    }
+                                                            }
+
+
+
+
+
+                                                        Message msg = new Message();
+                                                        Bundle b = new Bundle();
+                                                        b.putBoolean("om_online", true);
+                                                        b.putString("MessageText",time + " " + messageText);
+                                                        msg.setData(b);
+                                                        if (log)
+                                                            {
+                                                                Log.d(this.getClass().getName(), "statenotify entered");
+                                                            }
+                                                        localService.alertHandler.sendMessage(msg);
+                                                    }
+                                            }
+
+
                                         if(geoevents!=null)
                                             {
                                                 for (int i = 0; i<geoevents.length();i++)
@@ -1829,7 +1931,7 @@ public class IM implements ResultsListener
                                                                                                         if (newlat != dev.lat & newlon != dev.lon && (System.currentTimeMillis() - dev.updatated) > 5 * 60 * 1000) {
                                                                                                             dev.lat = newlat;
                                                                                                             dev.lon = newlon;
-                                                                                                            notifydevicemonitoring(dev,true);
+                                                                                                            //notifydevicemonitoring(dev,true);
                                                                                                         }
                                                                                                     }
                                                                                                     catch (NumberFormatException e)
@@ -2084,16 +2186,16 @@ public class IM implements ResultsListener
                 int idxT = d.indexOf("T");
                 if(idxT!=-1)
                     {
-                        for (int i = idxT + 1; i < d.length() ; i++)
+                        for (int i = idxT + 1; i <= d.length()-1 ; i++)
 
                             {
 
-                                if (!Character.isDigit(d.charAt(i)) || i == (d.length() ))
+                                if (!Character.isDigit(d.charAt(i)) || i == (d.length()-1 ))
 
                                     {
 
-                                                LocalService.addlog(d.substring(idxT + 1, i));
-                                                dev.updatated = 1000 * Long.parseLong(d.substring(idxT + 1, i));
+                                                LocalService.addlog(d.substring(idxT + 1, i+1));
+                                                dev.updatated = 1000 * Long.parseLong(d.substring(idxT + 1, i+1));
                                                 break;
 
                                     }

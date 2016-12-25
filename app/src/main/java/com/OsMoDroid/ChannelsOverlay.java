@@ -255,7 +255,8 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
                                                 dev.devpaint.setColor(dev.color);
 
                                             }
-                                        if (dev.lat != 0f && dev.lon != 0f&&dev.clusterid==0&&(!(dev.updatated < (curtime - 900000)) || ch.type==2 ||dev.state!=0))
+                                        //if (dev.lat != 0f && dev.lon != 0f&&dev.clusterid==0&&(!(dev.updatated < (curtime - 900000)) || ch.type==2 ||dev.state!=0))
+                                        if (dev.lat != 0f && dev.lon != 0f&&dev.clusterid==0)
                                             {
                                                 if (theBoundingBox.contains(new GeoPoint(dev.lat, dev.lon)))
                                                     {

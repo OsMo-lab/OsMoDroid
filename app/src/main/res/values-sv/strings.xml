@@ -296,4 +296,10 @@
   <string name="usechatsummary">Visa Android-avisering när chatten uppdateras</string>
   <string name="altitude">Höjd: meter</string>
   <string name="pleasewait">Vänta ...</string>
+  <string name="malt">Maxhöjd</string>
+  <string name="minalt">Minimihöjd</string>
+  <string name="maxspeed">Maxhastighet</string>
+  <string name="milage">Sträcka</string>
+  <string name="time">Tid</string>
+  <string name="averagespeed">Snitthastighet</string>
 </resources>

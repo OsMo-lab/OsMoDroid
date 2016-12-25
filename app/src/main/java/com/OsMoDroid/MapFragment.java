@@ -115,6 +115,7 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
         private ITileSource sputnikTileSource;
         private ITileSource outdoorTileSource;
         private ITileSource chepeTileSource;
+        private ITileSource mtbTileSource;
         private ChannelsOverlay choverlay;
         private TextView speddTextView;
         private MapListener wrappedListener;
@@ -155,6 +156,7 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
                 MenuItem sputnik = menu2.add(0, 10, 1, "Sputnik");
                 MenuItem outdoor = menu2.add(0, 12, 1, "Outdoor");
                 MenuItem chepe = menu2.add(0, 18, 1, "Chepeck");
+                MenuItem mtb = menu2.add(0, 19, 1, "MTB");
                 menu.add(0, 11, 1, R.string.size_of_point);
                 super.onCreateOptionsMenu(menu, inflater);
             }
@@ -338,6 +340,14 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
                             reinitchoverlay();
                             mMapView.invalidate();
                             break;
+                        case 19:
+                            mMapView.setTileSource(mtbTileSource);
+                            OsMoDroid.editor.putInt("selectedTileSourceInt", 9);
+                            OsMoDroid.editor.commit();
+
+                            reinitchoverlay();
+                            mMapView.invalidate();
+                            break;
                         default:
                             break;
                     }
@@ -409,16 +419,20 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
                 mMapView.getOverlays().add(myLoc);
                 myLoc.enableMyLocation();
                 sendcentercoords();
+                prevGeoPoint=(GeoPoint) mMapView.getMapCenter();
                 wrappedListener = new MapListener()
                     {
                         @Override
                         public boolean onScroll(ScrollEvent scrollEvent)
                             {
+
                                 GeoPoint mapCenter = (GeoPoint) scrollEvent.getSource().getMapCenter();
-                                if(prevGeoPoint==null||mapCenter.distanceTo(prevGeoPoint)>5000)
+
+                                if(prevGeoPoint!=null&&mapCenter.distanceTo(prevGeoPoint)>100000/(scrollEvent.getSource().getZoomLevel()+1))
                                     {
-                                        prevGeoPoint=mapCenter;
+
                                         sendcentercoords();
+                                        prevGeoPoint=mapCenter;
                                     };
 
                                 return false;
@@ -440,9 +454,12 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
                         JSONObject json = new JSONObject();
                         try
                             {
-                                json.put("lat",mMapView.getMapCenter().getLatitude());
-                                json.put("lon",mMapView.getMapCenter().getLongitude());
+                                json.put("lat",OsMoDroid.df6.format(mMapView.getMapCenter().getLatitude()));
+                                json.put("lon",OsMoDroid.df6.format(mMapView.getMapCenter().getLongitude()));
                                 json.put("zoom",mMapView.getZoomLevel());
+
+                                json.put("bbox", "N:" + OsMoDroid.df6.format(mMapView.getBoundingBox().getLatNorth()) + "; E:" + OsMoDroid.df6.format(mMapView.getBoundingBox().getLonEast()) + "; S:" + OsMoDroid.df6.format(mMapView.getBoundingBox().getLatSouth()) + "; W:" + OsMoDroid.df6.format(mMapView.getBoundingBox().getLonWest()));
+                                json.put("mapid",OsMoDroid.settings.getInt("selectedTileSourceInt",1));
                             }
                         catch (JSONException e)
                             {
@@ -497,9 +514,11 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
                 final String[] sputnikURL = new String[]{"http://b.tiles.maps.sputnik.ru/"};
                 final String[] outdoorURL = new String[]{"http://tile.thunderforest.com/outdoors/"};
                 final String[] chepeURL = new String[]{"http://ingreelab.net/C04AF0B62BEC112E8D7242FB848631D12D252728/"};
+                final String[] mtbURL = new String[]{"http://tile.mtbmap.cz/mtbmap_tiles/"};
                 bingTileSource = new BingMapTileSource(null);
                 sputnikTileSource = new SputnikTileSource("Sputnik",  aZoomMinLevel, aZoomMaxLevel, 512, aImageFilenameEnding, sputnikURL);
                 outdoorTileSource = new OutdoorTileSource("OutDoor",  aZoomMinLevel, aZoomMaxLevel, aTileSizePixels, aImageFilenameEnding, outdoorURL);
+                mtbTileSource = new OutdoorTileSource("MTB",  aZoomMinLevel, aZoomMaxLevel, aTileSizePixels, aImageFilenameEnding, mtbURL);
                 chepeTileSource = new OutdoorTileSource("Chepe",  aZoomMinLevel, aZoomMaxLevel, aTileSizePixels, aImageFilenameEnding, chepeURL);
                 mapSurferTileSource = new MAPSurferTileSource(name, aZoomMinLevel, aZoomMaxLevel, aTileSizePixels, aImageFilenameEnding, aBaseUrl);
                 View view = inflater.inflate(R.layout.map, container, false);
@@ -559,6 +578,9 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
                         case 8:
                             mMapView.setTileSource(chepeTileSource);
                             break;
+                        case 9:
+                            mMapView.setTileSource(mtbTileSource);
+                            break;
                         default:
                             break;
                     }
@@ -585,17 +607,18 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
                 Bundle bundle = getArguments();
                 if (OsMoDroid.settings.getInt("centerlat", -1) != -1&&bundle==null)
                     {
+                        if (mController != null)
+                            {
+                                mController.setZoom(OsMoDroid.settings.getInt("zoom", 10));
+                                mController.setCenter(new GeoPoint(OsMoDroid.settings.getInt("centerlat", 0), OsMoDroid.settings.getInt("centerlon", 0)));
+                                Log.d(this.getClass().getName(), "Center map on ="+OsMoDroid.settings.getInt("centerlat", 0)+ OsMoDroid.settings.getInt("centerlon", 0));
+                            }
                         new Handler(Looper.getMainLooper()).post(
                                 new Runnable()
                                 {
                                     public void run()
                                         {
-                                            if (mController != null)
-                                                {
-                                                    mController.setZoom(OsMoDroid.settings.getInt("zoom", 10));
-                                                    mController.animateTo(new GeoPoint(OsMoDroid.settings.getInt("centerlat", 0), OsMoDroid.settings.getInt("centerlon", 0)));
-                                                    Log.d(this.getClass().getName(), "Center map on ="+OsMoDroid.settings.getInt("centerlat", 0)+ OsMoDroid.settings.getInt("centerlon", 0));
-                                                }
+
                                         }
                                 }
                         );
@@ -640,7 +663,6 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
                 if (bundle != null)
                     {
                         mController.setCenter(new GeoPoint(bundle.getFloat("lat"),bundle.getFloat("lon")));
-                        mController.animateTo(new GeoPoint(bundle.getFloat("lat"),bundle.getFloat("lon")));
                         ArrayList<OverlayItem> items = new ArrayList<OverlayItem>();
                         items.add(new OverlayItem("", "", new GeoPoint(bundle.getFloat("lat"),bundle.getFloat("lon"))));
                         ItemizedOverlayWithFocus<OverlayItem> mOverlay = new ItemizedOverlayWithFocus<OverlayItem>(items,

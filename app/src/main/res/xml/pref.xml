@@ -169,12 +169,7 @@
                                 android:title="@string/disable_notification"
                                 android:summary="@string/do_not_use_android_notifications"
                                 android:defaultValue="false"/>
-                            <CheckBoxPreference
-                                android:key="onlinenotify"
-                                android:title="@string/alert_on_online"
-                                android:defaultValue="false"
-                                android:summary="@string/notify_when_a_data_connection_is_established"/>
-                            <CheckBoxPreference
+                        <CheckBoxPreference
                                 android:key="statenotify"
                                 android:title="@string/notify_with_monitoring"
                                 android:defaultValue="false"

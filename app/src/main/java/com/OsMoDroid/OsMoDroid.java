@@ -13,6 +13,7 @@ import org.osmdroid.tileprovider.constants.OpenStreetMapTileProviderConstants;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.SimpleDateFormat;
+import java.util.Locale;
 public class OsMoDroid extends Application
     {
         final public static int warnnotifyid = 3;
@@ -20,7 +21,7 @@ public class OsMoDroid extends Application
         public static final String NOTIFIESFILENAME = "messagelist";
         public static final String DEVLIST = "devlist";
         public static final String CHANNELLIST = "chlist";
-        public static final String app_code = "dsgIEGOef3539BfSAF_HR0z2da";
+        public static final String app_code = "Ax^31LBd-1Kaqbx82";
         public static final String TRACKER_GCM_ID = "80";
         public static final String TRACKER_BATTERY_INFO = "11";
         public static final String TRACKER_SATELLITES_INFO = "13";
@@ -52,13 +53,14 @@ public class OsMoDroid extends Application
         public static final int NOTIFY_NO_CONNECT = 3;
         public static final String SENT_TOKEN_TO_SERVER = "sentTokenToServer";
         public static final String REGISTRATION_COMPLETE = "registrationComplete";
-        final static DecimalFormat df1 = new DecimalFormat("#######0.0");
-        final static DecimalFormat df2 = new DecimalFormat("#######0.00");
-        final static DecimalFormat df0 = new DecimalFormat("########");
+
+        final static DecimalFormat df1 = new DecimalFormat("#######0.0" , DecimalFormatSymbols.getInstance(Locale.ENGLISH));
+        final static DecimalFormat df2 = new DecimalFormat("#######0.00", DecimalFormatSymbols.getInstance(Locale.ENGLISH));
+        final static DecimalFormat df0 = new DecimalFormat("########", DecimalFormatSymbols.getInstance(Locale.ENGLISH));
         final static SimpleDateFormat sdf3 = new SimpleDateFormat("HH:mm:ss");
         private static final int MIN_UPLOAD_ID = 4;
         private static final int MAX_UPLOAD_ID = 1000;
-        final static DecimalFormat df6 = new DecimalFormat("########.######");
+        final static DecimalFormat df6 = new DecimalFormat("########.######", DecimalFormatSymbols.getInstance(Locale.ENGLISH));
         final static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         final static SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
         final static SimpleDateFormat sdf2 = new SimpleDateFormat("yyyyMMddHHmmss");
