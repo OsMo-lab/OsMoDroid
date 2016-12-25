@@ -732,8 +732,12 @@ public class IM implements ResultsListener
                                 Toast.makeText(localService, str, Toast.LENGTH_LONG).show();
                             }
                     }
-
+                else
+                    {
                         parsedata(jo, ja, command, param, addict, gcm);
+                    }
+
+
 
             }
         private void parseremovefromcommandlist(String command, String param)
@@ -1465,27 +1469,30 @@ public class IM implements ResultsListener
                     }
                 if (command.equals("GL"))
                     {
-                        Channel chToDel = null;
-                        for (Channel ch : LocalService.channelList)
+                        if(addict.equals("1"))
                             {
-                                if (ch.u==Integer.parseInt(param))
+                                Channel chToDel = null;
+                                for (Channel ch : LocalService.channelList)
                                     {
-                                        chToDel = ch;
+                                        if (ch.u == Integer.parseInt(param))
+                                            {
+                                                chToDel = ch;
+                                            }
                                     }
+                                if (chToDel != null)
+                                    {
+                                        LocalService.channelList.remove(chToDel);
+                                    }
+                                if (LocalService.channelsAdapter != null)
+                                    {
+                                        LocalService.channelsAdapter.notifyDataSetChanged();
+                                    }
+                                if (log)
+                                    {
+                                        Log.d(getClass().getSimpleName(), "write group list to file");
+                                    }
+                                localService.saveObject(LocalService.channelList, OsMoDroid.CHANNELLIST);
                             }
-                        if (chToDel != null)
-                            {
-                                LocalService.channelList.remove(chToDel);
-                            }
-                        if (LocalService.channelsAdapter != null)
-                            {
-                                LocalService.channelsAdapter.notifyDataSetChanged();
-                            }
-                        if (log)
-                            {
-                                Log.d(getClass().getSimpleName(), "write group list to file");
-                            }
-                        localService.saveObject(LocalService.channelList, OsMoDroid.CHANNELLIST);
                     }
                 if (command.equals("LINK"))
                     {
