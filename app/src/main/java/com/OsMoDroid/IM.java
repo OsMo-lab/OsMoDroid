@@ -864,7 +864,7 @@ public class IM implements ResultsListener
                                     }
                                 if(OsMoDroid.settings.getBoolean("needsendgcmregid",true))
                                     {
-                                        LocalService.myIM.sendToServer("GCM|" +OsMoDroid.tmpGCMRegId, false);
+                                        LocalService.myIM.sendToServer("GCM|" +OsMoDroid.settings.getString("GCMRegId",""), false);
                                     }
                                 if(needclosesession)
                                     {
@@ -1126,7 +1126,6 @@ public class IM implements ResultsListener
                     }
                 if (command.equals("GCM"))
                     {
-                        OsMoDroid.editor.putString("GCMRegId", OsMoDroid.tmpGCMRegId);
                         OsMoDroid.editor.putBoolean("needsendgcmregid", false);
                         OsMoDroid.editor.commit();
                     }
@@ -1154,16 +1153,9 @@ public class IM implements ResultsListener
 
                         if (param.equals(OsMoDroid.TRACKER_GCM_ID))
                             {
-                                if(OsMoDroid.tmpGCMRegId.equals(""))
-                                    {
-                                        sendToServer("GCM|" + OsMoDroid.settings.getString("GCMRegId", "no"), false);
-                                        sendToServer("RCR:" + OsMoDroid.TRACKER_GCM_ID + "|1", false);
-                                    }
-                                else
-                                    {
-                                        sendToServer("GCM|" +OsMoDroid.tmpGCMRegId, false);
-                                        sendToServer("RCR:" + OsMoDroid.TRACKER_GCM_ID + "|1", false);
-                                    }
+                                sendToServer("GCM|" + OsMoDroid.settings.getString("GCMRegId", "no"), false);
+                                sendToServer("RCR:" + OsMoDroid.TRACKER_GCM_ID + "|1", false);
+
                             }
 
 

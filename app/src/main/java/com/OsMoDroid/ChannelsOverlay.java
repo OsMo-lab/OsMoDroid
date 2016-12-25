@@ -508,8 +508,8 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
                         Point screenPoint0 = null; // points on screen
                         Point screenPoint1;
                         Point lastArrowPoint = new Point(0,0);
-                        Point projectedPoint0; // points from the points list
-                        Point projectedPoint1;
+                        SegmentPoint projectedPoint0; // points from the points list
+                        SegmentPoint projectedPoint1;
                         // clipping rectangle in the intermediate projection, to avoid performing projection.
                         BoundingBox boundingBox = pj.getBoundingBox();
                         Point topLeft = pj.toProjectedPixels(boundingBox.getLatNorth(),
@@ -519,6 +519,7 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
                         final Rect clipBounds = new Rect(topLeft.x, topLeft.y, bottomRight.x, bottomRight.y);
                         //gpx.mPath.rewind();
                         projectedPoint0 = gpx.points.get(size - 1);
+                        boolean firstpointofsegment=true;
                         gpx.mLineBounds.set(projectedPoint0.x, projectedPoint0.y, projectedPoint0.x, projectedPoint0.y);
                         for (int i = size - 2; i >= 0; i--)
                             {
@@ -532,6 +533,13 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
                                         screenPoint0 = null;
                                         continue;
                                     }
+                                if(projectedPoint0.segment!=projectedPoint1.segment)
+                                    {
+                                        projectedPoint0 = projectedPoint1;
+                                        screenPoint0 = null;
+                                        firstpointofsegment=true;
+                                        continue;
+                                    }
                                 // the starting point may be not calculated, because previous segment was out of clip
                                 // bounds
                                 if (screenPoint0 == null)
@@ -542,10 +550,12 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
                                 screenPoint1 = pj.toPixelsFromProjected(projectedPoint1, this.mTempPoint2);
                                 // skip this point, too close to previous point
 
-                                if (Math.abs(screenPoint1.x - screenPoint0.x) + Math.abs(screenPoint1.y - screenPoint0.y) <= ten )
+                                if (Math.abs(screenPoint1.x - screenPoint0.x) + Math.abs(screenPoint1.y - screenPoint0.y) <= ten &&!firstpointofsegment )
                                     {
+
                                         continue;
                                     }
+                                firstpointofsegment=false;
                                 //gpx.mPath.lineTo(screenPoint1.x, screenPoint1.y);
                                 if(OsMoDroid.settings.getBoolean("fullgpx",true)||(Math.abs(screenPoint1.x - screenPoint0.x) + Math.abs(screenPoint1.y - screenPoint0.y))<twenty*15)
                                     {

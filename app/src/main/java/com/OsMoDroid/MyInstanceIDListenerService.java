@@ -24,6 +24,8 @@ public class MyInstanceIDListenerService extends FirebaseInstanceIdService
         // Get updated InstanceID token.
         String refreshedToken = FirebaseInstanceId.getInstance().getToken();
         LocalService.addlog(refreshedToken);
+        OsMoDroid.editor.putString("GCMRegId", refreshedToken);
+        OsMoDroid.editor.commit();
         // TODO: Implement this method to send any registration to your app's servers.
         sendRegistrationToServer(refreshedToken);
 
@@ -31,17 +33,16 @@ public class MyInstanceIDListenerService extends FirebaseInstanceIdService
         private void sendRegistrationToServer(String token) {
             Log.d(this.getClass().getName(), "sendRegistrationToServer: "+token);
             LocalService.addlog("RegId=" + token);
-            if(!OsMoDroid.settings.getString("GCMRegId","").equals(token))
-                {
-                    OsMoDroid.tmpGCMRegId=token;
                     if (LocalService.myIM != null && LocalService.myIM.authed)
                         {
-                            LocalService.myIM.sendToServer("GCM|" +  OsMoDroid.tmpGCMRegId, false);
+                            LocalService.myIM.sendToServer("GCM|" + token, false);
+                        }
+            else
+                        {
+                            OsMoDroid.editor.putBoolean("needsendgcmregid", true).apply();
                         }
 
-                    OsMoDroid.editor.putBoolean("needsendgcmregid", true).apply();
 
-                }
         }
 
 }

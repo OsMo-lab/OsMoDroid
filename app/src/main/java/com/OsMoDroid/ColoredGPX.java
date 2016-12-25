@@ -28,7 +28,7 @@ public class ColoredGPX implements Serializable
         Paint wpPaint;
         String url;
         Statuses status = Statuses.EMPTY;
-        transient List<Point> points;// = new ArrayList<Point>(3000);
+        transient List<SegmentPoint> points;// = new ArrayList<Point>(3000);
         List<Channel.Point> waypoints = new ArrayList<Channel.Point>(100);
         transient Rect mLineBounds;// = new Rect();
         transient IGeoPoint centerGeoPoint;
@@ -56,7 +56,7 @@ public class ColoredGPX implements Serializable
 //				paths.add(path);
                         mPointsPrecomputed = 0;
                         mLineBounds = new Rect();
-                        points = new ArrayList<Point>(3000);
+                        points = new ArrayList<SegmentPoint>(3000);
                         FileInputStream is = new FileInputStream(this.gpxfile);
                         Netutil.InitTask initTask = new InitTask(this);
                         status = Statuses.LOADING;
