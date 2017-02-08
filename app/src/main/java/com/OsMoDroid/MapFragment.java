@@ -750,7 +750,10 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
         @Override
         public void stopLocationProvider()
             {
-                LocalService.myManager.removeUpdates(this);
+                if(LocalService.myManager!=null)
+                    {
+                        LocalService.myManager.removeUpdates(this);
+                    }
                 myLocationConumer = null;
             }
         @Override

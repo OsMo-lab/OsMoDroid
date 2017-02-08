@@ -73,6 +73,7 @@ public class NotifFragment extends Fragment
                 ;
                 lv1.setAdapter(LocalService.notificationStringsAdapter);
                 LocalService.notificationStringsAdapter.notifyDataSetChanged();
+                LocalService.numberofnotif=0;
                 return view;
             }
 

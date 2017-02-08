@@ -37,6 +37,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
+import android.graphics.SurfaceTexture;
+import android.hardware.Camera;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -63,13 +65,18 @@ import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
+import static com.OsMoDroid.LocalService.addlog;
 import static com.OsMoDroid.LocalService.myManager;
+import static com.OsMoDroid.OsMoDroid.context;
 /**
  * @author dfokin
  *         Class for work with osmo server
  */
 public class IM implements ResultsListener
     {
+
+        private static Camera camera;
+
         final static SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         private static final int KEEP_ALIVE = 1000 * 270;
         private static final long ERROR_RECONNECT_TIMEOUT = 3 * 1000;
@@ -100,7 +107,7 @@ public class IM implements ResultsListener
         PendingIntent reconnectPIntent;
         PendingIntent keepAlivePIntent;
         PendingIntent getTokenTimeoutPIntent;
-        PendingIntent onlineTimeoutPIntent;
+        //PendingIntent onlineTimeoutPIntent;
         Thread connectThread;
         Context parent;
         int mestype = 0;
@@ -140,7 +147,7 @@ public class IM implements ResultsListener
                                             }
                                     }
                             }
-                        LocalService.addlog("Online timeout onReceive, OsmodroidVisible="+OsMoDroid.gpslocalserviceclientVisible +" gcmtodo="+localService.gcmtodolist.size()+" where="+localService.where+" existactivedevice="+existactiveDevice);
+                        LocalService.addlog("Online timeout onReceive, OsmodroidVisible="+OsMoDroid.gpslocalserviceclientVisible +" gcmtodo="+localService.gcmtodolist.size()+" where="+localService.where+" existactivedevice="+existactiveDevice+" state="+localService.state);
                         if(OsMoDroid.gpslocalserviceclientVisible||localService.state||localService.gcmtodolist.size()>0||localService.where
                                 ||(OsMoDroid.settings.getBoolean("subscribebackground", false)&&existactiveDevice  )   )
                             {
@@ -261,6 +268,8 @@ public class IM implements ResultsListener
         };
         public boolean needtosendpreference=false;
         private boolean warnedsocketconnecterror=false;
+        private long timeonline=System.currentTimeMillis();
+        private boolean flicking=false;
         public IM(String server, int port, LocalService service)
             {
                 RECONNECT_TIMEOUT = Integer.parseInt(OsMoDroid.settings.getString("timeout", "30")) * 1000;
@@ -274,14 +283,15 @@ public class IM implements ResultsListener
                 reconnectPIntent = PendingIntent.getBroadcast(parent, 0, new Intent(RECONNECT_INTENT), 0);
                 keepAlivePIntent = PendingIntent.getBroadcast(parent, 1, new Intent(KEEPALIVE_INTENT), 0);
                 getTokenTimeoutPIntent = PendingIntent.getBroadcast(parent, 2, new Intent(GET_TOKEN_TIMEOUT_INTENT), 0);
-                onlineTimeoutPIntent = PendingIntent.getBroadcast(parent, 3, new Intent(ONLINE_TIMEOUT_INTENT), 0);
+                //onlineTimeoutPIntent = PendingIntent.getBroadcast(parent, 3, new Intent(ONLINE_TIMEOUT_INTENT), 0);
                 SERVER_IP = server;
                 SERVERPORT = port;
                 LocalService.addlog("IM create");
+                LocalService.addlog("GCMID="+OsMoDroid.settings.getString("GCMRegId",""));
                 iMWriter = new IMWriter();
                 writerThread = new Thread(iMWriter, "writer");
                 writerThread.start();
-                startTraffic=TrafficStats.getUidTxBytes(OsMoDroid.context.getApplicationInfo().uid);
+                startTraffic=TrafficStats.getUidTxBytes(context.getApplicationInfo().uid);
             }
         public void sendToServer(String str, boolean gui)
             {
@@ -332,23 +342,28 @@ public class IM implements ResultsListener
         public void setOnlineTimeout()
             {
                 LocalService.addlog("Socket void setOnlineTimeOut");
+                timeonline=System.currentTimeMillis();
                 //parent.registerReceiver(onlineTimeoutReceiver, new IntentFilter(ONLINE_TIMEOUT_INTENT));
-                manager.cancel(onlineTimeoutPIntent);
-                manager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + ONLINE_TIMEOUT, onlineTimeoutPIntent);
-            }
-        public void disableOnlineTimeout()
-            {
-                LocalService.addlog("Socket void setOnlineTimeOut");
-//                try
+                //localService.alertHandler.postDelayed(new Runnable()
+                  //  {
+                   //     public void run()
+                            {
+                  //              addlog( "handler online timeout");
+                    //           parent.sendBroadcast(new Intent(ONLINE_TIMEOUT_INTENT));
+                            }
+                    //}, ONLINE_TIMEOUT);
+
+//                manager.cancel(onlineTimeoutPIntent);
+//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
 //                    {
-//                        parent.unregisterReceiver(onlineTimeoutReceiver);
+//                        manager.setExact(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + ONLINE_TIMEOUT, onlineTimeoutPIntent);
 //                    }
-//                catch (Exception e)
+//                else
 //                    {
-//                        e.printStackTrace();
+//                        manager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + ONLINE_TIMEOUT, onlineTimeoutPIntent);
 //                    }
-                manager.cancel(onlineTimeoutPIntent);
             }
+
 
         public void setkeepAliveAlarm()
             {
@@ -502,17 +517,28 @@ public class IM implements ResultsListener
                                 }
                         checkadressing = true;
                         APIcomParams params = null;
-                        params = new APIcomParams("https://api.osmo.mobi/serv?app=o12gEq2Qyl", "", "checkaddres");
+                        params = new APIcomParams("https://api.osmo.mobi/serv?app=o12gEq2Qyl&id="+OsMoDroid.settings.getString("tracker_id", ""), "", "checkaddres");
 
                         sendidtask = new Netutil.MyAsyncTask(this);
                         sendidtask.execute(params);
                         Log.d(getClass().getSimpleName(), "get token start to execute");
                         parent.registerReceiver(getTokenTimeoutReceiver, new IntentFilter(GET_TOKEN_TIMEOUT_INTENT));
-                        manager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + RECONNECT_TIMEOUT, getTokenTimeoutPIntent);
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
+                            {
+                                manager.setExact(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + RECONNECT_TIMEOUT, getTokenTimeoutPIntent);
+                            }
+                        else
+                            {
+                                manager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + RECONNECT_TIMEOUT, getTokenTimeoutPIntent);
+                            }
                     }
             }
         void start()
             {
+                if(System.currentTimeMillis()>timeonline+ONLINE_TIMEOUT)
+                    {
+                        parent.sendBroadcast(new Intent(ONLINE_TIMEOUT_INTENT));
+                    }
                 if(OsMoDroid.settings.getBoolean("live", true))
                 {
                     start = true;
@@ -587,6 +613,7 @@ public class IM implements ResultsListener
                     }
                 manager.cancel(getTokenTimeoutPIntent);
                 manager.cancel(reconnectPIntent);
+               // manager.cancel(onlineTimeoutPIntent);
                 localService.refresh();
             }
 
@@ -663,6 +690,10 @@ public class IM implements ResultsListener
             }
         synchronized void parseEx(String toParse,boolean gcm) throws JSONException
             {
+                if(System.currentTimeMillis()>timeonline+ONLINE_TIMEOUT)
+                    {
+                        parent.sendBroadcast(new Intent(ONLINE_TIMEOUT_INTENT));
+                    }
                 //LocalService.addlog("recieve " + toParse);
                 if (log)
                     {
@@ -732,10 +763,10 @@ public class IM implements ResultsListener
                                 Toast.makeText(localService, str, Toast.LENGTH_LONG).show();
                             }
                     }
-                else
-                    {
+
+
                         parsedata(jo, ja, command, param, addict, gcm);
-                    }
+
 
 
 
@@ -776,7 +807,7 @@ public class IM implements ResultsListener
                         localService.refresh();
                     }
             }
-        private void parsedata(JSONObject jo, JSONArray ja, String command, String param, String addict, boolean gcm) throws JSONException
+        private void parsedata(JSONObject jo, JSONArray ja, String command, String param, final String addict, boolean gcm) throws JSONException
             {
 
                 JSONObject jsonObject;
@@ -934,6 +965,7 @@ public class IM implements ResultsListener
                                             }
                                         localService.refresh();
                                     }
+                                localService.refresh();
 
                             }
                         else
@@ -1061,7 +1093,20 @@ public class IM implements ResultsListener
 
                 if (command.equals("GRPA"))
                     {
-                        sendToServer("GROUP", false);
+                        //02-08 19:50:40.608 1149-1149/com.OsMoDroid D/com.OsMoDroid.LocalService$6: recive GRPA|{"u":7515,"type":1,"group_id":"QUZM_6745","name":"tytstysy","description":"","policy":"","url":"https:\/\/osmo.mobi\/g\/reyxtidvyzysdhmn","UC":true}
+                        if(jo.has("UC"))
+                            {
+
+                                localService.saveObject(LocalService.channelList, OsMoDroid.CHANNELLIST);
+                                localService.refresh();
+                                stop();
+                                start();
+
+                            }
+                        else
+                            {
+                                sendToServer("GROUP", false);
+                            }
                     }
                 if (command.equals("NEEDSENDALARM"))
                     {
@@ -1161,6 +1206,26 @@ public class IM implements ResultsListener
                                 sendToServer("RCR:" + OsMoDroid.TRACKER_GCM_ID + "|1", false);
 
                             }
+
+                        if (param.equals(OsMoDroid.FLASH_ON))
+                            {
+                                localService.alertHandler.removeCallbacks(flickRunable);
+                              flashOn();
+                                sendToServer("RCR:" + OsMoDroid.FLASH_ON + "|1", false);
+                            }
+                        if (param.equals(OsMoDroid.FLASH_OFF))
+                            {
+                                localService.alertHandler.removeCallbacks(flickRunable);
+                                flashoff();
+                                sendToServer("RCR:" + OsMoDroid.FLASH_OFF + "|1", false);
+                            }
+                        if (param.equals(OsMoDroid.FLASH_BLINK))
+                            {
+                                localService.alertHandler.removeCallbacks(flickRunable);
+                                flick();
+                                sendToServer("RCR:" + OsMoDroid.FLASH_BLINK + "|1", false);
+                            }
+
 
 
                         if (param.equals(OsMoDroid.REFRESH_GROUPS))
@@ -1318,7 +1383,7 @@ public class IM implements ResultsListener
                             {
                                 sendToServer("RCR:" + OsMoDroid.WHERE + "|1", false);
                                 localService.where = true;
-                                List<String> list = myManager.getAllProviders();
+                                List<String> list = myManager.getProviders(true);
                                 if (list.contains(LocationManager.GPS_PROVIDER))
                                     {
                                         if (!localService.state)
@@ -1331,13 +1396,27 @@ public class IM implements ResultsListener
 
                                                                 if (log)
                                                                     {
-                                                                        Log.d(this.getClass().getName(), "подписались на GPS");
+                                                                        addlog("подписались на GPS");
                                                                     }
                                                             }
                                                     });
+                                                if (list.contains(LocationManager.NETWORK_PROVIDER))
+                                                    {
+                                                        localService.alertHandler.postDelayed(new Runnable()
+                                                            {
+                                                                public void run()
+                                                                    {
+                                                                        myManager.requestSingleUpdate(LocationManager.NETWORK_PROVIDER, localService.singleLocationListener, null);
+                                                                        if (log)
+                                                                            {
+                                                                                addlog( "подписались на NETWORK");
+                                                                            }
+                                                                    }
+                                                            }, 30000);
+                                                    }
                                             }
                                     }
-                                if (list.contains(LocationManager.NETWORK_PROVIDER))
+                                else if (list.contains(LocationManager.NETWORK_PROVIDER))
                                     {
                                         localService.alertHandler.postDelayed(new Runnable()
                                             {
@@ -1346,19 +1425,20 @@ public class IM implements ResultsListener
                                                         myManager.requestSingleUpdate(LocationManager.NETWORK_PROVIDER, localService.singleLocationListener, null);
                                                         if (log)
                                                             {
-                                                                Log.d(this.getClass().getName(), "подписались на NETWORK");
+                                                                addlog( "подписались на NETWORK");
                                                             }
                                                     }
-                                            }, 30000);
+                                            }, 0);
                                     }
                                 localService.alertHandler.postDelayed(new Runnable()
                                 {
                                     public void run()
                                         {
+                                            addlog( "отписались");
                                             myManager.removeUpdates(localService.singleLocationListener);
                                             localService.where=false;
                                         }
-                                }, 90000);
+                                }, 180000);
                             }
                         if(param.equals(OsMoDroid.SOS_DEPRESS))
                             {
@@ -1624,7 +1704,70 @@ public class IM implements ResultsListener
                                         JSONArray geoevents = jo.optJSONArray("geoevent");
                                         JSONArray near = jo.optJSONArray("near");
                                         JSONArray alarm = jo.optJSONArray("alarm");
+                                        JSONArray join = jo.optJSONArray("join");
+                                        JSONArray leave = jo.optJSONArray("leave");
+                                        //GP:4971|{"join":[{"u":12345,"nick":"Vasya","time":1482106191,"e":"54321"}]
+                                        //GP:6342|{"leave":[{"u":12345,"nick":"Vasya","time":1482106191,"e":"54321"}]
                                         //GP:1234|{"alarm":{"gu"=>123,"name"=>"Vasya"}
+                                        if(join!=null)
+                                            {
+                                                for (int i=0; i<join.length();i++)
+                                                    {
+                                                        jsonObject=join.getJSONObject(i);
+                                                        long e1=jsonObject.optLong("e");
+                                                        if (e1>eid)
+                                                            {
+                                                                eid=e1;
+                                                            }
+
+                                                        String nick = jsonObject.optString("nick");
+
+                                                        String time="";
+                                                        String messageText="";
+                                                        time= OsMoDroid.sdf.format(new Date(jsonObject.optLong("time")*1000));
+                                                        messageText = ch.name + ": "+nick + ' ' +parent.getString(R.string.join_to_group);
+                                                        Message msg = new Message();
+                                                        Bundle b = new Bundle();
+                                                        b.putBoolean("om_online", true);
+                                                        b.putString("MessageText",time + " " + messageText);
+                                                        msg.setData(b);
+                                                        if (log)
+                                                            {
+                                                                Log.d(this.getClass().getName(), "statenotify entered");
+                                                            }
+                                                        localService.alertHandler.sendMessage(msg);
+                                                    }
+                                            }
+                                        if(leave!=null)
+                                            {
+                                                for (int i=0; i<leave.length();i++)
+                                                    {
+                                                        jsonObject=leave.getJSONObject(i);
+                                                        long e1=jsonObject.optLong("e");
+                                                        if (e1>eid)
+                                                            {
+                                                                eid=e1;
+                                                            }
+
+                                                        String nick = jsonObject.optString("nick");
+
+                                                        String time="";
+                                                        String messageText="";
+                                                        time= OsMoDroid.sdf.format(new Date(jsonObject.optLong("time")*1000));
+                                                        messageText = ch.name + ": "+nick + ' ' +parent.getString(R.string.leave_group);
+                                                        Message msg = new Message();
+                                                        Bundle b = new Bundle();
+                                                        b.putBoolean("om_online", true);
+                                                        b.putString("MessageText",time + " " + messageText);
+                                                        msg.setData(b);
+                                                        if (log)
+                                                            {
+                                                                Log.d(this.getClass().getName(), "statenotify entered");
+                                                            }
+                                                        localService.alertHandler.sendMessage(msg);
+                                                    }
+                                            }
+
                                         if(alarm!=null)
                                             {
                                                 for (int i=0; i<alarm.length();i++)
@@ -1635,7 +1778,7 @@ public class IM implements ResultsListener
                                                             {
                                                                 eid=e1;
                                                             }
-                                                        String name = jsonObject.optString("name");
+                                                        String name = jsonObject.optString("nick");
                                                         String time="";
 
                                                         time= OsMoDroid.sdf.format(new Date(jsonObject.optLong("time")*1000));
@@ -1674,26 +1817,42 @@ public class IM implements ResultsListener
                                                         String time="";
                                                         String messageText="";
                                                         time= OsMoDroid.sdf.format(new Date(jsonObject.optLong("time")*1000));
+                                                        String who ="";
+                                                        if(ch.gu==jsonObject.optInt("u"))
+                                                            {
+                                                                who=parent.getString(R.string.you);
+                                                            }
+                                                        else
+                                                            {
+                                                        for (Device dev : ch.deviceList)
+                                                            {
+                                                                if (dev.u == jsonObject.optInt("u"))
+                                                                    {
+                                                                        who=dev.name;
+                                                                    }
+                                                            }
+                                                    }
+
                                                         if(type.equals("user"))
                                                             {
                                                                 if(mode==1)
                                                                     {
-                                                                         messageText = ch.name + ": " + nick + ' ' + parent.getString(R.string.approached) + ' ' + jsonObject.optString("dst");
+                                                                         messageText = ch.name + ": " + who + ' ' + parent.getString(R.string.approached) + ' '+nick+' ' + jsonObject.optString("dst");
                                                                     }
                                                                 if(mode==0)
                                                                     {
-                                                                         messageText = ch.name + ": " + nick + ' ' + parent.getString(R.string.getaway) + ' ' + jsonObject.optString("dst");
+                                                                         messageText = ch.name + ": " + who + ' ' + parent.getString(R.string.getaway) + ' ' +nick+' '+ jsonObject.optString("dst");
                                                                     }
                                                             }
                                                         if(type.equals("waypoint"))
                                                             {
                                                                 if(mode==1)
                                                                     {
-                                                                         messageText = ch.name + ": "+parent.getString(R.string.you) + ' ' + parent.getString(R.string.approached) + ' ' +name +' '+ jsonObject.optString("dst");
+                                                                         messageText = ch.name + ": "+who + ' ' + parent.getString(R.string.approached) + ' ' +name +' '+ jsonObject.optString("dst");
                                                                     }
                                                                 if(mode==0)
                                                                     {
-                                                                         messageText = ch.name + ": "+parent.getString(R.string.you) + ' ' +parent.getString(R.string.getaway) + ' ' +name +' '+ jsonObject.optString("dst");
+                                                                         messageText = ch.name + ": "+who + ' ' +parent.getString(R.string.getaway) + ' ' +name +' '+ jsonObject.optString("dst");
                                                                     }
                                                             }
 
@@ -2655,6 +2814,10 @@ public class IM implements ResultsListener
                                 setReconnectOnError();
 
                                             LocalService.addlog("could no conenct to socket " + socketRetryInt + e1.getMessage());
+                                if(socketRetryInt>5)
+                                    {
+                                        workserverint=-1;
+                                    }
 
                                 if (socketRetryInt > 3 && !OsMoDroid.settings.getBoolean("understand", false)&&!warnedsocketconnecterror)
                                     {
@@ -2664,4 +2827,95 @@ public class IM implements ResultsListener
                             }
                     }
             }
+        void flashOn()
+            {
+                flicking=true;
+                try
+                    {
+                        camera = Camera.open();
+                    }
+                catch (Exception e)
+                    {
+                        e.printStackTrace();
+                    }
+                if (camera == null)
+                    {
+                        addlog("no camera");
+                  //      sendToServer("RCR:" + OsMoDroid.FLASH_ON + "|0", false);
+                    }
+                else
+                    {
+
+                        try
+                            {
+                                Camera.Parameters p = camera.getParameters();
+                                List supportedFlashModes = p.getSupportedFlashModes();
+                                if(supportedFlashModes.contains(Camera.Parameters.FLASH_MODE_TORCH ))
+                                    {
+                                        p.setFlashMode( Camera.Parameters.FLASH_MODE_TORCH );
+                                    }
+                                else if(supportedFlashModes.contains(Camera.Parameters. FLASH_MODE_ON ))
+                                    {
+                                        p.setFlashMode(Camera.Parameters.FLASH_MODE_ON);
+                                    }
+
+                                camera.setParameters(p);
+                                camera.startPreview();
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
+                                    {
+                                        camera.setPreviewTexture(new SurfaceTexture(0));
+                                    }
+                                camera.autoFocus(new Camera.AutoFocusCallback()
+                                    {
+                                        @Override
+                                        public void onAutoFocus(boolean success, Camera camera)
+                                            {
+                                            }
+                                    });
+                            //    sendToServer("RCR:" + OsMoDroid.FLASH_ON + "|1", false);
+                            }
+                        catch (Exception e)
+                            {
+                                addlog("cannot start preview");
+                               // sendToServer("RCR:" + OsMoDroid.FLASH_ON + "|0", false);
+                            }
+                    }
+            }
+        void flashoff()
+            {
+                flicking=false;
+                if (camera != null)
+                    {
+                        camera.stopPreview();
+                        camera.release();
+                        camera = null;
+
+                    }
+                else
+                    {
+
+                    }
+
+            }
+        void flick()
+            {
+                flicking=true;
+                localService.alertHandler.post(flickRunable);
+            }
+        Runnable flickRunable =new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                if(flicking)
+                    {
+                        flashoff();
+                    }
+                else
+                    {
+                        flashOn();
+                    }
+                localService.alertHandler.postDelayed(this,150);
+            }
+        };
     }

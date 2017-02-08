@@ -21,6 +21,7 @@ import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.text.ClipboardManager;
 import android.util.Log;
@@ -101,6 +102,7 @@ public class DebugFragment extends Fragment
                 MenuItem clear = menu.add(0, 1, 0, "Очистить");
                 MenuItem share = menu.add(0, 2, 0, "Отправить журнал");
                 MenuItem save = menu.add(0, 3, 0, "Сохранить журнал на sdcard");
+                MenuItem copy = menu.add(0,4,0,"Копировать журнал");
                 super.onCreateOptionsMenu(menu, inflater);
             }
         @Override
@@ -113,24 +115,7 @@ public class DebugFragment extends Fragment
                             LocalService.debugAdapter.notifyDataSetChanged();
                             break;
                         case 2:
-                            StringBuilder sb = new StringBuilder();
-                            if (LocalService.debuglist.size() > 1000)
-                                {
-                                    for (String s : LocalService.debuglist.subList(LocalService.debuglist.size() - 1000, LocalService.debuglist.size()))
-                                        {
-                                            sb.append(s);
-                                            sb.append("\n");
-                                        }
-                                }
-                            else
-                                {
-                                    for (String s : LocalService.debuglist)
-                                        {
-                                            sb.append(s);
-                                            sb.append("\n");
-                                        }
-                                }
-                            String sendtext = sb.toString();
+                            String sendtext = getDebugAsString();
                             Intent sendIntent = new Intent(Intent.ACTION_SEND);
                             sendIntent.setType("text/plain");
                             sendIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{"osmo.mobi@gmail.com"});
@@ -189,10 +174,37 @@ public class DebugFragment extends Fragment
                                         }
                                 }
                             break;
+                        case 4:
+                            ClipboardManager clipboard = (ClipboardManager) getActivity().getApplicationContext().getSystemService(Context.CLIPBOARD_SERVICE);
+
+                                    clipboard.setText(getDebugAsString());
+                                    Toast.makeText(getActivity(),"Скопировал", Toast.LENGTH_SHORT).show();
+                                break;
                         default:
                             break;
                     }
                 return super.onOptionsItemSelected(item);
             }
-
+        @NonNull
+        private String getDebugAsString()
+            {
+                StringBuilder sb = new StringBuilder();
+                if (LocalService.debuglist.size() > 1000)
+                    {
+                        for (String s : LocalService.debuglist.subList(LocalService.debuglist.size() - 1000, LocalService.debuglist.size()))
+                            {
+                                sb.append(s);
+                                sb.append("\n");
+                            }
+                    }
+                else
+                    {
+                        for (String s : LocalService.debuglist)
+                            {
+                                sb.append(s);
+                                sb.append("\n");
+                            }
+                    }
+                return sb.toString();
+            }
     }

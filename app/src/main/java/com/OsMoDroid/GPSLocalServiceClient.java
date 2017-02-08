@@ -169,29 +169,14 @@ public class GPSLocalServiceClient extends ActionBarActivity
                             if (mService.myIM.connOpened && !mService.myIM.connecting)
                                 {
                                     actionBar.setLogo(R.drawable.eyeo);
-                                    if (mService.state)
-                                        {
-                                            int icon = R.drawable.eyeo;
-                                            mService.updateNotification(icon);
-                                        }
                                 }
                             else if (mService.myIM.connecting)
                                 {
                                     actionBar.setLogo(R.drawable.eyeu);
-                                    if (mService.state)
-                                        {
-                                            int icon = R.drawable.eyeu;
-                                            mService.updateNotification(icon);
-                                        }
                                 }
                             else
                                 {
                                     actionBar.setLogo(R.drawable.eyen);
-                                    if (mService.state)
-                                        {
-                                            int icon = R.drawable.eyen;
-                                            mService.updateNotification(icon);
-                                        }
                                 }
                             if (!OsMoDroid.settings.getBoolean("subscribebackground", false) && mBound)
                                 {
@@ -405,30 +390,21 @@ public class GPSLocalServiceClient extends ActionBarActivity
                                     if (intent.getBooleanExtra("connect", false) && !intent.getBooleanExtra("connecting", false))
                                         {
                                             actionBar.setLogo(R.drawable.eyeo);
-                                            icon = R.drawable.eyeo;
                                             if(intent.hasExtra("executedlistsize"))
                                                 {
                                                     if(intent.getIntExtra("executedlistsize",0)>0)
                                                         {
-
                                                             actionBar.setLogo(R.drawable.anim);
-
                                                         }
                                                 }
                                         }
                                     else if (intent.getBooleanExtra("connecting", false))
                                         {
                                             actionBar.setLogo(R.drawable.eyeu);
-                                            icon = R.drawable.eyeu;
                                         }
                                     else
                                         {
                                             actionBar.setLogo(R.drawable.eyen);
-                                            icon = R.drawable.eyen;
-                                        }
-                                    if (mService != null && mService.state)
-                                        {
-                                            mService.updateNotification(icon);
                                         }
                                 }
 
@@ -676,7 +652,13 @@ public class GPSLocalServiceClient extends ActionBarActivity
                         else if (intent.getAction().equals(Intent.ACTION_VIEW)&&intent.getScheme().equals("https"))
                             {
                                 Bundle bundle = new Bundle();
-                                bundle.putString("groupurl", intent.getData().toString());
+                                String groupurl = intent.getData().toString();
+                                int trimInt=groupurl.indexOf("?");
+                                if(trimInt>0)
+                                    {
+                                        groupurl=groupurl.substring(0,trimInt);
+                                    }
+                                bundle.putString("groupurl", groupurl);
                                 drawClickListener.selectItem(getString(R.string.chanals), bundle);
                                 Log.d(this.getClass().getSimpleName(), "on new intent=cation_view");
                             }

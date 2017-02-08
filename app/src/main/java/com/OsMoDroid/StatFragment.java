@@ -95,7 +95,7 @@ public class StatFragment extends Fragment implements OnChartGestureListener, On
                 MenuItemCompat.setShowAsAction(bind, MenuItemCompat.SHOW_AS_ACTION_IF_ROOM);
                 MenuItemCompat.setShowAsAction(plot, MenuItemCompat.SHOW_AS_ACTION_IF_ROOM);
                 bind.setIcon(android.R.drawable.ic_menu_revert);
-                if(mChart.getVisibility()==View.GONE)
+                if(mChart!=null&&mChart.getVisibility()==View.GONE)
                     {
                         plot.setIcon(android.R.drawable.ic_menu_gallery);
                     }

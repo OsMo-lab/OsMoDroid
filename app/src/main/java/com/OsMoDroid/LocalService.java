@@ -296,12 +296,13 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                     {
                     }
             };
-
+        static int numberofnotif=0;
         final static Handler alertHandler = new Handler()
         {
             @Override
             public void handleMessage(Message message)
                 {
+
                     if (log)
                         {
                             Log.d(this.getClass().getName(), "Handle message " + message.toString());
@@ -364,7 +365,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                         }
                     if (text != null && !text.equals(""))
                         {
-                            Toast.makeText(serContext, text, Toast.LENGTH_SHORT).show();
+                           // Toast.makeText(serContext, text, Toast.LENGTH_SHORT).show();
                             LocalService.messagelist.add(0, text);
 
 
@@ -388,6 +389,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                             activ.putExtras(a);
                             PendingIntent contentIntent = PendingIntent.getActivity(serContext, OsMoDroid.notifyidApp(), activ, 0);
                             Long when = System.currentTimeMillis();
+                            numberofnotif++;
                             NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(
                                     serContext.getApplicationContext())
                                     .setWhen(when)
@@ -396,7 +398,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                                     .setSmallIcon(android.R.drawable.ic_menu_send)
                                     .setAutoCancel(true)
                                     .setDefaults(Notification.DEFAULT_LIGHTS)
-                                    .setContentIntent(contentIntent);
+                                    .setContentIntent(contentIntent).setNumber(numberofnotif);
                             if (!OsMoDroid.settings.getBoolean("silentnotify", false))
                                 {
                                     notificationBuilder.setDefaults(Notification.DEFAULT_LIGHTS | Notification.DEFAULT_VIBRATE | Notification.DEFAULT_SOUND);
@@ -503,6 +505,21 @@ public class LocalService extends Service implements LocationListener, GpsStatus
             }
         public synchronized void refresh()
             {
+                if (state&&myIM.connOpened && !myIM.connecting)
+                    {
+                                int icon = R.drawable.eyeo;
+                                updateNotification(icon);
+                    }
+                else if (state&&myIM.connecting)
+                    {
+                                int icon = R.drawable.eyeu;
+                                updateNotification(icon);
+                    }
+                else if (state)
+                    {
+                                int icon = R.drawable.eyen;
+                                updateNotification(icon);
+                    }
                 in.removeExtra("startmessage");
                 in.putExtra("position", position + "\n" + satellite + " " + getString(R.string.accuracy) + accuracy);
                 in.putExtra("sattelite", satellite + " " + getString(R.string.accuracy) + accuracy);
@@ -1465,20 +1482,12 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                     {
                         IMEI = "unknown";
                     }
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB)
-                    {
+
                         APIcomParams params = new APIcomParams("https://api.osmo.mobi/new", "platform=" + getDeviceName() + version + android.os.Build.PRODUCT + "&app=" + OsMoDroid.app_code + "&id=" + androidID + "&imei=" + IMEI, "sendid");
                         MyAsyncTask sendidtask = new Netutil.MyAsyncTask(this);
                         sendidtask.execute(params);
                         Log.d(getClass().getSimpleName(), "sendidtask start to execute");
-                    }
-                else
-                    {
-                        APIcomParams params = new APIcomParams("http://api.osmo.mobi/new", "platform=" + getDeviceName() + version + android.os.Build.PRODUCT + "&app=" + OsMoDroid.app_code + "&id=" + androidID + "&imei=" + IMEI + "&dinosaur=yes", "sendid");
-                        MyAsyncTask sendidtask = new Netutil.MyAsyncTask(this);
-                        sendidtask.execute(params);
-                        Log.d(getClass().getSimpleName(), "sendidtask start to execute");
-                    }
+
             }
         private void ttsManage()
             {

@@ -76,6 +76,8 @@
   <string name="copylink">Kopiera denna länk</string>
   <string name="openinbrowser">Öppna i webbläsare</string>
   <string name="exitfromchanal">Lämna gruppen</string>
+  <string name="createchanel">Skapa grupp</string>
+  <string name="enterchanal">Anslut till gruppen</string>
   <string name="chanalname">Namn:</string>
   <string name="chanalcode">ID:</string>
   <string name="privatechanal">Privat grupp</string>
@@ -142,6 +144,7 @@
   <string name="closesession">Stänga session?</string>
   <string name="loading">Laddar ...</string>
   <string name="uploadtrera">Skicka till OsMo?</string>
+  <string name="servermessage">Meddelande från servern</string>
   <string name="deletelink">Ta bort länk</string>
   <string name="uploadtotrera">Skicka till OsMo</string>
   <string name="delete">Ta bort</string>
@@ -154,6 +157,7 @@
   <string name="inway">På väg</string>
   <string name="ingoing2">Sträcka</string>
   <string name="sended">Skickat</string>
+  <string name="writen">Inspelat:</string>
   <string name="wekksends">Sändningar per vecka:</string>
   <string name="from_undefined">från anonym</string>
   <string name="map">Karta</string>
@@ -206,6 +210,7 @@
   <string name="empty_links">Här finns en permanent referens för att övervaka din enhet från sajten. Tillgängliga åtgärder hittar du i kontextmenyn.</string>
   <string name="understand">OK. Rapportera inte dåliga anslutningar längre</string>
   <string name="checkfirewall">Kan inte ansluta till spårningsservern. Kolla att du gett OsMoDroid fullständig access i din brandvägg. Detta kan också bero på dålig kvalitet på dataanslutningen.</string>
+  <string name="size_of_point">Punktstorlek</string>
   <string name="follow_">Följ</string>
   <string name="no_follow_">Följ inte</string>
   <string name="adjust_to_dpi">Justera till DPI</string>
@@ -289,9 +294,12 @@
   <string name="show_arrows">Visa pilar</string>
   <string name="hidefromnmap">Visa inte på kartan</string>
   <string name="longpath">Långa sökvägar</string>
+  <string name="fullgpx">Fullständig GPX</string>
   <string name="nogroupstosendpoint">Inga grupper att skicka punkter till</string>
   <string name="agreesosno">OK att stänga av SOS?</string>
   <string name="shortname">Korta namn</string>
+  <string name="enterin">Gå in i geozonen</string>
+  <string name="exitfrom">Lämna geozonen</string>
   <string name="usechatnotification">Aviseringar från chattgrupper</string>
   <string name="usechatsummary">Visa Android-avisering när chatten uppdateras</string>
   <string name="altitude">Höjd: meter</string>
@@ -302,4 +310,9 @@
   <string name="milage">Sträcka</string>
   <string name="time">Tid</string>
   <string name="averagespeed">Snitthastighet</string>
+  <string name="needselectpoint">Välj grupp att skicka punkten till</string>
+  <string name="plot">Plotta</string>
+  <string name="totalclimb">Total stigning</string>
+  <string name="altitude_">Höjd</string>
+  <string name="near">nära</string>
 </resources>

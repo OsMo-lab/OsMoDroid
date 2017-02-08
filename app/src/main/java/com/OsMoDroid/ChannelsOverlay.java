@@ -51,6 +51,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 public class ChannelsOverlay extends Overlay implements RotationGestureDetector.RotationListener
     {
+        public static final int showtimeout = 90000;
         private int cluster_radius;
         private final Point mTempPoint1 = new Point();
         private final Point mTempPoint2 = new Point();
@@ -289,7 +290,7 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
                                                                 //dev.devpaint.setColor(Color.RED);
                                                                 canvas.drawCircle(scrPoint.x, scrPoint.y, ten / 3, redpaint);
                                                             }
-                                                        if (dev.updatated < (curtime - 60000))
+                                                        if (dev.updatated < (curtime - showtimeout))
                                                             {
                                                                 //dev.devpaint.setColor(Color.GRAY);
                                                                 if(OsMoDroid.settings.getBoolean("shortname",false))
@@ -316,7 +317,7 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
                                                                             {
                                                                                 canvas.drawText(dev.name, scrPoint.x, scrPoint.y - ten, graypaint);
                                                                             }
-                                                                        if (dev.updatated < (curtime - 60000))
+                                                                        if (dev.updatated < (curtime - showtimeout))
                                                                             {
                                                                                 Date resultdate = new Date(dev.updatated);
                                                                                 canvas.drawText(OsMoDroid.sdf.format(dev.updatated), scrPoint.x, scrPoint.y + ten + twenty, graypaint);
@@ -353,7 +354,7 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
                                                                             {
                                                                                 canvas.drawText(dev.name, scrPoint.x, scrPoint.y - ten, blackpaint);
                                                                             }
-                                                                        if (dev.updatated < (curtime - 60000))
+                                                                        if (dev.updatated < (curtime - showtimeout))
                                                                             {
                                                                                 Date resultdate = new Date(dev.updatated);
                                                                                 canvas.drawText(OsMoDroid.sdf.format(dev.updatated), scrPoint.x, scrPoint.y + ten + twenty, blackpaint);

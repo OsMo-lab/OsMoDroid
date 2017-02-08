@@ -78,7 +78,7 @@
     <string name="exitfromchanal">Leave group</string>
     <string name="createchanel">Create group</string>
     <string name="enterchanal">Join the group</string>
-    <string name="chanalname">Name:</string>
+    <string name="chanalname">Group name:</string>
     <string name="chanalcode">ID:</string>
     <string name="privatechanal">Private group</string>
     <string name="chanalkey">Group key</string>
@@ -325,4 +325,18 @@
     <string name="approached">approached</string>
     <string name="getaway">get away</string>
     <string name="you">You</string>
+    <string name="join_to_group">join to group</string>
+    <string name="leave_group">leave group</string>
+    <string name="Email">Email</string>
+    <string name="phone">Phone</string>
+    <string name="group_type_simple">Simple</string>
+    <string name="group_type_famaly">Family</string>
+    <string name="group_type_poi">POI</string>
+    <string name="security_open">Open</string>
+    <string name="security_restricted">Restricted</string>
+    <string name="security_closed">Closed</string>
+    <string name="group_type_txt">Group type</string>
+    <string name="groupaccess">Group access</string>
+    <string name="travel">Travel</string>
+    <string name="nick">Nick</string>
 </resources>

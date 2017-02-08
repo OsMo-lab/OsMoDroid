@@ -113,7 +113,7 @@ public class MainFragment extends Fragment implements GPSLocalServiceClient.upd
                 String startStatus = globalActivity.checkStarted() ? getString(R.string.Running)
                         : getString(R.string.NotRunning);
                 String statusText = getString(R.string.Sendcount) + globalActivity.sendcounter;
-                if (globalActivity.buffercounter != 0)
+                if (globalActivity.buffercounter > 0)
                     {
                         statusText = statusText + "\n" + getActivity().getString(R.string.inbuffer) + globalActivity.buffercounter;
                     }
@@ -230,6 +230,8 @@ public class MainFragment extends Fragment implements GPSLocalServiceClient.upd
                         OsMoDroid.editor.remove("p");
                         OsMoDroid.editor.remove("u");
                         OsMoDroid.editor.commit();
+                        LocalService.channelList.clear();
+                        globalActivity.mService.refresh();
                         if (OsMoDroid.settings.getBoolean("live", false))
                             {
                                 globalActivity.mService.myIM.stop();
@@ -776,7 +778,7 @@ public class MainFragment extends Fragment implements GPSLocalServiceClient.upd
                 String startStatus = globalActivity.checkStarted() ? getString(R.string.Running)
                         : getString(R.string.NotRunning);
                 String statusText = getString(R.string.Sendcount) + globalActivity.sendcounter;
-                if (globalActivity.buffercounter != 0)
+                if (globalActivity.buffercounter > 0)
                     {
                         statusText = statusText + "\n" + getActivity().getString(R.string.inbuffer) + globalActivity.buffercounter;
                     }

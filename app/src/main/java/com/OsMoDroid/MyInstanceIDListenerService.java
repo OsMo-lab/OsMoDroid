@@ -20,7 +20,7 @@ public class MyInstanceIDListenerService extends FirebaseInstanceIdService
             {
                 // Get updated InstanceID token.
                 String refreshedToken = FirebaseInstanceId.getInstance().getToken();
-                LocalService.addlog(refreshedToken);
+               // LocalService.addlog(refreshedToken);
                 OsMoDroid.editor.putString("GCMRegId", refreshedToken);
                 OsMoDroid.editor.putBoolean("needsendgcmregid", true);
                 OsMoDroid.editor.commit();
@@ -30,7 +30,7 @@ public class MyInstanceIDListenerService extends FirebaseInstanceIdService
         private void sendRegistrationToServer(String token)
             {
                 Log.d(this.getClass().getName(), "sendRegistrationToServer: " + token);
-                LocalService.addlog("RegId=" + token);
+             //   LocalService.addlog("RegId=" + token);
                 if (LocalService.myIM != null && LocalService.myIM.authed)
                     {
                         LocalService.myIM.sendToServer("GCM|" + token, false);

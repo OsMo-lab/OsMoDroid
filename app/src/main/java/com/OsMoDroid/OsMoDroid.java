@@ -47,6 +47,9 @@ public class OsMoDroid extends Application
         public static final String REFRESH_DEVICES = "91";
         public static final String REFRESH_GROUPS = "92";
         public static final String SOS_DEPRESS = "95";
+        public static final String FLASH_ON = "47";
+        public static final String FLASH_BLINK = "48";
+        public static final String FLASH_OFF = "49";
         public static final int NOTIFY_ERROR_SENDID = 0;
         public static final int NOTIFY_NO_DEVICE = 1;
         public static final int NOTIFY_EXPIRY_USER = 2;

@@ -319,7 +319,21 @@
     <string name="altitude_">Высота</string>
     <string name="near">рядом</string>
     <string name="alarmengaged">Сработала сигнализация у</string>
-    <string name="approached">approached</string>
-    <string name="getaway">get away</string>
-    <string name="you">You</string>
+    <string name="approached">приблизился</string>
+    <string name="getaway">отдалился</string>
+    <string name="you">Вы</string>
+    <string name="join_to_group">вступил в группу</string>
+    <string name="leave_group">покинул группу</string>
+    <string name="Email">Email</string>
+    <string name="phone">Номер телефона</string>
+    <string name="group_type_simple">Простая</string>
+    <string name="group_type_famaly">Семья</string>
+    <string name="group_type_poi">POI</string>
+    <string name="security_open">Открытая</string>
+    <string name="security_restricted">Ограниченная</string>
+    <string name="security_closed">Закрытая</string>
+    <string name="group_type_txt">Тип группы</string>
+    <string name="groupaccess">Доступ</string>
+    <string name="travel">Путешествие</string>
+    <string name="nick">Позывной</string>
 </resources>
