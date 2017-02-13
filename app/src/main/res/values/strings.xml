@@ -141,7 +141,7 @@
     <string name="iamhere">I\'m right here!</string>
     <string name="linkcopied">Link copied to clipboard</string>
     <string name="Stoping">Stop</string>
-    <string name="closesession">End trip?</string>
+    <string name="closesession">Complete the trip?</string>
     <string name="loading">Loading...</string>
     <string name="uploadtrera">Upload to OsMo?</string>
     <string name="servermessage">Message of the Day</string>
