@@ -54,7 +54,7 @@
 <string name="message">Сообщение</string>
 <string name="sendsupport">Сообщить в техническую поддержку</string>
 <string name="about">О программе</string>
-<string name="abouttext">OsMoDroid это клиент мониторинга для Android. Используя смартфон и сервис OsMo ваши друзья и близкие всегда будут знать где вы.\nРазработчик: Денис Фокин (c) 2012-2017\n\nИспользуя данное приложение вы принимаете Условия Использования:\nhttps://osmo.mobi/terms\n\nОфициальный сайт OsMoDroid:\nhttp://osmodroid.ru\n\nИнформация о авторских правах: http://osmodroid.ru/copyright.html</string>
+<string name="abouttext">OsMoDroid - это официальное приложение сервиса OsMo под Android. Используя смартфон и сервис OsMo ваши друзья и близкие всегда будут знать где вы.\nРазработчик: Денис Фокин (c) 2012-2017\n\nИспользуя данное приложение вы принимаете условия использования:\nhttps://osmo.mobi/terms\n\nОфициальный сайт OsMoDroid:\nhttp://osmodroid.ru\n\nИнформация о авторских правах: http://osmodroid.ru/copyright.html</string>
 <string name="send">>></string>
 <string name="cancel">Отмена</string>
 <string name="speed">Скорость: км/ч</string>
@@ -104,8 +104,8 @@
 <string name="linksnotget">Ссылки не считаны</string>
 <string name="noanswerfromserver">Нет ответа от сервера</string>
 <string name="urlnoget">URL узнать не удалось</string>
-<string name="prefsaved">Настройки сохранены на карту памяти</string>
-<string name="prefloaded">Настройки считаны с карты памяти</string>
+<string name="prefsaved">Настройки экспортированы</string>
+<string name="prefloaded">Настройки импортированы</string>
 <string name="started">запущен</string>
 <string name="stoped">остановлен</string>
 <string name="monitoringondevice">" Мониторинг на устройстве \""</string>
@@ -134,8 +134,8 @@
 <string name="dayssend">Отправок в день:</string>
 <string name="monthsends">Отправок в месяц:</string>
 <string name="exit">Выход</string>
-<string name="savepref">Сохранить настройки на SD</string>
-<string name="loadpref">Загрузить настройки с SD</string>
+<string name="savepref">Экспорт настроек в файл</string>
+<string name="loadpref">Импорт настроек из файла</string>
 <string name="more">Дополнительные опции:</string>
 <string name="iamhere">"Я тут! "</string>
 <string name="linkcopied">Ссылка скопирована в буфер обмена</string>
