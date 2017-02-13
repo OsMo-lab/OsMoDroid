@@ -208,8 +208,8 @@
 <string name="understand">Я понял, больше не сообщать о плохой связи</string>
 <string name="checkfirewall">Не получилось соединится с сервером по нужному порту. Проверьте полный доступ OsMoDroid к интернету в файерволе или антивирусе. Возможно ошибка возникла из за плохого качества соединения с сетью.</string>
 <string name="size_of_point">Масштаб объектов</string>
-<string name="follow_">"Слежу за "</string>
-<string name="no_follow_">"не слежу за "</string>
+<string name="follow_">"Слежение за "</string>
+<string name="no_follow_">"Слежение отключено "</string>
 <string name="adjust_to_dpi">Увеличение (HD)</string>
 <string name="monitoring_settings">Параметры мониторинга</string>
 <string name="milliseconds_how_often_to_send_location">Миллисекунды. Задержка между отправкой данных</string>
