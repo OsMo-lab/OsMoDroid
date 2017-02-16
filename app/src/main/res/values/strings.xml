@@ -65,8 +65,8 @@
     <string name="refresh">Update</string>
     <string name="coordinats">Location: </string>
     <string name="Distantion">Range: </string>
-    <string name="Km"> Km</string>
-    <string name="m"> m </string>
+    <string name="Km">" km"</string>
+    <string name="m">" m"</string>
     <string name="chanals">Groups</string>
     <string name="yourmessage">Your message: </string>
     <string name="sendingmessage">Sending a message</string>
@@ -183,7 +183,7 @@
     <string name="color_a">alpha</string>
     <string name="unknown_location_now">Unknown location now</string>
     <string name="color">Define color</string>
-    <string name="remote_commands">Remote Command</string>
+    <string name="remote_commands">Remote control</string>
     <string name="start_monitoring">Start monitoring</string>
     <string name="stop_monitoring">Stop monitoring</string>
     <string name="send_tts">Send a voice message (TTS)</string>
@@ -198,7 +198,7 @@
     <string name="monitoring_off">Monitoring off</string>
     <string name="kilometers">kilometers</string>
     <string name="reset">Reset</string>
-    <string name="where_">Where?</string>
+    <string name="where_">Fast location fix</string>
     <string name="this_device_">"This device "</string>
     <string name="confirm_reset_staticstic">Confirmation statistics reset</string>
     <string name="please_confirm_reset_statistic">Please confirm the reset statistics</string>
