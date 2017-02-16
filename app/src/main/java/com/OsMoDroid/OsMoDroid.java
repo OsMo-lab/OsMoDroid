@@ -71,6 +71,7 @@ public class OsMoDroid extends Application
         public static final String GCMTODOLIST = "gcmtodolist";
         public static final String SOS ="99" ;
         public static final String SOS_OFF ="100" ;
+        public static final String UPDATE_MOTD="95";
         public static boolean mesactivityVisible = false;
         public static boolean gpslocalserviceclientVisible = false;
         public static SharedPreferences settings;

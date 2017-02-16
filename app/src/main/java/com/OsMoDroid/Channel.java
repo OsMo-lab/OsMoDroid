@@ -38,6 +38,8 @@ public class Channel implements Serializable, ResultsListener
         public String created;
         public String group_id;
         public String url;
+        public String browseurl;
+
         public List<Device> deviceList = new ArrayList<Device>();
         public List<ChatMessage> messagesstringList = new ArrayList<ChatMessage>();
         public boolean send = false;
@@ -55,7 +57,8 @@ public class Channel implements Serializable, ResultsListener
                 this.u = jo.optInt("u");
                 this.created = jo.optString("created");
                 this.group_id = jo.optString("id");
-                this.url = "https://osmo.mobi/g/" + jo.optString("url");
+                this.browseurl = "https://osmo.mobi/g/" + jo.optString("url");
+                this.url = "https://api.osmo.mobi/s?g="+ jo.optString("url")+"&c=OsMoDroid";
                 this.myNameInGroup = jo.optString("nick");
                 this.gu=jo.optInt("gu");
                 this.type=jo.optInt("type");

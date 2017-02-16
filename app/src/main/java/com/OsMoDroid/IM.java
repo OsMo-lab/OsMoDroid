@@ -268,8 +268,9 @@ public class IM implements ResultsListener
         };
         public boolean needtosendpreference=false;
         private boolean warnedsocketconnecterror=false;
-        private long timeonline=System.currentTimeMillis();
+        private long timeonline=SystemClock.uptimeMillis();
         private boolean flicking=false;
+        private long reconnecttime=0;
         public IM(String server, int port, LocalService service)
             {
                 RECONNECT_TIMEOUT = Integer.parseInt(OsMoDroid.settings.getString("timeout", "30")) * 1000;
@@ -342,7 +343,7 @@ public class IM implements ResultsListener
         public void setOnlineTimeout()
             {
                 LocalService.addlog("Socket void setOnlineTimeOut");
-                timeonline=System.currentTimeMillis();
+                timeonline=SystemClock.uptimeMillis();
                 //parent.registerReceiver(onlineTimeoutReceiver, new IntentFilter(ONLINE_TIMEOUT_INTENT));
                 //localService.alertHandler.postDelayed(new Runnable()
                   //  {
@@ -409,6 +410,7 @@ public class IM implements ResultsListener
                 });
                 //parent.registerReceiver(reconnectReceiver, new IntentFilter(RECONNECT_INTENT));
                 manager.cancel(reconnectPIntent);
+                reconnecttime=SystemClock.uptimeMillis();
                 if(fast)
                 {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
@@ -535,7 +537,7 @@ public class IM implements ResultsListener
             }
         void start()
             {
-                if(System.currentTimeMillis()>timeonline+ONLINE_TIMEOUT)
+                if(SystemClock.uptimeMillis()>timeonline+ONLINE_TIMEOUT)
                     {
                         parent.sendBroadcast(new Intent(ONLINE_TIMEOUT_INTENT));
                     }
@@ -688,12 +690,23 @@ public class IM implements ResultsListener
                             }
                     }
             }
+        void checkalarmindozemode()
+            {
+                if(reconnecttime!=0&&SystemClock.uptimeMillis()>reconnecttime+RECONNECT_TIMEOUT)
+                    {
+                        LocalService.addlog("stuck in doze mode - do recconect " );
+                        manager.cancel(reconnectPIntent);
+                        parent.sendBroadcast(new Intent(RECONNECT_INTENT));
+
+                    }
+            }
         synchronized void parseEx(String toParse,boolean gcm) throws JSONException
             {
-                if(System.currentTimeMillis()>timeonline+ONLINE_TIMEOUT)
+                if(SystemClock.uptimeMillis()>timeonline+ONLINE_TIMEOUT)
                     {
                         parent.sendBroadcast(new Intent(ONLINE_TIMEOUT_INTENT));
                     }
+
                 //LocalService.addlog("recieve " + toParse);
                 if (log)
                     {
@@ -1205,6 +1218,14 @@ public class IM implements ResultsListener
                                 sendToServer("GCM|" + OsMoDroid.settings.getString("GCMRegId", "no"), false);
                                 sendToServer("RCR:" + OsMoDroid.TRACKER_GCM_ID + "|1", false);
 
+                            }
+                        if(param.equals(OsMoDroid.UPDATE_MOTD))
+                            {
+                                localService.motd = LocalService.unescape(addict);
+                                OsMoDroid.editor.putString("startmessage", LocalService.unescape(addict));
+                                OsMoDroid.editor.commit();
+                                localService.refresh();
+                                sendToServer("RCR:"+OsMoDroid.UPDATE_MOTD+"|1",false);
                             }
 
                         if (param.equals(OsMoDroid.FLASH_ON))

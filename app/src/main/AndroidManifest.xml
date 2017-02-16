@@ -3,7 +3,7 @@
           xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:tools="http://schemas.android.com/tools"
           android:installLocation="auto"
-          android:versionCode="436"
+          android:versionCode="444"
           android:versionName="2.4.8">
 
     <uses-sdk
@@ -130,13 +130,13 @@
                 <action android:name="android.provider.Telephony.SMS_RECEIVED"/>
             </intent-filter>
         </receiver>
-
         <receiver android:name=".PowerConnectionReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.ACTION_POWER_CONNECTED"/>
                 <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED"/>
             </intent-filter>
         </receiver>
+
         <activity android:name=".AuthActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
@@ -158,18 +158,14 @@
                 android:resource="@xml/os_mo_widget_info"/>
         </receiver>
 
-
-
-        <service
-            android:name=".MyFcmListenerService">
+        <service android:name=".MyFcmListenerService">
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
             </intent-filter>
         </service>
-        <service
-            android:name=".MyInstanceIDListenerService">
+        <service android:name=".MyInstanceIDListenerService">
             <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
             </intent-filter>
         </service>
         <service
@@ -192,6 +188,37 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/double_osmo_widget_info"/>
         </receiver>
+        <receiver android:name="layout.mapWidget">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/map_widget_info"/>
+        </receiver>
+
+        <activity android:name="layout.mapWidgetConfigureActivity">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE"/>
+            </intent-filter>
+        </activity>
+
+        <receiver android:name=".MapWidget">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/map_widget_info"/>
+        </receiver>
+
+        <activity android:name=".MapWidgetConfigureActivity">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE"/>
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

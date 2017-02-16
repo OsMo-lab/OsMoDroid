@@ -200,8 +200,8 @@ public class ChannelsFragment extends Fragment
                     {
                         Intent sendIntent = new Intent(Intent.ACTION_SEND);
                         sendIntent.setType("text/plain");
-                        //https://z8zv6.app.goo.gl/?link=https://osmo.mobi/g/test&apn=com.OsMoDroid&utm_source=OsMoDroid_Share
-                        sendIntent.putExtra(android.content.Intent.EXTRA_TEXT, "https://z8zv6.app.goo.gl/?link="+LocalService.channelList.get((int) acmi.id).url+"&apn=com.OsMoDroid&utm_source=OsMoDroid_Share");
+                        //sendIntent.putExtra(android.content.Intent.EXTRA_TEXT, "https://z8zv6.app.goo.gl/?link="+LocalService.channelList.get((int) acmi.id).url+"&apn=com.OsMoDroid&utm_source=OsMoDroid_Share");
+                        sendIntent.putExtra(android.content.Intent.EXTRA_TEXT, LocalService.channelList.get((int) acmi.id).url);
                         startActivity(Intent.createChooser(sendIntent, getActivity().getString(R.string.sharelink)));
                         return true;
                     }
@@ -209,7 +209,7 @@ public class ChannelsFragment extends Fragment
                     {
                         if (LocalService.channelList.get((int) acmi.id).url != null)
                             {
-                                Intent browseIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(LocalService.channelList.get((int) acmi.id).url));
+                                Intent browseIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(LocalService.channelList.get((int) acmi.id).browseurl));
                                 startActivity(browseIntent);
                             }
                         else

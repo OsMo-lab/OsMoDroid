@@ -1214,6 +1214,12 @@ public class LocalService extends Service implements LocationListener, GpsStatus
             }
         void handleStart(Intent intent, int startId)
             {
+                if(myIM!=null)
+                    {
+                        myIM.checkalarmindozemode();
+                    }
+
+
                 Log.d(getClass().getSimpleName(), "on handleStart"+intent);
                 if(myIM!=null&&!myIM.start&&OsMoDroid.settings.getBoolean("live", true))
                     {
