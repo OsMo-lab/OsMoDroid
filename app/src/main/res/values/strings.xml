@@ -213,7 +213,7 @@
     <string name="size_of_point">Scale objects</string>
     <string name="follow_">"Follow "</string>
     <string name="no_follow_">"No Follow "</string>
-    <string name="adjust_to_dpi">Adjust to DPI</string>
+    <string name="adjust_to_dpi">HD map</string>
     <string name="monitoring_settings">Monitoring settings</string>
     <string name="milliseconds_how_often_to_send_location">Milliseconds - How often to send location</string>
     <string name="send_frequency">Send frequency</string>
