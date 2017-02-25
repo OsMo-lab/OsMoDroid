@@ -217,7 +217,7 @@
     <string name="monitoring_settings">Monitoring settings</string>
     <string name="milliseconds_how_often_to_send_location">Milliseconds - How often to send location</string>
     <string name="send_frequency">Send frequency</string>
-    <string name="meters_must_move_at_least_this_far_to_send_location_update">Meters - Must move at least this far to send location update</string>
+    <string name="meters_must_move_at_least_this_far_to_send_location_update">Meters - Must move at least this far to send location send</string>
     <string name="send_distance">Send distance</string>
     <string name="degrees">Degrees</string>
     <string name="course_deviation">Course deviation</string>
@@ -246,7 +246,7 @@
     <string name="vibrate_when_internet_or_gps_signal_is_lost">Vibrate when Internet or GPS signal is lost</string>
     <string name="milliseconds">Milliseconds</string>
     <string name="vibration_time_interval">Vibration time interval</string>
-    <string name="sound_on_signal_loss">Sound on Signal Loss</string>
+    <string name="sound_on_signal_loss">Sound on signal loss</string>
     <string name="play_a_sound_when_internet_or_gps_signal_is_lost">Play a sound when Internet or GPS signal is lost</string>
     <string name="period_of_gps_unavailability">Period of GPS unavailability</string>
     <string name="sound_when_sending">Sound when sending</string>
@@ -255,10 +255,10 @@
     <string name="do_not_use_android_notifications">Do not use Android Notifications</string>
     <string name="alert_on_online">Online status</string>
     <string name="notify_when_a_data_connection_is_established">Notification of the online status of group members</string>
-    <string name="notify_with_monitoring">Status monitoring</string>
+    <string name="notify_with_monitoring">Status of monitoring</string>
     <string name="status_notification_for_monitoring_your_devices">Notification of the status of monitoring group members</string>
     <string name="alarm_when_device_acceleration_exceeds_a_threshold">Alarm when device acceleration exceeds a threshold</string>
-    <string name="acceleration_alarm">Acceleration Alarm</string>
+    <string name="acceleration_alarm">Acceleration alarm</string>
     <string name="sensitivity">Sensitivity</string>
     <string name="acceleration_to_activate_the_alarm">Acceleration to activate the alarm</string>
     <string name="enable_speech_options">Enable speech options</string>
@@ -304,8 +304,8 @@
     <string name="enterin">" enter in geozone "</string>
     <string name="exitfrom">" exit from geozone "</string>
     <string name="warnewdevice">"This device was deleted from server\nWill create new, if you have been created links(URL) it will invalid now and need to reenter to groups\n You can contact support if like "</string>
-    <string name="usechatnotification">Notifications from chat groups</string>
-    <string name="usechatsummary">Shows Android notification when the chat is updated</string>
+    <string name="usechatnotification">Notifications for chat messeges</string>
+    <string name="usechatsummary">Shows notification when receive message from chat of any active group</string>
     <string name="altitude">Altitude: Meters</string>
     <string name="pleasewait">Please wait...</string>
     <string name="malt">Max Altitude</string>
@@ -316,7 +316,7 @@
     <string name="averagespeed">Average Speed</string>
     <string name="nomounted">Storage not mounted</string>
     <string name="needselectpoint">Need select group to send point</string>
-    <string name="surebufferlost">Buffer not empty and no connection to server. Are you sure (buffer will lost) ?</string>
+    <string name="surebufferlost">Point buffer not empty and not connected to the server. Are you sure (buffer will lost) ?</string>
     <string name="plot">Plot</string>
     <string name="totalclimb">TotalClimb</string>
     <string name="altitude_">Altitude</string>
