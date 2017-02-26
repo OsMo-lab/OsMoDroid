@@ -304,7 +304,7 @@
     <string name="enterin">" enter in geozone "</string>
     <string name="exitfrom">" exit from geozone "</string>
     <string name="warnewdevice">"This device was deleted from server\nWill create new, if you have been created links(URL) it will invalid now and need to reenter to groups\n You can contact support if like "</string>
-    <string name="usechatnotification">Notifications for chat messeges</string>
+    <string name="usechatnotification">Notifications for chat messages</string>
     <string name="usechatsummary">Shows notification when receive message from chat of any active group</string>
     <string name="altitude">Altitude: Meters</string>
     <string name="pleasewait">Please wait...</string>
