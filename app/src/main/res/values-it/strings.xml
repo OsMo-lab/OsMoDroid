@@ -66,7 +66,7 @@
   <string name="refresh">Aggiorna</string>
   <string name="coordinats">Posizione:</string>
   <string name="Distantion">Intrervallo</string>
-  <string name="Km">Km</string>
+  <string name="Km"> km</string>
   <string name="m"> m </string>
   <string name="chanals">Gruppi</string>
   <string name="yourmessage">Il tuo messaggio:</string>
@@ -184,7 +184,7 @@
   <string name="color_a">alpha</string>
   <string name="unknown_location_now">Localizzazione attuale sconosciuta</string>
   <string name="color">Definisci il colore</string>
-  <string name="remote_commands">Comando Remoto</string>
+  <string name="remote_commands">Controllo remoto</string>
   <string name="start_monitoring">Inizia monitoraggio</string>
   <string name="stop_monitoring">Ferma monitoraggio</string>
   <string name="send_tts">Invia un messaggio vocale (TTS)</string>
@@ -199,7 +199,7 @@
   <string name="monitoring_off">Monitoraggio spento</string>
   <string name="kilometers">chilometri</string>
   <string name="reset">Reset</string>
-  <string name="where_">Dove?</string>
+  <string name="where_">Fix veloce posizione</string>
   <string name="this_device_">Questo dispositivo</string>
   <string name="confirm_reset_staticstic">Conferma reset statistiche</string>
   <string name="please_confirm_reset_statistic">Per favore conferma il reset delle statistiche</string>
@@ -214,11 +214,11 @@
   <string name="size_of_point">Ridimensiona oggetti</string>
   <string name="follow_">Segui</string>
   <string name="no_follow_">Non seguire</string>
-  <string name="adjust_to_dpi">Adatta ai DPI</string>
+  <string name="adjust_to_dpi">Mappa HD</string>
   <string name="monitoring_settings">Impostazioni monitoraggio</string>
   <string name="milliseconds_how_often_to_send_location">Millisecondi - Ogni quanto inviare la posizione</string>
   <string name="send_frequency">Frequenza di invio</string>
-  <string name="meters_must_move_at_least_this_far_to_send_location_update">Metri - Ci si deve muovere almeno di questa distanza per inviare l\'aggiornamento della posizione</string>
+  <string name="meters_must_move_at_least_this_far_to_send_location_update">Metri - Devi spostarti almeno tanto lontano per inviare la posizione</string>
   <string name="send_distance">Distanza di invio</string>
   <string name="degrees">Gradi</string>
   <string name="course_deviation">Deviazione dal percorso</string>
@@ -247,7 +247,7 @@
   <string name="vibrate_when_internet_or_gps_signal_is_lost">Vibra quando Internet o il segnale GPS vengono persi</string>
   <string name="milliseconds">Millisecondi</string>
   <string name="vibration_time_interval">Intervallo di vibrazione</string>
-  <string name="sound_on_signal_loss">Suono alla perdita di segnale</string>
+  <string name="sound_on_signal_loss">Suono alla perdita del segnale</string>
   <string name="play_a_sound_when_internet_or_gps_signal_is_lost">Riproduci un suono quando Internet o il segnale GPS vengono persi</string>
   <string name="period_of_gps_unavailability">Durata dell\'assenza segnale GPS</string>
   <string name="sound_when_sending">Segnalazione durante invio</string>
@@ -256,7 +256,7 @@
   <string name="do_not_use_android_notifications">Non usare le notifiche di Android</string>
   <string name="alert_on_online">Online</string>
   <string name="notify_when_a_data_connection_is_established">Notifica lo status online dei membri del gruppo</string>
-  <string name="notify_with_monitoring">Monitoraggio</string>
+  <string name="notify_with_monitoring">Stato del monitoraggio</string>
   <string name="status_notification_for_monitoring_your_devices">Notifica dello stato di </string>
   <string name="alarm_when_device_acceleration_exceeds_a_threshold">Allarme quando l\'accelerazione del dispositivo supera la soglia</string>
   <string name="acceleration_alarm">Allarme accelerazione</string>
@@ -305,8 +305,8 @@
   <string name="enterin">entra nella geozona</string>
   <string name="exitfrom">esce dalla geozona</string>
   <string name="warnewdevice">Questo dispositivo è stato cancellato dal server\nSarà creato nuovamente, se hai creato i link (URL) essi saranno invalidati e sarà necessario reinserirli nei gruppi\n Puoi contattare il supporto se necessario</string>
-  <string name="usechatnotification">Notifiche dai gruppi di chat</string>
-  <string name="usechatsummary">Visualizzare notifiche Android quando la chat viene aggiornata</string>
+  <string name="usechatnotification">Notifiche per messaggi di chat</string>
+  <string name="usechatsummary">Mostra notifica alla ricezione di un messaggio di chat da uno dei gruppi attivi</string>
   <string name="altitude">Quota: Metri</string>
   <string name="pleasewait">Attendere prego...</string>
   <string name="malt">Quota massima</string>
@@ -317,7 +317,7 @@
   <string name="averagespeed">Velocità Media</string>
   <string name="nomounted">Supporto di memorizzazione non pronto</string>
   <string name="needselectpoint">E\' necessario selezionare il gruppo per inviare il punto</string>
-  <string name="surebufferlost">Buffer non vuoto e nessuna connessione al server. Sei sicuro (il contenuto del buffer sarà cancellato)? </string>
+  <string name="surebufferlost">Il buffer dei punti non è vuoto e non sei connesso al server. Sei sicuro (il contenuto del buffer andrà perso)?</string>
   <string name="plot">Disegna</string>
   <string name="totalclimb">Ascesa totale</string>
   <string name="altitude_">Quota</string>

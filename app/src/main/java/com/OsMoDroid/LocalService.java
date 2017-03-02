@@ -1318,10 +1318,13 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                 if (log)
                     {
                         Log.d(getClass().getSimpleName(), "applyPreferecne end");
+
                     }
+                addlog("apply pref");
             }
         public void startServiceWork(boolean opensession)
             {
+                addlog("startservicework opensession="+opensession);
                 if (!paused)
                     {
                         altitudedistanceEntryList.clear();
@@ -1628,6 +1631,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
             }
         public void stopServiceWork(Boolean stopsession)
             {
+                addlog("Stopservicework,stop session "+stopsession);
                 OsMoDroid.editor.putFloat("lat", (float) currentLocation.getLatitude());
                 OsMoDroid.editor.putFloat("lon", (float) currentLocation.getLongitude());
                 OsMoDroid.editor.commit();
@@ -2360,11 +2364,13 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                 if (nInfo != null && nInfo.isConnected())
                     {
                         Log.v("status", "ONLINE");
+                        addlog("isOnline=true");
                         return true;
                     }
                 else
                     {
                         Log.v("status", "OFFLINE");
+                        addlog("isOnline=false");
                         return false;
                     }
             }

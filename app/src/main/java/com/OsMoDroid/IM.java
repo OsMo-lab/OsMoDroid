@@ -148,7 +148,7 @@ public class IM implements ResultsListener
                                     }
                             }
                         LocalService.addlog("Online timeout onReceive, OsmodroidVisible="+OsMoDroid.gpslocalserviceclientVisible +" gcmtodo="+localService.gcmtodolist.size()+" where="+localService.where+" existactivedevice="+existactiveDevice+" state="+localService.state);
-                        if(OsMoDroid.gpslocalserviceclientVisible||localService.state||localService.gcmtodolist.size()>0||localService.where
+                        if(OsMoDroid.gpslocalserviceclientVisible||localService.state||(localService.isOnline()&&localService.gcmtodolist.size()>0)||localService.where
                                 ||(OsMoDroid.settings.getBoolean("subscribebackground", false)&&existactiveDevice  )   )
                             {
                                 setOnlineTimeout();
@@ -176,6 +176,7 @@ public class IM implements ResultsListener
                         }
                 }
         };
+        private boolean onlinebybcr=false;
         private BroadcastReceiver bcr = new BroadcastReceiver()
         {
             @Override
@@ -197,6 +198,7 @@ public class IM implements ResultsListener
 
                             if (localService.isOnline())
                                 {
+                                    onlinebybcr=true;
                                     if (log)
                                         {
                                             Log.d(this.getClass().getName(), "BCR Network is connected");
@@ -216,6 +218,7 @@ public class IM implements ResultsListener
                                 }
                             else
                                 {
+                                    onlinebybcr=false;
                                     if (log)
                                         {
                                             Log.d(this.getClass().getName(), "BCR Network is not connected");
@@ -225,7 +228,7 @@ public class IM implements ResultsListener
                                             Log.d(this.getClass().getName(), "Running:" + running);
                                         }
                                     LocalService.addlog("Socket Network is not connected, running=" + running);
-                                    if (running)
+                                   // if (running)
                                         {
                                             LocalService.addlog("Socket stop by broadcast because running");
                                             localService.internetnotify(false);
@@ -257,12 +260,19 @@ public class IM implements ResultsListener
             @Override
             public void onReceive(Context context, Intent intent)
                 {
-                    LocalService.addlog("Socket reconnect receiver trigged");
-                    disablekeepAliveAlarm();
-                    stop();
-                    localService.internetnotify(false);
-                    localService.refresh();
-                    start();
+                    if(SystemClock.uptimeMillis()>timeonline+ONLINE_TIMEOUT)
+                        {
+                            parent.sendBroadcast(new Intent(ONLINE_TIMEOUT_INTENT));
+                        }
+                    LocalService.addlog("Socket reconnect receiver trigged onlinebybcr="+onlinebybcr);
+
+                            disablekeepAliveAlarm();
+                            stop();
+                            localService.internetnotify(false);
+                            localService.refresh();
+                            start();
+
+
                     //context.unregisterReceiver(this);
                 }
         };
@@ -450,7 +460,7 @@ public class IM implements ResultsListener
                 LocalService.addlog("Socket void close");
                 try
                     {
-                        parent.unregisterReceiver(bcr);
+                        //parent.unregisterReceiver(bcr);
                     }
                 catch (Exception e)
                     {
@@ -567,12 +577,12 @@ public class IM implements ResultsListener
                             connectThread.start();
                         }
                     //
-                    parent.registerReceiver(bcr, new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"));
+                    //parent.registerReceiver(bcr, new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"));
                     parent.registerReceiver(onlineTimeoutReceiver, new IntentFilter(ONLINE_TIMEOUT_INTENT));
                     parent.registerReceiver(keepAliveReceiver, new IntentFilter(KEEPALIVE_INTENT));
                     parent.registerReceiver(reconnectReceiver, new IntentFilter(RECONNECT_INTENT));
 
-                    setOnlineTimeout();
+
                 }
                 else
                     {
@@ -615,6 +625,7 @@ public class IM implements ResultsListener
                     }
                 manager.cancel(getTokenTimeoutPIntent);
                 manager.cancel(reconnectPIntent);
+
                // manager.cancel(onlineTimeoutPIntent);
                 localService.refresh();
             }
@@ -698,6 +709,10 @@ public class IM implements ResultsListener
                         manager.cancel(reconnectPIntent);
                         parent.sendBroadcast(new Intent(RECONNECT_INTENT));
 
+                    }
+                else
+                    {
+                        addlog("reconencttime="+reconnecttime+" SystemClockUptime="+SystemClock.uptimeMillis());
                     }
             }
         synchronized void parseEx(String toParse,boolean gcm) throws JSONException
@@ -817,6 +832,7 @@ public class IM implements ResultsListener
                     {
                         LocalService.addlog("Cancel reconnect alarm - no commands in order");
                         manager.cancel(reconnectPIntent);
+                        reconnecttime=0;
                         localService.refresh();
                     }
             }
@@ -876,6 +892,7 @@ public class IM implements ResultsListener
                                 OsMoDroid.editor.putBoolean("pro", localService.pro);
                                 OsMoDroid.editor.commit();
                                 authed = true;
+                                setOnlineTimeout();
                                 if(jo.has("uid"))
                                     {
                                         if(jo.optInt("uid")>0)
@@ -2131,8 +2148,7 @@ public class IM implements ResultsListener
                                                                                                     }
                                                                                                 if(jsonObject.has("state"))
                                                                                                     {
-                                                                                                        if(ch.type!=2)
-                                                                                                            {
+
                                                                                                                 if (dev.state != 1 && jsonObject.getInt("state") == 1)
                                                                                                                     {
                                                                                                                         notifydevicemonitoring(dev, true);
@@ -2142,7 +2158,7 @@ public class IM implements ResultsListener
                                                                                                                         notifydevicemonitoring(dev, false);
                                                                                                                     }
                                                                                                                 dev.state = jsonObject.getInt("state");
-                                                                                                            }
+
                                                                                                     }
                                                                                             }
                                                                                     }
@@ -2166,6 +2182,7 @@ public class IM implements ResultsListener
                                                                                                            e.printStackTrace();
                                                                                                        }
                                                                                                     }
+
                                                                                                 if(jsonObject.has("time"))
                                                                                                     {
                                                                                                         try
@@ -2180,6 +2197,10 @@ public class IM implements ResultsListener
                                                                                                 getDevtrace(jsonObject, dev);
                                                                                                 ch.deviceList.add(dev);
                                                                                                 Collections.sort(ch.deviceList);
+                                                                                                if (dev.state == 1 )
+                                                                                                    {
+                                                                                                        notifydevicemonitoring(dev, true);
+                                                                                                    }
                                                                                             }
                                                                                         catch (JSONException e)
                                                                                             {
@@ -2466,31 +2487,25 @@ public class IM implements ResultsListener
                         ondisconnect();
                     }
                 });
+                localService.alertHandler.post(new Runnable()
+                    {
+                        @Override
+                        public void run()
+                            {
+                                LocalService.addlog("setReconnectAlarm on error");
+                                setReconnectAlarm(true);
+                                LocalService.addlog("setReconnectAlarm on error setted " + SystemClock.elapsedRealtime());
+
+
+                            }
+                    });
                 if (localService.isOnline())
                     {
-                        localService.alertHandler.post(new Runnable()
-                        {
-                            @Override
-                            public void run()
-                                {
-                                    LocalService.addlog("setReconnectAlarm on error");
-                                    //parent.registerReceiver(reconnectReceiver, new IntentFilter(RECONNECT_INTENT));
-//                                    manager.cancel(reconnectPIntent);
-//
-//                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
-//                                        {
-//                                            manager.setExact(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + ERROR_RECONNECT_TIMEOUT, reconnectPIntent);
-//                                        }
-//                                    else
-//                                        {
-//                                            manager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + ERROR_RECONNECT_TIMEOUT, reconnectPIntent);
-//                                        }
-                                    setReconnectAlarm(true);
-                                    LocalService.addlog("setReconnectAlarm on error setted " + SystemClock.elapsedRealtime());
-
-
-                                }
-                        });
+                        addlog("is online in recconect on error set");
+                    }
+                else
+                    {
+                        addlog("not online in recconect on error set");
                     }
             }
         @Override
@@ -2589,10 +2604,10 @@ public class IM implements ResultsListener
                     {
                         LocalService.addlog("Receive token error - shall reconnecting " + result.rawresponse);
                         socketRetryInt++;
-                        if (socketRetryInt > 3 && !OsMoDroid.settings.getBoolean("understand", false))
-                            {
-                                localService.notifywarnactivity(localService.getString(R.string.checkfirewall), false, OsMoDroid.NOTIFY_NO_CONNECT);
-                            }
+//                        if (socketRetryInt > 3 && !OsMoDroid.settings.getBoolean("understand", false))
+//                            {
+//                                localService.notifywarnactivity(localService.getString(R.string.checkfirewall), false, OsMoDroid.NOTIFY_NO_CONNECT);
+//                            }
                         Log.d(getClass().getSimpleName(), "herrrr");
                         setReconnectOnError();
                     }
@@ -2843,7 +2858,7 @@ public class IM implements ResultsListener
                                 if (socketRetryInt > 3 && !OsMoDroid.settings.getBoolean("understand", false)&&!warnedsocketconnecterror)
                                     {
                                         warnedsocketconnecterror=true;
-                                        localService.notifywarnactivity(localService.getString(R.string.checkfirewall), false, OsMoDroid.NOTIFY_NO_CONNECT);
+                                        //localService.notifywarnactivity(localService.getString(R.string.checkfirewall), false, OsMoDroid.NOTIFY_NO_CONNECT);
                                     }
                             }
                     }

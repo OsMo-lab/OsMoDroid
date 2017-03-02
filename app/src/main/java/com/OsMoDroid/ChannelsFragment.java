@@ -233,20 +233,8 @@ public class ChannelsFragment extends Fragment
                                         R.string.noallenter, Toast.LENGTH_SHORT).show();
                             }
                     }
-                if (item.getItemId() == 7)
-                    {
-                        ClipboardManager clipboard = (ClipboardManager) getActivity().getApplicationContext().getSystemService(Context.CLIPBOARD_SERVICE);
-                        clipboard.setText(LocalService.channelList.get((int) acmi.id).group_id);
-                        return true;
-                    }
-                if (item.getItemId() == 8)
-                    {
-                        Intent sendIntent = new Intent(Intent.ACTION_SEND);
-                        sendIntent.setType("text/plain");
-                        sendIntent.putExtra(android.content.Intent.EXTRA_TEXT, LocalService.channelList.get((int) acmi.id).group_id);
-                        startActivity(Intent.createChooser(sendIntent, getActivity().getString(R.string.shareID)));
-                        return true;
-                    }
+
+
                 return super.onContextItemSelected(item);
             }
         void openChannelChat(int i)
@@ -322,166 +310,7 @@ public class ChannelsFragment extends Fragment
             {
                 if (item.getItemId() == 1)
                     {
-                        ScrollView scrollView = new ScrollView(globalActivity);
-
-                                LinearLayout layout = new LinearLayout(globalActivity);
-                                layout.setOrientation(LinearLayout.VERTICAL);
-                        scrollView.addView(layout);
-                                final TextView txv3 = new TextView(globalActivity);
-                                txv3.setText(R.string.chanalname);
-                                layout.addView(txv3);
-                                final EditText input2 = new EditText(globalActivity);
-                                layout.addView(input2);
-                        final TextView nickTextView = new TextView(globalActivity);
-                        nickTextView.setText(R.string.nick);
-
-                        layout.addView(nickTextView);
-                        final EditText nickEditText = new EditText(globalActivity);
-                        if(OsMoDroid.settings.getString("u", "").equals(""))
-                            {
-                                nickEditText.setHint("Superman");
-                            }
-                        else
-                            {
-                                nickEditText.setText(OsMoDroid.settings.getString("u", ""));
-                            }
-                        layout.addView(nickEditText);
-                        final TextView emailTextView = new TextView(globalActivity);
-                        emailTextView.setText(R.string.Email);
-                        layout.addView(emailTextView);
-                        final EditText emailEditText = new EditText(globalActivity);
-                        emailEditText.setHint("joe@mail.com");
-                        emailEditText.setInputType(TYPE_CLASS_TEXT | TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
-                        layout.addView(emailEditText);
-                        final TextView phoneTextView = new TextView(globalActivity);
-                        phoneTextView.setText(R.string.phone);
-                        layout.addView(phoneTextView);
-                        final EditText phoneEditText = new EditText(globalActivity);
-                        phoneEditText.setInputType(TYPE_CLASS_PHONE);
-                        phoneEditText.setHint("+75555555555");
-                        layout.addView(phoneEditText);
-                        final TextView groupTypeTextView = new TextView(globalActivity);
-                        groupTypeTextView.setText(R.string.group_type_txt);
-                        layout.addView(groupTypeTextView);
-                        final Spinner groupTypeSpinner = new Spinner(globalActivity);
-                        layout.addView(groupTypeSpinner);
-                        List<String> typeList = new ArrayList<String>();
-                        typeList.add(getString(R.string.group_type_simple));
-                        typeList.add(getString(R.string.group_type_famaly));
-                        typeList.add(getString(R.string.group_type_poi));
-                        typeList.add(getString(R.string.travel));
-                        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(globalActivity, R.layout.spinneritem, typeList);
-                        groupTypeSpinner.setAdapter(dataAdapter);
-                        final TextView securityTextView = new TextView(globalActivity);
-                        securityTextView.setText(R.string.groupaccess);
-                        layout.addView(securityTextView);
-                        final Spinner groupSecuritySpinner = new Spinner(globalActivity);
-                        layout.addView(groupSecuritySpinner);
-                        List<String> securityList = new ArrayList<String>();
-                        securityList.add(getString(R.string.security_open));
-                        securityList.add(getString(R.string.security_restricted));
-                        securityList.add(getString(R.string.security_closed));
-                        ArrayAdapter<String> datasecureAdapter = new ArrayAdapter<String>(globalActivity, R.layout.spinneritem, securityList);
-                        groupSecuritySpinner.setAdapter(datasecureAdapter);
-
-                        if (!OsMoDroid.settings.getString("u", "").equals(""))
-                            {
-                                emailEditText.setVisibility(View.GONE);
-                                emailTextView.setVisibility(View.GONE);
-                                phoneEditText.setVisibility(View.GONE);
-                                phoneTextView.setVisibility(View.GONE);
-
-                            }
-                                final AlertDialog alertdialog4 = new AlertDialog.Builder(globalActivity)
-                                        .setTitle(R.string.createchanal)
-                                        .setView(scrollView)
-                                        .setPositiveButton(R.string.yes,
-                                                new DialogInterface.OnClickListener()
-                                                {
-                                                    public void onClick(DialogInterface dialog, int whichButton)
-                                                        {
-
-                                                        }
-                                                })
-                                        .setNegativeButton(R.string.No,
-                                                new DialogInterface.OnClickListener()
-                                                {
-                                                    public void onClick(DialogInterface dialog, int whichButton)
-                                                        {
-                                                        }
-                                                }).create();
-
-                                alertdialog4.show();
-                                Button theButton = alertdialog4.getButton(DialogInterface.BUTTON_POSITIVE);
-                                theButton.setOnClickListener(new CustomListener(alertdialog4)
-                                {
-                                    @Override
-                                    public void onClick(View v)
-                                        {
-                                            if (globalActivity.mService.myIM.authed)
-                                                {
-                                                    String canalname = input2.getText().toString();
-                                                    String email = emailEditText.getText().toString();
-                                                    String phone = phoneEditText.getText().toString();
-
-                                                    if (!(nickEditText.getText().toString().equals(""))&&!(canalname.equals("")) && (!OsMoDroid.settings.getString("u", "").equals("")||!email.equals("")))
-                                                        {
-                                                            JSONObject j = new JSONObject();
-                                                            try
-                                                                {
-                                                                    j.put("name",canalname);
-                                                                    j.put("nick",nickEditText.getText().toString());
-                                                                    if(!email.equals(""))
-                                                                       {
-                                                                           j.put("email",email);
-                                                                       }
-                                                                    if(!phone.equals(""))
-                                                                        {
-                                                                            j.put("telephone", phone);
-                                                                        }
-                                                                    switch ((int)groupTypeSpinner.getSelectedItemId())
-                                                                        {
-                                                                            case 0:
-                                                                                j.put("type",1);
-                                                                                break;
-                                                                            case 1:
-                                                                                j.put("type",2);
-                                                                                break;
-                                                                            case 2:
-                                                                                j.put("type",5);
-                                                                                break;
-                                                                            case 3:
-                                                                                j.put("type",6);
-                                                                                break;
-
-                                                                        }
-
-
-                                                                    j.put("private",groupSecuritySpinner.getSelectedItemId());
-                                                                }
-                                                            catch (JSONException e)
-                                                                {
-                                                                    e.printStackTrace();
-                                                                }
-                                                            globalActivity.mService.myIM.sendToServer("GRPA|"+j.toString(), true);
-                                                            super.dialog.dismiss();;
-                                                        }
-                                                    else
-                                                        {
-                                                            Toast.makeText(
-                                                                    globalActivity,
-                                                                    R.string.noallenter, Toast.LENGTH_SHORT).show();
-                                                        }
-
-
-                                                }
-                                            else
-                                                {
-                                                    Toast.makeText(globalActivity, R.string.CheckInternet, Toast.LENGTH_SHORT).show();
-                                                }
-                                        }
-
-                                });
+                        creategroup();
 
 
 
@@ -495,6 +324,165 @@ public class ChannelsFragment extends Fragment
                         globalActivity.mService.myIM.sendToServer("GROUP", true);
                     }
                 return super.onOptionsItemSelected(item);
+            }
+        private void creategroup()
+            {
+                ScrollView scrollView = new ScrollView(globalActivity);
+                LinearLayout layout = new LinearLayout(globalActivity);
+                layout.setOrientation(LinearLayout.VERTICAL);
+                scrollView.addView(layout);
+                final TextView txv3 = new TextView(globalActivity);
+                txv3.setText(R.string.chanalname);
+                layout.addView(txv3);
+                final EditText input2 = new EditText(globalActivity);
+                layout.addView(input2);
+                final TextView nickTextView = new TextView(globalActivity);
+                nickTextView.setText(R.string.nick);
+                layout.addView(nickTextView);
+                final EditText nickEditText = new EditText(globalActivity);
+                if(OsMoDroid.settings.getString("u", "").equals(""))
+                    {
+                        nickEditText.setHint("Superman");
+                    }
+                else
+                    {
+                        nickEditText.setText(OsMoDroid.settings.getString("u", ""));
+                    }
+                layout.addView(nickEditText);
+                final TextView emailTextView = new TextView(globalActivity);
+                emailTextView.setText(R.string.Email);
+                layout.addView(emailTextView);
+                final EditText emailEditText = new EditText(globalActivity);
+                emailEditText.setHint("joe@mail.com");
+                emailEditText.setInputType(TYPE_CLASS_TEXT | TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+                layout.addView(emailEditText);
+                final TextView phoneTextView = new TextView(globalActivity);
+                phoneTextView.setText(R.string.phone);
+                layout.addView(phoneTextView);
+                final EditText phoneEditText = new EditText(globalActivity);
+                phoneEditText.setInputType(TYPE_CLASS_PHONE);
+                phoneEditText.setHint("+75555555555");
+                layout.addView(phoneEditText);
+                final TextView groupTypeTextView = new TextView(globalActivity);
+                groupTypeTextView.setText(R.string.group_type_txt);
+                layout.addView(groupTypeTextView);
+                final Spinner groupTypeSpinner = new Spinner(globalActivity);
+                layout.addView(groupTypeSpinner);
+                List<String> typeList = new ArrayList<String>();
+                typeList.add(getString(R.string.group_type_simple));
+                typeList.add(getString(R.string.group_type_famaly));
+                typeList.add(getString(R.string.group_type_poi));
+                typeList.add(getString(R.string.travel));
+                ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(globalActivity, R.layout.spinneritem, typeList);
+                groupTypeSpinner.setAdapter(dataAdapter);
+                final TextView securityTextView = new TextView(globalActivity);
+                securityTextView.setText(R.string.groupaccess);
+                layout.addView(securityTextView);
+                final Spinner groupSecuritySpinner = new Spinner(globalActivity);
+                layout.addView(groupSecuritySpinner);
+                List<String> securityList = new ArrayList<String>();
+                securityList.add(getString(R.string.security_open));
+                securityList.add(getString(R.string.security_restricted));
+                securityList.add(getString(R.string.security_closed));
+                ArrayAdapter<String> datasecureAdapter = new ArrayAdapter<String>(globalActivity, R.layout.spinneritem, securityList);
+                groupSecuritySpinner.setAdapter(datasecureAdapter);
+                if (!OsMoDroid.settings.getString("u", "").equals(""))
+                    {
+                        emailEditText.setVisibility(View.GONE);
+                        emailTextView.setVisibility(View.GONE);
+                        phoneEditText.setVisibility(View.GONE);
+                        phoneTextView.setVisibility(View.GONE);
+
+                    }
+                final AlertDialog alertdialog4 = new AlertDialog.Builder(globalActivity)
+                        .setTitle(R.string.createchanal)
+                        .setView(scrollView)
+                        .setPositiveButton(R.string.yes,
+                                new DialogInterface.OnClickListener()
+                                {
+                                    public void onClick(DialogInterface dialog, int whichButton)
+                                        {
+
+                                        }
+                                })
+                        .setNegativeButton(R.string.No,
+                                new DialogInterface.OnClickListener()
+                                {
+                                    public void onClick(DialogInterface dialog, int whichButton)
+                                        {
+                                        }
+                                }).create();
+                alertdialog4.show();
+                Button theButton = alertdialog4.getButton(DialogInterface.BUTTON_POSITIVE);
+                theButton.setOnClickListener(new CustomListener(alertdialog4)
+                {
+                    @Override
+                    public void onClick(View v)
+                        {
+                            if (globalActivity.mService.myIM.authed)
+                                {
+                                    String canalname = input2.getText().toString();
+                                    String email = emailEditText.getText().toString();
+                                    String phone = phoneEditText.getText().toString();
+
+                                    if (!(nickEditText.getText().toString().equals(""))&&!(canalname.equals("")) && (!OsMoDroid.settings.getString("u", "").equals("")||!email.equals("")))
+                                        {
+                                            JSONObject j = new JSONObject();
+                                            try
+                                                {
+                                                    j.put("name",canalname);
+                                                    j.put("nick",nickEditText.getText().toString());
+                                                    if(!email.equals(""))
+                                                       {
+                                                           j.put("email",email);
+                                                       }
+                                                    if(!phone.equals(""))
+                                                        {
+                                                            j.put("telephone", phone);
+                                                        }
+                                                    switch ((int)groupTypeSpinner.getSelectedItemId())
+                                                        {
+                                                            case 0:
+                                                                j.put("type",1);
+                                                                break;
+                                                            case 1:
+                                                                j.put("type",2);
+                                                                break;
+                                                            case 2:
+                                                                j.put("type",5);
+                                                                break;
+                                                            case 3:
+                                                                j.put("type",6);
+                                                                break;
+
+                                                        }
+
+
+                                                    j.put("private",groupSecuritySpinner.getSelectedItemId());
+                                                }
+                                            catch (JSONException e)
+                                                {
+                                                    e.printStackTrace();
+                                                }
+                                            globalActivity.mService.myIM.sendToServer("GRPA|"+j.toString(), true);
+                                            super.dialog.dismiss();;
+                                        }
+                                    else
+                                        {
+                                            Toast.makeText(
+                                                    globalActivity,
+                                                    R.string.noallenter, Toast.LENGTH_SHORT).show();
+                                        }
+
+
+                                }
+                            else
+                                {
+                                    Toast.makeText(globalActivity, R.string.CheckInternet, Toast.LENGTH_SHORT).show();
+                                }
+                        }
+
+                });
             }
         private void enterchanal(String url)
             {
@@ -625,7 +613,34 @@ public class ChannelsFragment extends Fragment
                     {
                         //Netutil.newapicommand((ResultsListener)LocalService.serContext,(Context)getSherlockActivity(), "om_device_channel_adaptive:"+OsMoDroid.settings.getString("device", ""));
                     }
-                return view;
+                Button eg = (Button) view.findViewById(R.id.button2);
+                Button cg = (Button) view.findViewById(R.id.button3);
+                eg.setVisibility(View.GONE);
+                cg.setVisibility(View.GONE);
+                if(LocalService.channelList.isEmpty())
+                    {
+                        eg.setVisibility(View.VISIBLE);
+                        cg.setVisibility(View.VISIBLE);
+
+                        eg.setOnClickListener(new OnClickListener()
+                            {
+                                @Override
+                                public void onClick(View v)
+                                    {
+                                        enterchanal(null);
+                                    }
+                            });
+                        cg.setOnClickListener(new OnClickListener()
+                            {
+                                @Override
+                                public void onClick(View v)
+                                    {
+                                        creategroup();
+                                    }
+                            });
+                    }
+                        return view;
+
             }
 
     }

@@ -558,6 +558,7 @@ public class GPSLocalServiceClient extends ActionBarActivity
                     }
                 if (mService.myIM != null)
                     {
+                        mService.myIM.checkalarmindozemode();
                         if (!mService.myIM.start)
                             {
                                 mService.myIM.start();

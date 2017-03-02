@@ -65,10 +65,7 @@ public class ChannelsAdapter extends ArrayAdapter<Channel>
                     {
                         channelName.setText(channel.name + '(' + channel.myNameInGroup + ')');
                     }
-                else
-                    {
-                        channelName.setText(channel.group_id + ':' + channel.myNameInGroup);
-                    }
+
                 if (channel.browseurl != null)
                     {
                         channelCreated.setText(channel.browseurl);
