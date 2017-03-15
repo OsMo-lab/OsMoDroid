@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<resources>
+  <string name="start">התחלה</string>
+  <string name="stop">עצירה</string>
+  <string name="location">מיקום:</string>
+  <string name="sends">סטטוס:</string>
+  <string name="url">כתובת:</string>
+  <string name="settings">הגדרות</string>
+  <string name="succes">בהצלחה</string>
+  <string name="error">שגיאה:</string>
+  <string name="NoConnection">אין חיבור לרשת</string>
+  <string name="Unknow">לא ידוע</string>
+  <string name="NotDefined">לא מוגדר</string>
+  <string name="Sended">סטטוס:</string>
+  <string name="Adres">כתובת:</string>
+</resources>
