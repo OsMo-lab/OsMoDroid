@@ -1928,7 +1928,7 @@ public class IM implements ResultsListener
                                                         time= OsMoDroid.sdf.format(new Date(jsonObject.optLong("time")*1000));
 
 
-                                                        String messageText =ch.name+": "+name+ (jsonObject.optInt("type")==1?parent.getString(R.string.enterin):parent.getString(R.string.exitfrom)) +" "+jsonObject.optString("name");
+                                                        String messageText =ch.name+": "+name+' '+ (jsonObject.optInt("type")==1?parent.getString(R.string.enterin):parent.getString(R.string.exitfrom)) +" "+jsonObject.optString("name");
 
 
                                                         Message msg = new Message();
@@ -2296,6 +2296,7 @@ public class IM implements ResultsListener
                                 Log.d(getClass().getSimpleName(), "write group list to file");
                             }
                         //localService.saveObject(LocalService.channelList, OsMoDroid.CHANNELLIST);
+                        localService.bitmapmapview();
                     }
 
             }
@@ -2377,7 +2378,14 @@ public class IM implements ResultsListener
                                         if (!Character.toString(d.charAt(i)).equals(".") || i == (d.length() - 1))
                                             {
                                                 LocalService.addlog(d.substring(idxS + 1, i));
-                                                dev.speed = OsMoDroid.df0.format((((Float.parseFloat(d.substring(idxS + 1, i)) * 3.6))));
+                                                if(!OsMoDroid.settings.getBoolean("imperial",false))
+                                                    {
+                                                        dev.speed = OsMoDroid.df0.format((((Float.parseFloat(d.substring(idxS + 1, i)) * 3.6))));
+                                                    }
+                                                else
+                                                    {
+                                                        dev.speed = OsMoDroid.df0.format((((Float.parseFloat(d.substring(idxS + 1, i)) * 3.6*0.621371))));
+                                                    }
                                                 break;
                                             }
                                     }
@@ -2435,7 +2443,7 @@ public class IM implements ResultsListener
                         status = localService.getString(R.string.stoped);
                     }
 
-                messageText = messageText + localService.getString(R.string.monitoringondevice) + dev.name + "\" " + status;
+                messageText = messageText + localService.getString(R.string.monitoringondevice) + dev.name + " " + status;
                 if (OsMoDroid.settings.getBoolean("statenotify", true))
                     {
                         Message msg = new Message();

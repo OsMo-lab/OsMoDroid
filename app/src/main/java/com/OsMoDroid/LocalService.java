@@ -1,10 +1,12 @@
 package com.OsMoDroid;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.StreamCorruptedException;
 import java.io.StringWriter;
@@ -22,7 +24,10 @@ import java.util.TimeZone;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.osmdroid.api.IMapController;
+import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
+import org.osmdroid.views.MapView;
 
 import android.app.AlarmManager;
 import android.app.Notification;
@@ -39,6 +44,8 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Point;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -60,6 +67,7 @@ import android.os.BatteryManager;
 import android.os.Binder;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
@@ -74,8 +82,12 @@ import android.support.v4.app.NotificationCompat;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.Display;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.View.MeasureSpec;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
+import android.widget.RelativeLayout;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
@@ -451,6 +463,8 @@ public class LocalService extends Service implements LocationListener, GpsStatus
         //boolean connecting=false;
         NotificationCompat.Builder foregroundnotificationBuilder;
         boolean pro;
+        private View linearview;
+        private IMapController mapController;
         static String formatInterval(final long l)
             {
                 return String.format("%02d:%02d:%02d", l / (1000 * 60 * 60), (l % (1000 * 60 * 60)) / (1000 * 60), ((l % (1000 * 60 * 60)) % (1000 * 60)) / 1000);
@@ -501,6 +515,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                 bindedlocaly = true;
                 binded = true;
                 Log.d(this.getClass().getName(), "on rebind " + binded + "intent=" + intent.getAction() + " bindedremote=" + bindedremote + " bindedlocaly=" + bindedlocaly);
+
                 return mBinder;
             }
         public synchronized void refresh()
@@ -525,7 +540,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                 in.putExtra("sattelite", satellite + " " + getString(R.string.accuracy) + accuracy);
                 in.putExtra("sendresult", sendresult);
                 in.putExtra("buffercounter", buffercounter);
-                in.putExtra("stat", getString(R.string.maximal) + OsMoDroid.df1.format(maxspeed * 3.6) + getString(R.string.kmch) + getString(R.string.average) + OsMoDroid.df1.format(avgspeed * 3600) + getString(R.string.kmch) + getString(R.string.going) + OsMoDroid.df2.format(workdistance / 1000) + getString(R.string.km) + "\n" + getString(R.string.worktime) + formatInterval(timeperiod));
+
                 in.putExtra("started", state);
                 in.putExtra("globalsend", globalsend);
                 in.putExtra("sos", sos);
@@ -880,6 +895,38 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                         startServiceWork(true);
                     }
                 OsMoDroid.settings.edit().putBoolean("ondestroy", false).commit();
+
+                LayoutInflater inflater = LayoutInflater.from(getApplicationContext());
+                linearview = inflater.inflate(R.layout.map, null, false);
+                RelativeLayout rl = (RelativeLayout) linearview.findViewById(R.id.relative);
+                MapFragment.CustomTileProvider customTileProvider;
+
+                MapView mMapView = new MapView(getApplicationContext());
+                ChannelsOverlay choverlay = new ChannelsOverlay( mMapView);
+                mapController = mMapView.getController();
+
+                mMapView.getOverlays().add(choverlay);
+                RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.FILL_PARENT, RelativeLayout.LayoutParams.FILL_PARENT);
+                lp.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+                lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+                mMapView.setLayoutParams(lp);
+                mMapView.setTilesScaledToDpi(OsMoDroid.settings.getBoolean("adjust_to_dpi", true));
+                mMapView.setTileSource(TileSourceFactory.MAPNIK);
+                //mMapView.setTilesScaledToDpi(true);
+                rl.addView(mMapView, 0);
+                int w = 300;
+                int h = 300;
+
+                linearview.measure(MeasureSpec.makeMeasureSpec(w, MeasureSpec.EXACTLY),
+                        MeasureSpec.makeMeasureSpec(h, MeasureSpec.EXACTLY));
+
+                linearview.layout(0, 0, linearview.getMeasuredWidth(), linearview.getMeasuredHeight());
+                linearview.setDrawingCacheEnabled(true);
+                linearview.buildDrawingCache();
+
+
+
+
             }
         void Pong(Context context) throws JSONException
             {
@@ -1819,11 +1866,30 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                     {
                         GeoPoint curGeoPoint = new GeoPoint(location);
                         GeoPoint prevGeoPoint = new GeoPoint(prevlocation_spd);
-                        workdistance = workdistance + curGeoPoint.distanceTo(prevGeoPoint);//location.distanceTo(prevlocation_spd);
-                        if (OsMoDroid.settings.getBoolean("ttsavgspeed", false) && OsMoDroid.settings.getBoolean("usetts", false) && tts != null && !tts.isSpeaking() && ((int) workdistance) / 1000 > intKM)
+                        if (OsMoDroid.settings.getBoolean("imperial", false))
                             {
-                                intKM = (int) workdistance / 1000;
-                                tts.speak(getString(R.string.going) + ' ' + Integer.toString(intKM) + ' ' + "KM" + ',' + getString(R.string.avg) + ' ' + OsMoDroid.df1.format(avgspeed * 3600) + ',' + getString(R.string.inway) + ' ' + formatInterval(timeperiod), TextToSpeech.QUEUE_ADD, null);
+                                workdistance = workdistance + curGeoPoint.distanceTo(prevGeoPoint) * 1.609344f;//location.distanceTo(prevlocation_spd);
+                            }
+                        else
+                            {
+                                workdistance = workdistance + curGeoPoint.distanceTo(prevGeoPoint);//location.distanceTo(prevlocation_spd);
+                            }
+                        if (OsMoDroid.settings.getBoolean("imperial", false))
+                            {
+                            if (OsMoDroid.settings.getBoolean("ttsavgspeed", false) && OsMoDroid.settings.getBoolean("usetts", false) && tts != null && !tts.isSpeaking() && ((int) workdistance) / 1000*1.609344 > intKM)
+                                {
+                                    intKM = (int)( workdistance / 1000*1.609344);
+                                    tts.speak(getString(R.string.going) + ' ' + Integer.toString(intKM) + ' ' + "Miles" + ',' + getString(R.string.avg) + ' ' + OsMoDroid.df1.format(avgspeed * 3600) + ',' + getString(R.string.inway) + ' ' + formatInterval(timeperiod), TextToSpeech.QUEUE_ADD, null);
+
+                                }
+                            }
+                        else
+                            {
+                                if (OsMoDroid.settings.getBoolean("ttsavgspeed", false) && OsMoDroid.settings.getBoolean("usetts", false) && tts != null && !tts.isSpeaking() && ((int) workdistance) / 1000 > intKM)
+                                    {
+                                        intKM = (int) workdistance / 1000;
+                                        tts.speak(getString(R.string.going) + ' ' + Integer.toString(intKM) + ' ' + "KM" + ',' + getString(R.string.avg) + ' ' + OsMoDroid.df1.format(avgspeed * 3600) + ',' + getString(R.string.inway) + ' ' + formatInterval(timeperiod), TextToSpeech.QUEUE_ADD, null);
+                                    }
                             }
                         //if(log)Log.d(this.getClass().getName(),"Log of Workdistance, Workdistance="+ Float.toString(workdistance)+" location="+location.toString()+" prevlocation_spd="+prevlocation_spd.toString()+" distanceto="+Float.toString(location.distanceTo(prevlocation_spd)));
                         prevlocation_spd.set(location);
@@ -1833,8 +1899,18 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                     }
                 if ((int) location.getAccuracy() < hdop_gpx)
                     {
-                        currentspeed = location.getSpeed();
-                        altitude= (int) location.getAltitude();
+                        if(OsMoDroid.settings.getBoolean("imperial",false))
+                            {
+                                currentspeed = location.getSpeed()*0.621371f;
+                                altitude= (int) (location.getAltitude()*3.28084);
+                            }
+                        else
+                            {
+                                currentspeed = location.getSpeed();
+                                altitude= (int) location.getAltitude();
+                            }
+
+
                         boolean filled=true;
                         int summ=0;
                         int meanaltitude=Integer.MIN_VALUE;
@@ -1876,7 +1952,14 @@ public class LocalService extends Service implements LocationListener, GpsStatus
 
                         if (location.getSpeed() > maxspeed)
                             {
-                                maxspeed = location.getSpeed();
+                                if(OsMoDroid.settings.getBoolean("imperial",false))
+                                    {
+                                        maxspeed = location.getSpeed()*0.621371f;
+                                    }
+                                else
+                                    {
+                                        maxspeed = location.getSpeed();
+                                    }
                             }
                     }
                 //if(log)Log.d(this.getClass().getName(),"workmilli="+ Float.toString(workmilli)+" gettime="+location.getTime());
@@ -2357,6 +2440,44 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                             }
                     }
             }
+        void bitmapmapview()
+            {
+                mapController.setZoom(4);
+                GeoPoint startPoint = new GeoPoint(59.0, 30.0);
+                mapController.setCenter(startPoint);
+                alertHandler.postDelayed(new Runnable()
+                    {
+                        @Override
+                        public void run()
+                            {
+                                Bitmap bm = Bitmap.createBitmap( linearview.getMeasuredWidth(), linearview.getMeasuredHeight(), Bitmap.Config.ARGB_8888);
+                                Canvas c = new Canvas(bm);
+
+                                linearview.draw(c);
+                                AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(getApplicationContext());
+                                ComponentName thisWidget;
+                                thisWidget = new ComponentName(LocalService.this,MapWidget.class);
+                                int[] allWidgetIds =  appWidgetManager.getAppWidgetIds(thisWidget);
+                                Intent is = new Intent(LocalService.this, LocalService.class);
+                                for (int widgetId : allWidgetIds)
+                                    {
+                                        RemoteViews remoteViews = new RemoteViews(getApplicationContext().getPackageName(), R.layout.map_widget);
+                                        Intent notificationIntent = new Intent(LocalService.this, GPSLocalServiceClient.class);
+                                        notificationIntent.setAction(Intent.ACTION_MAIN);
+                                        notificationIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+                                        osmodroidLaunchIntent = PendingIntent.getActivity(LocalService.this, 0, notificationIntent, 0);
+                                        remoteViews.setOnClickPendingIntent(R.id.mapimageView, osmodroidLaunchIntent);
+
+                                        remoteViews.setImageViewBitmap(R.id.mapimageView, bm);
+                                        appWidgetManager.updateAppWidget(widgetId, remoteViews);
+                                    }
+
+
+                            }
+                    },10000);
+
+
+            }
         public synchronized boolean isOnline()
             {
                 ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -2582,6 +2703,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                     appWidgetManager.updateAppWidget(widgetId, remoteViews);
 
                 }
+
             }
         public void onAccuracyChanged(Sensor sensor, int accuracy)
             {

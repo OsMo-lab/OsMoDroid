@@ -109,7 +109,7 @@
     <string name="prefloaded">Settings successfully imported</string>
     <string name="started">Running</string>
     <string name="stoped">Stopped</string>
-    <string name="monitoringondevice">Monitoring on the device \"</string>
+    <string name="monitoringondevice">Monitoring on the device "</string>
     <string name="enternet">Entered the network</string>
     <string name="exitnet">Left the network</string>
     <string name="device">The device \"</string>
@@ -340,4 +340,6 @@
     <string name="travel">Travel</string>
     <string name="nick">Nick</string>
     <string name="configure">Configure</string>
+    <string name="imperial">Imperial Units</string>
+    <string name="imperial_summary">Use miles, feet</string>
 </resources>

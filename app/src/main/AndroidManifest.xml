@@ -3,7 +3,7 @@
           xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:tools="http://schemas.android.com/tools"
           android:installLocation="auto"
-          android:versionCode="459"
+          android:versionCode="460"
           android:versionName="2.4.9">
 
     <uses-sdk
@@ -188,21 +188,21 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/double_osmo_widget_info"/>
         </receiver>
-        <receiver android:name="layout.mapWidget">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
-            </intent-filter>
+        <!--<receiver android:name="layout.mapWidget">-->
+            <!--<intent-filter>-->
+                <!--<action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>-->
+            <!--</intent-filter>-->
 
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/map_widget_info"/>
-        </receiver>
+            <!--<meta-data-->
+                <!--android:name="android.appwidget.provider"-->
+                <!--android:resource="@xml/map_widget_info"/>-->
+        <!--</receiver>-->
 
-        <activity android:name="layout.mapWidgetConfigureActivity">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE"/>
-            </intent-filter>
-        </activity>
+        <!--<activity android:name="layout.mapWidgetConfigureActivity">-->
+            <!--<intent-filter>-->
+                <!--<action android:name="android.appwidget.action.APPWIDGET_CONFIGURE"/>-->
+            <!--</intent-filter>-->
+        <!--</activity>-->
 
         <receiver android:name=".MapWidget">
             <intent-filter>
@@ -214,11 +214,11 @@
                 android:resource="@xml/map_widget_info"/>
         </receiver>
 
-        <activity android:name=".MapWidgetConfigureActivity">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE"/>
-            </intent-filter>
-        </activity>
+        <!--<activity android:name=".MapWidgetConfigureActivity">-->
+            <!--<intent-filter>-->
+                <!--<action android:name="android.appwidget.action.APPWIDGET_CONFIGURE"/>-->
+            <!--</intent-filter>-->
+        <!--</activity>-->
     </application>
 
 </manifest>

@@ -4,6 +4,7 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.util.Log;
 import android.widget.RemoteViews;
 
@@ -17,7 +18,19 @@ public class MapWidget extends AppWidgetProvider
         @Override
         public void onReceive(Context context, Intent intent)
             {
-                Log.d(getClass().getSimpleName(), "on recieve"+context.getPackageName());
+                if(intent!=null)
+                {
+                    Log.d(getClass().getSimpleName(), "on recieve" + context.getPackageName() + " intent=" + intent);
+                    Bundle extras = intent.getExtras();
+                    for (String key : extras.keySet())
+                        {
+                            Object value = extras.get(key);
+                            if (value != null)
+                                {
+                                    Log.d(getClass().getSimpleName(), "on recieve" + String.format("%s %s (%s)", key, value.toString(), value.getClass().getName()));
+                                }
+                        }
+                }
                 AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
                 ComponentName thisAppWidget = new ComponentName(context.getPackageName(), MapWidget.class.getName());
                 int[] appWidgetIds = appWidgetManager.getAppWidgetIds(thisAppWidget);
@@ -42,20 +55,18 @@ public class MapWidget extends AppWidgetProvider
         public void onDeleted(Context context, int[] appWidgetIds)
             {
                 // When the user deletes the widget, delete the preference associated with it.
-                for (int appWidgetId : appWidgetIds)
-                    {
-                        MapWidgetConfigureActivity.deleteTitlePref(context, appWidgetId);
-                    }
+
             }
         @Override
         public void onEnabled(Context context)
             {
+                Log.d(getClass().getSimpleName(), "on enable"+context.getPackageName());
                 // Enter relevant functionality for when the first widget is created
             }
         @Override
         public void onDisabled(Context context)
             {
-                // Enter relevant functionality for when the last widget is disabled
+                Log.d(getClass().getSimpleName(), "on disable"+context.getPackageName());
             }
     }
 

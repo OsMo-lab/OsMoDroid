@@ -5,6 +5,11 @@
         <CheckBoxPreference android:title="@string/dark_theme" android:defaultValue="true" android:key="darktheme" />
         <EditTextPreference android:summary="@string/milliseconds" android:title="@string/gps_poll_period" android:key="refreshrate" android:defaultValue="5000"/>
         <EditTextPreference android:summary="@string/seconds" android:title="@string/network_timeout" android:key="timeout" android:defaultValue="30"/>
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="imperial"
+            android:summary="@string/imperial_summary"
+            android:title="@string/imperial"/>
     </PreferenceCategory>
     
     <PreferenceCategory android:title="@string/online">

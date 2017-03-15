@@ -162,6 +162,7 @@ public class GPSLocalServiceClient extends ActionBarActivity
                         }
                     if (mService.myIM != null)
                         {
+                            mService.bitmapmapview();
                             if(!mService.myIM.start&&OsMoDroid.settings.getBoolean("live", true))
                                 {
                                     mService.myIM.start();
@@ -547,6 +548,10 @@ public class GPSLocalServiceClient extends ActionBarActivity
                 OsMoDroid.gpslocalserviceclientVisible = true;
                 ReadPref();
                 started = checkStarted();
+                if(mBound)
+                    {
+                        mService.bitmapmapview();
+                    }
                 if (!OsMoDroid.settings.getBoolean("subscribebackground", false) && mBound)
                     {
                         if(mService.myIM.authed)

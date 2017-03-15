@@ -4,7 +4,7 @@
   <string name="start">Запустить</string>
   <string name="stop">Остановить</string>
   <string name="serviceStatus">Состояние:</string>
-  <string name="location">\"Положение: </string>
+  <string name="location">"Положение: </string>
   <string name="sends">Отправка:</string>
   <string name="url">Адрес:</string>
   <string name="settings">Настройки</string>
@@ -110,10 +110,10 @@
   <string name="prefloaded">Настройки импортированы</string>
   <string name="started">запущен</string>
   <string name="stoped">остановлен</string>
-  <string name="monitoringondevice"> Мониторинг на устройстве \\"</string>
+  <string name="monitoringondevice"> Мониторинг на устройстве "</string>
   <string name="enternet">вошло в сеть</string>
   <string name="exitnet">покинуло сеть</string>
-  <string name="device"> Устройство \\"</string>
+  <string name="device"> Устройство</string>
   <string name="accuracy">Точность: </string>
   <string name="maximal">Максимальная: </string>
   <string name="kmch"> км/ч\n</string>
@@ -340,4 +340,6 @@
   <string name="groupaccess">Доступ</string>
   <string name="travel">Путешествие</string>
   <string name="nick">Ник</string>
+    <string name="imperial">Имперские единицы</string>
+  <string name="imperial_summary">Мили, футы</string>
 </resources>

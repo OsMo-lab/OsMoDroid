@@ -661,7 +661,7 @@ public class MainFragment extends Fragment implements GPSLocalServiceClient.upd
                                     globalActivity.buffercounter = intent.getIntExtra("buffercounter", 0);
                                     globalActivity.position = intent.getStringExtra("position");
                                     globalActivity.sendresult = intent.getStringExtra("sendresult");
-                                    String stat = intent.getStringExtra("stat");
+
                                     String startmessage = intent.getStringExtra("motd");
                                     final ToggleButton globalsendToggle = (ToggleButton) view.findViewById(R.id.toggleButton1);
                                     if (intent.hasExtra("globalsend"))
