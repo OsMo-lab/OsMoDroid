@@ -1,13 +1,13 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 21
+    compileSdkVersion 23
     buildToolsVersion '25.0.0'
     //useLibrary  'org.apache.http.legacy'
-    archivesBaseName = "OsMoDroid"
+    archivesBaseName = "OsMoDroidGL"
     defaultConfig {
-        applicationId "com.OsMoDroid"
-        minSdkVersion 9
+        applicationId "com.OsMoDroidGL"
+        minSdkVersion 15
         targetSdkVersion 19
     }
 
@@ -33,7 +33,10 @@ dependencies {
     compile 'com.github.PhilJay:MPAndroidChart:v2.2.4'
     compile 'org.osmdroid:osmdroid-android:5.5:release@aar'
     compile 'org.osmdroid:osmdroid-third-party:5.5:release@aar'
-    compile 'com.android.support:appcompat-v7:19.0.0'
+    compile 'com.android.support:appcompat-v7:23.4.0'
+    compile ('com.mapbox.mapboxsdk:mapbox-android-sdk:4.2.2@aar'){
+        transitive=true
+    }
 
     debugCompile 'com.squareup.leakcanary:leakcanary-android:1.4-beta2'
     releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.4-beta2'

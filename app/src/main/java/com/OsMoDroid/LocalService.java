@@ -899,7 +899,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                 LayoutInflater inflater = LayoutInflater.from(getApplicationContext());
                 linearview = inflater.inflate(R.layout.map, null, false);
                 RelativeLayout rl = (RelativeLayout) linearview.findViewById(R.id.relative);
-                MapFragment.CustomTileProvider customTileProvider;
+
 
                 MapView mMapView = new MapView(getApplicationContext());
                 ChannelsOverlay choverlay = new ChannelsOverlay( mMapView);

@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
-  <string name="app_name">OsMoDroid</string>
+  <string name="app_name">OsMoDroidGL</string>
   <string name="url">Naslov:</string>
   <string name="succes">Uspešno</string>
   <string name="error">Napaka:</string>

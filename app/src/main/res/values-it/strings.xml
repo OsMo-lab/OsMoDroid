@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
-  <string name="app_name">OsMoDroid</string>
+  <string name="app_name">OsMoDroidGL</string>
   <string name="start">Inizia</string>
   <string name="stop">Ferma</string>
   <string name="serviceStatus">Stato:</string>
