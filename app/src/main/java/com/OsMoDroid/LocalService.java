@@ -1952,16 +1952,20 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                                     }
                             }
 
-                        if (location.getSpeed() > maxspeed)
+                        if(OsMoDroid.settings.getBoolean("imperial",false))
                             {
-                                if(OsMoDroid.settings.getBoolean("imperial",false))
+                                if (location.getSpeed()*0.621371f > maxspeed)
                                     {
                                         maxspeed = location.getSpeed()*0.621371f;
                                     }
-                                else
+                            }
+                        else
+                            {
+                                if (location.getSpeed() > maxspeed)
                                     {
                                         maxspeed = location.getSpeed();
                                     }
+
                             }
                     }
                 //if(log)Log.d(this.getClass().getName(),"workmilli="+ Float.toString(workmilli)+" gettime="+location.getTime());
