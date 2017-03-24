@@ -66,6 +66,7 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
 import static com.OsMoDroid.LocalService.addlog;
+import static com.OsMoDroid.LocalService.devlistener;
 import static com.OsMoDroid.LocalService.myManager;
 import static com.OsMoDroid.OsMoDroid.context;
 /**
@@ -1100,6 +1101,10 @@ public class IM implements ResultsListener
                             {
                                 Log.d(getClass().getSimpleName(), "write group list to file");
                             }
+                        if(devlistener!=null)
+                        {
+                            devlistener.onChannelListChange();
+                        }
                         localService.saveObject(LocalService.channelList, OsMoDroid.CHANNELLIST);
                     }
                 if (command.equals("GC"))

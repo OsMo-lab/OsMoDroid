@@ -1524,7 +1524,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                     }
                 catch (Exception e)
                     {
-                        addlog(e.getMessage());
+                        addlog("Device has no IMEI");
                     }
                 if (version == null)
                     {

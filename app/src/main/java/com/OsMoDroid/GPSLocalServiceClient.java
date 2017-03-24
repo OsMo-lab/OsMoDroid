@@ -304,6 +304,8 @@ public class GPSLocalServiceClient extends ActionBarActivity
                 actionBar = getSupportActionBar();
                 actionBar.setDisplayHomeAsUpEnabled(true);
                 actionBar.setHomeButtonEnabled(true);
+                actionBar.setDisplayUseLogoEnabled(true);
+
                 OsMoDroid.activity = this;
                 PreferenceManager.setDefaultValues(this, R.xml.pref, true);
                 ReadPref();
