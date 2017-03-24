@@ -577,6 +577,7 @@ public class GPSLocalServiceClient extends ActionBarActivity
         protected void onResume()
             {
                 super.onResume();
+                OsMoDroid.mFirebaseAnalytics.logEvent("APP_OPEN",null);
                 if(OsMoDroid.settings.getBoolean("usewake",false))
                     {
                         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);

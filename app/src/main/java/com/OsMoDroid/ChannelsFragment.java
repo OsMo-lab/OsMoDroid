@@ -356,13 +356,6 @@ public class ChannelsFragment extends Fragment
                 emailEditText.setHint("joe@mail.com");
                 emailEditText.setInputType(TYPE_CLASS_TEXT | TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
                 layout.addView(emailEditText);
-                final TextView phoneTextView = new TextView(globalActivity);
-                phoneTextView.setText(R.string.phone);
-                layout.addView(phoneTextView);
-                final EditText phoneEditText = new EditText(globalActivity);
-                phoneEditText.setInputType(TYPE_CLASS_PHONE);
-                phoneEditText.setHint("+75555555555");
-                layout.addView(phoneEditText);
                 final TextView groupTypeTextView = new TextView(globalActivity);
                 groupTypeTextView.setText(R.string.group_type_txt);
                 layout.addView(groupTypeTextView);
@@ -390,8 +383,7 @@ public class ChannelsFragment extends Fragment
                     {
                         emailEditText.setVisibility(View.GONE);
                         emailTextView.setVisibility(View.GONE);
-                        phoneEditText.setVisibility(View.GONE);
-                        phoneTextView.setVisibility(View.GONE);
+
 
                     }
                 final AlertDialog alertdialog4 = new AlertDialog.Builder(globalActivity)
@@ -423,7 +415,7 @@ public class ChannelsFragment extends Fragment
                                 {
                                     String canalname = input2.getText().toString();
                                     String email = emailEditText.getText().toString();
-                                    String phone = phoneEditText.getText().toString();
+
 
                                     if (!(nickEditText.getText().toString().equals(""))&&!(canalname.equals("")) && (!OsMoDroid.settings.getString("u", "").equals("")||!email.equals("")))
                                         {
@@ -436,10 +428,6 @@ public class ChannelsFragment extends Fragment
                                                        {
                                                            j.put("email",email);
                                                        }
-                                                    if(!phone.equals(""))
-                                                        {
-                                                            j.put("telephone", phone);
-                                                        }
                                                     switch ((int)groupTypeSpinner.getSelectedItemId())
                                                         {
                                                             case 0:

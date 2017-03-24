@@ -197,8 +197,7 @@ public class MainFragment extends Fragment implements GPSLocalServiceClient.upd
 //		MenuItem mi = menu.add(0, 2, 2, R.string.Settings);
 //		mi.setIcon(android.R.drawable.ic_menu_preferences);
                 MenuItem mi3 = menu2.add(0, 3, 3, R.string.EqualsParameters);
-                MenuItem forcesenditem = menu.add(0, 9, 9, R.string.sendnow);
-                forcesenditem.setIcon(android.R.drawable.ic_menu_mylocation);
+
                 MenuItem shareadress = menu.add(0, 10, 10, R.string.sharelink);
                 MenuItemCompat.setShowAsAction(shareadress, MenuItemCompat.SHOW_AS_ACTION_IF_ROOM);
                 shareadress.setIcon(android.R.drawable.ic_menu_share);
@@ -288,20 +287,7 @@ public class MainFragment extends Fragment implements GPSLocalServiceClient.upd
                     {
                         globalActivity.auth();
                     }
-                if (item.getItemId() == 9)
-                    {
-                        Log.d(getClass().getSimpleName(), "forcesend click");
-                        if (globalActivity.conn == null || globalActivity.mService == null)
-                            {
-                                Log.d(getClass().getSimpleName(), "нет бинда с сервисом");
-                            }
-                        else
-                            {
-                                Log.d(getClass().getSimpleName(), "вызов отправки позиции");
-                                globalActivity.mService.sendPosition();
-                                Log.d(getClass().getSimpleName(), "послек вызова отправки позиции");
-                            }
-                    }
+
                 if (item.getItemId() == 10)
                     {
                         if(!OsMoDroid.settings.getString("viewurl", "").equals(""))
