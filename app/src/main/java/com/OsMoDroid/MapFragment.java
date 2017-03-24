@@ -415,6 +415,7 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
         public void onResume()
             {
                 Log.d(getClass().getSimpleName(), "map onResume");
+                OsMoDroid.mFirebaseAnalytics.logEvent("MAP_OPEN",null);
                 globalActivity.actionBar.setTitle(getString(R.string.map));
                 mMapView.getOverlays().add(myLoc);
                 myLoc.enableMyLocation();
@@ -785,7 +786,14 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
                     {
                         if(myLoc!=null&&myLoc.isFollowLocationEnabled())
                             {
-                                speddTextView.setText(OsMoDroid.df0.format(location.getSpeed() * 3.6));
+                                if(!OsMoDroid.settings.getBoolean("imperial",false))
+                                    {
+                                        speddTextView.setText(OsMoDroid.df0.format(location.getSpeed() * 3.6));
+                                    }
+                                else
+                                    {
+                                        speddTextView.setText(OsMoDroid.df0.format(location.getSpeed() * 3.6*0.621371));
+                                    }
                             }
                         else
                             {

@@ -1372,6 +1372,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
         public void startServiceWork(boolean opensession)
             {
                 addlog("startservicework opensession="+opensession);
+                OsMoDroid.mFirebaseAnalytics.logEvent("TRIP_START",null);
                 if (!paused)
                     {
                         altitudedistanceEntryList.clear();
@@ -1679,6 +1680,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
         public void stopServiceWork(Boolean stopsession)
             {
                 addlog("Stopservicework,stop session "+stopsession);
+                OsMoDroid.mFirebaseAnalytics.logEvent("STOP_TRIP",null);
                 OsMoDroid.editor.putFloat("lat", (float) currentLocation.getLatitude());
                 OsMoDroid.editor.putFloat("lon", (float) currentLocation.getLongitude());
                 OsMoDroid.editor.commit();
@@ -1868,7 +1870,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                         GeoPoint prevGeoPoint = new GeoPoint(prevlocation_spd);
                         if (OsMoDroid.settings.getBoolean("imperial", false))
                             {
-                                workdistance = workdistance + curGeoPoint.distanceTo(prevGeoPoint) * 1.609344f;//location.distanceTo(prevlocation_spd);
+                                workdistance = workdistance + curGeoPoint.distanceTo(prevGeoPoint) / 1.609344f;//location.distanceTo(prevlocation_spd);
                             }
                         else
                             {
@@ -1876,9 +1878,9 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                             }
                         if (OsMoDroid.settings.getBoolean("imperial", false))
                             {
-                            if (OsMoDroid.settings.getBoolean("ttsavgspeed", false) && OsMoDroid.settings.getBoolean("usetts", false) && tts != null && !tts.isSpeaking() && ((int) workdistance) / 1000*1.609344 > intKM)
+                            if (OsMoDroid.settings.getBoolean("ttsavgspeed", false) && OsMoDroid.settings.getBoolean("usetts", false) && tts != null && !tts.isSpeaking() && ((int) workdistance) / 1000/1.609344 > intKM)
                                 {
-                                    intKM = (int)( workdistance / 1000*1.609344);
+                                    intKM = (int)( workdistance / 1000/1.609344);
                                     tts.speak(getString(R.string.going) + ' ' + Integer.toString(intKM) + ' ' + "Miles" + ',' + getString(R.string.avg) + ' ' + OsMoDroid.df1.format(avgspeed * 3600) + ',' + getString(R.string.inway) + ' ' + formatInterval(timeperiod), TextToSpeech.QUEUE_ADD, null);
 
                                 }

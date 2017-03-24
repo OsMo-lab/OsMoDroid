@@ -6,6 +6,7 @@ import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
 import android.view.inputmethod.InputMethodManager;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.squareup.leakcanary.LeakCanary;
 
 import org.osmdroid.tileprovider.constants.OpenStreetMapTileProviderConstants;
@@ -82,7 +83,7 @@ public class OsMoDroid extends Application
         static GPSLocalServiceClient activity;
         static InputMethodManager inputMethodManager;
         private static int notifyid = 1;
-
+        public static FirebaseAnalytics mFirebaseAnalytics;
         public static int notifyidApp()
             {
                 return notifyid++;
@@ -109,5 +110,6 @@ public class OsMoDroid extends Application
                 OpenStreetMapTileProviderConstants.setUserAgentValue(BuildConfig.APPLICATION_ID);
                 super.onCreate();
                 LeakCanary.install(this);
+                mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
             }
     }
