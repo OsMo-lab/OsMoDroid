@@ -27,6 +27,7 @@ import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mapzen.android.core.MapzenManager;
@@ -38,7 +39,6 @@ import com.mapzen.android.graphics.model.BubbleWrapStyle;
 import com.mapzen.android.graphics.model.CameraType;
 import com.mapzen.android.graphics.model.CinnabarStyle;
 import com.mapzen.android.graphics.model.MapStyle;
-import com.mapzen.android.graphics.model.Polyline;
 import com.mapzen.android.graphics.model.RefillStyle;
 import com.mapzen.android.graphics.model.WalkaboutStyle;
 import com.mapzen.android.graphics.model.ZincStyle;
@@ -49,6 +49,7 @@ import com.mapzen.tangram.MapData;
 import com.mapzen.tangram.Marker;
 import com.mapzen.tangram.MarkerPickResult;
 import com.mapzen.tangram.TouchInput;
+import com.mapzen.tangram.geometry.Polyline;
 
 import static com.OsMoDroid.LocalService.addlog;
 public class MapFragment extends Fragment implements DeviceChange,  LocationListener, MapController.MarkerPickListener
@@ -64,9 +65,10 @@ public class MapFragment extends Fragment implements DeviceChange,  LocationList
         private Location center;
         private ImageButton centerImageButton;
         private GPSLocalServiceClient globalActivity;
+        private TextView speddTextView;
 //        MapData  mapData;
-//        private Marker myTraceMarker;
-//        private Polyline myTracePolyline = new Polyline(new ArrayList<LngLat>());
+        private Marker myTraceMarker;
+        private Polyline myTracePolyline = new Polyline(new ArrayList<LngLat>(), null);
 //        private MapData myTraceMapData;
         @Override
         public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -245,7 +247,8 @@ public class MapFragment extends Fragment implements DeviceChange,  LocationList
 
             centerImageButton = (ImageButton) view.findViewById(R.id.imageButtonCenter);
             mMapView = (MapView) view.findViewById(R.id.glMapView);
-
+            mMapView.setKeepScreenOn(true);
+            speddTextView=(TextView)view.findViewById(R.id.mapSpeedtextView);
 
 
             mMapView.getMapAsync(new OnMapReadyCallback()
@@ -398,6 +401,29 @@ public class MapFragment extends Fragment implements DeviceChange,  LocationList
         @Override
         public void onLocationChanged(Location location)
             {
+                if(speddTextView!=null)
+                    {
+                        if(isFollow)
+                            {
+                                if(!OsMoDroid.settings.getBoolean("imperial",false))
+                                    {
+                                        speddTextView.setText(OsMoDroid.df0.format(location.getSpeed() * 3.6));
+                                    }
+                                else
+                                    {
+                                        speddTextView.setText(OsMoDroid.df0.format(location.getSpeed() * 3.6*0.621371));
+                                    }
+                            }
+                        else
+                            {
+                                speddTextView.setText("");
+                            }
+
+                        if(location.getSpeed()*3.6<2&&(int)location.getAccuracy()<Integer.parseInt(OsMoDroid.settings.getString("hdop_gpx", "30").equals("") ? "30" : OsMoDroid.settings.getString("hdop_gpx", "30")))
+                            {
+                                speddTextView.setText("");
+                            }
+                    }
                 if(center==null)
                     {
                         center=new Location(location);
