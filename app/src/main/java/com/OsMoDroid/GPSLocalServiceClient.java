@@ -19,6 +19,7 @@ import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Stack;
@@ -71,6 +72,8 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.telephony.TelephonyManager;
 import android.text.ClipboardManager;
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.PasswordTransformationMethod;
 import android.text.util.Linkify;
 import android.util.Log;
 //import android.view.Menu;
@@ -90,10 +93,16 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ScrollView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
-public class GPSLocalServiceClient extends ActionBarActivity
+
+import static android.text.InputType.TYPE_CLASS_TEXT;
+import static android.text.InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS;
+import static android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD;
+public class GPSLocalServiceClient extends ActionBarActivity implements ResultsListener
     {
         //SharedPreferences OsMoDroid.settings;
         public android.support.v7.app.ActionBar actionBar;
@@ -738,9 +747,228 @@ public class GPSLocalServiceClient extends ActionBarActivity
             }
         void auth()
             {
-                Intent intent = new Intent(this, AuthActivity.class);
-                startActivityForResult(intent, 1);
+//                Intent intent = new Intent(this, AuthActivity.class);
+//                startActivityForResult(intent, 1);
+//First ask reg or sign
+                final AlertDialog askRegorSign = new AlertDialog.Builder(this)
+                 .setTitle("Are you already registered ?")
+                    .setPositiveButton(R.string.yes,
+                            new DialogInterface.OnClickListener()
+                                {
+                                    public void onClick(DialogInterface dialog, int whichButton)
+                                        {
+                                            signin();
+                                        }
+                                })
+                    .setNegativeButton(R.string.No,
+                            new DialogInterface.OnClickListener()
+                                {
+                                    public void onClick(DialogInterface dialog, int whichButton)
+                                        {
+                                            regin();
+                                        }
+                                }).create();
+                askRegorSign.show();
+
             }
+        void regin()
+            {
+                //Send it to: https://api.osmo.mobi/signup?nick=[NICK]&email=[EMAIL]&password=[PASSWORD]&gender=[GENDER]
+                ScrollView scrollView = new ScrollView(this);
+                LinearLayout layout = new LinearLayout(this);
+                layout.setOrientation(LinearLayout.VERTICAL);
+                scrollView.addView(layout);
+                final TextView nickTextView = new TextView(this);
+                nickTextView.setText(R.string.nick);
+                layout.addView(nickTextView);
+                final EditText nickEditText = new EditText(this);
+                nickEditText.setHint("Superman");
+                layout.addView(nickEditText);
+
+                final TextView genderTypeTextView = new TextView(this);
+                genderTypeTextView.setText(R.string.gender);
+                layout.addView(genderTypeTextView);
+                final Spinner genderTypeSpinner = new Spinner(this);
+                layout.addView(genderTypeSpinner);
+                List<String> typeList = new ArrayList<String>();
+                typeList.add(getString(R.string.male));
+                typeList.add(getString(R.string.female));
+
+                final ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, R.layout.spinneritem, typeList);
+                genderTypeSpinner.setAdapter(dataAdapter);
+
+                final TextView email = new TextView(this);
+                email.setText(R.string.Email);
+                layout.addView(email);
+                final EditText inputEmail = new EditText(this);
+                layout.addView(inputEmail);
+                final TextView passwordTextView = new TextView(this);
+                passwordTextView.setText(R.string.password);
+                layout.addView(passwordTextView);
+                final EditText passwordEditText = new EditText(this);
+                passwordEditText.setInputType(TYPE_TEXT_VARIATION_PASSWORD);
+                passwordEditText.setTransformationMethod(new PasswordTransformationMethod());
+                layout.addView(passwordEditText);
+
+                final TextView rpasswordTextView = new TextView(this);
+                rpasswordTextView.setText(R.string.repeatpassword);
+                layout.addView(rpasswordTextView);
+                final EditText rpasswordEditText = new EditText(this);
+                rpasswordEditText.setInputType(TYPE_TEXT_VARIATION_PASSWORD);
+                rpasswordEditText.setTransformationMethod(new PasswordTransformationMethod());
+                layout.addView(rpasswordEditText);
+
+                final AlertDialog alertdialog4 = new AlertDialog.Builder(this)
+                        .setTitle(R.string.registration)
+                        .setView(scrollView)
+                        .setPositiveButton(R.string.yes,
+                                new DialogInterface.OnClickListener()
+                                    {
+                                        public void onClick(DialogInterface dialog, int whichButton)
+                                            {
+
+                                            }
+                                    })
+                        .setNegativeButton(R.string.No,
+                                new DialogInterface.OnClickListener()
+                                    {
+                                        public void onClick(DialogInterface dialog, int whichButton)
+                                            {
+                                            }
+                                    }).create();
+                alertdialog4.show();
+                Button theButton = alertdialog4.getButton(DialogInterface.BUTTON_POSITIVE);
+                theButton.setOnClickListener(new CustomListener(alertdialog4)
+                    {
+                        @Override
+                        public void onClick(View v)
+                            {
+                                if (mService.myIM.authed)
+                                    {
+                                        String email = inputEmail.getText().toString();
+                                        String password = passwordEditText.getText().toString();
+                                        String rpassword = rpasswordEditText.getText().toString();
+                                        String nick = nickEditText.getText().toString();
+                                        int gender=-1;
+                                        switch (genderTypeSpinner.getSelectedItemPosition())
+                                            {
+                                                case 0:
+                                                    gender = 1;
+                                                    break;
+                                                case 1:
+                                                    gender = 0;
+                                                    break;
+                                            }
+
+
+
+                                        if (!email.equals("")&&!password.equals("")&&!nick.equals(""))
+                                            {
+                                                if(password.equals(rpassword))
+                                                    {
+                                                        APIcomParams params = new APIcomParams("https://api.osmo.mobi/signup", "key=" + OsMoDroid.settings.getString("newkey", "") + "&email=" + email + "&password=" + password+ "&nick=" + nick+ "&gender=" + gender, "SIGNUP");
+                                                        MyAsyncTask sendidtask = new Netutil.MyAsyncTask(GPSLocalServiceClient.this,GPSLocalServiceClient.this);
+                                                        sendidtask.execute(params);
+                                                        Log.d(getClass().getSimpleName(), "signin start to execute");
+                                                        super.dialog.dismiss();
+                                                        ;
+                                                    }
+                                                else
+                                                    {
+                                                        Toast.makeText(GPSLocalServiceClient.this, R.string.passdontequal, Toast.LENGTH_SHORT).show();
+                                                    }
+                                            }
+                                        else
+                                            {
+                                                Toast.makeText(GPSLocalServiceClient.this,R.string.noallenter, Toast.LENGTH_SHORT).show();
+                                            }
+
+
+                                    }
+                                else
+                                    {
+                                        Toast.makeText(GPSLocalServiceClient.this, R.string.CheckInternet, Toast.LENGTH_SHORT).show();
+                                    }
+                            }
+
+                    });
+            }
+        void signin()
+            {
+//Send it to: https://api.osmo.mobi/signin?email=[EMAIL]&password=[PASSWORD]
+                LinearLayout layout = new LinearLayout(this);
+                layout.setOrientation(LinearLayout.VERTICAL);
+                final TextView email = new TextView(this);
+                email.setText(R.string.Email);
+                layout.addView(email);
+                final EditText inputEmail = new EditText(this);
+                layout.addView(inputEmail);
+                final TextView passwordTextView = new TextView(this);
+                passwordTextView.setText(R.string.password);
+                layout.addView(passwordTextView);
+                final EditText passwordEditText = new EditText(this);
+                passwordEditText.setInputType(TYPE_TEXT_VARIATION_PASSWORD);
+                passwordEditText.setTransformationMethod(new PasswordTransformationMethod());
+                layout.addView(passwordEditText);
+
+
+
+                final AlertDialog alertdialog4 = new AlertDialog.Builder(this)
+                        .setTitle(R.string.enterloginpassword)
+                        .setView(layout)
+                        .setPositiveButton(R.string.yes,
+                                new DialogInterface.OnClickListener()
+                                    {
+                                        public void onClick(DialogInterface dialog, int whichButton)
+                                            {
+
+                                            }
+                                    })
+                        .setNegativeButton(R.string.No,
+                                new DialogInterface.OnClickListener()
+                                    {
+                                        public void onClick(DialogInterface dialog, int whichButton)
+                                            {
+                                            }
+                                    }).create();
+                alertdialog4.show();
+                Button theButton = alertdialog4.getButton(DialogInterface.BUTTON_POSITIVE);
+                theButton.setOnClickListener(new CustomListener(alertdialog4)
+                    {
+                        @Override
+                        public void onClick(View v)
+                            {
+                                if (mService.myIM.authed)
+                                    {
+                                        String email = inputEmail.getText().toString();
+                                        String password = passwordEditText.getText().toString();
+
+                                        if (!email.equals("")&&!password.equals(""))
+                                            {
+                                                APIcomParams params = new APIcomParams("https://api.osmo.mobi/signin", "key="+OsMoDroid.settings.getString("newkey","")+"&email="+email+"&password="+password,"SIGNIN");
+                                                MyAsyncTask sendidtask = new Netutil.MyAsyncTask(GPSLocalServiceClient.this,GPSLocalServiceClient.this);
+                                                sendidtask.execute(params);
+                                                Log.d(getClass().getSimpleName(), "signin start to execute");
+
+                                                super.dialog.dismiss();;
+                                            }
+                                        else
+                                            {
+                                                Toast.makeText(GPSLocalServiceClient.this,R.string.noallenter, Toast.LENGTH_SHORT).show();
+                                            }
+
+
+                                    }
+                                else
+                                    {
+                                        Toast.makeText(GPSLocalServiceClient.this, R.string.CheckInternet, Toast.LENGTH_SHORT).show();
+                                    }
+                            }
+
+                    });
+            }
+
+
         boolean checkStarted()
             {
                 // Log.d(this.getClass().getSimpleName(), "oncheckstartedy() gpsclient");
@@ -1049,6 +1277,39 @@ public class GPSLocalServiceClient extends ActionBarActivity
                         super.onBackPressed();
                     }
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+            }
+        @Override
+        public void onResultsSucceeded(APIComResult result)
+            {
+
+                        Log.d(getClass().getSimpleName(), "notifwar1 Команда:" + result.Command + " Ответ сервера:" + result.rawresponse + getString(R.string.query) + result.url);
+                if(result.Jo!=null&&!result.Jo.has("error"))
+                    {
+                        if (result.Command.equals("SIGNIN"))
+                            {
+                                OsMoDroid.editor.putString("u", result.Jo.optString("nick"));
+                                OsMoDroid.editor.commit();
+                                mService.refresh();
+                            }
+                        if (result.Command.equals("SIGNUP"))
+                            {
+                                OsMoDroid.editor.putString("u", result.Jo.optString("nick"));
+                                OsMoDroid.editor.commit();
+                                mService.refresh();
+                            }
+                    }
+                else
+                    {
+                        if(result.Jo==null)
+                            {
+                                Toast.makeText(GPSLocalServiceClient.this, getString(R.string.error), Toast.LENGTH_SHORT).show();
+                            }
+                        else
+                            {
+                                Toast.makeText(GPSLocalServiceClient.this, result.Jo.optString("error")+" "+result.Jo.optString("error_description"), Toast.LENGTH_SHORT).show();
+                            }
+                    }
+
             }
         public interface upd
             {

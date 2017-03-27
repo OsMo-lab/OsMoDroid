@@ -342,4 +342,12 @@
     <string name="configure">Configure</string>
     <string name="imperial">Imperial Units</string>
     <string name="imperial_summary">Use miles, feet</string>
+    <string name="password">Password</string>
+    <string name="repeatpassword">Repeat password</string>
+    <string name="enterloginpassword">Enter login and password</string>
+    <string name="registration">Registration</string>
+    <string name="gender">Gender</string>
+    <string name="male">Male</string>
+    <string name="female">Female</string>
+    <string name="passdontequal">Password not equals</string>
 </resources>

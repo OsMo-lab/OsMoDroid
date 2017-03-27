@@ -342,4 +342,12 @@
   <string name="nick">Ник</string>
     <string name="imperial">Имперские единицы</string>
   <string name="imperial_summary">Мили, футы</string>
+    <string name="password">Пароль</string>
+    <string name="repeatpassword">Повторите пароль</string>
+    <string name="enterloginpassword">Укажите логин и пароль</string>
+    <string name="registration">Регистрация</string>
+    <string name="gender">Пол</string>
+    <string name="male">Мужской</string>
+    <string name="female">Женский</string>
+    <string name="passdontequal">Пароли не совпали</string>
 </resources>
