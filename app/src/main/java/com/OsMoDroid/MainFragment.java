@@ -119,7 +119,7 @@ public class MainFragment extends Fragment implements GPSLocalServiceClient.upd
                     }
                 TextView t = (TextView) getView().findViewById(R.id.serviceStatus);
                 t.setText(statusText);
-                if (!OsMoDroid.settings.getBoolean("usealarm", false) || OsMoDroid.settings.getString("p", "").equals(""))
+                if (!OsMoDroid.settings.getBoolean("usealarm", false) || OsMoDroid.settings.getString("u", "").equals(""))
                     {
                         ToggleButton alarmToggle = (ToggleButton) getView().findViewById(R.id.alarmButton);
                         alarmToggle.setVisibility(View.GONE);
@@ -165,7 +165,7 @@ public class MainFragment extends Fragment implements GPSLocalServiceClient.upd
                 TextView t2 = (TextView) getView().findViewById(R.id.URL);
                 Linkify.addLinks(t2, Linkify.ALL);
                 Button auth = (Button) getView().findViewById(R.id.authButton);
-                if (OsMoDroid.settings.getString("p", "").equals(""))
+                if (OsMoDroid.settings.getString("u", "").equals(""))
                     {
                         //globalsendToggle.setVisibility(View.GONE);
 
@@ -185,6 +185,7 @@ public class MainFragment extends Fragment implements GPSLocalServiceClient.upd
                     {
                         sosButton.setVisibility(View.VISIBLE);
                     }
+
             }
         /* (non-Javadoc)
          * @see com.actionbarsherlock.app.SherlockFragment#onCreateOptionsMenu(com.actionbarsherlock.view.Menu, com.actionbarsherlock.view.MenuInflater)
@@ -229,6 +230,7 @@ public class MainFragment extends Fragment implements GPSLocalServiceClient.upd
                         OsMoDroid.editor.remove("p");
                         OsMoDroid.editor.remove("u");
                         OsMoDroid.editor.commit();
+
                         LocalService.channelList.clear();
                         globalActivity.mService.refresh();
                         if (OsMoDroid.settings.getBoolean("live", false))
@@ -238,6 +240,8 @@ public class MainFragment extends Fragment implements GPSLocalServiceClient.upd
                                 globalActivity.mService.sendid();
                             }
                         globalActivity.mService.refresh();
+                        updateMainUI();
+
                     }
 //		if (item.getItemId() == 2) {
 //			
@@ -453,7 +457,7 @@ public class MainFragment extends Fragment implements GPSLocalServiceClient.upd
                             globalActivity.auth();
                         }
                 });
-                if (OsMoDroid.settings.getString("p", "").equals(""))
+                if (OsMoDroid.settings.getString("u", "").equals(""))
                     {
                         auth.setVisibility(View.VISIBLE);
                     }
