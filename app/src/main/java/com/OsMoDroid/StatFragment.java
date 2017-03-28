@@ -340,7 +340,7 @@ public class StatFragment extends Fragment implements OnChartGestureListener, On
                                     }
                             }
                     };
-                getActivity().registerReceiver(receiver, new IntentFilter("OsMoDroid"));
+                getActivity().registerReceiver(receiver, new IntentFilter("OsMoDroidV"));
                 return view;
             }
         @Override

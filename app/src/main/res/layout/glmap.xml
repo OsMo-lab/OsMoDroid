@@ -1,14 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/relative"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent" >
 
-    <com.mapzen.android.graphics.MapView
+    <com.mapzen.tangram.MapView
         android:id="@+id/glMapView"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        />
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+
+    </com.mapzen.tangram.MapView>
 
     <TextView
         android:id="@+id/mapCopyright"
@@ -48,6 +53,28 @@
         android:textColor="#7f000000"
         android:layout_above="@+id/mapCopyright"
         android:layout_centerHorizontal="true"/>
+
+    <ImageButton
+        android:id="@+id/zoomInButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="0dp"
+        app:srcCompat="@drawable/zoom_in"
+        android:layout_alignBottom="@+id/mapSpeedtextView"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"/>
+
+    <ImageButton
+        android:id="@+id/zoomOutButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="0dp"
+
+
+        app:srcCompat="@drawable/zoom_out"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_above="@+id/zoomInButton"/>
 
 </RelativeLayout>
 

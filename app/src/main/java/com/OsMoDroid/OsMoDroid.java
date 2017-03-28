@@ -7,7 +7,7 @@ import android.preference.PreferenceManager;
 import android.view.inputmethod.InputMethodManager;
 
 
-import com.mapzen.android.core.MapzenManager;
+
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.squareup.leakcanary.LeakCanary;
 
@@ -111,7 +111,7 @@ public class OsMoDroid extends Application
                 Thread.setDefaultUncaughtExceptionHandler(ExceptionHandler.inContext(context));
                 inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 OpenStreetMapTileProviderConstants.setUserAgentValue(BuildConfig.APPLICATION_ID);
-                MapzenManager.instance(getApplicationContext()).setApiKey("mapzen-VCUf9yw");
+
                 super.onCreate();
                 LeakCanary.install(this);
                 mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);

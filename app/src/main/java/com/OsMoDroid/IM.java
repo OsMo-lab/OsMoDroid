@@ -82,10 +82,10 @@ public class IM implements ResultsListener
         private static final int KEEP_ALIVE = 1000 * 270;
         private static final long ERROR_RECONNECT_TIMEOUT = 3 * 1000;
         private static final long ONLINE_TIMEOUT = 60 * 1000;
-        private static final String RECONNECT_INTENT = "com.osmodroid.reconnect";
-        private static final String GET_TOKEN_TIMEOUT_INTENT = "com.osmodroid.gettokentimeout";
-        private static final String KEEPALIVE_INTENT = "com.osmodroid.keepalive";
-        private static final String ONLINE_TIMEOUT_INTENT = "com.osmodroid.onlinetimeout";
+        private static final String RECONNECT_INTENT = "com.osmodroidV.reconnect";
+        private static final String GET_TOKEN_TIMEOUT_INTENT = "com.osmodroidV.gettokentimeout";
+        private static final String KEEPALIVE_INTENT = "com.osmodroidV.keepalive";
+        private static final String ONLINE_TIMEOUT_INTENT = "com.osmodroidV.onlinetimeout";
         static String SERVER_IP = "osmo.mobi";
         static int SERVERPORT = 4260;
         static long sendBytes = 0;

@@ -30,22 +30,12 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.mapzen.android.core.MapzenManager;
-import com.mapzen.android.graphics.FeaturePickListener;
-import com.mapzen.android.graphics.MapView;
-import com.mapzen.android.graphics.MapzenMap;
-import com.mapzen.android.graphics.OnMapReadyCallback;
-import com.mapzen.android.graphics.model.BubbleWrapStyle;
-import com.mapzen.android.graphics.model.CameraType;
-import com.mapzen.android.graphics.model.CinnabarStyle;
-import com.mapzen.android.graphics.model.MapStyle;
-import com.mapzen.android.graphics.model.RefillStyle;
-import com.mapzen.android.graphics.model.WalkaboutStyle;
-import com.mapzen.android.graphics.model.ZincStyle;
+
 import com.mapzen.tangram.HttpHandler;
 import com.mapzen.tangram.LngLat;
 import com.mapzen.tangram.MapController;
 import com.mapzen.tangram.MapData;
+import com.mapzen.tangram.MapView;
 import com.mapzen.tangram.Marker;
 import com.mapzen.tangram.MarkerPickResult;
 import com.mapzen.tangram.TouchInput;
@@ -54,8 +44,27 @@ import com.mapzen.tangram.geometry.Polyline;
 import static com.OsMoDroid.LocalService.addlog;
 public class MapFragment extends Fragment implements DeviceChange,  LocationListener, MapController.MarkerPickListener
     {
-        com.mapzen.android.graphics.MapView mMapView;
-        MapzenMap mzmap;
+        MapView mMapView;
+
+        @Override
+        public void onLowMemory()
+            {
+                if(mMapView!=null)
+                    {
+                        mMapView.onLowMemory();
+                    }
+
+                super.onLowMemory();
+            }
+        @Override
+        public void onDestroy()
+            {
+                if(mMapView!=null)
+                    {
+                        mMapView.onDestroy();
+                    }
+                super.onDestroy();
+            }
         static MapController mapController;
         View view;
         private Marker myLocationMarker;
@@ -69,6 +78,8 @@ public class MapFragment extends Fragment implements DeviceChange,  LocationList
 //        MapData  mapData;
         private Marker myTraceMarker;
         private Polyline myTracePolyline = new Polyline(new ArrayList<LngLat>(), null);
+
+
 //        private MapData myTraceMapData;
         @Override
         public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -113,20 +124,31 @@ public class MapFragment extends Fragment implements DeviceChange,  LocationList
                 switch (item.getItemId())
                     {
                         case 5:
-                            mzmap.setStyle(new MapStyle("bubble-wrap/bubble-wrap.yaml"));
+                            mapController.loadSceneFile("bubble-wrap/bubble-wrap.yaml");
+                            OsMoDroid.editor.putInt("selectedTileSourceInt", 1);
+                            OsMoDroid.editor.commit();
                             break;
                         case 6:
-                            mzmap.setStyle(new MapStyle("walkabout-style-more-labels/walkabout-style-more-labels.yaml"));
+                            mapController.loadSceneFile("walkabout-style-more-labels/walkabout-style-more-labels.yaml");
+                            OsMoDroid.editor.putInt("selectedTileSourceInt", 2);
+                            OsMoDroid.editor.commit();
                             break;
                         case 7:
-                            mzmap.setStyle(new CinnabarStyle());
+                            mapController.loadSceneFile("cinnabar-more-labels/cinnabar-style-more-labels.yaml");
+                            OsMoDroid.editor.putInt("selectedTileSourceInt", 3);
+                            OsMoDroid.editor.commit();
                             break;
                         case 8:
-                            mzmap.setStyle(new ZincStyle());
+                            mapController.loadSceneFile("zinc-style-more-labels/zinc-style-more-labels.yaml");
+                            OsMoDroid.editor.putInt("selectedTileSourceInt", 4);
+                            OsMoDroid.editor.commit();
                             break;
                         case 9:
-                            mzmap.setStyle(new RefillStyle());
+                            mapController.loadSceneFile("refill-more-labels/refill-style-more-labels.yaml");
+                            OsMoDroid.editor.putInt("selectedTileSourceInt", 5);
+                            OsMoDroid.editor.commit();
                             break;
+
                         default:
                             break;
                     }
@@ -188,7 +210,7 @@ public class MapFragment extends Fragment implements DeviceChange,  LocationList
                         textMarker=mapController.addMarker();
                         this.tId=textMarker.getMarkerId();
                         marker.setDrawOrder(2000);
-                        textMarker.setStylingFromString("{ style: 'text', text_source: \"function() { return '"+ dev.name +"'; }\", collide: false,offset: [0px, -12px] ,font: { size: 10px, fill: '#ffffff', stroke: { color: '#000000', width: 2px } } }");
+                        textMarker.setStylingFromString("{ style: 'text', text_wrap: 18, max_lines: 3 ,text_source: \"function() { return '"+ dev.name +"'; }\", collide: false,offset: [0px, -12px] ,font: { size: 10px, fill: '#ffffff', stroke: { color: '#000000', width: 2px } } }");
                         marker.setStylingFromString("{ " + DEFAULT_STYLE + ", color: '" + String.format("#%06X", (0xFFFFFF & dev.color)) + "' }");
                         textMarker.setPointEased(new LngLat((double) dev.lon,(double)dev.lat),200, MapController.EaseType.CUBIC);
                         marker.setPointEased(new LngLat((double) dev.lon,(double)dev.lat),200, MapController.EaseType.CUBIC);
@@ -219,21 +241,31 @@ public class MapFragment extends Fragment implements DeviceChange,  LocationList
         @Override
         public void onResume()
             {
+
                 super.onResume();
+                if(mMapView!=null)
+                    {
+                        mMapView.onResume();
+                    }
                 globalActivity.actionBar.setTitle(getString(R.string.map));
                 Criteria c = new Criteria();
                 c.setAccuracy(Criteria.ACCURACY_FINE);
                 LocalService.myManager.requestLocationUpdates(0,0f,c,(LocationListener) MapFragment.this,MapFragment.this.getActivity().getMainLooper());
+                MapFragment.this.onChannelListChange();
             }
         @Override
         public void onPause()
             {
+                if(mMapView!=null)
+                    {
+                        mMapView.onPause();
+                    }
                 LocalService.myManager.removeUpdates(this);
                 super.onPause();
             }
         HttpHandler getHttpHandler()
             {
-                File cacheDir = this.getContext().getExternalCacheDir();
+                File cacheDir = OsMoDroid.context.getExternalCacheDir();
                 if (cacheDir != null && cacheDir.exists())
                     {
                         return new HttpHandler(new File(cacheDir, "tile_cache"), 100 * 1024 * 1024);
@@ -243,119 +275,143 @@ public class MapFragment extends Fragment implements DeviceChange,  LocationList
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
+
+
             view = inflater.inflate(R.layout.glmap, null);
-
-            centerImageButton = (ImageButton) view.findViewById(R.id.imageButtonCenter);
-            mMapView = (MapView) view.findViewById(R.id.glMapView);
-            mMapView.setKeepScreenOn(true);
-            speddTextView=(TextView)view.findViewById(R.id.mapSpeedtextView);
-
-
-            mMapView.getMapAsync(new OnMapReadyCallback()
+                    centerImageButton = (ImageButton) view.findViewById(R.id.imageButtonCenter);
+            ImageButton zi=(ImageButton)view.findViewById(R.id.zoomInButton);
+            ImageButton zo=(ImageButton)view.findViewById(R.id.zoomOutButton);
+            zi.setOnClickListener(new View.OnClickListener()
                 {
                     @Override
-                    public void onMapReady(final MapzenMap mapzenMap)
+                    public void onClick(View view)
                         {
-                            mzmap=mapzenMap;
-                            mzmap.setZoomButtonsEnabled(true);
-                            mapController=mapzenMap.getMapController();
-                            mapController.addDataLayer("osmo");
-                            mapController.setHttpHandler(getHttpHandler());
-                            mapController.setCameraType(MapController.CameraType.ISOMETRIC);
-                            centerImageButton.setOnClickListener(new View.OnClickListener()
+                            if(mapController!=null)
                                 {
-                                    @Override
-                                    public void onClick(View v)
-                                        {
-
-                                            if (center != null&&mapController!=null)
-                                                {
-                                                    mapController.setPositionEased(new LngLat(center.getLongitude(), center.getLatitude()), 200, MapController.EaseType.CUBIC);
-                                                }
-                                            isFollow=true;
-                                        }
-                                });
-
-                            //mapzenMap.setStyle(new BubbleWrapStyle());
-                            mapzenMap.setStyle(new MapStyle("bubble-wrap/bubble-wrap.yaml"));
-                            mapzenMap.setPersistMapData(true);
-                            mapzenMap.setPersistMapState(true);
-
-                            mapController.setPickRadius(3);
-                            mapController.setTapResponder(new TouchInput.TapResponder()
-                                {
-                                    @Override
-                                    public boolean onSingleTapUp(float x, float y)
-                                        {
-                                            return false;
-                                        }
-                                    @Override
-                                    public boolean onSingleTapConfirmed(float x, float y)
-                                        {
-
-//                                            PointF touchPoint = mapController.lngLatToScreenPosition();
-
-                                            mapController.pickMarker(x,y);
-
-                                            return true;
-                                        }
-                                });
-                            mapController.setMarkerPickListener(MapFragment.this);
-
-
-
-                            mapzenMap.setCompassButtonEnabled(true);
-                            mapzenMap.setCompassOnClickListener(new View.OnClickListener()
-                                {
-                                    @Override
-                                    public void onClick(View view)
-                                        {
-                                            mapController.setRotationEased(0f,200, MapController.EaseType.CUBIC);
-                                        }
-                                });
-                            MapFragment.this.onChannelListChange();
-                            createMarker();
-                            Criteria c = new Criteria();
-                            c.setAccuracy(Criteria.ACCURACY_FINE);
-
-                            Location location =  LocalService.myManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-
-                            if (location != null)
-                                mapController.setPositionEased(new LngLat(location.getLongitude(), location.getLatitude()), 200);
-
-                            if (mapController.getZoom() < 12)
-                                mapController.setZoomEased(12, 1000);
-                            LocalService.myManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,0,0,MapFragment.this);
-                            //LocalService.myManager.requestLocationUpdates(0,0f,c,(LocationListener) MapFragment.this,MapFragment.this.getActivity().getMainLooper());
-                            mapController.setPanResponder(new TouchInput.PanResponder()
-                                {
-                                    @Override
-                                    public boolean onPan(float startX, float startY, float endX, float endY)
-                                        {
-                                            isFollow=false;
-                                            return false;
-                                        }
-                                    @Override
-                                    public boolean onFling(float posX, float posY, float velocityX, float velocityY)
-                                        {
-                                            return false;
-                                        }
-                                });
-                           mapController.setDoubleTapResponder(new TouchInput.DoubleTapResponder()
-                               {
-                                   @Override
-                                   public boolean onDoubleTap(float x, float y)
-                                       {
-                                           LngLat tappedPos = mapController.screenPositionToLngLat(new PointF(x, y));
-                                           LngLat currentPos = mapController.getPosition();
-                                           mapController.setZoom(mapController.getZoom() + 1.0f);
-                                           mapController.setPosition(new LngLat(0.5f * (tappedPos.longitude + currentPos.longitude),0.5f * (tappedPos.latitude + currentPos.latitude)));
-                                           return true;
-                                       }
-                               });
+                                    mapController.setZoom(mapController.getZoom() + 1.0f);
+                                }
                         }
                 });
+            zo.setOnClickListener(new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View view)
+                        {
+                            if(mapController!=null)
+                                {
+                                    mapController.setZoom(mapController.getZoom() - 1.0f);
+                                }
+                        }
+                });
+                    mMapView = (MapView) view.findViewById(R.id.glMapView);
+                    mMapView.setKeepScreenOn(true);
+                    speddTextView = (TextView) view.findViewById(R.id.mapSpeedtextView);
 
+                    mMapView.getMapAsync(new MapView.OnMapReadyCallback()
+                        {
+                            @Override
+                            public void onMapReady(MapController mc)
+                                {
+
+                                  //  mzmap.setZoomButtonsEnabled(true);
+                                    mapController = mc;
+                                    mapController.addDataLayer("osmo");
+                                    mapController.setHttpHandler(getHttpHandler());
+                                    mapController.setCameraType(MapController.CameraType.ISOMETRIC);
+                                    centerImageButton.setOnClickListener(new View.OnClickListener()
+                                        {
+                                            @Override
+                                            public void onClick(View v)
+                                                {
+                                                    if (center != null && mapController != null)
+                                                        {
+                                                            mapController.setPositionEased(new LngLat(center.getLongitude(), center.getLatitude()), 200, MapController.EaseType.CUBIC);
+                                                        }
+                                                    isFollow = true;
+                                                }
+                                        });
+                                    //mapzenMap.setStyle(new BubbleWrapStyle());
+                                    switch (OsMoDroid.settings.getInt("selectedTileSourceInt",1))
+                                        {
+                                            case 1:
+                                                mapController.loadSceneFile("bubble-wrap/bubble-wrap.yaml");
+                                                break;
+                                            case 2:
+                                                mapController.loadSceneFile("walkabout-style-more-labels/walkabout-style-more-labels.yaml");
+                                               break;
+                                            case 3:
+                                                mapController.loadSceneFile("cinnabar-more-labels/cinnabar-style-more-labels.yaml");
+                                                break;
+                                            case 4:
+                                                mapController.loadSceneFile("zinc-style-more-labels/zinc-style-more-labels.yaml");
+                                                break;
+                                            case 5:
+                                                mapController.loadSceneFile("refill-more-labels/refill-style-more-labels.yaml");
+                                                break;
+                                            default:
+                                                break;
+                                        }
+
+
+
+                                    mapController.setPickRadius(3);
+                                    mapController.setTapResponder(new TouchInput.TapResponder()
+                                        {
+                                            @Override
+                                            public boolean onSingleTapUp(float x, float y)
+                                                {
+                                                    return false;
+                                                }
+                                            @Override
+                                            public boolean onSingleTapConfirmed(float x, float y)
+                                                {
+//                                            PointF touchPoint = mapController.lngLatToScreenPosition();
+                                                    mapController.pickMarker(x, y);
+                                                    return true;
+                                                }
+                                        });
+                                    mapController.setMarkerPickListener(MapFragment.this);
+
+
+                                    MapFragment.this.onChannelListChange();
+                                    createMarker();
+                                    Criteria c = new Criteria();
+                                    c.setAccuracy(Criteria.ACCURACY_FINE);
+                                    Location location = LocalService.myManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                                    if (location != null)
+                                        mapController.setPositionEased(new LngLat(location.getLongitude(), location.getLatitude()), 200);
+                                    if (mapController.getZoom() < 12)
+                                        mapController.setZoomEased(12, 1000);
+                                    LocalService.myManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, MapFragment.this);
+                                    //LocalService.myManager.requestLocationUpdates(0,0f,c,(LocationListener) MapFragment.this,MapFragment.this.getActivity().getMainLooper());
+                                    mapController.setPanResponder(new TouchInput.PanResponder()
+                                        {
+                                            @Override
+                                            public boolean onPan(float startX, float startY, float endX, float endY)
+                                                {
+                                                    isFollow = false;
+                                                    return false;
+                                                }
+                                            @Override
+                                            public boolean onFling(float posX, float posY, float velocityX, float velocityY)
+                                                {
+                                                    return false;
+                                                }
+                                        });
+                                    mapController.setDoubleTapResponder(new TouchInput.DoubleTapResponder()
+                                        {
+                                            @Override
+                                            public boolean onDoubleTap(float x, float y)
+                                                {
+                                                    LngLat tappedPos = mapController.screenPositionToLngLat(new PointF(x, y));
+                                                    LngLat currentPos = mapController.getPosition();
+                                                    mapController.setZoom(mapController.getZoom() + 1.0f);
+                                                    mapController.setPosition(new LngLat(0.5f * (tappedPos.longitude + currentPos.longitude), 0.5f * (tappedPos.latitude + currentPos.latitude)));
+                                                    return true;
+                                                }
+                                        });
+                                }
+                        },"bubble-wrap/bubble-wrap.yaml");
 
             return view;
         }
@@ -439,7 +495,7 @@ public class MapFragment extends Fragment implements DeviceChange,  LocationList
                         if (location.hasBearing())
                             {
                                 addlog("has bearing");
-                                Log.d(getClass().getSimpleName(), "on bearing "+"{ " + DEFAULT_STYLE + ", angle: " + (int) location.getBearing() + " }");
+                                addlog( "on bearing: "+"{ " + DEFAULT_STYLE + ", angle: " + (int) location.getBearing() + " }");
                                 myLocationMarker.setStylingFromString("{ " + DEFAULT_STYLE + ", angle: " + (int) location.getBearing() + " }");
                             }
                     }
@@ -486,23 +542,25 @@ public class MapFragment extends Fragment implements DeviceChange,  LocationList
         @Override
         public void onChannelListChange()
             {
-                for(MarkerToU m :markerToUs)
+                if(mapController!=null)
                     {
-                        mapController.removeMarker(m.marker);
-                        mapController.removeMarker(m.textMarker);
-                    }
-                Log.d(getClass().getSimpleName(), "link enter");
-                for (Channel ch : LocalService.channelList)
-                    {
-                        if (ch.send)
+                        for (MarkerToU m : markerToUs)
                             {
-
-                                for (Device d : ch.deviceList)
+                                mapController.removeMarker(m.marker);
+                                mapController.removeMarker(m.textMarker);
+                            }
+                        Log.d(getClass().getSimpleName(), "link enter");
+                        for (Channel ch : LocalService.channelList)
+                            {
+                                if (ch.send)
                                     {
-                                        if(!markerToUs.contains(d))
+                                        for (Device d : ch.deviceList)
                                             {
-                                                Log.d(getClass().getSimpleName(), "link succusuful u="+d.u);
-                                                markerToUs.add(new MarkerToU(d));
+                                                if (!markerToUs.contains(d))
+                                                    {
+                                                        Log.d(getClass().getSimpleName(), "link succusuful u=" + d.u);
+                                                        markerToUs.add(new MarkerToU(d));
+                                                    }
                                             }
                                     }
                             }

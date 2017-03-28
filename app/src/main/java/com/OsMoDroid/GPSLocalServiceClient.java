@@ -422,7 +422,7 @@ public class GPSLocalServiceClient extends ActionBarActivity implements ResultsL
 
                         }
                 };
-                registerReceiver(mIMstatusReciever, new IntentFilter("OsMoDroid"));
+                registerReceiver(mIMstatusReciever, new IntentFilter("OsMoDroidV"));
                 if (mService.myIM != null)
                     {
                         if (!mService.myIM.start&&OsMoDroid.settings.getBoolean("live", true))

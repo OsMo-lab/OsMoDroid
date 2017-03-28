@@ -828,7 +828,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                 signalonoff = soundPool.load(this, R.raw.signalonoff, 1);
                 vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
                 pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-                in = new Intent("OsMoDroid");
+                in = new Intent("OsMoDroidV");
                 mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
                 if (!OsMoDroid.settings.getBoolean("ondestroy", false))
                     {

@@ -737,7 +737,7 @@ public class MainFragment extends Fragment implements GPSLocalServiceClient.upd
                                 }
                         }
                 };
-                globalActivity.registerReceiver(receiver, new IntentFilter("OsMoDroid"));
+                globalActivity.registerReceiver(receiver, new IntentFilter("OsMoDroidV"));
                 return view;
             }
         /* (non-Javadoc)
