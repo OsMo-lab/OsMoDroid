@@ -244,7 +244,6 @@
   <string name="shortname">Noms courts</string>
   <string name="enterin">entrée dans la zone géo</string>
   <string name="exitfrom">sortie de la zone géo</string>
-  <string name="usechatnotification">Notifications pour les messages du tchat</string>
   <string name="altitude">Altitude : Mètres</string>
   <string name="pleasewait">Veuillez patienter ...</string>
   <string name="malt">Altitude maximale</string>

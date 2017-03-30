@@ -340,4 +340,7 @@
   <string name="groupaccess">Достъп</string>
   <string name="travel">Пътуване</string>
   <string name="nick">Ник</string>
+  <string name="configure">Конфигуриране</string>
+  <string name="imperial">Британска Система</string>
+  <string name="imperial_summary">Въведи мили,футове</string>
 </resources>

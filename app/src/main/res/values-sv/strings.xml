@@ -55,6 +55,7 @@
   <string name="message">Meddelande</string>
   <string name="sendsupport">Rapportera till supporten</string>
   <string name="about">Om</string>
+  <string name="abouttext">OsMoDroid - är den officiella OsMo-tjänstappen för Android. Med en smartphone och tjänsten OsMo kan dina vänner och din familj alltid hålla reda på var du är.\nHuvudutvecklare: Denis Fokin (c) 2012-2017\n\nGenom att använda denna app godkänner du användarvillkoren på https://osmo.mobi/terms\n\nOsMoDroid-sidan: http://osmodroid.mobi\n\nCopyrightinformation: http://osmodroid.mobi/copyright.html</string>
   <string name="send">&gt;&gt;</string>
   <string name="cancel">Avbryt</string>
   <string name="speed">Hastighet: km/h</string>
@@ -303,6 +304,7 @@
   <string name="shortname">Korta namn</string>
   <string name="enterin">Gå in i geozonen</string>
   <string name="exitfrom">Lämna geozonen</string>
+  <string name="warnewdevice">Denna enhet har raderats från servern.\nEn ny kommer att skapas om du skapar länkar (URL). Den kommer att bli ogiltig nu och behöver återinföras till grupper\nDu kan kontakta supporten om du vill</string>
   <string name="usechatnotification">Aviseringar av chattmeddelanden</string>
   <string name="usechatsummary">Visar avisering när chattmeddelande från aktiv grupp mottages</string>
   <string name="altitude">Höjd: meter</string>
@@ -315,6 +317,7 @@
   <string name="averagespeed">Snitthastighet</string>
   <string name="nomounted">Ingen lagringsplats monterad</string>
   <string name="needselectpoint">Välj grupp att skicka punkten till</string>
+  <string name="surebufferlost">Punktbufferten är inte tom och ingen anslutning till servern. Är du säker (bufferten kommer att tömmas)?</string>
   <string name="plot">Plotta</string>
   <string name="totalclimb">Total stigning</string>
   <string name="altitude_">Höjd</string>
@@ -337,4 +340,15 @@
   <string name="groupaccess">Grupptillgång</string>
   <string name="travel">Resa</string>
   <string name="nick">Smeknamn</string>
+  <string name="configure">Konfigurera</string>
+  <string name="imperial">Brittiska måttenheter</string>
+  <string name="imperial_summary">Använd eng. mile, fot</string>
+  <string name="password">Lösenord</string>
+  <string name="repeatpassword">Upprepa lösenordet</string>
+  <string name="enterloginpassword">Ange login och lösenord</string>
+  <string name="registration">Registrering</string>
+  <string name="gender">Kön</string>
+  <string name="male">Man</string>
+  <string name="female">Kvinna</string>
+  <string name="passdontequal">Lösenorden stämmer inte överens</string>
 </resources>

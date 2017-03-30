@@ -340,4 +340,5 @@
   <string name="groupaccess">Accesso al gruppo</string>
   <string name="travel">Viaggio</string>
   <string name="nick">Nickname</string>
+  <string name="configure"> Configura</string>
 </resources>
