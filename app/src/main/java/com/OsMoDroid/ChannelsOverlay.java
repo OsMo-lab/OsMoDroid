@@ -804,12 +804,12 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
                                                         {
                                                             if (followdev != dev.u)
                                                                 {
-                                                                    Toast.makeText(mapView.getContext(), map.getContext().getString(R.string.follow_) + dev.name, Toast.LENGTH_SHORT).show();
+                                                                    Toast.makeText(mapView.getContext(), map.getContext().getString(R.string.follow_) + ' '+dev.name, Toast.LENGTH_SHORT).show();
                                                                     followdev = dev.u;
                                                                 }
                                                             else
                                                                 {
-                                                                    Toast.makeText(mapView.getContext(), map.getContext().getString(R.string.no_follow_) + dev.name, Toast.LENGTH_SHORT).show();
+                                                                    Toast.makeText(mapView.getContext(), map.getContext().getString(R.string.no_follow_) + ' '+dev.name, Toast.LENGTH_SHORT).show();
                                                                     followdev = -1;
                                                                 }
                                                             mapView.invalidate();

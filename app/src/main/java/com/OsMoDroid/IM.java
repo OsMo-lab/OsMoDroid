@@ -1698,11 +1698,11 @@ public class IM implements ResultsListener
                                                                                 {
                                                                                     if (dev.state != 1 && jsonObject.getInt("state") == 1 &&dev.state!=-1)
                                                                                         {
-                                                                                            notifydevicemonitoring(dev, true);
+                                                                                            notifydevicemonitoring(ch,dev, true);
                                                                                         }
                                                                                     if ((dev.state == 1||dev.state==-1) && jsonObject.getInt("state") == 0)
                                                                                         {
-                                                                                            notifydevicemonitoring(dev, false);
+                                                                                            notifydevicemonitoring(ch,dev, false);
                                                                                         }
                                                                                     dev.state = jsonObject.getInt("state");
                                                                                 }
@@ -2151,11 +2151,11 @@ public class IM implements ResultsListener
 
                                                                                                                 if (dev.state != 1 && jsonObject.getInt("state") == 1)
                                                                                                                     {
-                                                                                                                        notifydevicemonitoring(dev, true);
+                                                                                                                        notifydevicemonitoring(ch,dev, true);
                                                                                                                     }
                                                                                                                 if (dev.state == 1 && jsonObject.getInt("state") == 0)
                                                                                                                     {
-                                                                                                                        notifydevicemonitoring(dev, false);
+                                                                                                                        notifydevicemonitoring(ch,dev, false);
                                                                                                                     }
                                                                                                                 dev.state = jsonObject.getInt("state");
 
@@ -2199,7 +2199,7 @@ public class IM implements ResultsListener
                                                                                                 Collections.sort(ch.deviceList);
                                                                                                 if (dev.state == 1 )
                                                                                                     {
-                                                                                                        notifydevicemonitoring(dev, true);
+                                                                                                        notifydevicemonitoring(ch,dev, true);
                                                                                                     }
                                                                                             }
                                                                                         catch (JSONException e)
@@ -2430,7 +2430,7 @@ public class IM implements ResultsListener
         void ondisconnect()
             {
             }
-        void notifydevicemonitoring(Device dev,boolean start)
+        void notifydevicemonitoring(Channel ch,Device dev,boolean start)
             {
                 String status;
                 String messageText = "";
@@ -2443,7 +2443,7 @@ public class IM implements ResultsListener
                         status = localService.getString(R.string.stoped);
                     }
 
-                messageText = messageText + localService.getString(R.string.monitoringondevice) + dev.name + " " + status;
+                messageText = messageText +ch.name+": " +localService.getString(R.string.monitoringondevice) + dev.name + " " + status;
                 if (OsMoDroid.settings.getBoolean("statenotify", true))
                     {
                         Message msg = new Message();
