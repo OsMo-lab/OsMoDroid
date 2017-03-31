@@ -382,8 +382,8 @@ public class MapFragment extends Fragment implements DeviceChange,  LocationList
                                         mapController.setPositionEased(new LngLat(location.getLongitude(), location.getLatitude()), 200);
                                     if (mapController.getZoom() < 12)
                                         mapController.setZoomEased(12, 1000);
-                                    LocalService.myManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, MapFragment.this);
-                                    //LocalService.myManager.requestLocationUpdates(0,0f,c,(LocationListener) MapFragment.this,MapFragment.this.getActivity().getMainLooper());
+                                    //LocalService.myManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, MapFragment.this);
+                                    LocalService.myManager.requestLocationUpdates(0,0f,c,(LocationListener) MapFragment.this,MapFragment.this.getActivity().getMainLooper());
                                     mapController.setPanResponder(new TouchInput.PanResponder()
                                         {
                                             @Override
