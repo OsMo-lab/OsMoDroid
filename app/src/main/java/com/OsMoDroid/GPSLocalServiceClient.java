@@ -1292,6 +1292,7 @@ public class GPSLocalServiceClient extends ActionBarActivity implements ResultsL
                                 OsMoDroid.editor.putString("u", result.Jo.optString("nick"));
                                 OsMoDroid.editor.commit();
                                 mService.refresh();
+
                             }
                         if (result.Command.equals("SIGNUP"))
                             {
@@ -1299,6 +1300,7 @@ public class GPSLocalServiceClient extends ActionBarActivity implements ResultsL
                                 OsMoDroid.editor.commit();
                                 mService.refresh();
                             }
+                        updateMainUI();
                     }
                 else
                     {
