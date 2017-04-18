@@ -1,6 +1,7 @@
 package com.OsMoDroid;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 import android.annotation.TargetApi;
@@ -198,12 +199,14 @@ public class MapFragment extends Fragment implements DeviceChange,  LocationList
         static  class MarkerToU
             {
                 Marker marker;
+
                 Marker textMarker;
                 public int u;
                 public long mId;
                 public long tId;
                 public MarkerToU(Device dev)
                     {
+
                         this.u=dev.u;
                         marker= mapController.addMarker();
                         this.mId=marker.getMarkerId();
@@ -250,7 +253,14 @@ public class MapFragment extends Fragment implements DeviceChange,  LocationList
                 globalActivity.actionBar.setTitle(getString(R.string.map));
                 Criteria c = new Criteria();
                 c.setAccuracy(Criteria.ACCURACY_FINE);
-                LocalService.myManager.requestLocationUpdates(0,0f,c,(LocationListener) MapFragment.this,MapFragment.this.getActivity().getMainLooper());
+                try
+                    {
+                        LocalService.myManager.requestLocationUpdates(0,0f,c,(LocationListener) MapFragment.this,MapFragment.this.getActivity().getMainLooper());
+                    }
+                catch (Exception e)
+                    {
+                        e.printStackTrace();
+                    }
                 MapFragment.this.onChannelListChange();
             }
         @Override
@@ -375,15 +385,22 @@ public class MapFragment extends Fragment implements DeviceChange,  LocationList
 
                                     MapFragment.this.onChannelListChange();
                                     createMarker();
-                                    Criteria c = new Criteria();
-                                    c.setAccuracy(Criteria.ACCURACY_FINE);
+//                                    Criteria c = new Criteria();
+//                                    c.setAccuracy(Criteria.ACCURACY_FINE);
                                     Location location = LocalService.myManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
                                     if (location != null)
                                         mapController.setPositionEased(new LngLat(location.getLongitude(), location.getLatitude()), 200);
                                     if (mapController.getZoom() < 12)
                                         mapController.setZoomEased(12, 1000);
                                     //LocalService.myManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, MapFragment.this);
-                                    LocalService.myManager.requestLocationUpdates(0,0f,c,(LocationListener) MapFragment.this,MapFragment.this.getActivity().getMainLooper());
+//                                    try
+//                                        {
+//                                            LocalService.myManager.requestLocationUpdates(0,0f,c,(LocationListener) MapFragment.this,MapFragment.this.getActivity().getMainLooper());
+//                                        }
+//                                    catch (Exception e)
+//                                        {
+//                                            e.printStackTrace();
+//                                        }
                                     mapController.setPanResponder(new TouchInput.PanResponder()
                                         {
                                             @Override
@@ -427,6 +444,20 @@ public class MapFragment extends Fragment implements DeviceChange,  LocationList
 //                {
 //                   myTraceMapData= mzmap.addPolyline(myTracePolyline);
 //                }
+
+            //MapData markers = mapController.addDataLayer("touch");
+            ArrayList<LngLat> lngLats = new ArrayList<>();
+            lngLats.add(new LngLat(37.0,55.0));
+            lngLats.add(new LngLat(35.0,58.0));
+            Marker m = mapController.addMarker();
+
+            Map<String, String> props = new HashMap<>();
+            props.put("type", "line");
+            props.put("color", "black");
+            m.setPolyline(new Polyline(lngLats,props));
+            m.setDrawOrder(20000);
+
+           // markers.addPolyline(lngLats,props);
 
 
             myLocationMarker.setDrawOrder(2000);
@@ -520,8 +551,8 @@ public class MapFragment extends Fragment implements DeviceChange,  LocationList
                     {
                         if(m.u==dev.u)
                             {
-                                m.marker.setPointEased(new LngLat((double) dev.lon,(double)dev.lat),1000, MapController.EaseType.CUBIC);
-                                m.textMarker.setPointEased(new LngLat((double) dev.lon,(double)dev.lat),1000, MapController.EaseType.CUBIC);
+                                m.marker.setPointEased(new LngLat((double) dev.lon,(double)dev.lat),5000, MapController.EaseType.CUBIC);
+                                m.textMarker.setPointEased(new LngLat((double) dev.lon,(double)dev.lat),5000, MapController.EaseType.CUBIC);
 
                             }
                     }
