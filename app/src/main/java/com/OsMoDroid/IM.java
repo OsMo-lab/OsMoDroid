@@ -1151,6 +1151,10 @@ public class IM implements ResultsListener
                     {
                         sendToServer("CHARGE|"+addict,false);
                     }
+                if(command.equals("SMS"))
+                    {
+                        sendToServer("T|"+addict+"X",false);
+                    }
                 if (command.equals("TO"))
                     {
                         localService.sessionstarted = true;

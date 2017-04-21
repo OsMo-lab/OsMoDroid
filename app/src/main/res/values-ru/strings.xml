@@ -350,4 +350,10 @@
     <string name="male">Мужской</string>
     <string name="female">Женский</string>
     <string name="passdontequal">Пароли не совпали</string>
+    <string name="smsexchange">SMS отправка координат</string>
+  <string name="sendsms">Отправлять SMS</string>
+  <string name="sendsmsnumber">Номер получателя</string>
+  <string name="sendsmsperiod">Период между СМС, секунды</string>
+  <string name="getsms">Получать СМС</string>
+  <string name="getsmsnumber">Номер отправителя SMS</string>
 </resources>
