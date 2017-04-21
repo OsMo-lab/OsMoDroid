@@ -3,7 +3,7 @@
           xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:tools="http://schemas.android.com/tools"
           android:installLocation="auto"
-          android:versionCode="465"
+          android:versionCode="467"
           android:versionName="2.4.10">
 
     <uses-sdk
@@ -219,6 +219,17 @@
                 <!--<action android:name="android.appwidget.action.APPWIDGET_CONFIGURE"/>-->
             <!--</intent-filter>-->
         <!--</activity>-->
+
+        <receiver
+            android:name=".SMSReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.DATA_SMS_RECEIVED" />
+                <data
+                    android:scheme="sms"
+                    android:host="*"
+                    android:port="901" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

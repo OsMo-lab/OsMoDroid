@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" android:title="@string/settings">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+                  xmlns:tools="http://schemas.android.com/tools"
+                  android:title="@string/settings">
     
     <PreferenceCategory android:title="@string/general">
         <CheckBoxPreference android:title="@string/dark_theme" android:defaultValue="true" android:key="darktheme" />
@@ -237,6 +239,42 @@
         <!--<CheckBoxPreference android:key="tls" android:title="Use TLS Socket" android:defaultValue="false"/>-->
         
     </PreferenceCategory>
-    
-    
+    <PreferenceCategory
+        android:title="@string/smsexchange">
+
+    </PreferenceCategory>
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="sendsms"
+        android:title="@string/sendsms"/>
+    <EditTextPreference
+        android:dependency="sendsms"
+        android:defaultValue="Default value"
+        android:key="sendsmsnumber"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="@string/sendsmsnumber"/>
+    <EditTextPreference
+        android:dependency="sendsms"
+        android:defaultValue="300"
+        android:key="smsperiod"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:digits="0123456789"
+        android:inputType="number"
+        android:numeric="integer"
+        android:title="@string/sendsmsperiod"/>
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="getsms"
+        android:title="@string/getsms"/>
+    <EditTextPreference
+        android:dependency="getsms"
+        android:defaultValue="Default value"
+        android:key="getsmsnumber"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="@string/getsmsnumber"/>
+
+
 </PreferenceScreen>

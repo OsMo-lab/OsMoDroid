@@ -79,6 +79,7 @@ import android.provider.Settings.Secure;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.TextToSpeech.OnInitListener;
 import android.support.v4.app.NotificationCompat;
+import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.Display;
@@ -94,6 +95,7 @@ import android.widget.Toast;
 import com.OsMoDroid.Netutil.MyAsyncTask;
 import com.github.mikephil.charting.data.Entry;
 
+import static com.OsMoDroid.IM.writeException;
 import static java.lang.Math.abs;
 public class LocalService extends Service implements LocationListener, GpsStatus.Listener, TextToSpeech.OnInitListener, ResultsListener, SensorEventListener
     {
@@ -465,6 +467,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
         boolean pro;
         private View linearview;
         private IMapController mapController;
+        private long lastsmstime=0;
         static String formatInterval(final long l)
             {
                 return String.format("%02d:%02d:%02d", l / (1000 * 60 * 60), (l % (1000 * 60 * 60)) / (1000 * 60), ((l % (1000 * 60 * 60)) % (1000 * 60)) / 1000);
@@ -2384,6 +2387,43 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                                 );
                                 buffercounter++;
                             }
+                    }
+                if (myIM != null && !myIM.authed && OsMoDroid.settings.getBoolean("sendsms",false))
+                    {
+                        if(SystemClock.uptimeMillis()>lastsmstime+1000*Integer.parseInt(OsMoDroid.settings.getString("smsperiod","300")))
+                            {
+                                lastsmstime=SystemClock.uptimeMillis();
+                                try
+                                    {
+                                        addlog("try to send sms");
+
+                                        String messageText = "L" + OsMoDroid.df6.format(location.getLatitude()) + ":" + OsMoDroid.df6.format(location.getLongitude())
+                                            + "S" + OsMoDroid.df0.format(location.getSpeed())
+                                            + "A" + OsMoDroid.df0.format(location.getAltitude())
+                                            + "H" + OsMoDroid.df0.format(location.getAccuracy())
+                                            + "C" + OsMoDroid.df0.format(location.getBearing());
+                                        short port = 901;
+
+
+                                        SmsManager smsManager = SmsManager.getDefault();
+                                        smsManager.sendDataMessage(OsMoDroid.settings.getString("sendsmsnumber",""), null, port, messageText.getBytes(), null, null);
+
+                                    }
+                                    catch (Exception e)
+                                        {
+                                            e.printStackTrace();
+                                            writeException(e);
+
+                                        }
+                            }
+                        else
+                            {
+                                addlog("Еще рано!");
+                            }
+                    }
+                else
+                    {
+                        addlog(Boolean.toString(myIM==null)+Boolean.toString(!myIM.authed)+Boolean.toString(OsMoDroid.settings.getBoolean("sendsms",false)));
                     }
             }
         public void onGpsStatusChanged(int event)
