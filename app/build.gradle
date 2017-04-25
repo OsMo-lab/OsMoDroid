@@ -9,7 +9,7 @@ android {
         applicationId "com.OsMoDroidV"
         minSdkVersion 15
         targetSdkVersion 19
-        versionCode 6
+        versionCode 7
     }
 
     buildTypes {
@@ -63,7 +63,7 @@ dependencies {
     compile 'com.android.support:appcompat-v7:25.1.0'
 
     //compile 'com.mapzen:mapzen-android-sdk:1.3.2'
-    compile 'com.mapzen.tangram:tangram:0.6.0'
+    compile 'com.mapzen.tangram:tangram:0.6.1'
 
     debugCompile 'com.squareup.leakcanary:leakcanary-android:1.4-beta2'
     releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.4-beta2'

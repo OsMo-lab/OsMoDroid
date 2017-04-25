@@ -901,30 +901,30 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                 RelativeLayout rl = (RelativeLayout) linearview.findViewById(R.id.relative);
 
 
-                MapView mMapView = new MapView(getApplicationContext());
-                ChannelsOverlay choverlay = new ChannelsOverlay( mMapView);
-                mapController = mMapView.getController();
-
-                mMapView.getOverlays().add(choverlay);
-                RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.FILL_PARENT, RelativeLayout.LayoutParams.FILL_PARENT);
-                lp.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-                lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-                mMapView.setLayoutParams(lp);
-                mMapView.setTilesScaledToDpi(OsMoDroid.settings.getBoolean("adjust_to_dpi", true));
-                mMapView.setTileSource(TileSourceFactory.MAPNIK);
-                //mMapView.setTilesScaledToDpi(true);
-                rl.addView(mMapView, 0);
-                int w = 300;
-                int h = 300;
-
-                linearview.measure(MeasureSpec.makeMeasureSpec(w, MeasureSpec.EXACTLY),
-                        MeasureSpec.makeMeasureSpec(h, MeasureSpec.EXACTLY));
-
-                linearview.layout(0, 0, linearview.getMeasuredWidth(), linearview.getMeasuredHeight());
-                linearview.setDrawingCacheEnabled(true);
-                linearview.buildDrawingCache();
-
-
+                ComponentName myWidget = new ComponentName(this, MapWidget.class);
+                int[] ids = AppWidgetManager.getInstance(this).getAppWidgetIds(myWidget);
+                if(ids.length > 0)
+                    {
+                        MapView mMapView = new MapView(getApplicationContext());
+                        ChannelsOverlay choverlay = new ChannelsOverlay(mMapView);
+                        mapController = mMapView.getController();
+                        mMapView.getOverlays().add(choverlay);
+                        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.FILL_PARENT, RelativeLayout.LayoutParams.FILL_PARENT);
+                        lp.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+                        lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+                        mMapView.setLayoutParams(lp);
+                        mMapView.setTilesScaledToDpi(OsMoDroid.settings.getBoolean("adjust_to_dpi", true));
+                        mMapView.setTileSource(TileSourceFactory.MAPNIK);
+                        //mMapView.setTilesScaledToDpi(true);
+                        rl.addView(mMapView, 0);
+                        int w = 300;
+                        int h = 300;
+                        linearview.measure(MeasureSpec.makeMeasureSpec(w, MeasureSpec.EXACTLY),
+                                MeasureSpec.makeMeasureSpec(h, MeasureSpec.EXACTLY));
+                        linearview.layout(0, 0, linearview.getMeasuredWidth(), linearview.getMeasuredHeight());
+                        linearview.setDrawingCacheEnabled(true);
+                        linearview.buildDrawingCache();
+                    }
 
 
             }
@@ -2448,41 +2448,38 @@ public class LocalService extends Service implements LocationListener, GpsStatus
             }
         void bitmapmapview()
             {
-                mapController.setZoom(4);
-                GeoPoint startPoint = new GeoPoint(59.0, 30.0);
-                mapController.setCenter(startPoint);
-                alertHandler.postDelayed(new Runnable()
+                if(mapController!=null)
                     {
-                        @Override
-                        public void run()
+                        mapController.setZoom(4);
+                        GeoPoint startPoint = new GeoPoint(59.0, 30.0);
+                        mapController.setCenter(startPoint);
+                        alertHandler.postDelayed(new Runnable()
                             {
-                                Bitmap bm = Bitmap.createBitmap( linearview.getMeasuredWidth(), linearview.getMeasuredHeight(), Bitmap.Config.ARGB_8888);
-                                Canvas c = new Canvas(bm);
-
-                                linearview.draw(c);
-                                AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(getApplicationContext());
-                                ComponentName thisWidget;
-                                thisWidget = new ComponentName(LocalService.this,MapWidget.class);
-                                int[] allWidgetIds =  appWidgetManager.getAppWidgetIds(thisWidget);
-                                Intent is = new Intent(LocalService.this, LocalService.class);
-                                for (int widgetId : allWidgetIds)
+                                @Override
+                                public void run()
                                     {
-                                        RemoteViews remoteViews = new RemoteViews(getApplicationContext().getPackageName(), R.layout.map_widget);
-                                        Intent notificationIntent = new Intent(LocalService.this, GPSLocalServiceClient.class);
-                                        notificationIntent.setAction(Intent.ACTION_MAIN);
-                                        notificationIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-                                        osmodroidLaunchIntent = PendingIntent.getActivity(LocalService.this, 0, notificationIntent, 0);
-                                        remoteViews.setOnClickPendingIntent(R.id.mapimageView, osmodroidLaunchIntent);
-
-                                        remoteViews.setImageViewBitmap(R.id.mapimageView, bm);
-                                        appWidgetManager.updateAppWidget(widgetId, remoteViews);
+                                        Bitmap bm = Bitmap.createBitmap(linearview.getMeasuredWidth(), linearview.getMeasuredHeight(), Bitmap.Config.ARGB_8888);
+                                        Canvas c = new Canvas(bm);
+                                        linearview.draw(c);
+                                        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(getApplicationContext());
+                                        ComponentName thisWidget;
+                                        thisWidget = new ComponentName(LocalService.this, MapWidget.class);
+                                        int[] allWidgetIds = appWidgetManager.getAppWidgetIds(thisWidget);
+                                        Intent is = new Intent(LocalService.this, LocalService.class);
+                                        for (int widgetId : allWidgetIds)
+                                            {
+                                                RemoteViews remoteViews = new RemoteViews(getApplicationContext().getPackageName(), R.layout.map_widget);
+                                                Intent notificationIntent = new Intent(LocalService.this, GPSLocalServiceClient.class);
+                                                notificationIntent.setAction(Intent.ACTION_MAIN);
+                                                notificationIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+                                                osmodroidLaunchIntent = PendingIntent.getActivity(LocalService.this, 0, notificationIntent, 0);
+                                                remoteViews.setOnClickPendingIntent(R.id.mapimageView, osmodroidLaunchIntent);
+                                                remoteViews.setImageViewBitmap(R.id.mapimageView, bm);
+                                                appWidgetManager.updateAppWidget(widgetId, remoteViews);
+                                            }
                                     }
-
-
-                            }
-                    },10000);
-
-
+                            }, 10000);
+                    }
             }
         public synchronized boolean isOnline()
             {

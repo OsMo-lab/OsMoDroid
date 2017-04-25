@@ -76,7 +76,7 @@ public class MapFragment extends Fragment implements DeviceChange,  LocationList
         private ImageButton centerImageButton;
         private GPSLocalServiceClient globalActivity;
         private TextView speddTextView;
-//        MapData  mapData;
+        MapData  mapData;
         private Marker myTraceMarker;
         private Polyline myTracePolyline = new Polyline(new ArrayList<LngLat>(), null);
 
@@ -213,7 +213,7 @@ public class MapFragment extends Fragment implements DeviceChange,  LocationList
                         textMarker=mapController.addMarker();
                         this.tId=textMarker.getMarkerId();
                         marker.setDrawOrder(2000);
-                        textMarker.setStylingFromString("{ style: 'text', text_wrap: 18, max_lines: 3 ,text_source: \"function() { return '"+ dev.name +"'; }\", collide: false,offset: [0px, -12px] ,font: { size: 10px, fill: '#ffffff', stroke: { color: '#000000', width: 2px } } }");
+                        textMarker.setStylingFromString("{ style: 'text', text_wrap: 18, max_lines: 3 ,text_source: \"function() { return '"+ dev.name +"'; }\", collide: true,offset: [0px, -12px] ,font: { size: 10px, fill: '#ffffff', stroke: { color: '#000000', width: 2px } } }");
                         marker.setStylingFromString("{ " + DEFAULT_STYLE + ", color: '" + String.format("#%06X", (0xFFFFFF & dev.color)) + "' }");
                         textMarker.setPointEased(new LngLat((double) dev.lon,(double)dev.lat),200, MapController.EaseType.CUBIC);
                         marker.setPointEased(new LngLat((double) dev.lon,(double)dev.lat),200, MapController.EaseType.CUBIC);
@@ -348,6 +348,7 @@ public class MapFragment extends Fragment implements DeviceChange,  LocationList
                                                 break;
                                             case 2:
                                                 mapController.loadSceneFile("walkabout-style-more-labels/walkabout-style-more-labels.yaml");
+
                                                break;
                                             case 3:
                                                 mapController.loadSceneFile("cinnabar-more-labels/cinnabar-style-more-labels.yaml");
@@ -444,18 +445,15 @@ public class MapFragment extends Fragment implements DeviceChange,  LocationList
 //                {
 //                   myTraceMapData= mzmap.addPolyline(myTracePolyline);
 //                }
+            showTracks();
+            //ArrayList<LngLat> lngLats = new ArrayList<>();
+            //lngLats.add(new LngLat(37.0,55.0));
+            //lngLats.add(new LngLat(35.0,58.0));
+            //lngLats.add(new LngLat(-74.00976419448854, 40.70532700869127));
+            //Marker m = mapController.addMarker();
 
-            //MapData markers = mapController.addDataLayer("touch");
-            ArrayList<LngLat> lngLats = new ArrayList<>();
-            lngLats.add(new LngLat(37.0,55.0));
-            lngLats.add(new LngLat(35.0,58.0));
-            Marker m = mapController.addMarker();
 
-            Map<String, String> props = new HashMap<>();
-            props.put("type", "line");
-            props.put("color", "black");
-            m.setPolyline(new Polyline(lngLats,props));
-            m.setDrawOrder(20000);
+            //m.setDrawOrder(20000);
 
            // markers.addPolyline(lngLats,props);
 
@@ -474,8 +472,57 @@ public class MapFragment extends Fragment implements DeviceChange,  LocationList
                         }
                 }
         }
+         void showTracks()
+            {
+                mapData = mapController.addDataLayer("touch");
+                mapData.clear();
+                for(Channel ch: LocalService.channelList)
+                    {
+                        for(ColoredGPX cg:ch.gpxList)
+                            {
+                                Log.d(getClass().getSimpleName(), "for coloredgpx");
+                                if(cg.status== ColoredGPX.Statuses.LOADED)
+                                    {
+                                        int currentSegment=-1;
+                                       Log.d(getClass().getSimpleName(), "for loaded coloredgpx size "+cg.points.size());
+                                        ArrayList<LngLat> lngLats = new ArrayList<>();
+                                        for (SegmentPoint sp : cg.points)
+                                            {
+                                                if(sp.segment==currentSegment)
+                                                    {
+                                                        Log.d(getClass().getSimpleName(), "for segment=currentsegment");
+                                                        //Log.d(getClass().getSimpleName(), "for segemntpoint " + sp.y / (double) 1000000 + ' ' + sp.x / (double) 1000000);
+                                                        lngLats.add(new LngLat(sp.y / (double) 1000000, sp.x / (double) 1000000));
+                                                    }
+                                                else
+                                                    {
+                                                        if(lngLats.size()>0)
+                                                            {
+                                                                Log.d(getClass().getSimpleName(), "for lngLats size>0");
+                                                                Map<String, String> props = new HashMap<>();
+                                                                props.put("type", "line");
+                                                                props.put("color", String.format("#%06X", (0xFFFFFF & cg.color)));
+                                                                Log.d(getClass().getSimpleName(), "for color= " + String.format("#%06X", (0xFFFFFF & cg.color)) + ' ' + lngLats.size());
+                                                                mapData.addPolyline(lngLats, props);
+                                                            }
+
+                                                        currentSegment=sp.segment;
+                                                        lngLats = new ArrayList<>();
+
+                                                    }
+                                            }
+                                        Log.d(getClass().getSimpleName(), "for lngLats size>0");
+                                        Map<String, String> props = new HashMap<>();
+                                        props.put("type", "line");
+                                        props.put("color", String.format("#%06X", (0xFFFFFF & cg.color)));
+                                        Log.d(getClass().getSimpleName(), "for color= " + String.format("#%06X", (0xFFFFFF & cg.color)) + ' ' + lngLats.size());
+                                        mapData.addPolyline(lngLats, props);
 
 
+                                    }
+                            }
+                    }
+            }
 //        private static BitmapDrawable getBitmapDrawable(VectorDrawable vectorDrawable) {
 //            Bitmap bitmap = Bitmap.createBitmap(vectorDrawable.getIntrinsicWidth(),
 //                    vectorDrawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
@@ -595,6 +642,7 @@ public class MapFragment extends Fragment implements DeviceChange,  LocationList
                                             }
                                     }
                             }
+                        showTracks();
                     }
 
             }
