@@ -161,6 +161,16 @@ public class Channel implements Serializable, ResultsListener
                                     }
                             }
                         gpxList.retainAll(recievedgpxList);
+                        for(ColoredGPX cg : gpxList)
+                            {
+                                for(ColoredGPX cgr : recievedgpxList)
+                                    {
+                                        if(cg.equals(cgr))
+                                            {
+                                                cg.color=cgr.color;
+                                            }
+                                    }
+                            }
                         recievedgpxList.removeAll(gpxList);
                         gpxList.addAll(recievedgpxList);
 

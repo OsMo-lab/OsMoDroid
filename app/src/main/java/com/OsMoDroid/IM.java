@@ -2003,9 +2003,16 @@ public class IM implements ResultsListener
                                                                 ch.fileName.mkdirs();
                                                                 Log.d(getClass().getSimpleName(), "filename=" + ch.fileName);
                                                                 ColoredGPX cgpx = new ColoredGPX(jsonObject.getInt("u"), new File(ch.sdDir, "OsMoDroid/channelsgpx/" + jsonObject.getString("u") + ".gpx"), jsonObject.getString("color"), jsonObject.getString("url"));
-                                                                ch.gpxList.add(cgpx);
-                                                                cgpx.status = ColoredGPX.Statuses.DOWNLOADING;
-                                                                Netutil.downloadfile(ch, cgpx.url, cgpx);
+                                                                if(ch.gpxList.contains(cgpx))
+                                                                    {
+                                                                       ch.gpxList.get(ch.gpxList.indexOf(cgpx)).color=cgpx.color;
+                                                                    }
+                                                                else
+                                                                    {
+                                                                        ch.gpxList.add(cgpx);
+                                                                        cgpx.status = ColoredGPX.Statuses.DOWNLOADING;
+                                                                        Netutil.downloadfile(ch, cgpx.url, cgpx);
+                                                                    }
                                                             }
                                                     }
                                                 if (LocalService.devlistener != null)
