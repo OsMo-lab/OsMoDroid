@@ -468,6 +468,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
         private View linearview;
         private IMapController mapController;
         private long lastsmstime=0;
+        private OsmAndAidlHelper mAidlHelper;
         static String formatInterval(final long l)
             {
                 return String.format("%02d:%02d:%02d", l / (1000 * 60 * 60), (l % (1000 * 60 * 60)) / (1000 * 60), ((l % (1000 * 60 * 60)) % (1000 * 60)) / 1000);
@@ -690,7 +691,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
             {
                 super.onCreate();
                 Log.d(this.getClass().getName(), "localserviceoncreate");
-
+                mAidlHelper = new OsmAndAidlHelper(this, this);
                 ttsManage();
                 getversion();
                 serContext = LocalService.this;
