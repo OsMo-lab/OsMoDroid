@@ -1,12 +1,10 @@
 package com.OsMoDroid;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.StreamCorruptedException;
 import java.io.StringWriter;
@@ -67,7 +65,6 @@ import android.os.BatteryManager;
 import android.os.Binder;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
@@ -95,9 +92,11 @@ import android.widget.Toast;
 import com.OsMoDroid.Netutil.MyAsyncTask;
 import com.github.mikephil.charting.data.Entry;
 
+import net.osmand.aidl.map.ALatLon;
+
 import static com.OsMoDroid.IM.writeException;
 import static java.lang.Math.abs;
-public class LocalService extends Service implements LocationListener, GpsStatus.Listener, TextToSpeech.OnInitListener, ResultsListener, SensorEventListener
+public class LocalService extends Service implements LocationListener, GpsStatus.Listener, TextToSpeech.OnInitListener, ResultsListener, SensorEventListener, OsmAndHelper.OnOsmandMissingListener
     {
         public static Device mydev = new Device();
         //public static List<Point> traceList = new ArrayList<Point>();
@@ -292,7 +291,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                                 if (!state)
                                     {
                                         //LocalService.addlog("remove updates because state");
-                                        myManager.removeUpdates(this);
+                                        myManager.removeUpdates(singleLocationListener);
                                     }
                                 return;
                             }
@@ -468,7 +467,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
         private View linearview;
         private IMapController mapController;
         private long lastsmstime=0;
-        private OsmAndAidlHelper mAidlHelper;
+        private OsmAndAidlHelper osmand;
         static String formatInterval(final long l)
             {
                 return String.format("%02d:%02d:%02d", l / (1000 * 60 * 60), (l % (1000 * 60 * 60)) / (1000 * 60), ((l % (1000 * 60 * 60)) % (1000 * 60)) / 1000);
@@ -691,7 +690,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
             {
                 super.onCreate();
                 Log.d(this.getClass().getName(), "localserviceoncreate");
-                mAidlHelper = new OsmAndAidlHelper(this, this);
+                osmand = new OsmAndAidlHelper(this, this);
                 ttsManage();
                 getversion();
                 serContext = LocalService.this;
@@ -849,6 +848,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                                             }
                                     }
                                 //connectcompleted =true;
+                                osmAndAddAllChannels();
                             }
                     }
 
@@ -1095,6 +1095,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
         @Override
         public void onDestroy()
             {
+                osmand.cleanupResources();
 
 
                 if (tts != null)
@@ -2831,6 +2832,11 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                         mNotificationManager.notify(OSMODROID_ID, foregroundnotificationBuilder.build());
                     }
             }
+        @Override
+        public void osmandMissing()
+            {
+
+            }
         public class LocalBinder extends Binder
             {
                 LocalService getService()
@@ -2861,6 +2867,48 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                                 }
                         }
                 });
+            }
+        void osmAndAddAllChannels()
+            {
+                for(Channel ch: LocalService.channelList)
+                    {
+                        osmand.addMapLayer(Integer.toString(ch.u),ch.name,0,null);
+                        for(Device dev:ch.deviceList)
+                            {
+                                osmand.addMapPoint(Integer.toString(ch.u),Integer.toString(dev.u),dev.name.substring(0,1),dev.name,"User",dev.color,new ALatLon(dev.lat,dev.lon),null);
+                            }
+                    }
+            }
+        void osmandaddchannel(Channel ch)
+            {
+                osmand.addMapLayer(Integer.toString(ch.u),ch.name,0,null);
+            }
+        void osmAndDeleteChannel(Channel ch)
+            {
+                osmand.removeMapLayer(Integer.toString(ch.u));
+            }
+        void osmanddeldev(Channel ch, Device dev)
+            {
+                osmand.removeMapPoint(Integer.toString(ch.u), Integer.toString(dev.u));
+            }
+        void osmandadddevice(Channel ch, Device dev)
+            {
+                osmand.addMapPoint(Integer.toString(ch.u),Integer.toString(dev.u),dev.name.substring(0,1),dev.name,"User",dev.color,new ALatLon(dev.lat,dev.lon),null);
+            }
+
+        void osmandupdDevice(Device dev)
+            {
+                for(Channel ch:LocalService.channelList)
+                    {
+                        for(Device d:ch.deviceList)
+                            {
+                                if(dev.equals(d))
+                                    {
+                                        osmand.updateMapPoint(Integer.toString(ch.u),Integer.toString(dev.u),dev.name.substring(0,1),dev.name,"User",dev.color,new ALatLon(dev.lat,dev.lon),null);
+                                    }
+                            }
+                    }
+
             }
     }
 

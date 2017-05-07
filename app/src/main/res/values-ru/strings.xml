@@ -356,4 +356,5 @@
   <string name="sendsmsperiod">Период между СМС, секунды</string>
   <string name="getsms">Получать СМС</string>
   <string name="getsmsnumber">Номер отправителя SMS</string>
+    <string name="alreadyregistered">Уже зарегистрированы?</string>
 </resources>

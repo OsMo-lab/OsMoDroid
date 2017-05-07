@@ -6,6 +6,7 @@ import org.json.JSONObject;
 
 import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.api.IMapController;
+import org.osmdroid.config.Configuration;
 import org.osmdroid.events.DelayedMapListener;
 import org.osmdroid.events.MapListener;
 import org.osmdroid.events.ScrollEvent;
@@ -105,6 +106,7 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
         };
         private IMapController mController;
         private MyLocationNewOverlay myLoc;
+
         //private PathOverlay myTracePathOverlay;
         private GPSLocalServiceClient globalActivity;
         private IMyLocationConsumer myLocationConumer;
@@ -505,7 +507,7 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
                                  Bundle savedInstanceState)
             {
                 Log.d(getClass().getSimpleName(), "map oncreateview");
-
+                Configuration.getInstance().setMapViewHardwareAccelerated(true);
                 final String name = "MapSurfer";
                 final int aZoomMinLevel = 0;
                 final int aZoomMaxLevel = 18;

@@ -123,7 +123,7 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
                 return super.onTouchEvent(event, mapView);
             }
         @Override
-        protected void draw(Canvas canvas, MapView mapView, boolean shadow)
+        public void draw(Canvas canvas, MapView mapView, boolean shadow)
             {
                 Long curtime = System.currentTimeMillis();
                 ten = getSP(OsMoDroid.settings.getInt("pointsize", 8));
