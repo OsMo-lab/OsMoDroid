@@ -59,7 +59,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="0dp"
-        app:srcCompat="@drawable/zoom_in"
+        android:src="@drawable/zoom_in"
         android:layout_alignBottom="@+id/mapSpeedtextView"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"/>
@@ -71,7 +71,7 @@
         android:padding="0dp"
 
 
-        app:srcCompat="@drawable/zoom_out"
+        android:src="@drawable/zoom_out"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:layout_above="@+id/zoomInButton"/>

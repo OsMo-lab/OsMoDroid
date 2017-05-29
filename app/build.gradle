@@ -5,11 +5,13 @@ android {
     buildToolsVersion '25.0.0'
     //useLibrary  'org.apache.http.legacy'
     archivesBaseName = "OsMoDroidGL"
+    def apiKey = project.hasProperty('mapzenApiKey') ? mapzenApiKey : System.getenv('MAPZEN_API_KEY')
     defaultConfig {
         applicationId "com.OsMoDroidV"
         minSdkVersion 15
         targetSdkVersion 19
-        versionCode 7
+        versionCode 11
+        buildConfigField 'String', 'MAPZEN_API_KEY', '"' + apiKey + '"'
     }
 
     buildTypes {
@@ -18,10 +20,16 @@ android {
             //proguardFiles 'proguard.cfg'
             //proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard.cfg'
+
         }
     }
     lintOptions {
         checkReleaseBuilds false
+    }
+    sourceSets {
+        main {
+            aidl.srcDirs = ['src/main/java']
+        }
     }
     splits {
 
@@ -60,13 +68,14 @@ dependencies {
     compile 'com.github.PhilJay:MPAndroidChart:v2.2.4'
     compile 'org.osmdroid:osmdroid-android:5.5:release@aar'
     compile 'org.osmdroid:osmdroid-third-party:5.5:release@aar'
-    compile 'com.android.support:appcompat-v7:25.1.0'
+    compile 'com.android.support:appcompat-v7:19.0.0'
 
     //compile 'com.mapzen:mapzen-android-sdk:1.3.2'
-    compile 'com.mapzen.tangram:tangram:0.6.2'
+    compile 'com.mapzen.tangram:tangram:0.7.1'
 
     debugCompile 'com.squareup.leakcanary:leakcanary-android:1.4-beta2'
     releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.4-beta2'
     testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.4-beta2'
+    compile 'org.jetbrains:annotations-java5:15.0'
 }
 apply plugin: 'com.google.gms.google-services'

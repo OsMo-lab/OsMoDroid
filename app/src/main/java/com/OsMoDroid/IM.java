@@ -12,7 +12,6 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
 import java.net.InetSocketAddress;
-import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -56,8 +55,6 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
 
-import javax.net.ssl.KeyManager;
-import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSession;
 import javax.net.ssl.SSLSocket;
@@ -1550,9 +1547,20 @@ public class IM implements ResultsListener
                                         writeException(e);
                                     }
                             }
+                        for(Channel ch:LocalService.channelList)
+                            {
+                                if(!recievedChannelList.contains(ch))
+                                    {
+                                        localService.osmAndDeleteChannel(ch);
+                                    }
+                            }
                         LocalService.channelList.retainAll(recievedChannelList);
                         recievedChannelList.removeAll(LocalService.channelList);
                         LocalService.channelList.addAll(recievedChannelList);
+                        for(Channel ch:recievedChannelList)
+                            {
+                                localService.osmandaddchannel(ch);
+                            }
                         if (LocalService.channelsAdapter != null)
                             {
                                 LocalService.channelsAdapter.notifyDataSetChanged();
@@ -1593,6 +1601,7 @@ public class IM implements ResultsListener
                         localService.addlog("set connectcompleted=true");
                         LocalService.connectcompleted =true;
                         localService.saveObject(LocalService.gcmtodolist, OsMoDroid.GCMTODOLIST);
+                        localService.osmAndAddAllChannels();
                     }
                 if (command.equals("GL"))
                     {
@@ -2114,6 +2123,7 @@ public class IM implements ResultsListener
                                                                                     {
                                                                                         ch.deviceList.remove(deviceToDel);
                                                                                         Collections.sort(ch.deviceList);
+                                                                                        localService.osmanddeldev(ch,deviceToDel);
                                                                                     }
                                                                             }
                                                                         else
@@ -2143,6 +2153,7 @@ public class IM implements ResultsListener
                                                                                                         if (newlat != dev.lat & newlon != dev.lon && (System.currentTimeMillis() - dev.updatated) > 5 * 60 * 1000) {
                                                                                                             dev.lat = newlat;
                                                                                                             dev.lon = newlon;
+                                                                                                            localService.osmandupdDevice(dev);
                                                                                                             //notifydevicemonitoring(dev,true);
                                                                                                         }
                                                                                                     }
@@ -2212,6 +2223,7 @@ public class IM implements ResultsListener
                                                                                                     }
                                                                                                 getDevtrace(jsonObject, dev);
                                                                                                 ch.deviceList.add(dev);
+                                                                                                localService.osmandadddevice(ch,dev);
                                                                                                 Collections.sort(ch.deviceList);
                                                                                                 if (dev.state == 1 )
                                                                                                     {
@@ -2281,6 +2293,7 @@ public class IM implements ResultsListener
                                                         if (!ch.deviceList.contains(updatedDev))
                                                             {
                                                                 ch.deviceList.add(updatedDev);
+                                                                localService.osmandadddevice(ch,updatedDev);
                                                             }
                                                         for (final Device dev : ch.deviceList)
                                                             {
@@ -2439,6 +2452,7 @@ public class IM implements ResultsListener
                                 {
                                     LocalService.devlistener.onDeviceChange(dev);
                                 }
+                            localService.osmandupdDevice(dev);
                         }
                 });
                 //}

@@ -72,7 +72,9 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.telephony.TelephonyManager;
 import android.text.ClipboardManager;
+import android.text.Html;
 import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.LinkMovementMethod;
 import android.text.method.PasswordTransformationMethod;
 import android.text.util.Linkify;
 import android.util.Log;
@@ -753,7 +755,7 @@ public class GPSLocalServiceClient extends ActionBarActivity implements ResultsL
 //                startActivityForResult(intent, 1);
 //First ask reg or sign
                 final AlertDialog askRegorSign = new AlertDialog.Builder(this)
-                 .setTitle("Are you already registered ?")
+                 .setTitle(R.string.alreadyregistered)
                     .setPositiveButton(R.string.yes,
                             new DialogInterface.OnClickListener()
                                 {
@@ -819,6 +821,8 @@ public class GPSLocalServiceClient extends ActionBarActivity implements ResultsL
                 rpasswordEditText.setInputType(TYPE_TEXT_VARIATION_PASSWORD);
                 rpasswordEditText.setTransformationMethod(new PasswordTransformationMethod());
                 layout.addView(rpasswordEditText);
+
+
 
                 final AlertDialog alertdialog4 = new AlertDialog.Builder(this)
                         .setTitle(R.string.registration)
@@ -912,6 +916,12 @@ public class GPSLocalServiceClient extends ActionBarActivity implements ResultsL
                 passwordEditText.setInputType(TYPE_TEXT_VARIATION_PASSWORD);
                 passwordEditText.setTransformationMethod(new PasswordTransformationMethod());
                 layout.addView(passwordEditText);
+
+                final TextView forgotpasswordTextView = new TextView(this);
+                forgotpasswordTextView.setText(R.string.repeatpassword);
+                forgotpasswordTextView.setText(Html.fromHtml("<a href=https://osmo.mobi/forgot> "+ "Forgot password"));
+                forgotpasswordTextView.setMovementMethod(LinkMovementMethod.getInstance());
+                layout.addView(forgotpasswordTextView);
 
 
 

@@ -1,6 +1,7 @@
 package com.OsMoDroid;
 
 import android.app.Activity;
+import android.app.Service;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -44,7 +45,7 @@ public class OsmAndAidlHelper {
 
 	private static final String OSMAND_PACKAGE_NAME = "net.osmand.plus";
 
-	private final Activity mActivity;
+	private final Service mActivity;
 	private final OsmAndHelper.OnOsmandMissingListener mOsmandMissingListener;
 	private IOsmAndAidlInterface mIOsmAndAidlInterface;
 
@@ -70,7 +71,7 @@ public class OsmAndAidlHelper {
 		}
 	};
 
-	public OsmAndAidlHelper(Activity activity, OsmAndHelper.OnOsmandMissingListener listener) {
+	public OsmAndAidlHelper(Service activity, OsmAndHelper.OnOsmandMissingListener listener) {
 		mActivity = activity;
 		mOsmandMissingListener = listener;
 		bindService();

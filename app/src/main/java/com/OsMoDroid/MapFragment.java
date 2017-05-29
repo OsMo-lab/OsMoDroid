@@ -39,6 +39,7 @@ import com.mapzen.tangram.MapData;
 import com.mapzen.tangram.MapView;
 import com.mapzen.tangram.Marker;
 import com.mapzen.tangram.MarkerPickResult;
+import com.mapzen.tangram.SceneUpdate;
 import com.mapzen.tangram.TouchInput;
 import com.mapzen.tangram.geometry.Polyline;
 
@@ -46,7 +47,7 @@ import static com.OsMoDroid.LocalService.addlog;
 public class MapFragment extends Fragment implements DeviceChange,  LocationListener, MapController.MarkerPickListener
     {
         MapView mMapView;
-
+        private ArrayList<Marker> allTracksWayPoints= new ArrayList<>();
         @Override
         public void onLowMemory()
             {
@@ -60,14 +61,22 @@ public class MapFragment extends Fragment implements DeviceChange,  LocationList
         @Override
         public void onDestroy()
             {
+                Log.d(getClass().getSimpleName(), "map ondestroyview");
+                OsMoDroid.editor.putInt("centerlat", (int)(mapController.getPosition().latitude*1000000));
+                OsMoDroid.editor.putInt("centerlon", (int)(mapController.getPosition().longitude*1000000));
+                OsMoDroid.editor.putInt("zoom",(int)mapController.getZoom());
+
+                OsMoDroid.editor.commit();
                 if(mMapView!=null)
                     {
                         mMapView.onDestroy();
                     }
+
                 super.onDestroy();
             }
         static MapController mapController;
         View view;
+        int followdev = -1;
         private Marker myLocationMarker;
         public static final String DEFAULT_STYLE = "style: 'points', interactive: true,  size: [20px, 20px], collide: false";
         public static final String LOCATION_STYLE = "style: 'points',  size: [36px, 36px], collide: false";
@@ -79,6 +88,8 @@ public class MapFragment extends Fragment implements DeviceChange,  LocationList
         MapData  mapData;
         private Marker myTraceMarker;
         private Polyline myTracePolyline = new Polyline(new ArrayList<LngLat>(), null);
+        private static final String MAPZEN_API_KEY = BuildConfig.MAPZEN_API_KEY;
+        private ArrayList<SceneUpdate> sceneUpdates = new ArrayList<>();
 
 
 //        private MapData myTraceMapData;
@@ -114,6 +125,7 @@ public class MapFragment extends Fragment implements DeviceChange,  LocationList
                 MenuItem cinnabar = menu2.add(0, 7, 3, "Cinnabar");
                 MenuItem zinc = menu2.add(0, 8, 4, "Zinc");
                 MenuItem refill = menu2.add(0, 9, 5, "Refill");
+                MenuItem tron = menu2.add(0, 10, 6, "Tron");
 
 
                 //menu.add(0, 11, 1, R.string.size_of_point);
@@ -125,28 +137,57 @@ public class MapFragment extends Fragment implements DeviceChange,  LocationList
                 switch (item.getItemId())
                     {
                         case 5:
-                            mapController.loadSceneFile("bubble-wrap/bubble-wrap.yaml");
+                            markerToUs.clear();
+                            allTracksWayPoints.clear();
+                            mapController.loadSceneFile("asset:///bubble-wrap-style-more-labels.zip", sceneUpdates);
+                            createMarker();
+                            MapFragment.this.onChannelListChange();
                             OsMoDroid.editor.putInt("selectedTileSourceInt", 1);
                             OsMoDroid.editor.commit();
                             break;
                         case 6:
-                            mapController.loadSceneFile("walkabout-style-more-labels/walkabout-style-more-labels.yaml");
+                            markerToUs.clear();
+                            allTracksWayPoints.clear();
+                            mapController.loadSceneFile("asset:///walkabout-style-more-labels.zip", sceneUpdates);
+                            createMarker();
+                            MapFragment.this.onChannelListChange();
                             OsMoDroid.editor.putInt("selectedTileSourceInt", 2);
                             OsMoDroid.editor.commit();
                             break;
                         case 7:
-                            mapController.loadSceneFile("cinnabar-more-labels/cinnabar-style-more-labels.yaml");
+                            markerToUs.clear();
+                            allTracksWayPoints.clear();
+                            mapController.loadSceneFile("asset:///cinnabar-style-more-labels.zip", sceneUpdates);
+                            createMarker();
+                            MapFragment.this.onChannelListChange();
                             OsMoDroid.editor.putInt("selectedTileSourceInt", 3);
                             OsMoDroid.editor.commit();
                             break;
                         case 8:
-                            mapController.loadSceneFile("zinc-style-more-labels/zinc-style-more-labels.yaml");
+                            markerToUs.clear();
+                            allTracksWayPoints.clear();
+                            mapController.loadSceneFile("asset:///zinc-style-more-labels.zip", sceneUpdates);
+                            createMarker();
+                            MapFragment.this.onChannelListChange();
                             OsMoDroid.editor.putInt("selectedTileSourceInt", 4);
                             OsMoDroid.editor.commit();
                             break;
                         case 9:
-                            mapController.loadSceneFile("refill-more-labels/refill-style-more-labels.yaml");
+                            markerToUs.clear();
+                            allTracksWayPoints.clear();
+                            mapController.loadSceneFile("asset:///refill-style-more-labels.zip", sceneUpdates);
+                            createMarker();
+                            MapFragment.this.onChannelListChange();
                             OsMoDroid.editor.putInt("selectedTileSourceInt", 5);
+                            OsMoDroid.editor.commit();
+                            break;
+                        case 10:
+                            markerToUs.clear();
+                            allTracksWayPoints.clear();
+                            mapController.loadSceneFile("asset:///tron-style-more-labels.zip", sceneUpdates);
+                            createMarker();
+                            MapFragment.this.onChannelListChange();
+                            OsMoDroid.editor.putInt("selectedTileSourceInt", 6);
                             OsMoDroid.editor.commit();
                             break;
 
@@ -171,21 +212,65 @@ public class MapFragment extends Fragment implements DeviceChange,  LocationList
                                                     {
                                                         for (final Device d : ch.deviceList)
                                                             {
-                                                                if (d.u == u)
+                                                                if(u==d.u)
                                                                     {
-                                                                        globalActivity.runOnUiThread(new Runnable()
+                                                                        if (followdev != d.u)
                                                                             {
-                                                                                @Override
-                                                                                public void run()
+                                                                                globalActivity.runOnUiThread(new Runnable()
                                                                                     {
-                                                                                        Toast.makeText(MapFragment.this.getContext(), d.name, Toast.LENGTH_SHORT).show();
-                                                                                    }
-                                                                            });
-
+                                                                                        @Override
+                                                                                        public void run()
+                                                                                            {
+                                                                                                Toast.makeText(getContext(), getContext().getString(R.string.follow_) + ' ' + d.name, Toast.LENGTH_SHORT).show();
+                                                                                                //Toast.makeText(MapFragment.this.getContext(), OsMoDroid.sdf.format(d.updatated), Toast.LENGTH_SHORT).show();
+                                                                                            }
+                                                                                    });
+                                                                                followdev = d.u;
+                                                                            }
+                                                                        else
+                                                                            {
+                                                                                globalActivity.runOnUiThread(new Runnable()
+                                                                                    {
+                                                                                        @Override
+                                                                                        public void run()
+                                                                                            {
+                                                                                                Toast.makeText(getContext(), getContext().getString(R.string.no_follow_) + ' ' + d.name, Toast.LENGTH_SHORT).show();
+                                                                                                //Toast.makeText(MapFragment.this.getContext(), OsMoDroid.sdf.format(d.updatated), Toast.LENGTH_SHORT).show();
+                                                                                            }
+                                                                                    });
+                                                                                followdev = -1;
+                                                                            }
                                                                     }
+//                                                                if (d.u == u)
+//                                                                    {
+//                                                                        globalActivity.runOnUiThread(new Runnable()
+//                                                                            {
+//                                                                                @Override
+//                                                                                public void run()
+//                                                                                    {
+//                                                                                        Toast.makeText(MapFragment.this.getContext(), OsMoDroid.sdf.format(d.updatated), Toast.LENGTH_SHORT).show();
+//                                                                                    }
+//                                                                            });
+//
+//                                                                    }
                                                             }
                                                     }
                                             }
+                                    }
+                            }
+                        for(final Marker m: allTracksWayPoints)
+                            {
+                                if(m.getMarkerId()==markerPickResult.getMarker().getMarkerId())
+                                    {
+                                        globalActivity.runOnUiThread(new Runnable()
+                                            {
+                                                @Override
+                                                public void run()
+                                                    {
+                                                        Toast.makeText(getContext(),m.getUserData().toString(), Toast.LENGTH_SHORT).show();
+                                                        //Toast.makeText(MapFragment.this.getContext(), OsMoDroid.sdf.format(d.updatated), Toast.LENGTH_SHORT).show();
+                                                    }
+                                            });
                                     }
                             }
 
@@ -316,6 +401,7 @@ public class MapFragment extends Fragment implements DeviceChange,  LocationList
                     mMapView = (MapView) view.findViewById(R.id.glMapView);
                     mMapView.setKeepScreenOn(true);
                     speddTextView = (TextView) view.findViewById(R.id.mapSpeedtextView);
+            sceneUpdates.add(new SceneUpdate("global.sdk_mapzen_api_key", MAPZEN_API_KEY));
 
                     mMapView.getMapAsync(new MapView.OnMapReadyCallback()
                         {
@@ -325,7 +411,8 @@ public class MapFragment extends Fragment implements DeviceChange,  LocationList
 
                                   //  mzmap.setZoomButtonsEnabled(true);
                                     mapController = mc;
-                                    mapController.addDataLayer("osmo");
+                                    showTracks();
+
                                     mapController.setHttpHandler(getHttpHandler());
                                     mapController.setCameraType(MapController.CameraType.ISOMETRIC);
                                     centerImageButton.setOnClickListener(new View.OnClickListener()
@@ -338,33 +425,38 @@ public class MapFragment extends Fragment implements DeviceChange,  LocationList
                                                             mapController.setPositionEased(new LngLat(center.getLongitude(), center.getLatitude()), 200, MapController.EaseType.CUBIC);
                                                         }
                                                     isFollow = true;
+                                                    followdev=-1;
                                                 }
                                         });
                                     //mapzenMap.setStyle(new BubbleWrapStyle());
+                                    markerToUs.clear();
+                                    allTracksWayPoints.clear();
                                     switch (OsMoDroid.settings.getInt("selectedTileSourceInt",1))
                                         {
                                             case 1:
-                                                mapController.loadSceneFile("bubble-wrap/bubble-wrap.yaml");
+                                                mapController.loadSceneFile("asset:///bubble-wrap-style-more-labels.zip", sceneUpdates);
                                                 break;
                                             case 2:
-                                                mapController.loadSceneFile("walkabout-style-more-labels/walkabout-style-more-labels.yaml");
-
-                                               break;
+                                                mapController.loadSceneFile("asset:///walkabout-style-more-labels.zip", sceneUpdates);
+                                                break;
                                             case 3:
-                                                mapController.loadSceneFile("cinnabar-more-labels/cinnabar-style-more-labels.yaml");
+                                                mapController.loadSceneFile("asset:///cinnabar-style-more-labels.zip", sceneUpdates);
                                                 break;
                                             case 4:
-                                                mapController.loadSceneFile("zinc-style-more-labels/zinc-style-more-labels.yaml");
+                                                mapController.loadSceneFile("asset:///zinc-style-more-labels.zip", sceneUpdates);
                                                 break;
                                             case 5:
-                                                mapController.loadSceneFile("refill-more-labels/refill-style-more-labels.yaml");
+                                                mapController.loadSceneFile("asset:///refill-style-more-labels.zip", sceneUpdates);
+                                                break;
+                                            case 6:
+                                                mapController.loadSceneFile("asset:///tron-style-more-labels.zip", sceneUpdates);
                                                 break;
                                             default:
                                                 break;
                                         }
 
 
-
+                                    mapController.addDataLayer("osmo");
                                     mapController.setPickRadius(3);
                                     mapController.setTapResponder(new TouchInput.TapResponder()
                                         {
@@ -428,8 +520,19 @@ public class MapFragment extends Fragment implements DeviceChange,  LocationList
                                                     return true;
                                                 }
                                         });
+                                    Bundle bundle = getArguments();
+                                    if (OsMoDroid.settings.getInt("centerlat", -1) != -1&&bundle==null)
+                                        {
+                                            if (mapController != null)
+                                                {
+                                                    mapController.setZoom(OsMoDroid.settings.getInt("zoom", 10));
+                                                    mapController.setPosition(new LngLat( OsMoDroid.settings.getInt("centerlon", 0)/(double)1000000, OsMoDroid.settings.getInt("centerlat", 0)/(double)1000000));
+                                                    Log.d(this.getClass().getName(), "Center map on ="+OsMoDroid.settings.getInt("centerlat", 0)+ OsMoDroid.settings.getInt("centerlon", 0));
+                                                    isFollow=false;
+                                                }
+                                        }
                                 }
-                        },"bubble-wrap/bubble-wrap.yaml");
+                        },"asset:///cinnabar-style-more-labels.zip", sceneUpdates);
 
             return view;
         }
@@ -445,7 +548,7 @@ public class MapFragment extends Fragment implements DeviceChange,  LocationList
 //                {
 //                   myTraceMapData= mzmap.addPolyline(myTracePolyline);
 //                }
-            showTracks();
+
             //ArrayList<LngLat> lngLats = new ArrayList<>();
             //lngLats.add(new LngLat(37.0,55.0));
             //lngLats.add(new LngLat(35.0,58.0));
@@ -468,7 +571,7 @@ public class MapFragment extends Fragment implements DeviceChange,  LocationList
                     myLocationMarker.setPoint(new LngLat(location.getLongitude(), location.getLatitude()));
                     if(isFollow)
                         {
-                            mapController.setPositionEased(new LngLat(location.getLongitude(), location.getLatitude()), 200, MapController.EaseType.CUBIC);
+                            mapController.setPositionEased(new LngLat(location.getLongitude(), location.getLatitude()), 1000, MapController.EaseType.CUBIC);
                         }
                 }
         }
@@ -476,6 +579,11 @@ public class MapFragment extends Fragment implements DeviceChange,  LocationList
             {
                 mapData = mapController.addDataLayer("touch");
                 mapData.clear();
+                for(Marker m: allTracksWayPoints)
+                    {
+                        mapController.removeMarker(m);
+                    }
+                allTracksWayPoints.clear();
                 for(Channel ch: LocalService.channelList)
                     {
                         for(ColoredGPX cg:ch.gpxList)
@@ -517,9 +625,65 @@ public class MapFragment extends Fragment implements DeviceChange,  LocationList
                                         props.put("color", String.format("#%06X", (0xFFFFFF & cg.color)));
                                         Log.d(getClass().getSimpleName(), "for color= " + String.format("#%06X", (0xFFFFFF & cg.color)) + ' ' + lngLats.size());
                                         mapData.addPolyline(lngLats, props);
+                                        for (Channel.Point p:cg.waypoints)
+                                            {
+                                                Marker m =mapController.addMarker();
+                                                m.setUserData(p.description);
+                                                m.setPoint(new LngLat(p.lon,p.lat));
+                                                m.setStylingFromString("{ " + DEFAULT_STYLE + ", color: '" + String.format("#%06X", (0xFFFFFF & cg.color)) + "' }");
+                                                allTracksWayPoints.add(m);
+                                              Marker t=mapController.addMarker();
+                                                t.setPoint(new LngLat(p.lon,p.lat));
+                                                t.setStylingFromString("{style: 'text'}");
+                                                //t.setStylingFromString("{ style: 'text', text_wrap: 18, max_lines: 3 ,text_source: \"function() { return '"+ p.name +"'; }\", collide: true,offset: [0px, -12px] ,font: { size: 10px, fill: '#ffffff', stroke: { color: '#000000', width: 2px } } }");
+                                                allTracksWayPoints.add(t);
+                                            }
 
 
                                     }
+                            }
+                    }
+                for(ColoredGPX cg:LocalService.showedgpxList)
+                    {
+                     //   Log.d(getClass().getSimpleName(), "for coloredgpx");
+                        if(cg.status== ColoredGPX.Statuses.LOADED)
+                            {
+                                int currentSegment=-1;
+                               // Log.d(getClass().getSimpleName(), "for loaded coloredgpx size "+cg.points.size());
+                                ArrayList<LngLat> lngLats = new ArrayList<>();
+                                for (SegmentPoint sp : cg.points)
+                                    {
+                                        if(sp.segment==currentSegment)
+                                            {
+                                              //  Log.d(getClass().getSimpleName(), "for segment=currentsegment");
+                                                //Log.d(getClass().getSimpleName(), "for segemntpoint " + sp.y / (double) 1000000 + ' ' + sp.x / (double) 1000000);
+                                                lngLats.add(new LngLat(sp.y / (double) 1000000, sp.x / (double) 1000000));
+                                            }
+                                        else
+                                            {
+                                                if(lngLats.size()>0)
+                                                    {
+                                                     //   Log.d(getClass().getSimpleName(), "for lngLats size>0");
+                                                        Map<String, String> props = new HashMap<>();
+                                                        props.put("type", "line");
+                                                        props.put("color", String.format("#%06X", (0xFFFFFF & cg.color)));
+                                                       // Log.d(getClass().getSimpleName(), "for color= " + String.format("#%06X", (0xFFFFFF & cg.color)) + ' ' + lngLats.size());
+                                                        mapData.addPolyline(lngLats, props);
+                                                    }
+
+                                                currentSegment=sp.segment;
+                                                lngLats = new ArrayList<>();
+
+                                            }
+                                    }
+                                Log.d(getClass().getSimpleName(), "for lngLats size>0");
+                                Map<String, String> props = new HashMap<>();
+                                props.put("type", "line");
+                                props.put("color", String.format("#%06X", (0xFFFFFF & cg.color)));
+                                //Log.d(getClass().getSimpleName(), "for color= " + String.format("#%06X", (0xFFFFFF & cg.color)) + ' ' + lngLats.size());
+                                mapData.addPolyline(lngLats, props);
+
+
                             }
                     }
             }
@@ -574,7 +738,7 @@ public class MapFragment extends Fragment implements DeviceChange,  LocationList
                             {
                                 addlog("has bearing");
                                 addlog( "on bearing: "+"{ " + DEFAULT_STYLE + ", angle: " + (int) location.getBearing() + " }");
-                                myLocationMarker.setStylingFromString("{ " + DEFAULT_STYLE + ", angle: " + (int) location.getBearing() + " }");
+                                myLocationMarker.setStylingFromString("{ " + LOCATION_STYLE + ", angle: " + (int) location.getBearing() + " }");
                             }
                     }
 
@@ -598,8 +762,13 @@ public class MapFragment extends Fragment implements DeviceChange,  LocationList
                     {
                         if(m.u==dev.u)
                             {
-                                m.marker.setPointEased(new LngLat((double) dev.lon,(double)dev.lat),5000, MapController.EaseType.CUBIC);
-                                m.textMarker.setPointEased(new LngLat((double) dev.lon,(double)dev.lat),5000, MapController.EaseType.CUBIC);
+                                LngLat point = new LngLat((double) dev.lon, (double) dev.lat);
+                                m.marker.setPointEased(point,6000, MapController.EaseType.SINE);
+                                m.textMarker.setPointEased(point,6000, MapController.EaseType.SINE);
+                                if(dev.u==followdev)
+                                    {
+                                        mapController.setPositionEased(point,200, MapController.EaseType.SINE);
+                                    }
 
                             }
                     }
