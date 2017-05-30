@@ -357,4 +357,5 @@
   <string name="getsms">Получать СМС</string>
   <string name="getsmsnumber">Номер отправителя SMS</string>
     <string name="alreadyregistered">Уже зарегистрированы?</string>
+    <string name="osmand">Интеграция с OSMAND</string>
 </resources>
