@@ -43,7 +43,8 @@ import java.util.List;
 
 public class OsmAndAidlHelper {
 
-	private static final String OSMAND_PACKAGE_NAME = "net.osmand.plus";
+	private static final String OSMAND_PACKAGE_NAME_PLUS = "net.osmand.plus";
+	private static final String OSMAND_PACKAGE_NAME_FREE = "net.osmand";
 
 	private final Service mActivity;
 	private final OsmAndHelper.OnOsmandMissingListener mOsmandMissingListener;
@@ -74,21 +75,34 @@ public class OsmAndAidlHelper {
 	public OsmAndAidlHelper(Service activity, OsmAndHelper.OnOsmandMissingListener listener) {
 		mActivity = activity;
 		mOsmandMissingListener = listener;
-		bindService();
+		if(OsMoDroid.settings.getBoolean("osmand",false))
+			{
+				bindService();
+			}
 	}
 
 	private boolean bindService() {
 		if (mIOsmAndAidlInterface == null) {
 			Intent intent = new Intent("net.osmand.aidl.OsmandAidlService");
-			intent.setPackage(OSMAND_PACKAGE_NAME);
+			intent.setPackage(OSMAND_PACKAGE_NAME_PLUS);
 			boolean res = mActivity.bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
 			if (res) {
-				Toast.makeText(mActivity, "OsmAnd service bind", Toast.LENGTH_SHORT).show();
+				//Toast.makeText(mActivity, "OsmAnd service bind", Toast.LENGTH_SHORT).show();
 				return true;
-			} else {
-				Toast.makeText(mActivity, "OsmAnd service NOT bind", Toast.LENGTH_SHORT).show();
-				mOsmandMissingListener.osmandMissing();
-				return false;
+			} else
+				{
+				intent.setPackage(OSMAND_PACKAGE_NAME_FREE);
+				res = mActivity.bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+				if(res)
+					{
+						return true;
+					}
+					else
+					{
+						//Toast.makeText(mActivity, "OsmAnd service NOT bind", Toast.LENGTH_SHORT).show();
+						mOsmandMissingListener.osmandMissing();
+						return false;
+					}
 			}
 		} else {
 			return true;
@@ -387,7 +401,8 @@ public class OsmAndAidlHelper {
 	public boolean importGpxFromUri(Uri gpxUri, String fileName) {
 		if (mIOsmAndAidlInterface != null) {
 			try {
-				mActivity.grantUriPermission(OSMAND_PACKAGE_NAME, gpxUri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+				mActivity.grantUriPermission(OSMAND_PACKAGE_NAME_PLUS, gpxUri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+				mActivity.grantUriPermission(OSMAND_PACKAGE_NAME_FREE, gpxUri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
 				return mIOsmAndAidlInterface.importGpx(new ImportGpxParams(gpxUri, fileName));
 			} catch (RemoteException e) {
 				e.printStackTrace();

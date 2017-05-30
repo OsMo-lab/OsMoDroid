@@ -357,4 +357,5 @@
     <string name="getsms">Get SMS</string>
     <string name="getsmsnumber">Get SMS numer</string>
     <string name="alreadyregistered">Are you already registered ?</string>
+    <string name="osmand">Osmand integration</string>
 </resources>
