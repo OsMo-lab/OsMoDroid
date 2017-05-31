@@ -2,12 +2,16 @@ package com.OsMoDroid;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.PointF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -19,6 +23,7 @@ import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.util.Linkify;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -27,7 +32,11 @@ import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,6 +51,9 @@ import com.mapzen.tangram.MarkerPickResult;
 import com.mapzen.tangram.SceneUpdate;
 import com.mapzen.tangram.TouchInput;
 import com.mapzen.tangram.geometry.Polyline;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import static com.OsMoDroid.LocalService.addlog;
 public class MapFragment extends Fragment implements DeviceChange,  LocationListener, MapController.MarkerPickListener
@@ -62,11 +74,13 @@ public class MapFragment extends Fragment implements DeviceChange,  LocationList
         public void onDestroy()
             {
                 Log.d(getClass().getSimpleName(), "map ondestroyview");
-                OsMoDroid.editor.putInt("centerlat", (int)(mapController.getPosition().latitude*1000000));
-                OsMoDroid.editor.putInt("centerlon", (int)(mapController.getPosition().longitude*1000000));
-                OsMoDroid.editor.putInt("zoom",(int)mapController.getZoom());
-
-                OsMoDroid.editor.commit();
+                if(mapController!=null)
+                    {
+                        OsMoDroid.editor.putInt("centerlat", (int) (mapController.getPosition().latitude * 1000000));
+                        OsMoDroid.editor.putInt("centerlon", (int) (mapController.getPosition().longitude * 1000000));
+                        OsMoDroid.editor.putInt("zoom", (int) mapController.getZoom());
+                        OsMoDroid.editor.commit();
+                    }
                 if(mMapView!=null)
                     {
                         mMapView.onDestroy();
@@ -267,8 +281,21 @@ public class MapFragment extends Fragment implements DeviceChange,  LocationList
                                                 @Override
                                                 public void run()
                                                     {
-                                                        Toast.makeText(getContext(),m.getUserData().toString(), Toast.LENGTH_SHORT).show();
+                                                        //Toast.makeText(getContext(),m.getUserData().toString(), Toast.LENGTH_SHORT).show();
                                                         //Toast.makeText(MapFragment.this.getContext(), OsMoDroid.sdf.format(d.updatated), Toast.LENGTH_SHORT).show();
+                                                        LinearLayout layout = new LinearLayout(getContext());
+                                                        layout.setOrientation(LinearLayout.VERTICAL);
+                                                        final TextView txv5 = new TextView(getContext());
+                                                        txv5.setText(((Channel.Point)m.getUserData()).description+'\n'+((Channel.Point)m.getUserData()).url);
+                                                        Linkify.addLinks(txv5, Linkify.WEB_URLS);
+                                                        layout.addView(txv5);
+                                                        final TextView txv6 = new TextView(getContext());
+                                                        txv6.setText(((Channel.Point)m.getUserData()).time);
+                                                        layout.addView(txv6);
+                                                        AlertDialog alertdialog1 = new AlertDialog.Builder(getContext()).create();
+                                                        alertdialog1.setView(layout);
+                                                        alertdialog1.setTitle(((Channel.Point)m.getUserData()).name);
+                                                        alertdialog1.show();
                                                     }
                                             });
                                     }
@@ -474,6 +501,106 @@ public class MapFragment extends Fragment implements DeviceChange,  LocationList
                                                 }
                                         });
                                     mapController.setMarkerPickListener(MapFragment.this);
+                                    mapController.setLongPressResponder(new TouchInput.LongPressResponder()
+                                        {
+                                            @Override
+                                            public void onLongPress(float x, float y)
+                                                {
+                                                    if(LocalService.channelList.size()>0)
+                                                        {
+                                                            LngLat l =mapController.screenPositionToLngLat(new PointF(x,y));
+                                                            final JSONObject jo = new JSONObject();
+                                                            try
+                                                                {
+                                                                    jo.put("lat", l.latitude);
+                                                                    jo.put("lon", l.longitude);
+                                                                }
+                                                            catch (JSONException e1)
+                                                                {
+                                                                    e1.printStackTrace();
+                                                                }
+                                                            LinearLayout layout = new LinearLayout(getContext());
+                                                            layout.setOrientation(LinearLayout.VERTICAL);
+                                                            final TextView txv5 = new TextView(getContext());
+                                                            txv5.setText(R.string.point_name_);
+                                                            layout.addView(txv5);
+                                                            final EditText pointName = new EditText(getContext());
+                                                            layout.addView(pointName);
+                                                            final TextView txv6 = new TextView(getContext());
+                                                            txv6.setText(R.string.chanal);
+                                                            layout.addView(txv6);
+                                                            final Spinner groupSpinner = new Spinner(getContext());
+                                                            layout.addView(groupSpinner);
+                                                            List<Channel> activeChannelList = new ArrayList<Channel>();
+                                                            for(Channel ch: LocalService.channelList)
+                                                                {
+                                                                    if(ch.send)
+                                                                        {
+                                                                            activeChannelList.add(ch);
+                                                                        }
+                                                                }
+                                                            ArrayAdapter<Channel> dataAdapter = new ArrayAdapter<Channel>(getContext(), R.layout.spinneritem, activeChannelList);
+                                                            groupSpinner.setAdapter(dataAdapter);
+                                                            AlertDialog alertdialog1 = new AlertDialog.Builder(getContext()).setPositiveButton(R.string.yes, new DialogInterface.OnClickListener()
+                                                                {
+                                                                    @Override
+                                                                    public void onClick(DialogInterface dialog, int which)
+                                                                        {
+                                                                        }
+                                                                }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener()
+                                                                {
+                                                                    @Override
+                                                                    public void onClick(DialogInterface dialog, int which)
+                                                                        {
+                                                                        }
+                                                                }).create();
+                                                            alertdialog1.setView(layout);
+                                                            alertdialog1.setTitle(getContext().getString(R.string.point_create));
+                                                            alertdialog1.setMessage(getContext().getString(R.string.point_create_description));
+
+                                                            alertdialog1.show();
+                                                            alertdialog1.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(new CustomListener(alertdialog1)
+                                                                {
+                                                                    @Override
+                                                                    public void onClick(View v)
+                                                                        {
+                                                                            if (LocalService.myIM.authed)
+                                                                                {
+                                                                                    if(groupSpinner.getSelectedItem()!=null)
+                                                                                        {
+                                                                                            try
+                                                                                                {
+                                                                                                    jo.put("name", pointName.getText().toString());
+                                                                                                    jo.put("group", ((Channel) groupSpinner.getSelectedItem()).u);
+                                                                                                }
+                                                                                            catch (JSONException e1)
+                                                                                                {
+                                                                                                    e1.printStackTrace();
+                                                                                                }
+                                                                                            LocalService.myIM.sendToServer("GPA|" + jo.toString(), true);
+                                                                                            super.dialog.dismiss();
+                                                                                        }
+                                                                                    else
+                                                                                        {
+                                                                                            Toast.makeText(getContext(), R.string.needselectpoint, Toast.LENGTH_SHORT).show();
+                                                                                        }
+                                                                                }
+                                                                            else
+                                                                                {
+                                                                                    Toast.makeText(getContext(), R.string.CheckInternet, Toast.LENGTH_SHORT).show();
+
+                                                                                }
+                                                                        }
+                                                                });
+
+
+                                                        }
+                                                    else
+                                                        {
+                                                            Toast.makeText(getContext(), R.string.nogroupstosendpoint, Toast.LENGTH_SHORT).show();
+                                                        }
+                                                }
+                                        });
 
 
                                     MapFragment.this.onChannelListChange();
@@ -586,60 +713,70 @@ public class MapFragment extends Fragment implements DeviceChange,  LocationList
                 allTracksWayPoints.clear();
                 for(Channel ch: LocalService.channelList)
                     {
-                        for(ColoredGPX cg:ch.gpxList)
+                        if(ch.send)
                             {
-                                Log.d(getClass().getSimpleName(), "for coloredgpx");
-                                if(cg.status== ColoredGPX.Statuses.LOADED)
+                                for (ColoredGPX cg : ch.gpxList)
                                     {
-                                        int currentSegment=-1;
-                                       Log.d(getClass().getSimpleName(), "for loaded coloredgpx size "+cg.points.size());
-                                        ArrayList<LngLat> lngLats = new ArrayList<>();
-                                        for (SegmentPoint sp : cg.points)
+                                        Log.d(getClass().getSimpleName(), "for coloredgpx");
+                                        if (cg.status == ColoredGPX.Statuses.LOADED)
                                             {
-                                                if(sp.segment==currentSegment)
+                                                int currentSegment = -1;
+                                                Log.d(getClass().getSimpleName(), "for loaded coloredgpx size " + cg.points.size());
+                                                ArrayList<LngLat> lngLats = new ArrayList<>();
+                                                for (SegmentPoint sp : cg.points)
                                                     {
-                                                        Log.d(getClass().getSimpleName(), "for segment=currentsegment");
-                                                        //Log.d(getClass().getSimpleName(), "for segemntpoint " + sp.y / (double) 1000000 + ' ' + sp.x / (double) 1000000);
-                                                        lngLats.add(new LngLat(sp.y / (double) 1000000, sp.x / (double) 1000000));
-                                                    }
-                                                else
-                                                    {
-                                                        if(lngLats.size()>0)
+                                                        if (sp.segment == currentSegment)
                                                             {
-                                                                Log.d(getClass().getSimpleName(), "for lngLats size>0");
-                                                                Map<String, String> props = new HashMap<>();
-                                                                props.put("type", "line");
-                                                                props.put("color", String.format("#%06X", (0xFFFFFF & cg.color)));
-                                                                Log.d(getClass().getSimpleName(), "for color= " + String.format("#%06X", (0xFFFFFF & cg.color)) + ' ' + lngLats.size());
-                                                                mapData.addPolyline(lngLats, props);
+                                                                Log.d(getClass().getSimpleName(), "for segment=currentsegment");
+                                                                //Log.d(getClass().getSimpleName(), "for segemntpoint " + sp.y / (double) 1000000 + ' ' + sp.x / (double) 1000000);
+                                                                lngLats.add(new LngLat(sp.y / (double) 1000000, sp.x / (double) 1000000));
                                                             }
-
-                                                        currentSegment=sp.segment;
-                                                        lngLats = new ArrayList<>();
+                                                        else
+                                                            {
+                                                                if (lngLats.size() > 0)
+                                                                    {
+                                                                        Log.d(getClass().getSimpleName(), "for lngLats size>0");
+                                                                        Map<String, String> props = new HashMap<>();
+                                                                        props.put("type", "line");
+                                                                        props.put("color", String.format("#%06X", (0xFFFFFF & cg.color)));
+                                                                        Log.d(getClass().getSimpleName(), "for color= " + String.format("#%06X", (0xFFFFFF & cg.color)) + ' ' + lngLats.size());
+                                                                        mapData.addPolyline(lngLats, props);
+                                                                    }
+                                                                currentSegment = sp.segment;
+                                                                lngLats = new ArrayList<>();
+                                                            }
+                                                    }
+                                                Log.d(getClass().getSimpleName(), "for lngLats size>0");
+                                                Map<String, String> props = new HashMap<>();
+                                                props.put("type", "line");
+                                                props.put("color", String.format("#%06X", (0xFFFFFF & cg.color)));
+                                                Log.d(getClass().getSimpleName(), "for color= " + String.format("#%06X", (0xFFFFFF & cg.color)) + ' ' + lngLats.size());
+                                                mapData.addPolyline(lngLats, props);
+                                                for (Channel.Point p : cg.waypoints)
+                                                    {
+                                                        Marker m = mapController.addMarker();
+                                                        m.setUserData(p);
+                                                        m.setPoint(new LngLat(p.lon, p.lat));
+                                                        m.setStylingFromString("{ " + DEFAULT_STYLE + ", color: '" + String.format("#%06X", (0xFFFFFF & cg.color)) + "' }");
+                                                        allTracksWayPoints.add(m);
+//                                                        Marker t = mapController.addMarker();
+//                                                        t.setPoint(new LngLat(p.lon, p.lat));
+//                                                        String name = p.name.replace('/',' ');
+//                                                        //t.setStylingFromString("{ style: 'text', text_wrap: 18, max_lines: 3 ,text_source: \"function() { return '"+ name +"'; }\", collide: true,offset: [0px, -12px] ,font: { size: 10px, fill: '#ffffff', stroke: { color: '#000000', width: 2px } } }");
+//                                                        t.setStylingFromString("{ style: 'text', text_source: '\"function() { return '" + name+ "'; }\", collide: true,offset: [0px, -12px] ,font: { size: 10px, fill: '#ffffff', stroke: { color: '#000000', width: 2px } } }");
+                                                        //allTracksWayPoints.add(t);
 
                                                     }
-                                            }
-                                        Log.d(getClass().getSimpleName(), "for lngLats size>0");
-                                        Map<String, String> props = new HashMap<>();
-                                        props.put("type", "line");
-                                        props.put("color", String.format("#%06X", (0xFFFFFF & cg.color)));
-                                        Log.d(getClass().getSimpleName(), "for color= " + String.format("#%06X", (0xFFFFFF & cg.color)) + ' ' + lngLats.size());
-                                        mapData.addPolyline(lngLats, props);
-                                        for (Channel.Point p:cg.waypoints)
-                                            {
-                                                Marker m =mapController.addMarker();
-                                                m.setUserData(p.description);
-                                                m.setPoint(new LngLat(p.lon,p.lat));
-                                                m.setStylingFromString("{ " + DEFAULT_STYLE + ", color: '" + String.format("#%06X", (0xFFFFFF & cg.color)) + "' }");
-                                                allTracksWayPoints.add(m);
-                                              Marker t=mapController.addMarker();
-                                                t.setPoint(new LngLat(p.lon,p.lat));
-                                                t.setStylingFromString("{style: 'text'}");
-                                                //t.setStylingFromString("{ style: 'text', text_wrap: 18, max_lines: 3 ,text_source: \"function() { return '"+ p.name +"'; }\", collide: true,offset: [0px, -12px] ,font: { size: 10px, fill: '#ffffff', stroke: { color: '#000000', width: 2px } } }");
-                                                allTracksWayPoints.add(t);
-                                            }
 
-
+                                            }
+                                    }
+                                for(Channel.Point p: ch.pointList)
+                                    {
+                                        Marker m = mapController.addMarker();
+                                        m.setUserData(p);
+                                        m.setPoint(new LngLat(p.lon, p.lat));
+                                        m.setStylingFromString("{ " + DEFAULT_STYLE + ", color: '" + String.format("#%06X", (0xFFFFFF & Color.parseColor(p.color))) + "' }");
+                                        allTracksWayPoints.add(m);
                                     }
                             }
                     }
