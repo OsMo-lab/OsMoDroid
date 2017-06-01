@@ -18,6 +18,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
+import java.util.prefs.PreferenceChangeEvent;
+import java.util.prefs.PreferenceChangeListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -39,6 +41,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -72,6 +75,7 @@ import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.os.SystemClock;
 import android.os.Vibrator;
+import android.preference.Preference;
 import android.provider.Settings.Secure;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.TextToSpeech.OnInitListener;
@@ -97,6 +101,7 @@ import net.osmand.aidl.map.ALatLon;
 import static com.OsMoDroid.IM.writeException;
 import static java.lang.Math.abs;
 public class LocalService extends Service implements LocationListener, GpsStatus.Listener, TextToSpeech.OnInitListener, ResultsListener, SensorEventListener, OsmAndHelper.OnOsmandMissingListener
+
     {
         public static Device mydev = new Device();
         //public static List<Point> traceList = new ArrayList<Point>();
@@ -685,6 +690,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
             {
                 return sendcounter;
             }
+
         @Override
         public void onCreate()
             {
@@ -1341,10 +1347,30 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                             }
                     }
             }
+
+        public void osmandmanage()
+            {
+
+                if(OsMoDroid.settings.getBoolean("osmand",false))
+                    {
+                        osmand.bindService();
+                        osmAndAddAllChannels();
+                    }
+                else
+                    {
+                        for(Channel ch: channelList)
+                            {
+                                osmAndDeleteChannel(ch);
+                            }
+                        osmand.cleanupResources();
+                    }
+            }
         public void applyPreference()
             {
+
                 ReadPref();
                 ttsManage();
+                osmandmanage();
                 manageGPSFixAlarm();
                 if (state)
                     {
@@ -2837,6 +2863,8 @@ public class LocalService extends Service implements LocationListener, GpsStatus
             {
 
             }
+
+
         public class LocalBinder extends Binder
             {
                 LocalService getService()

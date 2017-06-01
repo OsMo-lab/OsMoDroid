@@ -2,10 +2,7 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
                   xmlns:tools="http://schemas.android.com/tools"
                   android:title="@string/settings">
-    <CheckBoxPreference
-        android:defaultValue="false"
-        android:key="osmand"
-        android:title="@string/osmand"/>
+
     
     <PreferenceCategory android:title="@string/general">
         <CheckBoxPreference android:title="@string/dark_theme" android:defaultValue="true" android:key="darktheme" />
@@ -243,6 +240,10 @@
         <!--<CheckBoxPreference android:key="tls" android:title="Use TLS Socket" android:defaultValue="false"/>-->
         
     </PreferenceCategory>
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="osmand"
+        android:title="@string/osmand"/>
     <PreferenceCategory
         android:title="@string/smsexchange">
 

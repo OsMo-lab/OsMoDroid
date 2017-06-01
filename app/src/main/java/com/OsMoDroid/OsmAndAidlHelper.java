@@ -49,6 +49,7 @@ public class OsmAndAidlHelper {
 	private final Service mActivity;
 	private final OsmAndHelper.OnOsmandMissingListener mOsmandMissingListener;
 	private IOsmAndAidlInterface mIOsmAndAidlInterface;
+	private boolean mBound;
 
 	/**
 	 * Class for interacting with the main interface of the service.
@@ -62,13 +63,15 @@ public class OsmAndAidlHelper {
 			// service through an IDL interface, so get a client-side
 			// representation of that from the raw service object.
 			mIOsmAndAidlInterface = IOsmAndAidlInterface.Stub.asInterface(service);
-			Toast.makeText(mActivity, "OsmAnd service connected", Toast.LENGTH_SHORT).show();
+			mBound=true;
+			//Toast.makeText(mActivity, "OsmAnd service connected", Toast.LENGTH_SHORT).show();
 		}
 		public void onServiceDisconnected(ComponentName className) {
 			// This is called when the connection with the service has been
 			// unexpectedly disconnected -- that is, its process crashed.
 			mIOsmAndAidlInterface = null;
-			Toast.makeText(mActivity, "OsmAnd service disconnected", Toast.LENGTH_SHORT).show();
+			mBound=false;
+			//Toast.makeText(mActivity, "OsmAnd service disconnected", Toast.LENGTH_SHORT).show();
 		}
 	};
 
@@ -81,7 +84,7 @@ public class OsmAndAidlHelper {
 			}
 	}
 
-	private boolean bindService() {
+	public boolean bindService() {
 		if (mIOsmAndAidlInterface == null) {
 			Intent intent = new Intent("net.osmand.aidl.OsmandAidlService");
 			intent.setPackage(OSMAND_PACKAGE_NAME_PLUS);
@@ -111,7 +114,10 @@ public class OsmAndAidlHelper {
 
 	public void cleanupResources() {
 		if (mIOsmAndAidlInterface != null) {
-			mActivity.unbindService(mConnection);
+			if(mConnection!=null&&mActivity!=null&&mBound)
+				{
+					mActivity.unbindService(mConnection);
+				}
 		}
 	}
 
