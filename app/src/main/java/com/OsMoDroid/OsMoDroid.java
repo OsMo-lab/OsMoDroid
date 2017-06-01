@@ -53,6 +53,7 @@ public class OsMoDroid extends Application
         public static final String FLASH_ON = "47";
         public static final String FLASH_BLINK = "48";
         public static final String FLASH_OFF = "49";
+        public static final String CHANGE_MOTD_TEXT = "85";
         public static final int NOTIFY_ERROR_SENDID = 0;
         public static final int NOTIFY_NO_DEVICE = 1;
         public static final int NOTIFY_EXPIRY_USER = 2;
@@ -86,6 +87,7 @@ public class OsMoDroid extends Application
         static InputMethodManager inputMethodManager;
         private static int notifyid = 1;
         public static FirebaseAnalytics mFirebaseAnalytics;
+        static long timeshift=0;
         public static int notifyidApp()
             {
                 return notifyid++;

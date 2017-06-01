@@ -66,6 +66,7 @@ import static com.OsMoDroid.LocalService.addlog;
 import static com.OsMoDroid.LocalService.devlistener;
 import static com.OsMoDroid.LocalService.myManager;
 import static com.OsMoDroid.OsMoDroid.context;
+import static com.OsMoDroid.OsMoDroid.timeshift;
 /**
  * @author dfokin
  *         Class for work with osmo server
@@ -1269,6 +1270,12 @@ public class IM implements ResultsListener
                                 flick();
                                 sendToServer("RCR:" + OsMoDroid.FLASH_BLINK + "|1", false);
                             }
+                        if(param.equals(OsMoDroid.CHANGE_MOTD_TEXT))
+                            {
+                                localService.motd=addict;
+                                localService.refresh();
+                                sendToServer("RCR:"+OsMoDroid.CHANGE_MOTD_TEXT+"|1",false);
+                            }
 
 
 
@@ -1780,7 +1787,7 @@ public class IM implements ResultsListener
 
                                                         String time="";
                                                         String messageText="";
-                                                        time= OsMoDroid.sdf.format(new Date(jsonObject.optLong("time")*1000));
+                                                        time= OsMoDroid.sdf.format(new Date((timeshift+jsonObject.optLong("time"))*1000));
                                                         messageText = ch.name + ": "+nick + ' ' +parent.getString(R.string.join_to_group);
                                                         Message msg = new Message();
                                                         Bundle b = new Bundle();
@@ -1809,7 +1816,7 @@ public class IM implements ResultsListener
 
                                                         String time="";
                                                         String messageText="";
-                                                        time= OsMoDroid.sdf.format(new Date(jsonObject.optLong("time")*1000));
+                                                        time= OsMoDroid.sdf.format(new Date((timeshift+jsonObject.optLong("time"))*1000));
                                                         messageText = ch.name + ": "+nick + ' ' +parent.getString(R.string.leave_group);
                                                         Message msg = new Message();
                                                         Bundle b = new Bundle();
@@ -1837,7 +1844,7 @@ public class IM implements ResultsListener
                                                         String name = jsonObject.optString("nick");
                                                         String time="";
 
-                                                        time= OsMoDroid.sdf.format(new Date(jsonObject.optLong("time")*1000));
+                                                        time= OsMoDroid.sdf.format(new Date((timeshift+jsonObject.optLong("time"))*1000));
 
 
                                                         String messageText =ch.name+": "+parent.getString(R.string.alarmengaged)+' '+name;
@@ -1872,7 +1879,7 @@ public class IM implements ResultsListener
                                                         int mode = jsonObject.optInt("mode");
                                                         String time="";
                                                         String messageText="";
-                                                        time= OsMoDroid.sdf.format(new Date(jsonObject.optLong("time")*1000));
+                                                        time= OsMoDroid.sdf.format(new Date((timeshift+jsonObject.optLong("time"))*1000));
                                                         String who ="";
                                                         if(ch.gu==jsonObject.optInt("u"))
                                                             {
@@ -1943,7 +1950,7 @@ public class IM implements ResultsListener
                                                         String name = jsonObject.optString("nick");
                                                         String time="";
 
-                                                        time= OsMoDroid.sdf.format(new Date(jsonObject.optLong("time")*1000));
+                                                        time= OsMoDroid.sdf.format(new Date((timeshift+jsonObject.optLong("time"))*1000));
 
 
                                                         String messageText =ch.name+": "+name+' '+ (jsonObject.optInt("type")==1?parent.getString(R.string.enterin):parent.getString(R.string.exitfrom)) +" "+jsonObject.optString("name");
@@ -1975,7 +1982,7 @@ public class IM implements ResultsListener
                                                         String messageText =ch.name+": "+jsonObject.optString("text");
                                                         String time="";
 
-                                                        time= OsMoDroid.sdf.format(new Date(jsonObject.optLong("time")*1000));
+                                                        time= OsMoDroid.sdf.format(new Date((timeshift+jsonObject.optLong("time"))*1000));
                                                                 Message msg = new Message();
                                                                 Bundle b = new Bundle();
                                                                 b.putBoolean("om_online", true);
@@ -2075,7 +2082,7 @@ public class IM implements ResultsListener
                                                                                         p.color = jsonObject.optString("color");
                                                                                         p.name = jsonObject.getString("name");
                                                                                         p.url=jsonObject.optString("url");
-                                                                                        p.time= OsMoDroid.sdf.format(new Date(jsonObject.optLong("time")*1000));
+                                                                                        p.time= OsMoDroid.sdf.format(new Date((timeshift+jsonObject.optLong("time"))*1000));
                                                                                     }
                                                                             }
                                                                         if (!exist)
@@ -2141,7 +2148,7 @@ public class IM implements ResultsListener
                                                                                                             {
                                                                                                                 try
                                                                                                                     {
-                                                                                                                        dev.updatated=  jsonObject.optLong("time")*1000;
+                                                                                                                        dev.updatated=  (timeshift+jsonObject.optLong("time"))*1000;
                                                                                                                     }
                                                                                                                 catch (IllegalArgumentException e)
                                                                                                                     {
@@ -2214,7 +2221,7 @@ public class IM implements ResultsListener
                                                                                                     {
                                                                                                         try
                                                                                                             {
-                                                                                                                dev.updatated=  jsonObject.optLong("time")*1000;
+                                                                                                                dev.updatated=  (timeshift+jsonObject.optLong("time"))*1000;
                                                                                                             }
                                                                                                         catch (IllegalArgumentException e)
                                                                                                             {
@@ -2574,6 +2581,13 @@ public class IM implements ResultsListener
                                         //token = result.Jo.getString("token");
                                         workservername = result.Jo.optString("address").substring(0, result.Jo.optString("address").indexOf(':'));
                                         workserverint = Integer.parseInt(result.Jo.optString("address").substring(result.Jo.optString("address").indexOf(':') + 1));
+                                        long servertime=result.Jo.optLong("time");
+                                        if(servertime>0)
+                                        {
+                                            OsMoDroid.timeshift=System.currentTimeMillis()/1000-servertime;
+                                            addlog("timesift="+ OsMoDroid.timeshift+" sec");
+                                        }
+
                                         try
                                             {
                                                 connectThread.start();
