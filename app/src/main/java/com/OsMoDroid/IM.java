@@ -2067,6 +2067,7 @@ public class IM implements ResultsListener
                                                                         if (pointToDel != null)
                                                                             {
                                                                                 ch.pointList.remove(pointToDel);
+                                                                                localService.osmanddelpoint(ch,pointToDel);
                                                                             }
                                                                     }
                                                                 else
@@ -2088,6 +2089,7 @@ public class IM implements ResultsListener
                                                                         if (!exist)
                                                                             {
                                                                                 ch.pointList.add(new Point(jsonObject));
+                                                                                localService.osmandaddpoint(ch,new Point(jsonObject));
                                                                             }
                                                                     }
                                                             }
