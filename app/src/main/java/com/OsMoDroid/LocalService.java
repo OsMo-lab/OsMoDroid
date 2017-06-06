@@ -47,6 +47,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Point;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -2905,6 +2906,15 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                             {
                                 osmand.addMapPoint(Integer.toString(ch.u),Integer.toString(dev.u),dev.name.substring(0,1),dev.name,"User",dev.color,new ALatLon(dev.lat,dev.lon),null);
                             }
+                        for(Channel.Point p: ch.pointList)
+                            {
+                                osmand.addMapPoint(Integer.toString(ch.u),Integer.toString(p.u)," ",p.name,"Point", Color.parseColor(p.color),new ALatLon(p.lat,p.lon),null);
+                            }
+                        for(ColoredGPX cg:ch.gpxList)
+                            {
+                                osmand.importGpxFromFile(cg.gpxfile, cg.gpxfile.getName());
+                                osmand.showGpx(cg.gpxfile.getName());
+                            }
                     }
             }
         void osmandaddchannel(Channel ch)
@@ -2922,6 +2932,14 @@ public class LocalService extends Service implements LocationListener, GpsStatus
         void osmandadddevice(Channel ch, Device dev)
             {
                 osmand.addMapPoint(Integer.toString(ch.u),Integer.toString(dev.u),dev.name.substring(0,1),dev.name,"User",dev.color,new ALatLon(dev.lat,dev.lon),null);
+            }
+        void osmandaddpoint(Channel ch, Channel.Point p)
+            {
+                osmand.addMapPoint(Integer.toString(ch.u),Integer.toString(p.u)," ",p.name,"Point", Color.parseColor(p.color),new ALatLon(p.lat,p.lon),null);
+            }
+        void osmanddelpoint(Channel ch, Channel.Point p)
+            {
+                osmand.removeMapPoint(Integer.toString(ch.u), Integer.toString(p.u));
             }
 
         void osmandupdDevice(Device dev)
