@@ -12,6 +12,14 @@ import android.os.RemoteException;
 import android.widget.Toast;
 
 import net.osmand.aidl.IOsmAndAidlInterface;
+import net.osmand.aidl.favorite.AFavorite;
+import net.osmand.aidl.favorite.AddFavoriteParams;
+import net.osmand.aidl.favorite.RemoveFavoriteParams;
+import net.osmand.aidl.favorite.UpdateFavoriteParams;
+import net.osmand.aidl.favorite.group.AFavoriteGroup;
+import net.osmand.aidl.favorite.group.AddFavoriteGroupParams;
+import net.osmand.aidl.favorite.group.RemoveFavoriteGroupParams;
+import net.osmand.aidl.favorite.group.UpdateFavoriteGroupParams;
 import net.osmand.aidl.gpx.ASelectedGpxFile;
 import net.osmand.aidl.gpx.HideGpxParams;
 import net.osmand.aidl.gpx.ImportGpxParams;
@@ -39,12 +47,13 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-
-
+import static com.OsMoDroid.IM.writeException;
+import static com.OsMoDroid.LocalService.addlog;
 public class OsmAndAidlHelper {
 
 	private static final String OSMAND_PACKAGE_NAME_PLUS = "net.osmand.plus";
 	private static final String OSMAND_PACKAGE_NAME_FREE = "net.osmand";
+	private static final String OSMAND_PACKAGE_NAME_DEV = "net.osmand.dev";
 
 	private final Service mActivity;
 	private final OsmAndHelper.OnOsmandMissingListener mOsmandMissingListener;
@@ -64,14 +73,14 @@ public class OsmAndAidlHelper {
 			// representation of that from the raw service object.
 			mIOsmAndAidlInterface = IOsmAndAidlInterface.Stub.asInterface(service);
 			mBound=true;
-			//Toast.makeText(mActivity, "OsmAnd service connected", Toast.LENGTH_SHORT).show();
+			Toast.makeText(mActivity, "OsmAnd service connected", Toast.LENGTH_SHORT).show();
 		}
 		public void onServiceDisconnected(ComponentName className) {
 			// This is called when the connection with the service has been
 			// unexpectedly disconnected -- that is, its process crashed.
 			mIOsmAndAidlInterface = null;
 			mBound=false;
-			//Toast.makeText(mActivity, "OsmAnd service disconnected", Toast.LENGTH_SHORT).show();
+			Toast.makeText(mActivity, "OsmAnd service disconnected", Toast.LENGTH_SHORT).show();
 		}
 	};
 
@@ -90,7 +99,7 @@ public class OsmAndAidlHelper {
 			intent.setPackage(OSMAND_PACKAGE_NAME_PLUS);
 			boolean res = mActivity.bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
 			if (res) {
-				//Toast.makeText(mActivity, "OsmAnd service bind", Toast.LENGTH_SHORT).show();
+				Toast.makeText(mActivity, "OsmAnd service bind", Toast.LENGTH_SHORT).show();
 				return true;
 			} else
 				{
@@ -102,9 +111,18 @@ public class OsmAndAidlHelper {
 					}
 					else
 					{
-						//Toast.makeText(mActivity, "OsmAnd service NOT bind", Toast.LENGTH_SHORT).show();
-						mOsmandMissingListener.osmandMissing();
-						return false;
+                        intent.setPackage(OSMAND_PACKAGE_NAME_DEV);
+                        res = mActivity.bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+                        if(res)
+                            {
+                                return true;
+                            }
+                        else
+                            {
+                                Toast.makeText(mActivity, "OsmAnd service NOT bind", Toast.LENGTH_SHORT).show();
+                                mOsmandMissingListener.osmandMissing();
+                                return false;
+                            }
 					}
 			}
 		} else {
@@ -120,6 +138,158 @@ public class OsmAndAidlHelper {
 				}
 		}
 	}
+
+	public boolean refreshMap() {
+//		if (mIOsmAndAidlInterface != null) {
+//			try {
+//				return mIOsmAndAidlInterface.refreshMap();
+//			} catch (RemoteException e) {
+//				e.printStackTrace();
+//				writeException(e);
+//			}
+//		}
+		return false;
+	}
+
+	/**
+	 * Add favorite group with given params.
+	 *
+	 * @param name    - group name.
+	 * @param color   - group color. Can be one of: "red", "orange", "yellow",
+	 *                "lightgreen", "green", "lightblue", "blue", "purple", "pink", "brown".
+	 * @param visible - group visibility.
+	 */
+	public boolean addFavoriteGroup(String name, String color, boolean visible) {
+		if (mIOsmAndAidlInterface != null) {
+			try {
+				AFavoriteGroup favoriteGroup = new AFavoriteGroup(name, color, visible);
+				return mIOsmAndAidlInterface.addFavoriteGroup(new AddFavoriteGroupParams(favoriteGroup));
+			} catch (RemoteException e) {
+				e.printStackTrace();
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Update favorite group with given params.
+	 *
+	 * @param namePrev    - group name (current).
+	 * @param colorPrev   - group color (current).
+	 * @param visiblePrev - group visibility (current).
+	 * @param nameNew     - group name (new).
+	 * @param colorNew    - group color (new).
+	 * @param visibleNew  - group visibility (new).
+	 */
+	public boolean updateFavoriteGroup(String namePrev, String colorPrev, boolean visiblePrev,
+									   String nameNew, String colorNew, boolean visibleNew) {
+		if (mIOsmAndAidlInterface != null) {
+			try {
+				AFavoriteGroup favoriteGroupPrev = new AFavoriteGroup(namePrev, colorPrev, visiblePrev);
+				AFavoriteGroup favoriteGroupNew = new AFavoriteGroup(nameNew, colorNew, visibleNew);
+				return mIOsmAndAidlInterface.updateFavoriteGroup(new UpdateFavoriteGroupParams(favoriteGroupPrev, favoriteGroupNew));
+			} catch (RemoteException e) {
+				e.printStackTrace();
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Remove favorite group with given name.
+	 *
+	 * @param name - name of favorite group.
+	 */
+	public boolean removeFavoriteGroup(String name) {
+		if (mIOsmAndAidlInterface != null) {
+			try {
+				AFavoriteGroup favoriteGroup = new AFavoriteGroup(name, "", false);
+				return mIOsmAndAidlInterface.removeFavoriteGroup(new RemoveFavoriteGroupParams(favoriteGroup));
+			} catch (RemoteException e) {
+				e.printStackTrace();
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Add favorite at given location with given params.
+	 *
+	 * @param lat         - latitude.
+	 * @param lon         - longitude.
+	 * @param name        - name of favorite item.
+	 * @param description - description of favorite item.
+	 * @param category    - category of favorite item.
+	 * @param color       - color of favorite item. Can be one of: "red", "orange", "yellow",
+	 *                    "lightgreen", "green", "lightblue", "blue", "purple", "pink", "brown".
+	 * @param visible     - should favorite item be visible after creation.
+	 */
+	public boolean addFavorite(double lat, double lon, String name, String description,
+							   String category, String color, boolean visible) {
+		if (mIOsmAndAidlInterface != null) {
+			try {
+				AFavorite favorite = new AFavorite(lat, lon, name, description, category, color, visible);
+				return mIOsmAndAidlInterface.addFavorite(new AddFavoriteParams(favorite));
+			} catch (RemoteException e) {
+				e.printStackTrace();
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Update favorite at given location with given params.
+	 *
+	 * @param latPrev        - latitude (current favorite).
+	 * @param lonPrev        - longitude (current favorite).
+	 * @param namePrev       - name of favorite item (current favorite).
+	 * @param categoryPrev   - category of favorite item (current favorite).
+	 * @param latNew         - latitude (new favorite).
+	 * @param lonNew         - longitude (new favorite).
+	 * @param nameNew        - name of favorite item (new favorite).
+	 * @param descriptionNew - description of favorite item (new favorite).
+	 * @param categoryNew    - category of favorite item (new favorite). Use only to create a new category,
+	 *                       not to update an existing one. If you want to  update an existing category,
+	 *                       use the {@link #updateFavoriteGroup(String, String, boolean, String, String, boolean)} method.
+	 * @param colorNew       - color of new category. Can be one of: "red", "orange", "yellow",
+	 *                       "lightgreen", "green", "lightblue", "blue", "purple", "pink", "brown".
+	 * @param visibleNew     - should new category be visible after creation.
+	 */
+	public boolean updateFavorite(double latPrev, double lonPrev, String namePrev, String categoryPrev,
+								  double latNew, double lonNew, String nameNew, String descriptionNew,
+								  String categoryNew, String colorNew, boolean visibleNew) {
+		if (mIOsmAndAidlInterface != null) {
+			try {
+				AFavorite favoritePrev = new AFavorite(latPrev, lonPrev, namePrev, "", categoryPrev, "", false);
+				AFavorite favoriteNew = new AFavorite(latNew, lonNew, nameNew, descriptionNew, categoryNew, colorNew, visibleNew);
+				return mIOsmAndAidlInterface.updateFavorite(new UpdateFavoriteParams(favoritePrev, favoriteNew));
+			} catch (RemoteException e) {
+				e.printStackTrace();
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Remove favorite at given location with given params.
+	 *
+	 * @param lat      - latitude.
+	 * @param lon      - longitude.
+	 * @param name     - name of favorite item.
+	 * @param category - category of favorite item.
+	 */
+	public boolean removeFavorite(double lat, double lon, String name, String category) {
+		if (mIOsmAndAidlInterface != null) {
+			try {
+				AFavorite favorite = new AFavorite(lat, lon, name, "", category, "", false);
+				return mIOsmAndAidlInterface.removeFavorite(new RemoveFavoriteParams(favorite));
+			} catch (RemoteException e) {
+				e.printStackTrace();
+			}
+		}
+		return false;
+	}
+
 
 	/**
 	 * Add map marker at given location.
@@ -159,6 +329,7 @@ public class OsmAndAidlHelper {
 				return mIOsmAndAidlInterface.updateMapMarker(new UpdateMapMarkerParams(markerPrev, markerNew));
 			} catch (RemoteException e) {
 				e.printStackTrace();
+				writeException(e);
 			}
 		}
 		return false;
@@ -272,8 +443,13 @@ public class OsmAndAidlHelper {
 				return mIOsmAndAidlInterface.addMapLayer(new AddMapLayerParams(layer));
 			} catch (RemoteException e) {
 				e.printStackTrace();
+				writeException(e);
 			}
 		}
+		else
+			{
+				addlog("no interface of osmand");
+			}
 		return false;
 	}
 
@@ -333,6 +509,7 @@ public class OsmAndAidlHelper {
 				return mIOsmAndAidlInterface.addMapPoint(new AddMapPointParams(layerId, point));
 			} catch (RemoteException e) {
 				e.printStackTrace();
+				writeException(e);
 			}
 		}
 		return false;

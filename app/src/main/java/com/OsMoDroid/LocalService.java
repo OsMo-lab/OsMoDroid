@@ -2901,7 +2901,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
             {
                 for(Channel ch: LocalService.channelList)
                     {
-                        osmand.addMapLayer(Integer.toString(ch.u),ch.name,0,null);
+                        osmand.addMapLayer(Integer.toString(ch.u),ch.name,5.5f,null);
                         for(Device dev:ch.deviceList)
                             {
                                 osmand.addMapPoint(Integer.toString(ch.u),Integer.toString(dev.u),dev.name.substring(0,1),dev.name,"User",dev.color,new ALatLon(dev.lat,dev.lon),null);
@@ -2916,30 +2916,44 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                                 osmand.showGpx(cg.gpxfile.getName());
                             }
                     }
+                osmand.refreshMap();
+                addlog("osmAndAddAllChannels");
             }
         void osmandaddchannel(Channel ch)
             {
-                osmand.addMapLayer(Integer.toString(ch.u),ch.name,0,null);
+                osmand.addMapLayer(Integer.toString(ch.u),ch.name,5.5f,null);
+                osmand.refreshMap();
+                addlog("osmandaddchannel");
             }
         void osmAndDeleteChannel(Channel ch)
             {
                 osmand.removeMapLayer(Integer.toString(ch.u));
+                osmand.refreshMap();
+                addlog("osmAndDeleteChannel");
             }
         void osmanddeldev(Channel ch, Device dev)
             {
                 osmand.removeMapPoint(Integer.toString(ch.u), Integer.toString(dev.u));
+                osmand.refreshMap();
+                addlog("osmanddeldev");
             }
         void osmandadddevice(Channel ch, Device dev)
             {
                 osmand.addMapPoint(Integer.toString(ch.u),Integer.toString(dev.u),dev.name.substring(0,1),dev.name,"User",dev.color,new ALatLon(dev.lat,dev.lon),null);
+                osmand.refreshMap();
+                addlog("osmandadddevice");
             }
         void osmandaddpoint(Channel ch, Channel.Point p)
             {
                 osmand.addMapPoint(Integer.toString(ch.u),Integer.toString(p.u)," ",p.name,"Point", Color.parseColor(p.color),new ALatLon(p.lat,p.lon),null);
+                osmand.refreshMap();
+                addlog("osmandaddpoint");
             }
         void osmanddelpoint(Channel ch, Channel.Point p)
             {
                 osmand.removeMapPoint(Integer.toString(ch.u), Integer.toString(p.u));
+                osmand.refreshMap();
+                addlog("osmanddelpoint");
             }
 
         void osmandupdDevice(Device dev)
@@ -2954,6 +2968,8 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                                     }
                             }
                     }
+                osmand.refreshMap();
+                addlog("osmandupdDevice");
 
             }
     }
