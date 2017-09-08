@@ -48,6 +48,7 @@ import com.mapzen.tangram.MapData;
 import com.mapzen.tangram.MapView;
 import com.mapzen.tangram.Marker;
 import com.mapzen.tangram.MarkerPickResult;
+import com.mapzen.tangram.SceneError;
 import com.mapzen.tangram.SceneUpdate;
 import com.mapzen.tangram.TouchInput;
 import com.mapzen.tangram.geometry.Polyline;
@@ -426,18 +427,29 @@ public class MapFragment extends Fragment implements DeviceChange,  LocationList
                         }
                 });
                     mMapView = (MapView) view.findViewById(R.id.glMapView);
+
                     mMapView.setKeepScreenOn(true);
                     speddTextView = (TextView) view.findViewById(R.id.mapSpeedtextView);
             sceneUpdates.add(new SceneUpdate("global.sdk_mapzen_api_key", MAPZEN_API_KEY));
 
-                    mMapView.getMapAsync(new MapView.OnMapReadyCallback()
-                        {
-                            @Override
-                            public void onMapReady(MapController mc)
-                                {
 
-                                  //  mzmap.setZoomButtonsEnabled(true);
-                                    mapController = mc;
+            mapController=mMapView.getMap(new MapController.SceneLoadListener()
+                {
+                    @Override
+                    public void onSceneReady(int sceneId, SceneError sceneError)
+                        {
+                            if (sceneError == null)
+                            {
+                                Toast.makeText(getContext(), "Scene ready: " + sceneId, Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(getContext(), "Scene load error: " + sceneId + " "
+                                        + sceneError.getSceneUpdate().toString()
+                                        + " " + sceneError.getError().toString(), Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                });
+
+
                                     showTracks();
 
                                     mapController.setHttpHandler(getHttpHandler());
@@ -658,8 +670,8 @@ public class MapFragment extends Fragment implements DeviceChange,  LocationList
                                                     isFollow=false;
                                                 }
                                         }
-                                }
-                        },"asset:///cinnabar-style-more-labels.zip", sceneUpdates);
+
+                        //},"asset:///cinnabar-style-more-labels.zip", sceneUpdates);
 
             return view;
         }
