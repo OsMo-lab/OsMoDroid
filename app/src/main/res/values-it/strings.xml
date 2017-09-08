@@ -9,7 +9,7 @@
   <string name="url">Indirizzo:</string>
   <string name="settings">Impostazioni</string>
   <string name="period">Campionamento GPS</string>
-  <string name="succes">Successo</string>
+  <string name="succes">Con successo</string>
   <string name="error">Errore:</string>
   <string name="Sputniki">Satelliti:</string>
   <string name="GlonasFindString">usa Glonass</string>
@@ -21,13 +21,13 @@
   <string name="RepeatAuth">Reset delle informazioni di login</string>
   <string name="warnhash">Impossibile ottenere la chiave dal server. Verifica la connessione o contatta il supporto tecnico</string>
   <string name="Settings">Impostazioni</string>
-  <string name="EqualsParameters">Uguagliare le impostazioni</string>
-  <string name="AgreeRepeatAuth">Conferma richiesta nuova autorizzazione </string>
+  <string name="EqualsParameters">Equiparare le impostazioni</string>
+  <string name="AgreeRepeatAuth">Conferma la richiesta di nuova autorizzazione </string>
   <string name="ChangeAdresMonitor">Questo cambia l\'indirizzo del monitoraggio!</string>
   <string name="yes">Ok</string>
   <string name="No">Annulla</string>
   <string name="AgreeParameterEqual">Conferma l\'equiparazione dei parametri di trasmissione e registrazione</string>
-  <string name="TrackRecordParameterChanges">I parametri di registrazione tracce saranno modificati</string>
+  <string name="TrackRecordParameterChanges">I parametri di registrazione delle tracce saranno modificati</string>
   <string name="Running">Avviato</string>
   <string name="NotRunning">Non avviato</string>
   <string name="Status">Stato:</string>
@@ -35,8 +35,8 @@
   <string name="ErrorRecieve">Errore durante il recupero</string>
   <string name="AuthWait">Richiesta autorizzazione; attendere prego...</string>
   <string name="CheckInternet">Autenticazione fallita. Controlla la tua connessione dati.</string>
-  <string name="CanNotWriteHeader">Non è possibile salvare la traccia sulla SD</string>
-  <string name="CanNotWriteEnd">Salvataggio della traccia su SD non completato</string>
+  <string name="CanNotWriteHeader">Non è possibile salvare la traccia nella tua memory card.</string>
+  <string name="CanNotWriteEnd">Non è possibile completare il salvataggio della traccia nella tua memory card.</string>
   <string name="SendCourseChange">Modifica la velocità di trasmissione:</string>
   <string name="TrackCourseChange">Cambiando direzione del percorso:</string>
   <string name="ServerError">Errore del server</string>
@@ -65,7 +65,7 @@
   <string name="chanal">Gruppo</string>
   <string name="refresh">Aggiorna</string>
   <string name="coordinats">Posizione:</string>
-  <string name="Distantion">Intrervallo</string>
+  <string name="Distantion">Intervallo:</string>
   <string name="Km"> km</string>
   <string name="m"> m </string>
   <string name="chanals">Gruppi</string>
@@ -93,7 +93,7 @@
   <string name="messages">Messaggi</string>
   <string name="binddevice">Collega dispositivo</string>
   <string name="esya_ru_notrespond">OsMoDroid non riesce ad accedere al server</string>
-  <string name="tracker">Inseguitore</string>
+  <string name="tracker">Localizzatore</string>
   <string name="links">Link</string>
   <string name="tracks">Tracce</string>
   <string name="notifications">Notifiche</string>
@@ -341,4 +341,22 @@
   <string name="travel">Viaggio</string>
   <string name="nick">Nickname</string>
   <string name="configure"> Configura</string>
+  <string name="imperial">Unità anglosassoni (imperial)</string>
+  <string name="imperial_summary">Utilizza miglia, piedi</string>
+  <string name="password">Password</string>
+  <string name="repeatpassword">Ripeti password</string>
+  <string name="enterloginpassword">Inserisci login e password</string>
+  <string name="registration">Registrazione</string>
+  <string name="gender">Sesso</string>
+  <string name="male">Maschile</string>
+  <string name="female">Femminile</string>
+  <string name="passdontequal">Le password non corrispondono</string>
+  <string name="smsexchange">Scambia tramite SMS</string>
+  <string name="sendsms">Invia SMS</string>
+  <string name="sendsmsnumber">Invia SMS al numero</string>
+  <string name="sendsmsperiod">Intervallo di invio SMS</string>
+  <string name="getsms">Ricevi SMS</string>
+  <string name="getsmsnumber">Ricevi numero SMS</string>
+  <string name="alreadyregistered">Sei già registrato?</string>
+  <string name="osmand">Integrazione con Osmand</string>
 </resources>

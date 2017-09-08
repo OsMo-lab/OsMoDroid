@@ -351,4 +351,9 @@
   <string name="male">Man</string>
   <string name="female">Kvinna</string>
   <string name="passdontequal">Lösenorden stämmer inte överens</string>
+  <string name="smsexchange">Byt via SMS</string>
+  <string name="sendsms">Skicka SMS</string>
+  <string name="sendsmsnumber">Skicka SMS till nummer</string>
+  <string name="alreadyregistered">Är du redan registrerad?</string>
+  <string name="osmand">Integrering med OsmAnd</string>
 </resources>

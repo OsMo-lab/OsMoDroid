@@ -1,7 +1,6 @@
 package com.OsMoDroid;
 
-import android.app.Activity;
-import android.app.Service;
+import android.app.Application;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -24,6 +23,8 @@ import net.osmand.aidl.gpx.ASelectedGpxFile;
 import net.osmand.aidl.gpx.HideGpxParams;
 import net.osmand.aidl.gpx.ImportGpxParams;
 import net.osmand.aidl.gpx.ShowGpxParams;
+import net.osmand.aidl.gpx.StartGpxRecordingParams;
+import net.osmand.aidl.gpx.StopGpxRecordingParams;
 import net.osmand.aidl.map.ALatLon;
 import net.osmand.aidl.map.SetMapLocationParams;
 import net.osmand.aidl.maplayer.AMapLayer;
@@ -42,23 +43,28 @@ import net.osmand.aidl.mapwidget.AMapWidget;
 import net.osmand.aidl.mapwidget.AddMapWidgetParams;
 import net.osmand.aidl.mapwidget.RemoveMapWidgetParams;
 import net.osmand.aidl.mapwidget.UpdateMapWidgetParams;
+import net.osmand.aidl.navigation.NavigateGpxParams;
+import net.osmand.aidl.navigation.NavigateParams;
+import net.osmand.aidl.note.StartAudioRecordingParams;
+import net.osmand.aidl.note.StopRecordingParams;
+import net.osmand.aidl.note.TakePhotoNoteParams;
+import net.osmand.aidl.note.StartVideoRecordingParams;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.OsMoDroid.IM.writeException;
-import static com.OsMoDroid.LocalService.addlog;
+import com.OsMoDroid.OsmAndHelper.OnOsmandMissingListener;
+
 public class OsmAndAidlHelper {
 
-	private static final String OSMAND_PACKAGE_NAME_PLUS = "net.osmand.plus";
-	private static final String OSMAND_PACKAGE_NAME_FREE = "net.osmand";
-	private static final String OSMAND_PACKAGE_NAME_DEV = "net.osmand.dev";
+	private static final String OSMAND_FREE_PACKAGE_NAME = "net.osmand";
+	private static final String OSMAND_PLUS_PACKAGE_NAME = "net.osmand.plus";
+	private static final String OSMAND_PACKAGE_NAME = OSMAND_PLUS_PACKAGE_NAME;
 
-	private final Service mActivity;
-	private final OsmAndHelper.OnOsmandMissingListener mOsmandMissingListener;
+	private final Application app;
+	private final OnOsmandMissingListener mOsmandMissingListener;
 	private IOsmAndAidlInterface mIOsmAndAidlInterface;
-	private boolean mBound;
 
 	/**
 	 * Class for interacting with the main interface of the service.
@@ -72,58 +78,34 @@ public class OsmAndAidlHelper {
 			// service through an IDL interface, so get a client-side
 			// representation of that from the raw service object.
 			mIOsmAndAidlInterface = IOsmAndAidlInterface.Stub.asInterface(service);
-			mBound=true;
-			Toast.makeText(mActivity, "OsmAnd service connected", Toast.LENGTH_SHORT).show();
+			Toast.makeText(app, "OsmAnd service connected", Toast.LENGTH_SHORT).show();
 		}
 		public void onServiceDisconnected(ComponentName className) {
 			// This is called when the connection with the service has been
 			// unexpectedly disconnected -- that is, its process crashed.
 			mIOsmAndAidlInterface = null;
-			mBound=false;
-			Toast.makeText(mActivity, "OsmAnd service disconnected", Toast.LENGTH_SHORT).show();
+			Toast.makeText(app, "OsmAnd service disconnected", Toast.LENGTH_SHORT).show();
 		}
 	};
 
-	public OsmAndAidlHelper(Service activity, OsmAndHelper.OnOsmandMissingListener listener) {
-		mActivity = activity;
-		mOsmandMissingListener = listener;
-		if(OsMoDroid.settings.getBoolean("osmand",false))
-			{
-				bindService();
-			}
+	public OsmAndAidlHelper(Application application, OnOsmandMissingListener listener) {
+		this.app = application;
+		this.mOsmandMissingListener = listener;
+		bindService();
 	}
 
-	public boolean bindService() {
+	 boolean bindService() {
 		if (mIOsmAndAidlInterface == null) {
 			Intent intent = new Intent("net.osmand.aidl.OsmandAidlService");
-			intent.setPackage(OSMAND_PACKAGE_NAME_PLUS);
-			boolean res = mActivity.bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+			intent.setPackage(OSMAND_PACKAGE_NAME);
+			boolean res = app.bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
 			if (res) {
-				Toast.makeText(mActivity, "OsmAnd service bind", Toast.LENGTH_SHORT).show();
+				Toast.makeText(app, "OsmAnd service bind", Toast.LENGTH_SHORT).show();
 				return true;
-			} else
-				{
-				intent.setPackage(OSMAND_PACKAGE_NAME_FREE);
-				res = mActivity.bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
-				if(res)
-					{
-						return true;
-					}
-					else
-					{
-                        intent.setPackage(OSMAND_PACKAGE_NAME_DEV);
-                        res = mActivity.bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
-                        if(res)
-                            {
-                                return true;
-                            }
-                        else
-                            {
-                                Toast.makeText(mActivity, "OsmAnd service NOT bind", Toast.LENGTH_SHORT).show();
-                                mOsmandMissingListener.osmandMissing();
-                                return false;
-                            }
-					}
+			} else {
+				Toast.makeText(app, "OsmAnd service NOT bind", Toast.LENGTH_SHORT).show();
+				mOsmandMissingListener.osmandMissing();
+				return false;
 			}
 		} else {
 			return true;
@@ -132,22 +114,18 @@ public class OsmAndAidlHelper {
 
 	public void cleanupResources() {
 		if (mIOsmAndAidlInterface != null) {
-			if(mConnection!=null&&mActivity!=null&&mBound)
-				{
-					mActivity.unbindService(mConnection);
-				}
+			app.unbindService(mConnection);
 		}
 	}
 
 	public boolean refreshMap() {
-//		if (mIOsmAndAidlInterface != null) {
-//			try {
-//				return mIOsmAndAidlInterface.refreshMap();
-//			} catch (RemoteException e) {
-//				e.printStackTrace();
-//				writeException(e);
-//			}
-//		}
+		if (mIOsmAndAidlInterface != null) {
+			try {
+				return mIOsmAndAidlInterface.refreshMap();
+			} catch (RemoteException e) {
+				e.printStackTrace();
+			}
+		}
 		return false;
 	}
 
@@ -290,7 +268,6 @@ public class OsmAndAidlHelper {
 		return false;
 	}
 
-
 	/**
 	 * Add map marker at given location.
 	 *
@@ -329,7 +306,6 @@ public class OsmAndAidlHelper {
 				return mIOsmAndAidlInterface.updateMapMarker(new UpdateMapMarkerParams(markerPrev, markerNew));
 			} catch (RemoteException e) {
 				e.printStackTrace();
-				writeException(e);
 			}
 		}
 		return false;
@@ -443,13 +419,8 @@ public class OsmAndAidlHelper {
 				return mIOsmAndAidlInterface.addMapLayer(new AddMapLayerParams(layer));
 			} catch (RemoteException e) {
 				e.printStackTrace();
-				writeException(e);
 			}
 		}
-		else
-			{
-				addlog("no interface of osmand");
-			}
 		return false;
 	}
 
@@ -509,7 +480,6 @@ public class OsmAndAidlHelper {
 				return mIOsmAndAidlInterface.addMapPoint(new AddMapPointParams(layerId, point));
 			} catch (RemoteException e) {
 				e.printStackTrace();
-				writeException(e);
 			}
 		}
 		return false;
@@ -561,13 +531,17 @@ public class OsmAndAidlHelper {
 	 * Import GPX file to OsmAnd.
 	 * OsmAnd must have rights to access location. Not recommended.
 	 *
-	 * @param file - File which represents GPX track.
-	 * @param fileName - Destination file name. May contain dirs.
+	 * @param file      - File which represents GPX track.
+	 * @param fileName  - Destination file name. May contain dirs.
+	 * @param color     - color of gpx. Can be one of: "red", "orange", "lightblue", "blue", "purple",
+	 *                    "translucent_red", "translucent_orange", "translucent_lightblue",
+	 *                    "translucent_blue", "translucent_purple"
+	 * @param show      - show track on the map after import
 	 */
-	public boolean importGpxFromFile(File file, String fileName) {
+	public boolean importGpxFromFile(File file, String fileName, String color, boolean show) {
 		if (mIOsmAndAidlInterface != null) {
 			try {
-				return mIOsmAndAidlInterface.importGpx(new ImportGpxParams(file, fileName));
+				return mIOsmAndAidlInterface.importGpx(new ImportGpxParams(file, fileName, color, show));
 			} catch (RemoteException e) {
 				e.printStackTrace();
 			}
@@ -578,15 +552,30 @@ public class OsmAndAidlHelper {
 	/**
 	 * Import GPX file to OsmAnd.
 	 *
-	 * @param gpxUri - URI created by FileProvider.
-	 * @param fileName - Destination file name. May contain dirs.
+	 * @param gpxUri    - URI created by FileProvider.
+	 * @param fileName  - Destination file name. May contain dirs.
+	 * @param color     - color of gpx. Can be one of: "", "red", "orange", "lightblue", "blue", "purple",
+	 *                    "translucent_red", "translucent_orange", "translucent_lightblue",
+	 *                    "translucent_blue", "translucent_purple"
+	 * @param show      - show track on the map after import
 	 */
-	public boolean importGpxFromUri(Uri gpxUri, String fileName) {
+	public boolean importGpxFromUri(Uri gpxUri, String fileName, String color, boolean show) {
 		if (mIOsmAndAidlInterface != null) {
 			try {
-				mActivity.grantUriPermission(OSMAND_PACKAGE_NAME_PLUS, gpxUri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
-				mActivity.grantUriPermission(OSMAND_PACKAGE_NAME_FREE, gpxUri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
-				return mIOsmAndAidlInterface.importGpx(new ImportGpxParams(gpxUri, fileName));
+				app.grantUriPermission(OSMAND_PACKAGE_NAME, gpxUri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+				return mIOsmAndAidlInterface.importGpx(new ImportGpxParams(gpxUri, fileName, color, show));
+			} catch (RemoteException e) {
+				e.printStackTrace();
+			}
+		}
+		return false;
+	}
+
+	public boolean navigateGpxFromUri(Uri gpxUri, boolean force) {
+		if (mIOsmAndAidlInterface != null) {
+			try {
+				app.grantUriPermission(OSMAND_PACKAGE_NAME, gpxUri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+				return mIOsmAndAidlInterface.navigateGpx(new NavigateGpxParams(gpxUri, force));
 			} catch (RemoteException e) {
 				e.printStackTrace();
 			}
@@ -597,13 +586,28 @@ public class OsmAndAidlHelper {
 	/**
 	 * Import GPX file to OsmAnd.
 	 *
-	 * @param data - Raw contents of GPX file. Sent as intent's extra string parameter.
-	 * @param fileName - Destination file name. May contain dirs.
+	 * @param data      - Raw contents of GPX file. Sent as intent's extra string parameter.
+	 * @param fileName  - Destination file name. May contain dirs.
+	 * @param color     - color of gpx. Can be one of: "red", "orange", "lightblue", "blue", "purple",
+	 *                    "translucent_red", "translucent_orange", "translucent_lightblue",
+	 *                    "translucent_blue", "translucent_purple"
+	 * @param show      - show track on the map after import
 	 */
-	public boolean importGpxFromData(String data, String fileName) {
+	public boolean importGpxFromData(String data, String fileName, String color, boolean show) {
 		if (mIOsmAndAidlInterface != null) {
 			try {
-				return mIOsmAndAidlInterface.importGpx(new ImportGpxParams(data, fileName));
+				return mIOsmAndAidlInterface.importGpx(new ImportGpxParams(data, fileName, color, show));
+			} catch (RemoteException e) {
+				e.printStackTrace();
+			}
+		}
+		return false;
+	}
+
+	public boolean navigateGpxFromData(String data, boolean force) {
+		if (mIOsmAndAidlInterface != null) {
+			try {
+				return mIOsmAndAidlInterface.navigateGpx(new NavigateGpxParams(data, force));
 			} catch (RemoteException e) {
 				e.printStackTrace();
 			}
@@ -675,6 +679,83 @@ public class OsmAndAidlHelper {
 			try {
 				return mIOsmAndAidlInterface.setMapLocation(
 						new SetMapLocationParams(latitude, longitude, zoom, animated));
+			} catch (RemoteException e) {
+				e.printStackTrace();
+			}
+		}
+		return false;
+	}
+
+	public boolean startGpxRecording(StartGpxRecordingParams params) {
+		if (mIOsmAndAidlInterface != null) {
+			try {
+				return mIOsmAndAidlInterface.startGpxRecording(params);
+			} catch (RemoteException e) {
+				e.printStackTrace();
+			}
+		}
+		return false;
+	}
+
+	public boolean stopGpxRecording(StopGpxRecordingParams params) {
+		if (mIOsmAndAidlInterface != null) {
+			try {
+				return mIOsmAndAidlInterface.stopGpxRecording(params);
+			} catch (RemoteException e) {
+				e.printStackTrace();
+			}
+		}
+		return false;
+	}
+
+	public boolean takePhotoNote(double lat, double lon) {
+		if (mIOsmAndAidlInterface != null) {
+			try {
+				return mIOsmAndAidlInterface.takePhotoNote(new TakePhotoNoteParams(lat, lon));
+			} catch (RemoteException e) {
+				e.printStackTrace();
+			}
+		}
+		return false;
+	}
+
+	public boolean startVideoRecording(double lat, double lon) {
+		if (mIOsmAndAidlInterface != null) {
+			try {
+				return mIOsmAndAidlInterface.startVideoRecording(new StartVideoRecordingParams(lat, lon));
+			} catch (RemoteException e) {
+				e.printStackTrace();
+			}
+		}
+		return false;
+	}
+
+	public boolean startAudioRecording(double lat, double lon) {
+		if (mIOsmAndAidlInterface != null) {
+			try {
+				return mIOsmAndAidlInterface.startAudioRecording(new StartAudioRecordingParams(lat, lon));
+			} catch (RemoteException e) {
+				e.printStackTrace();
+			}
+		}
+		return false;
+	}
+
+	public boolean stopRecording() {
+		if (mIOsmAndAidlInterface != null) {
+			try {
+				return mIOsmAndAidlInterface.stopRecording(new StopRecordingParams());
+			} catch (RemoteException e) {
+				e.printStackTrace();
+			}
+		}
+		return false;
+	}
+
+	public boolean navigate(String startName, double startLat, double startLon, String destName, double destLat, double destLon, String profile, boolean force) {
+		if (mIOsmAndAidlInterface != null) {
+			try {
+				return mIOsmAndAidlInterface.navigate(new NavigateParams(startName, startLat, startLon, destName, destLat, destLon, profile, force));
 			} catch (RemoteException e) {
 				e.printStackTrace();
 			}

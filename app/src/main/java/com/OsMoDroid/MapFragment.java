@@ -148,7 +148,7 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
 
                 courserotation.setChecked(OsMoDroid.settings.getBoolean("courserotation",false));
                 SubMenu menu2 = menu.addSubMenu(Menu.NONE, 4, 4, R.string.map);
-                MenuItem mapsurfer = menu2.add(0, 5, 1, "MapSurfer");
+                //MenuItem mapsurfer = menu2.add(0, 5, 1, "MapSurfer");
                 MenuItem mapnik = menu2.add(0, 6, 2, "Mapnik");
                 MenuItem bing = menu2.add(0, 7, 3, "Microsoft Bing");
                 MenuItem binglabels = menu2.add(0, 8, 4, "Microsoft Bing with Labels");
@@ -156,8 +156,8 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
                 adjdpi.setCheckable(true);
                 adjdpi.setChecked(OsMoDroid.settings.getBoolean("adjust_to_dpi", true));
                 MenuItem sputnik = menu2.add(0, 10, 1, "Sputnik");
-                MenuItem outdoor = menu2.add(0, 12, 1, "Outdoor");
-                MenuItem chepe = menu2.add(0, 18, 1, "Chepeck");
+                //MenuItem outdoor = menu2.add(0, 12, 1, "Outdoor");
+                MenuItem chepe = menu2.add(0, 18, 1, "HotMap");
                 MenuItem mtb = menu2.add(0, 19, 1, "MTB");
                 menu.add(0, 11, 1, R.string.size_of_point);
                 super.onCreateOptionsMenu(menu, inflater);
@@ -516,7 +516,7 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
                 final String[] aBaseUrl = new String[]{"http://korona.geog.uni-heidelberg.de/tiles/roads/"};
                 final String[] sputnikURL = new String[]{"http://b.tiles.maps.sputnik.ru/"};
                 final String[] outdoorURL = new String[]{"http://tile.thunderforest.com/outdoors/"};
-                final String[] chepeURL = new String[]{"http://ingreelab.net/C04AF0B62BEC112E8D7242FB848631D12D252728/"};
+                final String[] chepeURL = new String[]{"https://tile-a.openstreetmap.fr/hot/"};
                 final String[] mtbURL = new String[]{"http://tile.mtbmap.cz/mtbmap_tiles/"};
                 bingTileSource = new BingMapTileSource(null);
                 sputnikTileSource = new SputnikTileSource("Sputnik",  aZoomMinLevel, aZoomMaxLevel, 512, aImageFilenameEnding, sputnikURL);

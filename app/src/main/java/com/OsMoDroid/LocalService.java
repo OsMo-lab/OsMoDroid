@@ -697,7 +697,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
             {
                 super.onCreate();
                 Log.d(this.getClass().getName(), "localserviceoncreate");
-                osmand = new OsmAndAidlHelper(this, this);
+                osmand = new OsmAndAidlHelper(getApplication(), this);
                 ttsManage();
                 getversion();
                 serContext = LocalService.this;
@@ -2897,6 +2897,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                         }
                 });
             }
+        ArrayList<String> emptyList = new ArrayList<>();
         void osmAndAddAllChannels()
             {
                 for(Channel ch: LocalService.channelList)
@@ -2904,56 +2905,56 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                         osmand.addMapLayer(Integer.toString(ch.u),ch.name,5.5f,null);
                         for(Device dev:ch.deviceList)
                             {
-                                osmand.addMapPoint(Integer.toString(ch.u),Integer.toString(dev.u),dev.name.substring(0,1),dev.name,"User",dev.color,new ALatLon(dev.lat,dev.lon),null);
+                                osmand.addMapPoint(Integer.toString(ch.u),Integer.toString(dev.u),dev.name.substring(0,1),dev.name,"User",dev.color,new ALatLon(dev.lat,dev.lon),emptyList);
                             }
                         for(Channel.Point p: ch.pointList)
                             {
-                                osmand.addMapPoint(Integer.toString(ch.u),Integer.toString(p.u)," ",p.name,"Point", Color.parseColor(p.color),new ALatLon(p.lat,p.lon),null);
+                                osmand.addMapPoint(Integer.toString(ch.u),Integer.toString(p.u),p.name.substring(0,1),p.name,"Point", Color.parseColor(p.color),new ALatLon(p.lat,p.lon),emptyList);
                             }
                         for(ColoredGPX cg:ch.gpxList)
                             {
-                                osmand.importGpxFromFile(cg.gpxfile, cg.gpxfile.getName());
+                                osmand.importGpxFromFile(cg.gpxfile, cg.gpxfile.getName(),"translucent_orange",true);
                                 osmand.showGpx(cg.gpxfile.getName());
                             }
                     }
-                osmand.refreshMap();
-                addlog("osmAndAddAllChannels");
+                //osmand.refreshMap();
+               // addlog("osmAndAddAllChannels");
             }
         void osmandaddchannel(Channel ch)
             {
                 osmand.addMapLayer(Integer.toString(ch.u),ch.name,5.5f,null);
-                osmand.refreshMap();
-                addlog("osmandaddchannel");
+               // osmand.refreshMap();
+              //  addlog("osmandaddchannel");
             }
         void osmAndDeleteChannel(Channel ch)
             {
                 osmand.removeMapLayer(Integer.toString(ch.u));
-                osmand.refreshMap();
-                addlog("osmAndDeleteChannel");
+              //  osmand.refreshMap();
+              //  addlog("osmAndDeleteChannel");
             }
         void osmanddeldev(Channel ch, Device dev)
             {
                 osmand.removeMapPoint(Integer.toString(ch.u), Integer.toString(dev.u));
-                osmand.refreshMap();
-                addlog("osmanddeldev");
+               // osmand.refreshMap();
+             //   addlog("osmanddeldev");
             }
         void osmandadddevice(Channel ch, Device dev)
             {
-                osmand.addMapPoint(Integer.toString(ch.u),Integer.toString(dev.u),dev.name.substring(0,1),dev.name,"User",dev.color,new ALatLon(dev.lat,dev.lon),null);
-                osmand.refreshMap();
-                addlog("osmandadddevice");
+                osmand.addMapPoint(Integer.toString(ch.u),Integer.toString(dev.u),dev.name.substring(0,1),dev.name,"User",dev.color,new ALatLon(dev.lat,dev.lon),emptyList);
+               // osmand.refreshMap();
+              //  addlog("osmandadddevice");
             }
         void osmandaddpoint(Channel ch, Channel.Point p)
             {
-                osmand.addMapPoint(Integer.toString(ch.u),Integer.toString(p.u)," ",p.name,"Point", Color.parseColor(p.color),new ALatLon(p.lat,p.lon),null);
-                osmand.refreshMap();
-                addlog("osmandaddpoint");
+                osmand.addMapPoint(Integer.toString(ch.u),Integer.toString(p.u),p.name.substring(0,1),p.name,"Point", Color.parseColor(p.color),new ALatLon(p.lat,p.lon),emptyList);
+              //  osmand.refreshMap();
+              //  addlog("osmandaddpoint");
             }
         void osmanddelpoint(Channel ch, Channel.Point p)
             {
                 osmand.removeMapPoint(Integer.toString(ch.u), Integer.toString(p.u));
-                osmand.refreshMap();
-                addlog("osmanddelpoint");
+               // osmand.refreshMap();
+               // addlog("osmanddelpoint");
             }
 
         void osmandupdDevice(Device dev)
@@ -2964,12 +2965,12 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                             {
                                 if(dev.equals(d))
                                     {
-                                        osmand.updateMapPoint(Integer.toString(ch.u),Integer.toString(dev.u),dev.name.substring(0,1),dev.name,"User",dev.color,new ALatLon(dev.lat,dev.lon),null);
+                                        osmand.updateMapPoint(Integer.toString(ch.u),Integer.toString(dev.u),dev.name.substring(0,1),dev.name,"User",dev.color,new ALatLon(dev.lat,dev.lon),emptyList);
                                     }
                             }
                     }
-                osmand.refreshMap();
-                addlog("osmandupdDevice");
+              //  osmand.refreshMap();
+              //  addlog("osmandupdDevice");
 
             }
     }
