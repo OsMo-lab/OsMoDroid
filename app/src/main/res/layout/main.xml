@@ -91,6 +91,13 @@
         android:layout_height="wrap_content"
         android:text="@string/auth" />
 
+    <Button
+        android:id="@+id/osmandButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/open_osmand"
+        android:visibility="gone"/>
+
     <TextView
         android:id="@+id/Location"
         android:layout_width="fill_parent"

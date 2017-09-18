@@ -185,6 +185,16 @@ public class MainFragment extends Fragment implements GPSLocalServiceClient.upd
                     {
                         sosButton.setVisibility(View.VISIBLE);
                     }
+                Button osmandButton = (Button)getView().findViewById(R.id.osmandButton);
+                if(LocalService.osmandbind)
+                    {
+                        osmandButton.setVisibility(View.VISIBLE);
+                    }
+                else
+                    {
+                        osmandButton.setVisibility(View.GONE);
+                    }
+
 
             }
         /* (non-Javadoc)
@@ -465,6 +475,25 @@ public class MainFragment extends Fragment implements GPSLocalServiceClient.upd
                     {
                         auth.setVisibility(View.GONE);
                     }
+                Button osmandButton = (Button)view.findViewById(R.id.osmandButton);
+                if(LocalService.osmandbind)
+                    {
+                        osmandButton.setVisibility(View.VISIBLE);
+                    }
+                else
+                    {
+                        osmandButton.setVisibility(View.GONE);
+                    }
+                osmandButton.setOnClickListener(new OnClickListener()
+                    {
+                        @Override
+                        public void onClick(View v)
+                            {
+                                Intent intent = getActivity().getPackageManager().getLaunchIntentForPackage("net.osmand.plus");
+                                startActivity(intent);
+
+                            }
+                    });
                 Button start = (Button) view.findViewById(R.id.startButton);
                 Button exit = (Button) view.findViewById(R.id.exitButton);
                 start.setEnabled(false);

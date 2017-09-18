@@ -108,6 +108,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
         //public static List<Point> traceList = new ArrayList<Point>();
         public static ArrayList<ColoredGPX> showedgpxList = new ArrayList<ColoredGPX>();
         static boolean connectcompleted =false;
+        public static boolean osmandbind=false;
         long sessionopentime;
         boolean binded = false;
         private SensorManager mSensorManager;
@@ -697,7 +698,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
             {
                 super.onCreate();
                 Log.d(this.getClass().getName(), "localserviceoncreate");
-                osmand = new OsmAndAidlHelper(getApplication(), this);
+                osmand = new OsmAndAidlHelper(this, this);
                 ttsManage();
                 getversion();
                 serContext = LocalService.this;
@@ -2905,11 +2906,11 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                         osmand.addMapLayer(Integer.toString(ch.u),ch.name,5.5f,null);
                         for(Device dev:ch.deviceList)
                             {
-                                osmand.addMapPoint(Integer.toString(ch.u),Integer.toString(dev.u),dev.name.substring(0,1),dev.name,"User",dev.color,new ALatLon(dev.lat,dev.lon),emptyList);
+                                osmand.addMapPoint(Integer.toString(ch.u),Integer.toString(dev.u),dev.name.length()>0 ? dev.name.substring(0,1) : "",dev.name,"User",dev.color,new ALatLon(dev.lat,dev.lon),emptyList);
                             }
                         for(Channel.Point p: ch.pointList)
                             {
-                                osmand.addMapPoint(Integer.toString(ch.u),Integer.toString(p.u),p.name.substring(0,1),p.name,"Point", Color.parseColor(p.color),new ALatLon(p.lat,p.lon),emptyList);
+                                osmand.addMapPoint(Integer.toString(ch.u),Integer.toString(p.u),p.name.length()>0 ? p.name.substring(0,1):p.name,p.name,"Point", Color.parseColor(p.color),new ALatLon(p.lat,p.lon),emptyList);
                             }
                         for(ColoredGPX cg:ch.gpxList)
                             {
@@ -2940,13 +2941,13 @@ public class LocalService extends Service implements LocationListener, GpsStatus
             }
         void osmandadddevice(Channel ch, Device dev)
             {
-                osmand.addMapPoint(Integer.toString(ch.u),Integer.toString(dev.u),dev.name.substring(0,1),dev.name,"User",dev.color,new ALatLon(dev.lat,dev.lon),emptyList);
+                osmand.addMapPoint(Integer.toString(ch.u),Integer.toString(dev.u),dev.name.length()>0 ? dev.name.substring(0,1) : "",dev.name,"User",dev.color,new ALatLon(dev.lat,dev.lon),emptyList);
                // osmand.refreshMap();
               //  addlog("osmandadddevice");
             }
         void osmandaddpoint(Channel ch, Channel.Point p)
             {
-                osmand.addMapPoint(Integer.toString(ch.u),Integer.toString(p.u),p.name.substring(0,1),p.name,"Point", Color.parseColor(p.color),new ALatLon(p.lat,p.lon),emptyList);
+                osmand.addMapPoint(Integer.toString(ch.u),Integer.toString(p.u),p.name.length()>0 ? p.name.substring(0,1):p.name,p.name,"Point", Color.parseColor(p.color),new ALatLon(p.lat,p.lon),emptyList);
               //  osmand.refreshMap();
               //  addlog("osmandaddpoint");
             }
@@ -2965,7 +2966,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                             {
                                 if(dev.equals(d))
                                     {
-                                        osmand.updateMapPoint(Integer.toString(ch.u),Integer.toString(dev.u),dev.name.substring(0,1),dev.name,"User",dev.color,new ALatLon(dev.lat,dev.lon),emptyList);
+                                        osmand.updateMapPoint(Integer.toString(ch.u),Integer.toString(dev.u),dev.name.length()>0 ? dev.name.substring(0,1) : "",dev.name,"User",dev.color,new ALatLon(dev.lat,dev.lon),emptyList);
                                     }
                             }
                     }

@@ -1,6 +1,7 @@
 package com.OsMoDroid;
 
 import android.app.Application;
+import android.app.Service;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -56,13 +57,14 @@ import java.util.List;
 
 import com.OsMoDroid.OsmAndHelper.OnOsmandMissingListener;
 
+import static com.OsMoDroid.LocalService.addlog;
 public class OsmAndAidlHelper {
 
 	private static final String OSMAND_FREE_PACKAGE_NAME = "net.osmand";
 	private static final String OSMAND_PLUS_PACKAGE_NAME = "net.osmand.plus";
 	private static final String OSMAND_PACKAGE_NAME = OSMAND_PLUS_PACKAGE_NAME;
 
-	private final Application app;
+	private final Service app;
 	private final OnOsmandMissingListener mOsmandMissingListener;
 	private IOsmAndAidlInterface mIOsmAndAidlInterface;
 
@@ -78,17 +80,22 @@ public class OsmAndAidlHelper {
 			// service through an IDL interface, so get a client-side
 			// representation of that from the raw service object.
 			mIOsmAndAidlInterface = IOsmAndAidlInterface.Stub.asInterface(service);
-			Toast.makeText(app, "OsmAnd service connected", Toast.LENGTH_SHORT).show();
+			//Toast.makeText(app, "OsmAnd service connected", Toast.LENGTH_SHORT).show();
+			addlog("Osmand service connected");
+			((LocalService)app).osmAndAddAllChannels();
+			LocalService.osmandbind=true;
+
 		}
 		public void onServiceDisconnected(ComponentName className) {
 			// This is called when the connection with the service has been
 			// unexpectedly disconnected -- that is, its process crashed.
 			mIOsmAndAidlInterface = null;
-			Toast.makeText(app, "OsmAnd service disconnected", Toast.LENGTH_SHORT).show();
+			LocalService.osmandbind=false;
+			addlog("Osmand service disconnected");
 		}
 	};
 
-	public OsmAndAidlHelper(Application application, OnOsmandMissingListener listener) {
+	public OsmAndAidlHelper(Service application, OnOsmandMissingListener listener) {
 		this.app = application;
 		this.mOsmandMissingListener = listener;
 		bindService();
@@ -100,10 +107,11 @@ public class OsmAndAidlHelper {
 			intent.setPackage(OSMAND_PACKAGE_NAME);
 			boolean res = app.bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
 			if (res) {
-				Toast.makeText(app, "OsmAnd service bind", Toast.LENGTH_SHORT).show();
+
+				addlog("Osmand service bind");
 				return true;
 			} else {
-				Toast.makeText(app, "OsmAnd service NOT bind", Toast.LENGTH_SHORT).show();
+				addlog("Osmand service not bind");
 				mOsmandMissingListener.osmandMissing();
 				return false;
 			}
