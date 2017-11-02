@@ -60,9 +60,10 @@ import com.OsMoDroid.OsmAndHelper.OnOsmandMissingListener;
 import static com.OsMoDroid.LocalService.addlog;
 public class OsmAndAidlHelper {
 
-	private static final String OSMAND_FREE_PACKAGE_NAME = "net.osmand";
-	private static final String OSMAND_PLUS_PACKAGE_NAME = "net.osmand.plus";
-	private static final String OSMAND_PACKAGE_NAME = OSMAND_PLUS_PACKAGE_NAME;
+	//private static final String OSMAND_FREE_PACKAGE_NAME = "net.osmand";
+	//private static final String OSMAND_PLUS_PACKAGE_NAME = "net.osmand.plus";
+	//private static final String OSMAND_PACKAGE_NAME = OSMAND_PLUS_PACKAGE_NAME;
+	public static String osmand_package_name="";
 
 	private final Service app;
 	private final OnOsmandMissingListener mOsmandMissingListener;
@@ -83,7 +84,11 @@ public class OsmAndAidlHelper {
 			//Toast.makeText(app, "OsmAnd service connected", Toast.LENGTH_SHORT).show();
 			addlog("Osmand service connected");
 			((LocalService)app).osmAndAddAllChannels();
+			osmand_package_name=className.getPackageName();
+
 			LocalService.osmandbind=true;
+			addlog(osmand_package_name);
+			((LocalService)app).refresh();
 
 		}
 		public void onServiceDisconnected(ComponentName className) {
@@ -92,6 +97,7 @@ public class OsmAndAidlHelper {
 			mIOsmAndAidlInterface = null;
 			LocalService.osmandbind=false;
 			addlog("Osmand service disconnected");
+			((LocalService)app).refresh();
 		}
 	};
 
@@ -104,7 +110,7 @@ public class OsmAndAidlHelper {
 	 boolean bindService() {
 		if (mIOsmAndAidlInterface == null) {
 			Intent intent = new Intent("net.osmand.aidl.OsmandAidlService");
-			intent.setPackage(OSMAND_PACKAGE_NAME);
+			//intent.setPackage(OSMAND_PACKAGE_NAME);
 			boolean res = app.bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
 			if (res) {
 
@@ -570,7 +576,7 @@ public class OsmAndAidlHelper {
 	public boolean importGpxFromUri(Uri gpxUri, String fileName, String color, boolean show) {
 		if (mIOsmAndAidlInterface != null) {
 			try {
-				app.grantUriPermission(OSMAND_PACKAGE_NAME, gpxUri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+				app.grantUriPermission(osmand_package_name, gpxUri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
 				return mIOsmAndAidlInterface.importGpx(new ImportGpxParams(gpxUri, fileName, color, show));
 			} catch (RemoteException e) {
 				e.printStackTrace();
@@ -582,7 +588,7 @@ public class OsmAndAidlHelper {
 	public boolean navigateGpxFromUri(Uri gpxUri, boolean force) {
 		if (mIOsmAndAidlInterface != null) {
 			try {
-				app.grantUriPermission(OSMAND_PACKAGE_NAME, gpxUri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+				app.grantUriPermission(osmand_package_name, gpxUri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
 				return mIOsmAndAidlInterface.navigateGpx(new NavigateGpxParams(gpxUri, force));
 			} catch (RemoteException e) {
 				e.printStackTrace();

@@ -26,6 +26,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.osmdroid.api.IMapController;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
+import org.osmdroid.util.BoundingBox;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 
@@ -90,6 +91,7 @@ import android.view.View;
 import android.view.View.MeasureSpec;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.RemoteViews;
 import android.widget.Toast;
@@ -475,6 +477,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
         private IMapController mapController;
         private long lastsmstime=0;
         private OsmAndAidlHelper osmand;
+        private MapView mMapView;
         static String formatInterval(final long l)
             {
                 return String.format("%02d:%02d:%02d", l / (1000 * 60 * 60), (l % (1000 * 60 * 60)) / (1000 * 60), ((l % (1000 * 60 * 60)) % (1000 * 60)) / 1000);
@@ -917,8 +920,10 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                 int[] ids = AppWidgetManager.getInstance(this).getAppWidgetIds(myWidget);
                 if(ids.length > 0)
                     {
-                        MapView mMapView = new MapView(getApplicationContext());
-                        ChannelsOverlay choverlay = new ChannelsOverlay(mMapView);
+                        ImageButton c =(ImageButton) linearview.findViewById(R.id.imageButtonCenter);
+                                c.setVisibility(View.GONE);
+                         mMapView = new MapView(getApplicationContext());
+                        ChannelsOverlay choverlay = new ChannelsOverlay(mMapView, true);
                         mapController = mMapView.getController();
                         mMapView.getOverlays().add(choverlay);
                         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.FILL_PARENT, RelativeLayout.LayoutParams.FILL_PARENT);
@@ -2520,9 +2525,45 @@ public class LocalService extends Service implements LocationListener, GpsStatus
             {
                 if(mapController!=null)
                     {
-                        mapController.setZoom(4);
-                        GeoPoint startPoint = new GeoPoint(59.0, 30.0);
-                        mapController.setCenter(startPoint);
+                        //mapController.setZoom(4);
+
+                        double nord = 0, sud = 0, ovest = 0, est = 0;
+                        for(Channel ch:LocalService.channelList)
+                            {
+                                if(ch.type==2)
+                                    {
+                                        for (Device dev : ch.deviceList)
+                                            {
+                                                double lat = dev.lat;
+                                                double lon = dev.lon;
+
+                                                if ( (lat > nord)) nord = lat;
+                                                if ( (lat < sud)) sud = lat;
+                                                if ( (lon < ovest)) ovest = lon;
+                                                if ( (lon > est)) est = lon;
+
+
+                                            }
+//                                        if(ch.deviceList.size()>0){
+//                                            lat=lat/ch.deviceList.size();
+//                                            lon=lon/ch.deviceList.size();
+//                                        }
+
+                                    }
+                            }
+                       final BoundingBox b = new BoundingBox(nord, est, sud, ovest);
+                        //GeoPoint startPoint = new GeoPoint(lat, lon);
+                        //mapController.setCenter(startPoint);
+                        alertHandler.postDelayed(new Runnable()
+                                                     {
+                                                         @Override
+                                                         public void run()
+                                                             {
+                                                                 mMapView.zoomToBoundingBox(b, false);
+                                                             }
+                                                     },3000);
+
+
                         alertHandler.postDelayed(new Runnable()
                             {
                                 @Override
@@ -2903,19 +2944,22 @@ public class LocalService extends Service implements LocationListener, GpsStatus
             {
                 for(Channel ch: LocalService.channelList)
                     {
-                        osmand.addMapLayer(Integer.toString(ch.u),ch.name,5.5f,null);
-                        for(Device dev:ch.deviceList)
+                        if(ch.send)
                             {
-                                osmand.addMapPoint(Integer.toString(ch.u),Integer.toString(dev.u),dev.name.length()>0 ? dev.name.substring(0,1) : "",dev.name,"User",dev.color,new ALatLon(dev.lat,dev.lon),emptyList);
-                            }
-                        for(Channel.Point p: ch.pointList)
-                            {
-                                osmand.addMapPoint(Integer.toString(ch.u),Integer.toString(p.u),p.name.length()>0 ? p.name.substring(0,1):p.name,p.name,"Point", Color.parseColor(p.color),new ALatLon(p.lat,p.lon),emptyList);
-                            }
-                        for(ColoredGPX cg:ch.gpxList)
-                            {
-                                osmand.importGpxFromFile(cg.gpxfile, cg.gpxfile.getName(),"translucent_orange",true);
-                                osmand.showGpx(cg.gpxfile.getName());
+                                osmand.addMapLayer(Integer.toString(ch.u), ch.name, 5.5f, null);
+                                for (Device dev : ch.deviceList)
+                                    {
+                                        osmand.addMapPoint(Integer.toString(ch.u), Integer.toString(dev.u), dev.name.length() > 0 ? dev.name.substring(0, 1) : "", dev.name, "User", dev.color, new ALatLon(dev.lat, dev.lon), emptyList);
+                                    }
+                                for (Channel.Point p : ch.pointList)
+                                    {
+                                        osmand.addMapPoint(Integer.toString(ch.u), Integer.toString(p.u), p.name.length() > 0 ? p.name.substring(0, 1) : p.name, p.name, "Point", Color.parseColor(p.color), new ALatLon(p.lat, p.lon), emptyList);
+                                    }
+                                for (ColoredGPX cg : ch.gpxList)
+                                    {
+                                        osmand.importGpxFromFile(cg.gpxfile, cg.gpxfile.getName(), "translucent_orange", true);
+                                        osmand.showGpx(cg.gpxfile.getName());
+                                    }
                             }
                     }
                 //osmand.refreshMap();

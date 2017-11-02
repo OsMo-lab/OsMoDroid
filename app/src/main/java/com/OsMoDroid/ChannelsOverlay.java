@@ -56,6 +56,7 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
         private final Point mTempPoint1 = new Point();
         private final Point mTempPoint2 = new Point();
         private final Point mCurScreenCoords = new Point();
+        boolean widgetmode;
 
         //private final float mScale;
         //Paint paint = new Paint();
@@ -78,10 +79,11 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
                 int size=0;
             }
         ArrayList<Cluster> clusters=new ArrayList<Cluster>();
-        public ChannelsOverlay( MapView map)
+        public ChannelsOverlay( MapView map, boolean widgetmode)
             {
 
                 this.map = map;
+                this.widgetmode=widgetmode;
 
                 this.mapFragment = mapFragment;
                 mRotationDetector = new RotationGestureDetector(this);
@@ -142,241 +144,342 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
                 final Point scrPoint1 = new Point();
 
 
-                for (ColoredGPX gpx : LocalService.showedgpxList)
+                if(!widgetmode)
                     {
-                        if (gpx.status.equals(ColoredGPX.Statuses.LOADED))
+                        for (ColoredGPX gpx : LocalService.showedgpxList)
                             {
-                                drawGPX(canvas, pj, gpx, theBoundingBox, scrPoint, mapView);
+                                if (gpx.status.equals(ColoredGPX.Statuses.LOADED))
+                                    {
+                                        drawGPX(canvas, pj, gpx, theBoundingBox, scrPoint, mapView);
+                                    }
                             }
-                    }
-
-
-                for (Channel ch : LocalService.channelList)
-                    {
-                        if (ch.send)
+                        for (Channel ch : LocalService.channelList)
                             {
-                                for (Device d : ch.deviceList)
+                                if (ch.send)
                                     {
-                                        if (d.lat != 0f && d.lon != 0f&&d.clusterid==0)
+                                        for (Device d : ch.deviceList)
                                             {
-                                                if (OsMoDroid.settings.getBoolean("traces", true))
+                                                if (d.lat != 0f && d.lon != 0f && d.clusterid == 0)
                                                     {
-                                                        drawdevicepath(canvas, pj, d);
-                                                    }
-                                            }
-                                    }
-                                for (ColoredGPX gpx : ch.gpxList)
-                                    {
-                                        if (gpx.status.equals(ColoredGPX.Statuses.LOADED))
-                                            {
-                                                drawGPX(canvas, pj, gpx, theBoundingBox, scrPoint, mapView);
-                                            }
-                                    }
-
-                                for (com.OsMoDroid.Channel.Point p : ch.pointList)
-                                    {
-                                        if (p.clusterid==0&&theBoundingBox.contains(new GeoPoint(p.lat, p.lon)))
-                                            {
-                                                pj.toPixels(new GeoPoint(p.lat, p.lon), scrPoint);
-                                                if(p.paint==null)
-                                                    {
-                                                        p.paint= new Paint();
-                                                        p.paint.setDither(true);
-                                                        p.paint.setAntiAlias(true);
-                                                        p.paint.setTextSize(twenty);
-                                                        p.paint.setTypeface(Typeface.DEFAULT_BOLD);
-                                                        p.paint.setTextAlign(Paint.Align.CENTER);
-                                                        try
+                                                        if (OsMoDroid.settings.getBoolean("traces", true))
                                                             {
-                                                                p.paint.setColor(Color.parseColor(p.color));
-                                                            }
-                                                        catch (Exception e)
-                                                            {
-                                                                p.paint.setColor(Color.RED);
+                                                                drawdevicepath(canvas, pj, d);
                                                             }
                                                     }
-                                                if(p.paint.getColor()!=Color.parseColor(p.color))
-                                                    {
-                                                        try
-                                                            {
-                                                                p.paint.setColor(Color.parseColor(p.color));
-                                                            }
-                                                        catch (Exception e)
-                                                            {
-                                                                e.printStackTrace();
-                                                            }
-                                                    }
-                                                canvas.save();
-                                                canvas.rotate(-mapView.getMapOrientation(), scrPoint.x, scrPoint.y);
-
-
-                                                canvas.drawRect(scrPoint.x - ten, scrPoint.y - ten, scrPoint.x + ten, scrPoint.y + ten, p.paint);
-                                               // paint.setColor(Color.parseColor("#013220"));
-                                                blackpaint.setDither(true);
-                                                blackpaint.setAntiAlias(true);
-                                                blackpaint.setTextSize(twenty);
-                                                blackpaint.setTypeface(Typeface.DEFAULT_BOLD);
-                                                blackpaint.setTextAlign(Paint.Align.CENTER);
-                                                if(OsMoDroid.settings.getBoolean("shortname",false))
-                                                    {
-                                                        Rect textBounds = new Rect();
-                                                        String shortname = p.name;
-                                                        if(p.name.length()>3)
-                                                            {
-                                                                shortname = p.name.substring(0, 3);
-                                                            }
-                                                        blackpaint.setTextSize(twenty/2);
-                                                        blackpaint.getTextBounds(shortname, 0,shortname.length(), textBounds);
-
-                                                        canvas.drawText(shortname, scrPoint.x, scrPoint.y + textBounds.height()/2- ten/2 , blackpaint);
-                                                        blackpaint.setTextSize(twenty);
-
-                                                    }
-                                                else
-                                                    {
-
-
-                                                                canvas.drawText(p.name, scrPoint.x, scrPoint.y - ten, blackpaint);
-
-                                                    }
-                                                canvas.restore();
                                             }
-                                    }
-
-                                for (Device dev : ch.deviceList)
-                                    {
-                                        if(dev.devpaint==null)
+                                        for (ColoredGPX gpx : ch.gpxList)
                                             {
-                                                dev.devpaint= new Paint();
-                                                dev.devpaint.setColor(dev.color);
-
-                                            }
-                                        if(dev.devpaint.getColor()!=dev.color)
-                                            {
-                                                dev.devpaint.setColor(dev.color);
-
-                                            }
-                                        //if (dev.lat != 0f && dev.lon != 0f&&dev.clusterid==0&&(!(dev.updatated < (curtime - 900000)) || ch.type==2 ||dev.state!=0))
-                                        if (dev.lat != 0f && dev.lon != 0f&&dev.clusterid==0)
-                                            {
-                                                if (theBoundingBox.contains(new GeoPoint(dev.lat, dev.lon)))
+                                                if (gpx.status.equals(ColoredGPX.Statuses.LOADED))
                                                     {
-                                                        pj.toPixels(new GeoPoint(dev.lat, dev.lon), scrPoint);
-                                                        dev.devpaint.setDither(true);
-                                                        dev.devpaint.setAntiAlias(true);
-                                                        dev.devpaint.setTextSize(twenty);
-                                                        dev.devpaint.setTypeface(Typeface.DEFAULT_BOLD);
-                                                        dev.devpaint.setTextAlign(Paint.Align.CENTER);
+                                                        drawGPX(canvas, pj, gpx, theBoundingBox, scrPoint, mapView);
+                                                    }
+                                            }
+                                        for (com.OsMoDroid.Channel.Point p : ch.pointList)
+                                            {
+                                                if (p.clusterid == 0 && theBoundingBox.contains(new GeoPoint(p.lat, p.lon)))
+                                                    {
+                                                        pj.toPixels(new GeoPoint(p.lat, p.lon), scrPoint);
+                                                        if (p.paint == null)
+                                                            {
+                                                                p.paint = new Paint();
+                                                                p.paint.setDither(true);
+                                                                p.paint.setAntiAlias(true);
+                                                                p.paint.setTextSize(twenty);
+                                                                p.paint.setTypeface(Typeface.DEFAULT_BOLD);
+                                                                p.paint.setTextAlign(Paint.Align.CENTER);
+                                                                try
+                                                                    {
+                                                                        p.paint.setColor(Color.parseColor(p.color));
+                                                                    }
+                                                                catch (Exception e)
+                                                                    {
+                                                                        p.paint.setColor(Color.RED);
+                                                                    }
+                                                            }
+                                                        if (p.paint.getColor() != Color.parseColor(p.color))
+                                                            {
+                                                                try
+                                                                    {
+                                                                        p.paint.setColor(Color.parseColor(p.color));
+                                                                    }
+                                                                catch (Exception e)
+                                                                    {
+                                                                        e.printStackTrace();
+                                                                    }
+                                                            }
+                                                        canvas.save();
+                                                        canvas.rotate(-mapView.getMapOrientation(), scrPoint.x, scrPoint.y);
+                                                        canvas.drawRect(scrPoint.x - ten, scrPoint.y - ten, scrPoint.x + ten, scrPoint.y + ten, p.paint);
+                                                        // paint.setColor(Color.parseColor("#013220"));
                                                         blackpaint.setDither(true);
                                                         blackpaint.setAntiAlias(true);
                                                         blackpaint.setTextSize(twenty);
                                                         blackpaint.setTypeface(Typeface.DEFAULT_BOLD);
                                                         blackpaint.setTextAlign(Paint.Align.CENTER);
-                                                        graypaint.setDither(true);
-                                                        graypaint.setAntiAlias(true);
-                                                        graypaint.setTextSize(twenty);
-                                                        graypaint.setTypeface(Typeface.DEFAULT_BOLD);
-                                                        graypaint.setTextAlign(Paint.Align.CENTER);
-
-                                                        canvas.save();
-                                                        canvas.rotate(-mapView.getMapOrientation(), scrPoint.x, scrPoint.y);
-                                                        //dev.devpaint.setColor(Color.GRAY);
-                                                        canvas.drawCircle(scrPoint.x, scrPoint.y, ten+ten/10, graypaint);
-                                                        //dev.devpaint.setColor(dev.color);
-                                                        canvas.drawCircle(scrPoint.x, scrPoint.y, ten, dev.devpaint);
-                                                       // dev.devpaint.setColor(Color.parseColor("#013220"));
-                                                        if (dev.u == followdev)
+                                                        if (OsMoDroid.settings.getBoolean("shortname", false))
                                                             {
-                                                                //dev.devpaint.setColor(Color.RED);
-                                                                canvas.drawCircle(scrPoint.x, scrPoint.y, ten / 3, redpaint);
-                                                            }
-                                                        if (dev.updatated < (curtime - showtimeout))
-                                                            {
-                                                                //dev.devpaint.setColor(Color.GRAY);
-                                                                if(OsMoDroid.settings.getBoolean("shortname",false))
+                                                                Rect textBounds = new Rect();
+                                                                String shortname = p.name;
+                                                                if (p.name.length() > 3)
                                                                     {
-                                                                        Rect textBounds = new Rect();
-                                                                        String shortname = dev.name;
-                                                                        if(dev.name.length()>1)
-                                                                            {
-                                                                                shortname = dev.name.substring(0, 1);
-                                                                            }
-
-                                                                        graypaint.getTextBounds(dev.name, 0,shortname.length(), textBounds);
-
-                                                                        canvas.drawText(shortname, scrPoint.x, scrPoint.y + textBounds.height()/2 , graypaint);
-
+                                                                        shortname = p.name.substring(0, 3);
                                                                     }
-                                                                else
-                                                                    {
-                                                                        if (dev.name.equals(""))
-                                                                            {
-                                                                                canvas.drawText(Integer.toString(dev.u), scrPoint.x, scrPoint.y - ten,graypaint);
-                                                                            }
-                                                                        else
-                                                                            {
-                                                                                canvas.drawText(dev.name, scrPoint.x, scrPoint.y - ten, graypaint);
-                                                                            }
-                                                                        if (dev.updatated < (curtime - showtimeout))
-                                                                            {
-                                                                                Date resultdate = new Date(dev.updatated);
-                                                                                canvas.drawText(OsMoDroid.sdf.format(dev.updatated), scrPoint.x, scrPoint.y + ten + twenty, graypaint);
-                                                                            }
-                                                                        else
-                                                                            {
-                                                                                canvas.drawText(dev.speed, scrPoint.x, scrPoint.y + ten + twenty, graypaint);
-                                                                            }
-                                                                    }
+                                                                blackpaint.setTextSize(twenty / 2);
+                                                                blackpaint.getTextBounds(shortname, 0, shortname.length(), textBounds);
+                                                                canvas.drawText(shortname, scrPoint.x, scrPoint.y + textBounds.height() / 2 - ten / 2, blackpaint);
+                                                                blackpaint.setTextSize(twenty);
                                                             }
                                                         else
                                                             {
-                                                                if(OsMoDroid.settings.getBoolean("shortname",false))
+                                                                canvas.drawText(p.name, scrPoint.x, scrPoint.y - ten, blackpaint);
+                                                            }
+                                                        canvas.restore();
+                                                    }
+                                            }
+                                        for (Device dev : ch.deviceList)
+                                            {
+                                                if (dev.devpaint == null)
+                                                    {
+                                                        dev.devpaint = new Paint();
+                                                        dev.devpaint.setColor(dev.color);
+                                                    }
+                                                if (dev.devpaint.getColor() != dev.color)
+                                                    {
+                                                        dev.devpaint.setColor(dev.color);
+                                                    }
+                                                //if (dev.lat != 0f && dev.lon != 0f&&dev.clusterid==0&&(!(dev.updatated < (curtime - 900000)) || ch.type==2 ||dev.state!=0))
+                                                if (dev.lat != 0f && dev.lon != 0f && dev.clusterid == 0)
+                                                    {
+                                                        if (theBoundingBox.contains(new GeoPoint(dev.lat, dev.lon)))
+                                                            {
+                                                                pj.toPixels(new GeoPoint(dev.lat, dev.lon), scrPoint);
+                                                                dev.devpaint.setDither(true);
+                                                                dev.devpaint.setAntiAlias(true);
+                                                                dev.devpaint.setTextSize(twenty);
+                                                                dev.devpaint.setTypeface(Typeface.DEFAULT_BOLD);
+                                                                dev.devpaint.setTextAlign(Paint.Align.CENTER);
+                                                                blackpaint.setDither(true);
+                                                                blackpaint.setAntiAlias(true);
+                                                                blackpaint.setTextSize(twenty);
+                                                                blackpaint.setTypeface(Typeface.DEFAULT_BOLD);
+                                                                blackpaint.setTextAlign(Paint.Align.CENTER);
+                                                                graypaint.setDither(true);
+                                                                graypaint.setAntiAlias(true);
+                                                                graypaint.setTextSize(twenty);
+                                                                graypaint.setTypeface(Typeface.DEFAULT_BOLD);
+                                                                graypaint.setTextAlign(Paint.Align.CENTER);
+                                                                canvas.save();
+                                                                canvas.rotate(-mapView.getMapOrientation(), scrPoint.x, scrPoint.y);
+                                                                //dev.devpaint.setColor(Color.GRAY);
+                                                                canvas.drawCircle(scrPoint.x, scrPoint.y, ten + ten / 10, graypaint);
+                                                                //dev.devpaint.setColor(dev.color);
+                                                                canvas.drawCircle(scrPoint.x, scrPoint.y, ten, dev.devpaint);
+                                                                // dev.devpaint.setColor(Color.parseColor("#013220"));
+                                                                if (dev.u == followdev)
                                                                     {
-                                                                        Rect textBounds = new Rect();
-                                                                        String shortname = dev.name;
-                                                                        if(dev.name.length()>1)
+                                                                        //dev.devpaint.setColor(Color.RED);
+                                                                        canvas.drawCircle(scrPoint.x, scrPoint.y, ten / 3, redpaint);
+                                                                    }
+                                                                if (dev.updatated < (curtime - showtimeout))
+                                                                    {
+                                                                        //dev.devpaint.setColor(Color.GRAY);
+                                                                        if (OsMoDroid.settings.getBoolean("shortname", false))
                                                                             {
-                                                                                shortname = dev.name.substring(0, 1);
+                                                                                Rect textBounds = new Rect();
+                                                                                String shortname = dev.name;
+                                                                                if (dev.name.length() > 1)
+                                                                                    {
+                                                                                        shortname = dev.name.substring(0, 1);
+                                                                                    }
+                                                                                graypaint.getTextBounds(dev.name, 0, shortname.length(), textBounds);
+                                                                                canvas.drawText(shortname, scrPoint.x, scrPoint.y + textBounds.height() / 2, graypaint);
                                                                             }
-
-                                                                        blackpaint.getTextBounds(dev.name, 0,shortname.length(), textBounds);
-
-                                                                        canvas.drawText(shortname, scrPoint.x, scrPoint.y + textBounds.height()/2 , blackpaint);
-
+                                                                        else
+                                                                            {
+                                                                                if (dev.name.equals(""))
+                                                                                    {
+                                                                                        canvas.drawText(Integer.toString(dev.u), scrPoint.x, scrPoint.y - ten, graypaint);
+                                                                                    }
+                                                                                else
+                                                                                    {
+                                                                                        canvas.drawText(dev.name, scrPoint.x, scrPoint.y - ten, graypaint);
+                                                                                    }
+                                                                                if (dev.updatated < (curtime - showtimeout))
+                                                                                    {
+                                                                                        Date resultdate = new Date(dev.updatated);
+                                                                                        canvas.drawText(OsMoDroid.sdf.format(dev.updatated), scrPoint.x, scrPoint.y + ten + twenty, graypaint);
+                                                                                    }
+                                                                                else
+                                                                                    {
+                                                                                        canvas.drawText(dev.speed, scrPoint.x, scrPoint.y + ten + twenty, graypaint);
+                                                                                    }
+                                                                            }
                                                                     }
                                                                 else
                                                                     {
-                                                                        if (dev.name.equals(""))
+                                                                        if (OsMoDroid.settings.getBoolean("shortname", false))
                                                                             {
-                                                                                canvas.drawText(Integer.toString(dev.u), scrPoint.x, scrPoint.y - ten, blackpaint);
+                                                                                Rect textBounds = new Rect();
+                                                                                String shortname = dev.name;
+                                                                                if (dev.name.length() > 1)
+                                                                                    {
+                                                                                        shortname = dev.name.substring(0, 1);
+                                                                                    }
+                                                                                blackpaint.getTextBounds(dev.name, 0, shortname.length(), textBounds);
+                                                                                canvas.drawText(shortname, scrPoint.x, scrPoint.y + textBounds.height() / 2, blackpaint);
                                                                             }
                                                                         else
                                                                             {
-                                                                                canvas.drawText(dev.name, scrPoint.x, scrPoint.y - ten, blackpaint);
-                                                                            }
-                                                                        if (dev.updatated < (curtime - showtimeout))
-                                                                            {
-                                                                                Date resultdate = new Date(dev.updatated);
-                                                                                canvas.drawText(OsMoDroid.sdf.format(dev.updatated), scrPoint.x, scrPoint.y + ten + twenty, blackpaint);
-                                                                            }
-                                                                        else
-                                                                            {
-                                                                                canvas.drawText(dev.speed, scrPoint.x, scrPoint.y + ten + twenty, blackpaint);
+                                                                                if (dev.name.equals(""))
+                                                                                    {
+                                                                                        canvas.drawText(Integer.toString(dev.u), scrPoint.x, scrPoint.y - ten, blackpaint);
+                                                                                    }
+                                                                                else
+                                                                                    {
+                                                                                        canvas.drawText(dev.name, scrPoint.x, scrPoint.y - ten, blackpaint);
+                                                                                    }
+                                                                                if (dev.updatated < (curtime - showtimeout))
+                                                                                    {
+                                                                                        Date resultdate = new Date(dev.updatated);
+                                                                                        canvas.drawText(OsMoDroid.sdf.format(dev.updatated), scrPoint.x, scrPoint.y + ten + twenty, blackpaint);
+                                                                                    }
+                                                                                else
+                                                                                    {
+                                                                                        canvas.drawText(dev.speed, scrPoint.x, scrPoint.y + ten + twenty, blackpaint);
+                                                                                    }
                                                                             }
                                                                     }
+                                                                canvas.restore();
                                                             }
+                                                    }
+                                            }
+                                    }
+                            }
+                        if (LocalService.mydev.devicePath.size() > 2)
+                            {
+                                drawdevicepath(canvas, pj, LocalService.mydev);
+                            }
+                    }
+                else
+                    {
+                        for (Channel ch : LocalService.channelList)
+                            {
+                                if (ch.type==2)
+                                    {
+                                        for (com.OsMoDroid.Channel.Point p : ch.pointList)
+                                            {
+                                                if (p.clusterid == 0 && theBoundingBox.contains(new GeoPoint(p.lat, p.lon)))
+                                                    {
+                                                        pj.toPixels(new GeoPoint(p.lat, p.lon), scrPoint);
+                                                        if (p.paint == null)
+                                                            {
+                                                                p.paint = new Paint();
+                                                                p.paint.setDither(true);
+                                                                p.paint.setAntiAlias(true);
+                                                                p.paint.setTextSize(twenty);
+                                                                p.paint.setTypeface(Typeface.DEFAULT_BOLD);
+                                                                p.paint.setTextAlign(Paint.Align.CENTER);
+                                                                try
+                                                                    {
+                                                                        p.paint.setColor(Color.parseColor(p.color));
+                                                                    }
+                                                                catch (Exception e)
+                                                                    {
+                                                                        p.paint.setColor(Color.RED);
+                                                                    }
+                                                            }
+                                                        if (p.paint.getColor() != Color.parseColor(p.color))
+                                                            {
+                                                                try
+                                                                    {
+                                                                        p.paint.setColor(Color.parseColor(p.color));
+                                                                    }
+                                                                catch (Exception e)
+                                                                    {
+                                                                        e.printStackTrace();
+                                                                    }
+                                                            }
+                                                        canvas.save();
+                                                        canvas.rotate(-mapView.getMapOrientation(), scrPoint.x, scrPoint.y);
+                                                        canvas.drawRect(scrPoint.x - ten, scrPoint.y - ten, scrPoint.x + ten, scrPoint.y + ten, p.paint);
+                                                        // paint.setColor(Color.parseColor("#013220"));
+                                                        blackpaint.setDither(true);
+                                                        blackpaint.setAntiAlias(true);
+                                                        blackpaint.setTextSize(twenty);
+                                                        blackpaint.setTypeface(Typeface.DEFAULT_BOLD);
+                                                        blackpaint.setTextAlign(Paint.Align.CENTER);
+
+                                                                Rect textBounds = new Rect();
+                                                                String shortname = p.name;
+                                                                if (p.name.length() > 3)
+                                                                    {
+                                                                        shortname = p.name.substring(0, 3);
+                                                                    }
+                                                                blackpaint.setTextSize(twenty / 2);
+                                                                blackpaint.getTextBounds(shortname, 0, shortname.length(), textBounds);
+                                                                canvas.drawText(shortname, scrPoint.x, scrPoint.y + textBounds.height() / 2 - ten / 2, blackpaint);
+                                                                blackpaint.setTextSize(twenty);
 
 
                                                         canvas.restore();
                                                     }
                                             }
-                                    }
 
+                                        for (Device dev : ch.deviceList)
+                                            {
+                                                if (dev.devpaint == null)
+                                                    {
+                                                        dev.devpaint = new Paint();
+                                                        dev.devpaint.setColor(dev.color);
+                                                    }
+                                                if (dev.devpaint.getColor() != dev.color)
+                                                    {
+                                                        dev.devpaint.setColor(dev.color);
+                                                    }
+                                                //if (dev.lat != 0f && dev.lon != 0f&&dev.clusterid==0&&(!(dev.updatated < (curtime - 900000)) || ch.type==2 ||dev.state!=0))
+                                                if (dev.lat != 0f && dev.lon != 0f && dev.clusterid == 0)
+                                                    {
+                                                        if (theBoundingBox.contains(new GeoPoint(dev.lat, dev.lon)))
+                                                            {
+                                                                pj.toPixels(new GeoPoint(dev.lat, dev.lon), scrPoint);
+                                                                dev.devpaint.setDither(true);
+                                                                dev.devpaint.setAntiAlias(true);
+                                                                dev.devpaint.setTextSize(twenty);
+                                                                dev.devpaint.setTypeface(Typeface.DEFAULT_BOLD);
+                                                                dev.devpaint.setTextAlign(Paint.Align.CENTER);
+                                                                blackpaint.setDither(true);
+                                                                blackpaint.setAntiAlias(true);
+                                                                blackpaint.setTextSize(twenty);
+                                                                blackpaint.setTypeface(Typeface.DEFAULT_BOLD);
+                                                                blackpaint.setTextAlign(Paint.Align.CENTER);
+                                                                graypaint.setDither(true);
+                                                                graypaint.setAntiAlias(true);
+                                                                graypaint.setTextSize(twenty);
+                                                                graypaint.setTypeface(Typeface.DEFAULT_BOLD);
+                                                                graypaint.setTextAlign(Paint.Align.CENTER);
+                                                                canvas.save();
+                                                                canvas.rotate(-mapView.getMapOrientation(), scrPoint.x, scrPoint.y);
+                                                                //dev.devpaint.setColor(Color.GRAY);
+                                                                canvas.drawCircle(scrPoint.x, scrPoint.y, ten + ten / 10, graypaint);
+                                                                //dev.devpaint.setColor(dev.color);
+                                                                canvas.drawCircle(scrPoint.x, scrPoint.y, ten, dev.devpaint);
+                                                                // dev.devpaint.setColor(Color.parseColor("#013220"));
+
+                                                                Rect textBounds = new Rect();
+                                                                String shortname = dev.name;
+                                                                if (dev.name.length() > 1)
+                                                                    {
+                                                                        shortname = dev.name.substring(0, 1);
+                                                                    }
+                                                                blackpaint.getTextBounds(dev.name, 0, shortname.length(), textBounds);
+                                                                canvas.drawText(shortname, scrPoint.x, scrPoint.y + textBounds.height() / 2, blackpaint);
+
+                                                                canvas.restore();
+                                                            }
+                                                    }
+                                            }
+                                    }
                             }
-                    }
-                if (LocalService.mydev.devicePath.size() > 2)
-                    {
-                        drawdevicepath(canvas,pj,LocalService.mydev);
 
                     }
             }

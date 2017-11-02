@@ -489,7 +489,7 @@ public class MainFragment extends Fragment implements GPSLocalServiceClient.upd
                         @Override
                         public void onClick(View v)
                             {
-                                Intent intent = getActivity().getPackageManager().getLaunchIntentForPackage("net.osmand.plus");
+                                Intent intent = getActivity().getPackageManager().getLaunchIntentForPackage(OsmAndAidlHelper.osmand_package_name);
                                 startActivity(intent);
 
                             }
@@ -630,6 +630,15 @@ public class MainFragment extends Fragment implements GPSLocalServiceClient.upd
                         {
                             try
                                 {
+                                    Button osmandButton = (Button)view.findViewById(R.id.osmandButton);
+                                    if(LocalService.osmandbind)
+                                        {
+                                            osmandButton.setVisibility(View.VISIBLE);
+                                        }
+                                    else
+                                        {
+                                            osmandButton.setVisibility(View.GONE);
+                                        }
                                     TextView dt = (TextView) view.findViewById(R.id.URL);
                                     dt.setText("");
                                     if (!OsMoDroid.settings.getString("viewurl", "").equals(""))

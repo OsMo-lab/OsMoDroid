@@ -22,12 +22,15 @@ public class MapWidget extends AppWidgetProvider
                 {
                     Log.d(getClass().getSimpleName(), "on recieve" + context.getPackageName() + " intent=" + intent);
                     Bundle extras = intent.getExtras();
-                    for (String key : extras.keySet())
+                    if(extras!=null)
                         {
-                            Object value = extras.get(key);
-                            if (value != null)
+                            for (String key : extras.keySet())
                                 {
-                                    Log.d(getClass().getSimpleName(), "on recieve" + String.format("%s %s (%s)", key, value.toString(), value.getClass().getName()));
+                                    Object value = extras.get(key);
+                                    if (value != null)
+                                        {
+                                            Log.d(getClass().getSimpleName(), "on recieve" + String.format("%s %s (%s)", key, value.toString(), value.getClass().getName()));
+                                        }
                                 }
                         }
                 }

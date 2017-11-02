@@ -657,7 +657,7 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
                         }
                 });
                 CompassOverlay compas = new CompassOverlay(getActivity(), mMapView);
-                choverlay = new ChannelsOverlay( mMapView);
+                choverlay = new ChannelsOverlay( mMapView,false);
                 mMapView.getOverlays().add(choverlay);
                 mMapView.getOverlays().add(compas);
                 compas.enableCompass();
@@ -688,7 +688,7 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
         private void reinitchoverlay()
             {
                 mMapView.getOverlays().remove(choverlay);
-                choverlay = new ChannelsOverlay( mMapView);
+                choverlay = new ChannelsOverlay( mMapView,false);
                 mMapView.getOverlays().add(choverlay);
             }
         @Override

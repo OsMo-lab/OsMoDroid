@@ -1011,7 +1011,7 @@ public class IM implements ResultsListener
                             else if (jo.optInt("error") == 67 || jo.optInt("error") == 68 || jo.optInt("error") == 69)
                                 {
                                     close();
-                                    localService.notifywarnactivity(LocalService.unescape(jo.optString("error_description")), false, OsMoDroid.NOTIFY_EXPIRY_USER);
+                                    localService.notifywarnactivity(LocalService.unescape(jo.optString("error_description")), true, OsMoDroid.NOTIFY_EXPIRY_USER);
                                     localService.motd = LocalService.unescape(jo.optString("error_description"));
                                     localService.refresh();
                                 }
@@ -1068,6 +1068,7 @@ public class IM implements ResultsListener
                                     {
                                         ch.updChannel(jo);
                                         ch.send = true;
+                                        localService.osmAndAddAllChannels();
                                     }
                             }
                         if (LocalService.channelsAdapter != null)
@@ -1088,6 +1089,7 @@ public class IM implements ResultsListener
                                 if (ch.u == Integer.parseInt(param))
                                     {
                                         ch.send = false;
+                                        localService.osmAndDeleteChannel(ch);
                                     }
                             }
                         if (LocalService.channelsAdapter != null)
@@ -1604,6 +1606,7 @@ public class IM implements ResultsListener
                         LocalService.connectcompleted =true;
                         localService.saveObject(LocalService.gcmtodolist, OsMoDroid.GCMTODOLIST);
                         localService.osmAndAddAllChannels();
+                        localService.bitmapmapview();
                     }
                 if (command.equals("GL"))
                     {
@@ -2635,7 +2638,7 @@ public class IM implements ResultsListener
                                 else if (result.Jo.optInt("error") == 67 || result.Jo.optInt("error") == 68 || result.Jo.optInt("error") == 69)
                                     {
                                         close();
-                                        localService.notifywarnactivity(LocalService.unescape(result.Jo.optString("error_description")), false, OsMoDroid.NOTIFY_EXPIRY_USER);
+                                        localService.notifywarnactivity(LocalService.unescape(result.Jo.optString("error_description")), true, OsMoDroid.NOTIFY_EXPIRY_USER);
                                         localService.motd = LocalService.unescape(result.Jo.optString("error_description"));
                                         localService.refresh();
                                     }
