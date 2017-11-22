@@ -920,6 +920,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                 int[] ids = AppWidgetManager.getInstance(this).getAppWidgetIds(myWidget);
                 if(ids.length > 0)
                     {
+                        //AppWidgetManager.getInstance(this).getAppWidgetInfo(ids[0]).
                         ImageButton c =(ImageButton) linearview.findViewById(R.id.imageButtonCenter);
                                 c.setVisibility(View.GONE);
                          mMapView = new MapView(getApplicationContext());
@@ -2536,9 +2537,13 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                                             {
                                                 double lat = dev.lat;
                                                 double lon = dev.lon;
+                                                if(nord==0){ nord = lat;}
+                                                if(sud==0){ sud = lat;}
+                                                if(ovest==0){ovest = lon;}
+                                                if(est==0){est = lon;}
 
                                                 if ( (lat > nord)) nord = lat;
-                                                if ( (lat < sud)) sud = lat;
+                                                if ( (lat < sud))  sud = lat;
                                                 if ( (lon < ovest)) ovest = lon;
                                                 if ( (lon > est)) est = lon;
 
@@ -2551,6 +2556,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
 
                                     }
                             }
+
                        final BoundingBox b = new BoundingBox(nord, est, sud, ovest);
                         //GeoPoint startPoint = new GeoPoint(lat, lon);
                         //mapController.setCenter(startPoint);
@@ -2560,6 +2566,9 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                                                          public void run()
                                                              {
                                                                  mMapView.zoomToBoundingBox(b, false);
+                                                                 mapController.zoomOut();
+
+                                                                 //Toast.makeText(LocalService.this, b.toString(), Toast.LENGTH_LONG).show();
                                                              }
                                                      },3000);
 
