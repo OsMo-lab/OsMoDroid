@@ -282,6 +282,7 @@ public class ChannelDevicesFragment extends Fragment implements ResultsListener
                 if(LocalService.currentChannel!=null)
                     {
                         globalActivity.actionBar.setTitle(getString(R.string.chanal) + ' ' + LocalService.currentChannel.name);
+                        LocalService.myIM.sendToServer("GC:" + LocalService.currentChannel.u, false);
                     }
                 super.onResume();
             }

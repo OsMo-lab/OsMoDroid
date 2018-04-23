@@ -9,6 +9,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.OsMoDroid.SosActivity"
+    android:id="@+id/fon"
     android:background="#ff6600">
 
     <TextView
@@ -20,4 +21,30 @@
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
         android:textSize="42dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal"
+        >
+
+        <Button
+            android:id="@+id/buttonSOS1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+
+            android:layout_weight="0.5"
+
+            />
+
+        <Button
+            android:id="@+id/buttonSOS2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+
+            />
+    </LinearLayout>
+
 </RelativeLayout>

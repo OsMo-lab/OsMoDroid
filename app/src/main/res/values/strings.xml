@@ -359,4 +359,5 @@
     <string name="alreadyregistered">Are you already registered ?</string>
     <string name="osmand">Osmand integration</string>
     <string name="open_osmand">Open Osmand</string>
+    <string name="closesos">Close</string>
 </resources>

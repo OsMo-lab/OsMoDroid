@@ -51,6 +51,7 @@ import android.os.SystemClock;
 import android.os.Handler;
 import android.os.Message;
 import android.speech.tts.TextToSpeech;
+import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
@@ -175,64 +176,22 @@ public class IM implements ResultsListener
                 }
         };
         private boolean onlinebybcr=false;
+        private long lastsendnet=0;
         private BroadcastReceiver bcr = new BroadcastReceiver()
         {
             @Override
             public void onReceive(Context context, Intent intent)
                 {
-                    LocalService.addlog("Network broadcast receive:");
-
-                    if (intent.getAction().equals(android.net.ConnectivityManager.CONNECTIVITY_ACTION))
+                    if (OsMoDroid.permanent&&(lastsendnet+RECONNECT_TIMEOUT<SystemClock.uptimeMillis()))
                         {
-                            Bundle extras = intent.getExtras();
-                            for (String key : extras.keySet())
-                                {
-                                    Object value = extras.get(key);
-                                    if(value!=null)
-                                        {
-                                            LocalService.addlog(String.format("%s %s (%s)", key, value.toString(), value.getClass().getName()));
-                                        }
-                                }
+                            lastsendnet=SystemClock.uptimeMillis();
+                            Intent is = new Intent(context, LocalService.class);
+                            is.putExtra("GCM","NEEDSENDNET");
+                            context.startService(is);
 
-                            if (localService.isOnline())
-                                {
-                                    onlinebybcr=true;
-                                    if (log)
-                                        {
-                                            Log.d(this.getClass().getName(), "BCR Network is connected");
-                                        }
-                                    if (log)
-                                        {
-                                            Log.d(this.getClass().getName(), "Running:" + running);
-                                        }
-                                    // Network is connected
-                                    LocalService.addlog(" Network is connected, running=" + running);
-                                    if (!running)
-                                        {
-                                            //SetAlarm();
-                                            start();
-                                            LocalService.addlog("Socket start by broadcast because no running");
-                                        }
-                                }
-                            else
-                                {
-                                    onlinebybcr=false;
-                                    if (log)
-                                        {
-                                            Log.d(this.getClass().getName(), "BCR Network is not connected");
-                                        }
-                                    if (log)
-                                        {
-                                            Log.d(this.getClass().getName(), "Running:" + running);
-                                        }
-                                    LocalService.addlog("Socket Network is not connected, running=" + running);
-                                   // if (running)
-                                        {
-                                            LocalService.addlog("Socket stop by broadcast because running");
-                                            localService.internetnotify(false);
-                                            stop();
-                                        }
-                                }
+                            LocalService.addlog("Network broadcast receive - send NEEDSENDNET");
+
+
                         }
                 }
         };
@@ -419,6 +378,7 @@ public class IM implements ResultsListener
                 //parent.registerReceiver(reconnectReceiver, new IntentFilter(RECONNECT_INTENT));
                 manager.cancel(reconnectPIntent);
                 reconnecttime=SystemClock.uptimeMillis();
+                addlog("Set reconnecttime="+reconnecttime);
                 if(fast)
                 {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
@@ -458,7 +418,7 @@ public class IM implements ResultsListener
                 LocalService.addlog("Socket void close");
                 try
                     {
-                        //parent.unregisterReceiver(bcr);
+                        parent.unregisterReceiver(bcr);
                     }
                 catch (Exception e)
                     {
@@ -501,30 +461,7 @@ public class IM implements ResultsListener
                 LocalService.addlog("Start get token" + ", key=" + OsMoDroid.settings.getString("newkey", ""));
                 if (!checkadressing)
                     {
-                        JSONObject postjson = new JSONObject();
-                        ConnectivityManager connManager = (ConnectivityManager)localService.getSystemService(localService.CONNECTIVITY_SERVICE);
-                        NetworkInfo netinfo =connManager.getActiveNetworkInfo();
-
-                        NetworkInfo mWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-                        try
-                            {
-                                postjson.put("type", netinfo.getSubtypeName());
-                        if (mWifi.isConnected())
-                            {
-                                WifiManager wifi = (WifiManager) localService.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-                                WifiInfo wifiInfo = wifi.getConnectionInfo();
-                                String wifiname = wifiInfo.getSSID();
-                                String mac = wifiInfo.getMacAddress();
-                                String strength = Integer.toString(wifiInfo.getRssi());
-                                postjson.put("network_ssid", wifiname.replaceAll("\"", ""));
-                                postjson.put("network_mac", mac);
-
-                            }
-                            }
-                            catch (Exception e)
-                                {
-
-                                }
+                        JSONObject postjson = getNET();
                         checkadressing = true;
                         APIcomParams params = null;
                         params = new APIcomParams("https://api.osmo.mobi/serv?app=o12gEq2Qyl&id="+OsMoDroid.settings.getString("tracker_id", ""), "", "checkaddres");
@@ -575,7 +512,7 @@ public class IM implements ResultsListener
                             connectThread.start();
                         }
                     //
-                    //parent.registerReceiver(bcr, new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"));
+                    parent.registerReceiver(bcr, new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"));
                     parent.registerReceiver(onlineTimeoutReceiver, new IntentFilter(ONLINE_TIMEOUT_INTENT));
                     parent.registerReceiver(keepAliveReceiver, new IntentFilter(KEEPALIVE_INTENT));
                     parent.registerReceiver(reconnectReceiver, new IntentFilter(RECONNECT_INTENT));
@@ -628,7 +565,7 @@ public class IM implements ResultsListener
                 localService.refresh();
             }
 
-        private void addToChannelChat(int channelU, JSONObject jo, boolean silent) throws JSONException
+         void addToChannelChat(int channelU, JSONObject jo, boolean silent) throws JSONException
             {
                 if (log)
                     {
@@ -642,25 +579,20 @@ public class IM implements ResultsListener
                 ChatMessage m = new ChatMessage();
                 m.u = jo.optInt("u");
                 m.text = Netutil.unescape(jo.optString("text"));
-                m.time = OsMoDroid.sdf.format(new Date(jo.optLong("time")*1000));
+                m.time = OsMoDroid.sdf.format(new Date(timeshift+jo.optLong("time")*1000));
                 m.name = jo.optString("name");
                 m.type = jo.optInt("type");
                 String fromDevice = "Незнамо кто";
                // LocalService.addlog("Размер спсика групп " + LocalService.channelList.size());
-                for (final Channel channel : LocalService.channelList)
-                    {
-                        if (log)
-                            {
-                                Log.d(this.getClass().getName(), "chanal nest" + channel.name);
-                            }
-                        if (channelU == channel.u)
-                            {
-                                if (!channel.messagesstringList.contains(m))
+
+
+
+
                                     {
-                                        if (!silent&&channel.gu!=jo.optInt("gu"))
+                                        if (!silent)
                                             {
                                                 fromDevice = jo.optString("name");
-                                                Intent intent = new Intent(localService, GPSLocalServiceClient.class).putExtra("channelpos", channel.u);
+                                                Intent intent = new Intent(localService, GPSLocalServiceClient.class).putExtra("channelpos", channelU);
                                                 intent.setAction("channelchat");
                                                 PendingIntent contentIntent = PendingIntent.getActivity(localService, 333, intent, PendingIntent.FLAG_CANCEL_CURRENT);
                                                 Long when = System.currentTimeMillis();
@@ -668,7 +600,7 @@ public class IM implements ResultsListener
                                                         localService.getApplicationContext())
                                                         .setWhen(when)
                                                         .setContentText(fromDevice + ": " + jo.optString("text"))
-                                                        .setContentTitle(channel.name)
+                                                        .setContentTitle(jo.optString("group"))
                                                         .setSmallIcon(R.drawable.white9696)
                                                         .setAutoCancel(true)
                                                         .setDefaults(Notification.DEFAULT_LIGHTS)
@@ -680,27 +612,42 @@ public class IM implements ResultsListener
                                                 Notification notification = notificationBuilder.build();
                                                 if(OsMoDroid.settings.getBoolean("chatnotify", true)|| m.type!=0)
                                                     {
-                                                        LocalService.mNotificationManager.notify(OsMoDroid.mesnotifyid + channel.u, notification);
-                                                        if (LocalService.channelsmessagesAdapter != null && LocalService.currentChannel != null && LocalService.currentChannel.u == channel.u && LocalService.chatVisible)
+                                                        LocalService.mNotificationManager.notify(OsMoDroid.mesnotifyid + channelU, notification);
+                                                        if (LocalService.channelsmessagesAdapter != null && LocalService.currentChannel != null && LocalService.currentChannel.u == channelU && LocalService.chatVisible)
                                                             {
-                                                                LocalService.mNotificationManager.cancel(OsMoDroid.mesnotifyid+channel.u);
+                                                                LocalService.mNotificationManager.cancel(OsMoDroid.mesnotifyid+channelU);
                                                             }
                                                     }
 
 
                                             }
-                                        channel.messagesstringList.add(m);
-                                        Collections.sort(channel.messagesstringList);
-                                        if (LocalService.channelsmessagesAdapter != null && LocalService.currentChannel != null && LocalService.currentChannel.u == channel.u)
+                                        //channel.messagesstringList.add(m);
+                                        //Collections.sort(channel.messagesstringList);
+                                        if (LocalService.channelsmessagesAdapter != null && LocalService.currentChannel != null && LocalService.currentChannel.u == channelU)
                                             {
-                                                LocalService.channelsmessagesAdapter.notifyDataSetChanged();
+                                                boolean exist =false;
+                                                for(ChatMessage message:LocalService.currentChannel.messagesstringList )
+                                                {
+                                                    if(message.u==m.u)
+                                                    {
+                                                        exist=true;
+                                                    }
+
+                                                }
+                                                if(!exist)
+                                                {
+                                                    LocalService.currentChannel.messagesstringList.add(m);
+                                                    Collections.sort(LocalService.currentChannel.messagesstringList);
+                                                    LocalService.channelsmessagesAdapter.notifyDataSetChanged();
+                                                }
                                             }
                                     }
                             }
-                    }
-            }
+
+
         void checkalarmindozemode()
             {
+                addlog("reconencttime="+reconnecttime+" SystemClockUptime="+SystemClock.uptimeMillis());
                 if(reconnecttime!=0&&SystemClock.uptimeMillis()>reconnecttime+RECONNECT_TIMEOUT)
                     {
                         LocalService.addlog("stuck in doze mode - do recconect " );
@@ -708,10 +655,7 @@ public class IM implements ResultsListener
                         parent.sendBroadcast(new Intent(RECONNECT_INTENT));
 
                     }
-                else
-                    {
-                        addlog("reconencttime="+reconnecttime+" SystemClockUptime="+SystemClock.uptimeMillis());
-                    }
+
             }
         synchronized void parseEx(String toParse,boolean gcm) throws JSONException
             {
@@ -751,7 +695,10 @@ public class IM implements ResultsListener
                         param = command.substring(command.indexOf(':') + 1);
                         command = command.substring(0, command.indexOf(':'));
                     }
-                addict = toParse.substring(toParse.indexOf('|') + 1);
+                if(toParse.contains("|"))
+                    {
+                        addict = toParse.substring(toParse.indexOf('|') + 1);
+                    }
 
                 try
                     {
@@ -843,30 +790,7 @@ public class IM implements ResultsListener
                     {
                         if (!jo.has("error"))
                             {
-                                JSONObject postjson = new JSONObject();
-                                ConnectivityManager connManager = (ConnectivityManager)localService.getSystemService(localService.CONNECTIVITY_SERVICE);
-                                NetworkInfo netinfo =connManager.getActiveNetworkInfo();
-
-                                NetworkInfo mWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-                                try
-                                    {
-                                        postjson.put("type", netinfo.getSubtypeName());
-                                        if (mWifi.isConnected())
-                                            {
-                                                WifiManager wifi = (WifiManager) localService.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-                                                WifiInfo wifiInfo = wifi.getConnectionInfo();
-                                                String wifiname = wifiInfo.getSSID();
-                                                String mac = wifiInfo.getMacAddress();
-                                                String strength = Integer.toString(wifiInfo.getRssi());
-                                                postjson.put("network_ssid", wifiname.replaceAll("\"", ""));
-                                                postjson.put("network_mac", mac);
-
-                                            }
-                                    }
-                                catch (Exception e)
-                                    {
-
-                                    }
+                                JSONObject postjson = getNET();
                                 sendToServer("NET|"+postjson.toString(),false);
                                 if (jo.optInt("motd") > OsMoDroid.settings.getInt("modtime", 0))
                                     {
@@ -992,6 +916,17 @@ public class IM implements ResultsListener
                                                 localService.sos = false;
                                             }
                                         localService.refresh();
+                                    }
+                                if(jo.has("permanent"))
+                                    {
+                                        if (jo.optInt("permanent") == 1)
+                                            {
+                                                OsMoDroid.permanent = true;
+                                            }
+                                        else
+                                            {
+                                                OsMoDroid.permanent = false;
+                                            }
                                     }
                                 localService.refresh();
 
@@ -1142,6 +1077,15 @@ public class IM implements ResultsListener
                     {
                         sendToServer("ALARM", false);
                     }
+                if (command.equals("NEEDSENDNET"))
+                    {
+                        if(!executedCommandArryaList.contains("NET")) {
+
+                            JSONObject postjson = getNET();
+                            sendToServer("NET|" + postjson.toString(), false);
+                        }
+                    }
+
                 if(command.equals("NEEDSENDCHARGE"))
                     {
                         sendToServer("CHARGE|"+addict,false);
@@ -1223,10 +1167,17 @@ public class IM implements ResultsListener
                                 sendToServer("PP", false);
                             }
                         if (param.equals(OsMoDroid.SOS))
+                        {
+                            Intent dialogIntent = new Intent(localService, SosActivity.class);
+                            dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            dialogIntent.putExtra("message",addict);
+                            localService.startActivity(dialogIntent);
+                        }
+                        if (param.equals(OsMoDroid.SOSEXT))
                             {
                                 Intent dialogIntent = new Intent(localService, SosActivity.class);
                                 dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                dialogIntent.putExtra("message",addict);
+                                dialogIntent.putExtra("jo",addict);
                                 localService.startActivity(dialogIntent);
                             }
                         if (param.equals(OsMoDroid.SOS_OFF))
@@ -1278,8 +1229,36 @@ public class IM implements ResultsListener
 
                         if (param.equals(OsMoDroid.REFRESH_GROUPS))
                             {
-                                sendToServer("GROUP",false);
-                                sendToServer("RCR:" + OsMoDroid.REFRESH_GROUPS + "|1", false);
+                                Runnable runnable = new Runnable() {
+                                    public void run() {
+                                        try {
+                                            File dir = new File(android.os.Environment.getExternalStorageDirectory()+"/OsMoDroid/channelsgpx/");
+                                            dir.mkdirs();
+                                            //if (dir.isDirectory())
+                                            {
+                                                String[] children = dir.list();
+                                                for (int i = 0; i < children.length; i++)
+                                                {
+                                                    new File(dir, children[i]).delete();
+                                                }
+                                            }
+                                            sendToServer("GROUP",false);
+                                            sendToServer("RCR:" + OsMoDroid.REFRESH_GROUPS + "|1", false);
+                                        } catch (Exception e) {
+
+                                            e.printStackTrace();
+                                            StringWriter sw = new StringWriter();
+                                            e.printStackTrace(new PrintWriter(sw));
+                                            String exceptionAsString = sw.toString();
+                                            LocalService.addlog(exceptionAsString);
+                                            sendToServer("GROUP",false);
+                                            sendToServer("RCR:" + OsMoDroid.REFRESH_GROUPS + "|1", false);
+                                        }
+                                    }
+                                };
+                                runnable.run();
+
+
                             }
                         if (param.equals(OsMoDroid.REFRESH_DEVICES))
                             {
@@ -1578,13 +1557,13 @@ public class IM implements ResultsListener
                                 Log.d(getClass().getSimpleName(), "write group list to file");
                             }
                         localService.saveObject(LocalService.channelList, OsMoDroid.CHANNELLIST);
-                        for (Channel ch : LocalService.channelList)
-                            {
-                                if (ch.send)
-                                    {
-                                        sendToServer("GC:" + ch.u, false);
-                                    }
-                            }
+//                        for (Channel ch : LocalService.channelList)
+//                            {
+//                                if (ch.send)
+//                                    {
+//                                        sendToServer("GC:" + ch.u, false);
+//                                    }
+//                            }
                         //sendToServer("PG");
                         for (String s: LocalService.gcmtodolist)
                             {
@@ -1741,6 +1720,7 @@ public class IM implements ResultsListener
 
 
                             }
+                        localService.bitmapmapview();
                     }
 
 
@@ -2025,6 +2005,11 @@ public class IM implements ResultsListener
                                                                 if(ch.gpxList.contains(cgpx))
                                                                     {
                                                                        ch.gpxList.get(ch.gpxList.indexOf(cgpx)).color=cgpx.color;
+                                                                       if(jsonObject.optBoolean("reload"))
+                                                                       {
+                                                                           cgpx.status = ColoredGPX.Statuses.DOWNLOADING;
+                                                                           Netutil.downloadfile(ch, cgpx.url, cgpx);
+                                                                       }
                                                                     }
                                                                 else
                                                                     {
@@ -2335,6 +2320,34 @@ public class IM implements ResultsListener
                         localService.bitmapmapview();
                     }
 
+            }
+        @NonNull
+        private JSONObject getNET()
+            {
+                JSONObject postjson = new JSONObject();
+                ConnectivityManager connManager = (ConnectivityManager)localService.getSystemService(localService.CONNECTIVITY_SERVICE);
+                NetworkInfo netinfo =connManager.getActiveNetworkInfo();
+                NetworkInfo mWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+                try
+                    {
+                        postjson.put("type", netinfo.getSubtypeName());
+                        if (mWifi.isConnected())
+                            {
+                                WifiManager wifi = (WifiManager) localService.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+                                WifiInfo wifiInfo = wifi.getConnectionInfo();
+                                String wifiname = wifiInfo.getSSID();
+                                String mac = wifiInfo.getMacAddress();
+                                //String strength = Integer.toString(wifiInfo.getRssi());
+                                postjson.put("network_ssid", wifiname.replaceAll("\"", ""));
+                                //postjson.put("network_mac", mac);
+
+                            }
+                    }
+                catch (Exception e)
+                    {
+
+                    }
+                return postjson;
             }
         static void  getDevtrace(JSONObject jsonObject, Device dev)
             {

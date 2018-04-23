@@ -1,4 +1,7 @@
 package com.OsMoDroid;
+import java.io.File;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -321,6 +324,32 @@ public class ChannelsFragment extends Fragment
                     }
                 if (item.getItemId() == 3)
                     {
+                        Runnable runnable = new Runnable() {
+                            public void run() {
+                                try {
+                                    File dir = new File(android.os.Environment.getExternalStorageDirectory()+"/OsMoDroid/channelsgpx/");
+                                    dir.mkdirs();
+                                    //if (dir.isDirectory())
+                                    {
+                                        String[] children = dir.list();
+                                        for (int i = 0; i < children.length; i++)
+                                        {
+                                            new File(dir, children[i]).delete();
+                                        }
+                                    }
+
+                                } catch (Exception e) {
+
+                                    e.printStackTrace();
+                                    StringWriter sw = new StringWriter();
+                                    e.printStackTrace(new PrintWriter(sw));
+                                    String exceptionAsString = sw.toString();
+                                    LocalService.addlog(exceptionAsString);
+
+                                }
+                            }
+                        };
+                        runnable.run();
                         globalActivity.mService.myIM.sendToServer("GROUP", true);
                     }
                 return super.onOptionsItemSelected(item);
@@ -365,7 +394,7 @@ public class ChannelsFragment extends Fragment
                 typeList.add(getString(R.string.group_type_simple));
                 typeList.add(getString(R.string.group_type_famaly));
                 typeList.add(getString(R.string.group_type_poi));
-                typeList.add(getString(R.string.travel));
+                //typeList.add(getString(R.string.travel));
                 ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(globalActivity, R.layout.spinneritem, typeList);
                 groupTypeSpinner.setAdapter(dataAdapter);
                 final TextView securityTextView = new TextView(globalActivity);

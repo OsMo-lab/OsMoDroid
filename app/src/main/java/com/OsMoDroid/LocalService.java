@@ -130,7 +130,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
         int sendpalyer;
        // int startsound;
        // int stopsound;
-        int alarmsound;
+        static int alarmsound;
         int signalonoff;
         static SoundPool soundPool;
         private Netutil.MyAsyncTask starttask;
@@ -935,8 +935,8 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                         mMapView.setTileSource(TileSourceFactory.MAPNIK);
                         //mMapView.setTilesScaledToDpi(true);
                         rl.addView(mMapView, 0);
-                        int w = 300;
-                        int h = 300;
+                        int w = 600;
+                        int h = 600;
                         linearview.measure(MeasureSpec.makeMeasureSpec(w, MeasureSpec.EXACTLY),
                                 MeasureSpec.makeMeasureSpec(h, MeasureSpec.EXACTLY));
                         linearview.layout(0, 0, linearview.getMeasuredWidth(), linearview.getMeasuredHeight());
@@ -1097,8 +1097,8 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                         String mac = wifiInfo.getMacAddress();
                         String strength = Integer.toString(wifiInfo.getRssi());
                         postjson.put("ssid", wifiname.replaceAll("\"", ""));
-                        postjson.put("mac", mac);
-                        postjson.put("strength", strength);
+                        //postjson.put("mac", mac);
+                        //postjson.put("strength", strength);
                     }
                 else
                     {
@@ -1287,11 +1287,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
 
 
                 Log.d(getClass().getSimpleName(), "on handleStart"+intent);
-                if(myIM!=null&&!myIM.start&&OsMoDroid.settings.getBoolean("live", true))
-                    {
-                        myIM.start();
-                        addlog("starr connect because gcm");
-                    }
+
                 if (intent != null)
                     {
                         Bundle bundle = intent.getExtras();
@@ -1331,28 +1327,103 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                             }
                         if(intent.hasExtra("GCM"))
                             {
+                                String toParse = intent.getStringExtra("GCM");
+                                JSONObject jsonObject;
+                                JSONObject jo = new JSONObject();
+                                JSONArray ja = new JSONArray();
+                                String command = "";
+                                String param = "";
+                                String addict = "";
                                 try
                                     {
-                                       if(connectcompleted)
-                                           {
-                                               addlog("parse because connectcompleted");
-                                               myIM.parseEx(intent.getStringExtra("GCM"),true);
-                                           }
-                                        else
-                                           {
-                                               addlog("addtogcmtodo because not connectcompleted");
-                                               gcmtodolist.add(intent.getStringExtra("GCM"));
-                                               saveObject(gcmtodolist, OsMoDroid.GCMTODOLIST);
-                                           }
+                                        command = toParse.substring(0, toParse.indexOf('|'));
+                                    }
+                                catch (Exception e1)
+                                    {
+                                        command = toParse;
+                                    }
+                                if (command.indexOf(':') != -1)
+                                    {
+                                        param = command.substring(command.indexOf(':') + 1);
+                                        command = command.substring(0, command.indexOf(':'));
+                                    }
+                                if (toParse.contains("|"))
+                                    {
+                                        addict = toParse.substring(toParse.indexOf('|') + 1);
+                                    }
+                                try
+                                    {
+                                        jo = new JSONObject(addict);
                                     }
                                 catch (JSONException e)
                                     {
-                                        StringWriter sw = new StringWriter();
-                                        e.printStackTrace(new PrintWriter(sw));
-                                        String exceptionAsString = sw.toString();
-                                        addlog(exceptionAsString);
+                                        try
+                                            {
+                                                if (log)
+                                                    {
+                                                        Log.d(this.getClass().getName(), "не JSONO ");
+                                                    }
+                                                ja = new JSONArray(addict);
+                                            }
+                                        catch (JSONException e1)
+                                            {
+                                                // TODO Auto-generated catch block
+                                                if (log)
+                                                    {
+                                                        Log.d(this.getClass().getName(), "не JSONA ");
+                                                    }
+                                            }
+                                    }
+                                if (command.equals("GPC"))
+                                    {
+                                        try
+                                            {
+                                                myIM.addToChannelChat(Integer.parseInt(param), jo, false);
+                                            }
+                                        catch (JSONException e)
+                                            {
+                                                e.printStackTrace();
+                                            }
+                                    }
+                                else
+                                    {
+                                        if(myIM!=null&&!myIM.start&&OsMoDroid.settings.getBoolean("live", true))
+                                            {
+                                                myIM.start();
+                                                addlog("starr connect because gcm");
+                                            }
+                                        try
+                                            {
+                                                if (connectcompleted)
+                                                    {
+                                                        addlog("parse because connectcompleted");
+                                                        myIM.parseEx(intent.getStringExtra("GCM"), true);
+                                                    }
+                                                else
+                                                    {
+                                                        addlog("addtogcmtodo because not connectcompleted");
+                                                        gcmtodolist.add(intent.getStringExtra("GCM"));
+                                                        saveObject(gcmtodolist, OsMoDroid.GCMTODOLIST);
+                                                    }
+                                            }
+                                        catch (JSONException e)
+                                            {
+                                                StringWriter sw = new StringWriter();
+                                                e.printStackTrace(new PrintWriter(sw));
+                                                String exceptionAsString = sw.toString();
+                                                addlog(exceptionAsString);
+                                            }
                                     }
                             }
+                        else
+                            {
+                                if (myIM != null && !myIM.start && OsMoDroid.settings.getBoolean("live", true))
+                                    {
+                                        myIM.start();
+                                        addlog("starr connect because intent");
+                                    }
+                            }
+
                     }
             }
 
@@ -1370,7 +1441,11 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                             {
                                 osmAndDeleteChannel(ch);
                             }
-                        osmand.cleanupResources();
+                        try {
+                            osmand.cleanupResources();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
             }
         public void applyPreference()
@@ -2524,15 +2599,25 @@ public class LocalService extends Service implements LocationListener, GpsStatus
             }
         void bitmapmapview()
             {
+                boolean odin =false;
                 if(mapController!=null)
                     {
-                        //mapController.setZoom(4);
+
+
 
                         double nord = 0, sud = 0, ovest = 0, est = 0;
                         for(Channel ch:LocalService.channelList)
                             {
                                 if(ch.type==2)
                                     {
+                                        if(ch.deviceList.size()>1)
+                                            {
+                                                odin=false;
+                                            }
+                                        else
+                                        {
+                                            odin=true;
+                                        }
                                         for (Device dev : ch.deviceList)
                                             {
                                                 double lat = dev.lat;
@@ -2560,13 +2645,26 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                        final BoundingBox b = new BoundingBox(nord, est, sud, ovest);
                         //GeoPoint startPoint = new GeoPoint(lat, lon);
                         //mapController.setCenter(startPoint);
+                        final boolean finalOdin = odin;
+                        mMapView.zoomToBoundingBox(b, false);
+
+
                         alertHandler.postDelayed(new Runnable()
                                                      {
                                                          @Override
                                                          public void run()
-                                                             {
-                                                                 mMapView.zoomToBoundingBox(b, false);
-                                                                 mapController.zoomOut();
+                                                             {if(finalOdin){
+                                                               mapController.setZoom(10);
+
+
+                                                                // Toast.makeText(LocalService.this, "ОДИН", Toast.LENGTH_LONG).show();
+                                                             }
+//                                                                 else
+//                                                                 {
+//                                                                     mMapView.zoomToBoundingBox(b, false);
+//                                                                     mapController.zoomOut();
+//                                                                  //   Toast.makeText(LocalService.this, "НЕ ОДИН", Toast.LENGTH_LONG).show();
+//                                                                 }
 
                                                                  //Toast.makeText(LocalService.this, b.toString(), Toast.LENGTH_LONG).show();
                                                              }
@@ -2590,11 +2688,12 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                                             {
                                                 RemoteViews remoteViews = new RemoteViews(getApplicationContext().getPackageName(), R.layout.map_widget);
                                                 Intent notificationIntent = new Intent(LocalService.this, GPSLocalServiceClient.class);
-                                                notificationIntent.setAction(Intent.ACTION_MAIN);
-                                                notificationIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+                                                notificationIntent.setAction("mapfromwidget");
+                                                //notificationIntent.addCategory(Intent.CATEGORY_LAUNCHER);
                                                 osmodroidLaunchIntent = PendingIntent.getActivity(LocalService.this, 0, notificationIntent, 0);
                                                 remoteViews.setOnClickPendingIntent(R.id.mapimageView, osmodroidLaunchIntent);
                                                 remoteViews.setImageViewBitmap(R.id.mapimageView, bm);
+
                                                 appWidgetManager.updateAppWidget(widgetId, remoteViews);
                                             }
                                     }
@@ -2936,7 +3035,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                             if (OsMoDroid.debug)
                                 {
                                     debuglist.add(IM.sdf1.format(new Date(System.currentTimeMillis())) + " " + str + " S=" + IM.sendBytes + " R=" + IM.recievedBytes+ " overall by netstat="+(TrafficStats.getUidTxBytes(OsMoDroid.context.getApplicationInfo().uid)-IM.startTraffic));
-                                    if (debuglist.size() > 5000)
+                                    if (debuglist.size() > 50000)
                                         {
                                             debuglist.remove(0);
                                         }
@@ -3000,7 +3099,9 @@ public class LocalService extends Service implements LocationListener, GpsStatus
             }
         void osmandaddpoint(Channel ch, Channel.Point p)
             {
-                osmand.addMapPoint(Integer.toString(ch.u),Integer.toString(p.u),p.name.length()>0 ? p.name.substring(0,1):p.name,p.name,"Point", Color.parseColor(p.color),new ALatLon(p.lat,p.lon),emptyList);
+                ArrayList<String> descriptionList = new ArrayList<>();
+                descriptionList.add(p.description);
+                osmand.addMapPoint(Integer.toString(ch.u),Integer.toString(p.u),p.name.length()>0 ? p.name.substring(0,1):p.name,p.name,"Point", Color.parseColor(p.color),new ALatLon(p.lat,p.lon),descriptionList);
               //  osmand.refreshMap();
               //  addlog("osmandaddpoint");
             }

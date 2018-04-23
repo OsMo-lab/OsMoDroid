@@ -22,7 +22,7 @@ public class OsMoDroid extends Application
         public static final String NOTIFIESFILENAME = "messagelist";
         public static final String DEVLIST = "devlist";
         public static final String CHANNELLIST = "chlist";
-        public static final String app_code = "HJIascaEFWQCsafgbA";
+        public static final String app_code = "73gU82aLi6vRa9";
         public static final String TRACKER_GCM_ID = "80";
         public static final String TRACKER_BATTERY_INFO = "11";
         public static final String TRACKER_SATELLITES_INFO = "13";
@@ -72,6 +72,7 @@ public class OsMoDroid extends Application
         final static DecimalFormatSymbols dot = new DecimalFormatSymbols();
         public static final String GCMTODOLIST = "gcmtodolist";
         public static final String SOS ="99" ;
+        public static final String SOSEXT ="98" ;
         public static final String SOS_OFF ="100" ;
         public static final String UPDATE_MOTD="95";
         public static boolean mesactivityVisible = false;
@@ -86,6 +87,7 @@ public class OsMoDroid extends Application
         private static int notifyid = 1;
         public static FirebaseAnalytics mFirebaseAnalytics;
         static long timeshift=0;
+        public static boolean permanent=false;
         public static int notifyidApp()
             {
                 return notifyid++;

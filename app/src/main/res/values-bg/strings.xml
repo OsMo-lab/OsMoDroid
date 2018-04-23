@@ -358,5 +358,6 @@
   <string name="getsms">Получаване SMS</string>
   <string name="getsmsnumber">Получаване SMS от номер</string>
   <string name="alreadyregistered">Имате ли вече регистрация?</string>
-  <string name="osmand">Интегриране с Osmand</string>
+  <string name="osmand">Интегриране с OsmAnd</string>
+  <string name="open_osmand">Включи OsmAnd</string>
 </resources>

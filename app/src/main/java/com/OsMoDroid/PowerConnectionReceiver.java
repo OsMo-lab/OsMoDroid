@@ -16,7 +16,7 @@ public class PowerConnectionReceiver extends BroadcastReceiver
         public void onReceive(Context context, Intent intent)
             {
 
-                if(OsMoDroid.settings.getBoolean("live", true))
+                if(OsMoDroid.settings.getBoolean("live", true)&&OsMoDroid.permanent)
                     {
                         String action = intent.getAction();
 

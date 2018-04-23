@@ -3,11 +3,11 @@
           xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:tools="http://schemas.android.com/tools"
           android:installLocation="auto"
-          android:versionCode="490"
-          android:versionName="2.4.12">
+          android:versionCode="525"
+          android:versionName="2.5">
 
     <uses-sdk
-        android:minSdkVersion="9"
+        android:minSdkVersion="15"
         android:targetSdkVersion="19"/>
 
     <uses-feature

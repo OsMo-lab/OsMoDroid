@@ -645,6 +645,13 @@ public class GPSLocalServiceClient extends ActionBarActivity implements ResultsL
                                 drawClickListener.selectItem(getString(R.string.notifications), null);
                                 //showFragment(notif,false);
                             }
+                        else if (intent.getAction().equals("mapfromwidget"))
+                            {
+                                Log.d(this.getClass().getSimpleName(), "on new intent=mapfromwidget");
+                                //MapFragment notif = new MapFragment();
+                                drawClickListener.selectItem(getString(R.string.map), null);
+                                //showFragment(notif,false);
+                            }
                         else if (intent.getAction().equals("channelchat"))
                             {
                                 Log.d(this.getClass().getSimpleName(), "on new intent=channelchat");

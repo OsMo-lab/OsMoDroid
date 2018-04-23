@@ -354,6 +354,10 @@
   <string name="smsexchange">Byt via SMS</string>
   <string name="sendsms">Skicka SMS</string>
   <string name="sendsmsnumber">Skicka SMS till nummer</string>
+  <string name="sendsmsperiod">Frekvens för SMS</string>
+  <string name="getsms">Hämta SMS</string>
+  <string name="getsmsnumber">Hämta SMS-nummer</string>
   <string name="alreadyregistered">Är du redan registrerad?</string>
   <string name="osmand">Integrering med OsmAnd</string>
+  <string name="open_osmand">Öppna OsmAnd</string>
 </resources>
