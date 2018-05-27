@@ -30,7 +30,7 @@ public class MyFcmListenerService extends FirebaseMessagingService
             }
             else
         {
-            NotificationCompat.Builder builder = new  NotificationCompat.Builder(this)
+            NotificationCompat.Builder builder = new  NotificationCompat.Builder(this,"default")
                     .setSmallIcon(R.drawable.eye)
                     .setContentTitle(message.getNotification().getTitle())
                     .setContentText(message.getNotification().getBody())

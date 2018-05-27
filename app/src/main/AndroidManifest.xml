@@ -3,12 +3,12 @@
           xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:tools="http://schemas.android.com/tools"
           android:installLocation="auto"
-          android:versionCode="525"
+          android:versionCode="533"
           android:versionName="2.5">
 
     <uses-sdk
-        android:minSdkVersion="15"
-        android:targetSdkVersion="19"/>
+        android:minSdkVersion="9"
+        android:targetSdkVersion="26"/>
 
     <uses-feature
         android:name="android.hardware.camera"

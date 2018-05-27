@@ -69,7 +69,8 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.telephony.TelephonyManager;
 import android.text.ClipboardManager;
 import android.text.Html;
@@ -104,10 +105,10 @@ import android.widget.ToggleButton;
 import static android.text.InputType.TYPE_CLASS_TEXT;
 import static android.text.InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS;
 import static android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD;
-public class GPSLocalServiceClient extends ActionBarActivity implements ResultsListener
+public class GPSLocalServiceClient extends AppCompatActivity implements ResultsListener
     {
         //SharedPreferences OsMoDroid.settings;
-        public android.support.v7.app.ActionBar actionBar;
+        public ActionBar actionBar;
         boolean messageShowed = false;
         int speedbearing_gpx;
         int bearing_gpx;
@@ -180,15 +181,15 @@ public class GPSLocalServiceClient extends ActionBarActivity implements ResultsL
                                 }
                             if (mService.myIM.connOpened && !mService.myIM.connecting)
                                 {
-                                    actionBar.setLogo(R.drawable.eyeo);
+                                    actionBar.setIcon(R.drawable.eyeo);
                                 }
                             else if (mService.myIM.connecting)
                                 {
-                                    actionBar.setLogo(R.drawable.eyeu);
+                                    actionBar.setIcon(R.drawable.eyeu);
                                 }
                             else
                                 {
-                                    actionBar.setLogo(R.drawable.eyen);
+                                    actionBar.setIcon(R.drawable.eyen);
                                 }
                             if (!OsMoDroid.settings.getBoolean("subscribebackground", false) && mBound)
                                 {
@@ -401,22 +402,22 @@ public class GPSLocalServiceClient extends ActionBarActivity implements ResultsL
                                 {
                                     if (intent.getBooleanExtra("connect", false) && !intent.getBooleanExtra("connecting", false))
                                         {
-                                            actionBar.setLogo(R.drawable.eyeo);
+                                            actionBar.setIcon(R.drawable.eyeo);
                                             if(intent.hasExtra("executedlistsize"))
                                                 {
                                                     if(intent.getIntExtra("executedlistsize",0)>0)
                                                         {
-                                                            actionBar.setLogo(R.drawable.anim);
+                                                            actionBar.setIcon(R.drawable.anim);
                                                         }
                                                 }
                                         }
                                     else if (intent.getBooleanExtra("connecting", false))
                                         {
-                                            actionBar.setLogo(R.drawable.eyeu);
+                                            actionBar.setIcon(R.drawable.eyeu);
                                         }
                                     else
                                         {
-                                            actionBar.setLogo(R.drawable.eyen);
+                                            actionBar.setIcon(R.drawable.eyen);
                                         }
                                 }
 

@@ -710,8 +710,14 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
         @Override
         public Location getLastKnownLocation()
             {
-                Location forcelocation = LocalService.myManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                Location forcenetworklocation = LocalService.myManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                Location forcelocation = null;
+                Location forcenetworklocation = null;
+                try {
+                    forcelocation = LocalService.myManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                    forcenetworklocation = LocalService.myManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                } catch (SecurityException e) {
+                    e.printStackTrace();
+                }
                 if (forcelocation != null)
                     {
                         if (forcenetworklocation != null)
@@ -744,7 +750,11 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
                                 if (LocationManager.GPS_PROVIDER.equals(provider) || LocationManager.NETWORK_PROVIDER.equals(provider))
                                     {
                                         result = true;
-                                        LocalService.myManager.requestLocationUpdates(provider, 0, 0, this);
+                                        try {
+                                            LocalService.myManager.requestLocationUpdates(provider, 0, 0, this);
+                                        } catch (SecurityException e) {
+                                            e.printStackTrace();
+                                        }
                                     }
                             }
                     }

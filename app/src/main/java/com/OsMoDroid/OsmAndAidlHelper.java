@@ -100,6 +100,7 @@ public class OsmAndAidlHelper {
 			((LocalService)app).refresh();
 		}
 	};
+	private String OSMAND_PACKAGE_NAME = "net.osmand.plus";
 
 	public OsmAndAidlHelper(Service application, OnOsmandMissingListener listener) {
 		this.app = application;
@@ -110,7 +111,7 @@ public class OsmAndAidlHelper {
 	 boolean bindService() {
 		if (mIOsmAndAidlInterface == null) {
 			Intent intent = new Intent("net.osmand.aidl.OsmandAidlService");
-			//intent.setPackage(OSMAND_PACKAGE_NAME);
+			intent.setPackage(OSMAND_PACKAGE_NAME);
 			boolean res = app.bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
 			if (res) {
 

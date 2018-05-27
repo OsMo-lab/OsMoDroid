@@ -597,7 +597,7 @@ public class IM implements ResultsListener
                                                 PendingIntent contentIntent = PendingIntent.getActivity(localService, 333, intent, PendingIntent.FLAG_CANCEL_CURRENT);
                                                 Long when = System.currentTimeMillis();
                                                 NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(
-                                                        localService.getApplicationContext())
+                                                        localService.getApplicationContext(),"default")
                                                         .setWhen(when)
                                                         .setContentText(fromDevice + ": " + jo.optString("text"))
                                                         .setContentTitle(jo.optString("group"))

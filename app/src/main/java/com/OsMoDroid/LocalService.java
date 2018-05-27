@@ -32,6 +32,7 @@ import org.osmdroid.views.MapView;
 
 import android.app.AlarmManager;
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.PendingIntent.CanceledException;
@@ -413,7 +414,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                             Long when = System.currentTimeMillis();
                             numberofnotif++;
                             NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(
-                                    serContext.getApplicationContext())
+                                    serContext.getApplicationContext(),"default")
                                     .setWhen(when)
                                     .setContentText(text)
                                     .setContentTitle("OsMoDroid")
@@ -542,6 +543,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                     {
                                 int icon = R.drawable.eyeu;
                                 updateNotification(icon);
+
                     }
                 else if (state)
                     {
@@ -662,35 +664,35 @@ public class LocalService extends Service implements LocationListener, GpsStatus
             {
                 return sendresult;
             }
-        public void sendPosition()
-            {
-                Location forcelocation=null;
-                Location forcenetworklocation=null;
-                List<String> list = myManager.getAllProviders();
-                if (list.contains(LocationManager.GPS_PROVIDER))
-                    {
-                        forcelocation = myManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                        if (list.contains(LocationManager.NETWORK_PROVIDER))
-                            {
-                                forcenetworklocation = myManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-                            }
-                    }
-
-                if (forcelocation == null)
-                    {
-                        if (forcenetworklocation == null)
-                            {
-                            }
-                        else
-                            {
-                                sendlocation(forcenetworklocation, false);
-                            }
-                    }
-                else
-                    {
-                        sendlocation(forcelocation,false);
-                    }
-            }
+//        public void sendPosition()
+//            {
+//                Location forcelocation=null;
+//                Location forcenetworklocation=null;
+//                List<String> list = myManager.getAllProviders();
+//                if (list.contains(LocationManager.GPS_PROVIDER))
+//                    {
+//                        forcelocation = myManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+//                        if (list.contains(LocationManager.NETWORK_PROVIDER))
+//                            {
+//                                forcenetworklocation = myManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+//                            }
+//                    }
+//
+//                if (forcelocation == null)
+//                    {
+//                        if (forcenetworklocation == null)
+//                            {
+//                            }
+//                        else
+//                            {
+//                                sendlocation(forcenetworklocation, false);
+//                            }
+//                    }
+//                else
+//                    {
+//                        sendlocation(forcelocation,false);
+//                    }
+//            }
         public int getSendCounter()
             {
                 return sendcounter;
@@ -844,7 +846,13 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                 pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
                 in = new Intent("OsMoDroid");
                 mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-                if (!OsMoDroid.settings.getBoolean("ondestroy", false))
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    NotificationChannel channel = new NotificationChannel("default",
+                            "OsMoDroid",
+                            NotificationManager.IMPORTANCE_DEFAULT);
+                    mNotificationManager.createNotificationChannel(channel);
+                }
+                    if (!OsMoDroid.settings.getBoolean("ondestroy", false))
                     {
                         List<Channel> loaded = (List<Channel>) loadObject(OsMoDroid.CHANNELLIST, channelList.getClass());
                         if (loaded != null)
@@ -1543,12 +1551,13 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                 notificationIntent.setAction(Intent.ACTION_MAIN);
                 notificationIntent.addCategory(Intent.CATEGORY_LAUNCHER);
                 osmodroidLaunchIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
-                foregroundnotificationBuilder = new NotificationCompat.Builder(this);
+                foregroundnotificationBuilder = new NotificationCompat.Builder(this,"default");
                 foregroundnotificationBuilder.setWhen(System.currentTimeMillis());
                 foregroundnotificationBuilder.setContentText(tickerText);
                 foregroundnotificationBuilder.setContentTitle("OsMoDroid");
                 foregroundnotificationBuilder.setSmallIcon(icon);
                 foregroundnotificationBuilder.setContentIntent(osmodroidLaunchIntent);
+
                 Intent is = new Intent(this, LocalService.class);
                 is.putExtra("ACTION", "STOP");
                 PendingIntent stop = PendingIntent.getService(this, 0, is, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -1635,7 +1644,17 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                 String IMEI = null;
                 try
                     {
-                        IMEI = SHA1(mngr.getDeviceId());
+                        try {
+                            IMEI = SHA1(mngr.getDeviceId());
+                        } catch (NoSuchAlgorithmException e) {
+                            e.printStackTrace();
+                        } catch (UnsupportedEncodingException e) {
+                            e.printStackTrace();
+                        }
+                        catch (SecurityException e)
+                        {
+
+                        }
                     }
                 catch (Exception e)
                     {
@@ -1691,8 +1710,12 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                     {
                         if (list.contains(LocationManager.GPS_PROVIDER))
                             {
-                                myManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, pollperiod, 0, LocalService.this);
-                                myManager.addGpsStatusListener(LocalService.this);
+                                try {
+                                    myManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, pollperiod, 0, LocalService.this);
+                                    myManager.addGpsStatusListener(LocalService.this);
+                                } catch (SecurityException e) {
+                                    e.printStackTrace();
+                                }
                             }
                         else
                             {
@@ -1706,7 +1729,11 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                     {
                         if (list.contains(LocationManager.NETWORK_PROVIDER))
                             {
-                                myManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, pollperiod, 0, LocalService.this);
+                                try {
+                                    myManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, pollperiod, 0, LocalService.this);
+                                } catch (SecurityException e) {
+                                    e.printStackTrace();
+                                }
                             }
                         else
                             {
@@ -1883,7 +1910,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
             {
                 PendingIntent contentIntent = PendingIntent.getActivity(this, 0, new Intent(), 0);
                 NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(
-                        serContext.getApplicationContext())
+                        serContext.getApplicationContext(),"default")
                         .setWhen(System.currentTimeMillis())
                         .setContentText(file.getName())
                         .setContentTitle(getString(R.string.osmodroiduploadfile))
@@ -2544,29 +2571,33 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                 int countFix1 = 0;
                 boolean hasA = false;
                 boolean hasE = false;
-                GpsStatus xGpsStatus = myManager.getGpsStatus(null);
-                Iterable<GpsSatellite> iSatellites = xGpsStatus.getSatellites();
-                Iterator<GpsSatellite> it = iSatellites.iterator();
-                while (it.hasNext())
-                    {
-                        GpsSatellite oSat = (GpsSatellite) it.next();
-                        count1 = count1 + 1;
-                        hasA = oSat.hasAlmanac();
-                        hasE = oSat.hasEphemeris();
-                        if (oSat.usedInFix())
-                            {
-                                countFix1 = countFix1 + 1;
-                                if (oSat.getPrn() > MaxPrn)
-                                    {
-                                        MaxPrn = oSat.getPrn();
-                                    }
-                                //Log.e("A fost folosit ", "int fix!");
-                            }
-                    }
-                satellite = getString(R.string.Sputniki) + count + ":" + countFix; //+" ("+hasA+"-"+hasE+")";
-                count = count1;
-                countFix = countFix1;
-                refresh();
+                try {
+                    GpsStatus xGpsStatus = myManager.getGpsStatus(null);
+                    Iterable<GpsSatellite> iSatellites = xGpsStatus.getSatellites();
+                    Iterator<GpsSatellite> it = iSatellites.iterator();
+                    while (it.hasNext())
+                        {
+                            GpsSatellite oSat = (GpsSatellite) it.next();
+                            count1 = count1 + 1;
+                            hasA = oSat.hasAlmanac();
+                            hasE = oSat.hasEphemeris();
+                            if (oSat.usedInFix())
+                                {
+                                    countFix1 = countFix1 + 1;
+                                    if (oSat.getPrn() > MaxPrn)
+                                        {
+                                            MaxPrn = oSat.getPrn();
+                                        }
+                                    //Log.e("A fost folosit ", "int fix!");
+                                }
+                        }
+                    satellite = getString(R.string.Sputniki) + count + ":" + countFix; //+" ("+hasA+"-"+hasE+")";
+                    count = count1;
+                    countFix = countFix1;
+                    refresh();
+                } catch (SecurityException e) {
+                    e.printStackTrace();
+                }
                 //addlog("onGpsStatusChanged "+count1+" "+countFix1);
             }
         public void onInit(int status)
@@ -2736,7 +2767,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                         if (OsMoDroid.settings.getBoolean("silentnotify", false))
                             {
                                 notificationBuilder = new NotificationCompat.Builder(
-                                        getApplicationContext())
+                                        getApplicationContext(),"default")
                                         .setWhen(when)
                                         .setContentText(info)
                                         .setContentTitle("OsMoDroid")
@@ -2748,7 +2779,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                         else
                             {
                                 notificationBuilder = new NotificationCompat.Builder(
-                                        getApplicationContext())
+                                        getApplicationContext(),"default")
                                         .setWhen(when)
                                         .setContentText(info)
                                         .setContentTitle("OsMoDroid")
@@ -3005,6 +3036,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                         if (icon != -1)
                             {
                                 foregroundnotificationBuilder.setSmallIcon(icon);
+                                foregroundnotificationBuilder.setColor(Color.parseColor("#FFA500"));
                             }
                         mNotificationManager.notify(OSMODROID_ID, foregroundnotificationBuilder.build());
                     }
