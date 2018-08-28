@@ -118,6 +118,7 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
         private ITileSource outdoorTileSource;
         private ITileSource chepeTileSource;
         private ITileSource mtbTileSource;
+        private ITileSource wikiTileSource;
         private ChannelsOverlay choverlay;
         private TextView speddTextView;
         private MapListener wrappedListener;
@@ -156,7 +157,7 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
                 adjdpi.setCheckable(true);
                 adjdpi.setChecked(OsMoDroid.settings.getBoolean("adjust_to_dpi", true));
                 MenuItem sputnik = menu2.add(0, 10, 1, "Sputnik");
-                //MenuItem outdoor = menu2.add(0, 12, 1, "Outdoor");
+                MenuItem wiki = menu2.add(0, 20, 1, "Wiki");
                 MenuItem chepe = menu2.add(0, 18, 1, "HotMap");
                 MenuItem mtb = menu2.add(0, 19, 1, "MTB");
                 menu.add(0, 11, 1, R.string.size_of_point);
@@ -350,6 +351,14 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
                             reinitchoverlay();
                             mMapView.invalidate();
                             break;
+                        case 20:
+                            mMapView.setTileSource(wikiTileSource);
+                            OsMoDroid.editor.putInt("selectedTileSourceInt", 10);
+                            OsMoDroid.editor.commit();
+
+                            reinitchoverlay();
+                            mMapView.invalidate();
+                            break;
                         default:
                             break;
                     }
@@ -411,6 +420,7 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
                 mMapView.getOverlays().remove(myLoc);
                 myLoc.disableMyLocation();
                 mMapView.setMapListener(null);
+                LocalService.myIM.sendToServer("SP:"+choverlay.followdev+"|0", false);
                 super.onPause();
             }
         @Override
@@ -447,6 +457,7 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
                             }
                     };
                 mMapView.setMapListener(wrappedListener);
+                LocalService.myIM.sendToServer("SP:"+choverlay.followdev+"|1", false);
                 super.onResume();
             }
         private void sendcentercoords()
@@ -518,12 +529,15 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
                 final String[] outdoorURL = new String[]{"http://tile.thunderforest.com/outdoors/"};
                 final String[] chepeURL = new String[]{"https://tile-a.openstreetmap.fr/hot/"};
                 final String[] mtbURL = new String[]{"http://tile.mtbmap.cz/mtbmap_tiles/"};
+                final String[] wikiURL = new String[]{"https://maps.wikimedia.org/osm-intl/"};
+
                 bingTileSource = new BingMapTileSource(null);
                 sputnikTileSource = new SputnikTileSource("Sputnik",  aZoomMinLevel, aZoomMaxLevel, 512, aImageFilenameEnding, sputnikURL);
                 outdoorTileSource = new OutdoorTileSource("OutDoor",  aZoomMinLevel, aZoomMaxLevel, aTileSizePixels, aImageFilenameEnding, outdoorURL);
                 mtbTileSource = new OutdoorTileSource("MTB",  aZoomMinLevel, aZoomMaxLevel, aTileSizePixels, aImageFilenameEnding, mtbURL);
                 chepeTileSource = new OutdoorTileSource("Chepe",  aZoomMinLevel, aZoomMaxLevel, aTileSizePixels, aImageFilenameEnding, chepeURL);
                 mapSurferTileSource = new MAPSurferTileSource(name, aZoomMinLevel, aZoomMaxLevel, aTileSizePixels, aImageFilenameEnding, aBaseUrl);
+                wikiTileSource = new OutdoorTileSource("Wiki",  aZoomMinLevel, aZoomMaxLevel, aTileSizePixels, aImageFilenameEnding, wikiURL);
                 View view = inflater.inflate(R.layout.map, container, false);
                 RelativeLayout rl = (RelativeLayout) view.findViewById(R.id.relative);
                 CustomTileProvider customTileProvider = new CustomTileProvider(getActivity());
@@ -584,6 +598,8 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
                         case 9:
                             mMapView.setTileSource(mtbTileSource);
                             break;
+                        case 10:
+                            mMapView.setTileSource(wikiTileSource);
                         default:
                             break;
                     }

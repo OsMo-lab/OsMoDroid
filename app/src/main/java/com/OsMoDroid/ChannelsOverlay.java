@@ -894,6 +894,10 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
                                                         alertdialog1.setTitle(p.name);
                                                         alertdialog1.setMessage(ch.name);
                                                         alertdialog1.show();
+                                                        if(LocalService.myIM!=null)
+                                                        {
+                                                            LocalService.myIM.sendToServer("GPV:"+p.u,false);
+                                                        }
                                                     }
                                             }
                                     }
@@ -908,11 +912,14 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
                                                             if (followdev != dev.u)
                                                                 {
                                                                     Toast.makeText(mapView.getContext(), map.getContext().getString(R.string.follow_) + ' '+dev.name, Toast.LENGTH_SHORT).show();
+                                                                    LocalService.myIM.sendToServer("SP:"+dev.u+"|1", false);
                                                                     followdev = dev.u;
+
                                                                 }
                                                             else
                                                                 {
                                                                     Toast.makeText(mapView.getContext(), map.getContext().getString(R.string.no_follow_) + ' '+dev.name, Toast.LENGTH_SHORT).show();
+                                                                    LocalService.myIM.sendToServer("SP:"+dev.u+"|0", false);
                                                                     followdev = -1;
                                                                 }
                                                             mapView.invalidate();

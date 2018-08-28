@@ -360,4 +360,6 @@
     <string name="osmand">Интеграция с OSMAND</string>
   <string name="open_osmand">Открыть карту в Osmand</string>
   <string name="closesos">Закрыть!</string>
+    <string name="requiregps">Приложению нужен доступ к GPS</string>
+  <string name="requireSTORAGE">Приложению нужен доступ к карте памяти</string>
 </resources>

@@ -360,4 +360,6 @@
     <string name="osmand">Osmand integration</string>
     <string name="open_osmand">Open Osmand</string>
     <string name="closesos">Close</string>
+    <string name="requiregps">THIS APP REQUIRED GPS</string>
+    <string name="requireSTORAGE">THIS APP REQUIRED WRITE TO SDCARD TO SHOW MAP</string>
 </resources>

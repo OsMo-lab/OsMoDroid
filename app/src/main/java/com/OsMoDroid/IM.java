@@ -604,10 +604,10 @@ public class IM implements ResultsListener
                                                         .setSmallIcon(R.drawable.white9696)
                                                         .setAutoCancel(true)
                                                         .setDefaults(Notification.DEFAULT_LIGHTS)
-                                                        .setContentIntent(contentIntent);
+                                                        .setContentIntent(contentIntent).setChannelId("silent");
                                                 if (!OsMoDroid.settings.getBoolean("silentnotify", false))
                                                     {
-                                                        notificationBuilder.setDefaults(Notification.DEFAULT_LIGHTS | Notification.DEFAULT_VIBRATE | Notification.DEFAULT_SOUND);
+                                                        notificationBuilder.setDefaults(Notification.DEFAULT_LIGHTS | Notification.DEFAULT_VIBRATE | Notification.DEFAULT_SOUND).setChannelId("noisy");
                                                     }
                                                 Notification notification = notificationBuilder.build();
                                                 if(OsMoDroid.settings.getBoolean("chatnotify", true)|| m.type!=0)
@@ -995,6 +995,34 @@ public class IM implements ResultsListener
                                 localService.refresh();
                             }
                     }
+                if(command.equals("LA"))
+                {
+                    for(PermLink p: LocalService.simlimkslist)
+                    {
+                        if(p.u==Integer.parseInt(param))
+                        {
+                            p.active=true;
+                            if (LocalService.simlinksadapter != null)
+                            {
+                                LocalService.simlinksadapter.notifyDataSetChanged();
+                            }
+                        }
+                    }
+                }
+                if(command.equals("LD"))
+                {
+                    for(PermLink p: LocalService.simlimkslist)
+                    {
+                        if(p.u==Integer.parseInt(param))
+                        {
+                            p.active=false;
+                            if (LocalService.simlinksadapter != null)
+                            {
+                                LocalService.simlinksadapter.notifyDataSetChanged();
+                            }
+                        }
+                    }
+                }
                 if (command.equals("GA"))
                     {
                         for (Channel ch : LocalService.channelList)
@@ -1406,6 +1434,41 @@ public class IM implements ResultsListener
                             {
                                 localService.setpreferences(jo,localService);
                             }
+                        if (param.equals(OsMoDroid.WHERE_GPS_ONLY))
+                        {
+                            sendToServer("RCR:" + OsMoDroid.WHERE + "|1", false);
+                            localService.where = true;
+                            List<String> list = myManager.getProviders(true);
+                            if (list.contains(LocationManager.GPS_PROVIDER))
+                            {
+                                if (!localService.state)
+                                {
+                                    localService.alertHandler.post(new Runnable()
+                                    {
+                                        public void run()
+                                        {
+                                            myManager.requestSingleUpdate(LocationManager.GPS_PROVIDER, localService.singleLocationListener, null);
+
+                                            if (log)
+                                            {
+                                                addlog("подписались на GPS");
+                                            }
+                                        }
+                                    });
+
+                                }
+                            }
+
+                            localService.alertHandler.postDelayed(new Runnable()
+                            {
+                                public void run()
+                                {
+                                    addlog( "отписались");
+                                    myManager.removeUpdates(localService.singleLocationListener);
+                                    localService.where=false;
+                                }
+                            }, 5*60*1000);
+                        }
                         if (param.equals(OsMoDroid.WHERE))
                             {
                                 sendToServer("RCR:" + OsMoDroid.WHERE + "|1", false);
@@ -1465,7 +1528,7 @@ public class IM implements ResultsListener
                                             myManager.removeUpdates(localService.singleLocationListener);
                                             localService.where=false;
                                         }
-                                }, 180000);
+                                }, 60000);
                             }
                         if(param.equals(OsMoDroid.SOS_DEPRESS))
                             {
@@ -1510,7 +1573,7 @@ public class IM implements ResultsListener
                                 try
                                     {
                                         jsonObject = ja.getJSONObject(i);
-                                        if (!jsonObject.getString("id").equals("null") && !jsonObject.getString("u").equals("null"))
+                                        if (!jsonObject.getString("u").equals("null"))
                                             {
                                                 for (Channel ch : LocalService.channelList)
                                                     {
@@ -1626,6 +1689,19 @@ public class IM implements ResultsListener
                                         pl.u = jsonObject.getInt("u");
                                         pl.url = "https://osmo.mobi/u/" + jsonObject.optString("url");
                                         pl.description=jsonObject.optString("description");
+
+                                        if (jsonObject.optInt("active") == 1)
+                                        {
+                                            pl.active = true;
+                                        }
+                                        else
+                                        {
+                                            pl.active = false;
+                                        }
+                                        pl.count=jsonObject.optInt("count");
+                                        pl.start=jsonObject.optLong("start");
+                                        pl.finish=jsonObject.optLong("finish");
+                                        pl.time=jsonObject.optLong("time");
                                         LocalService.simlimkslist.add(pl);
                                     }
                                 catch (JSONException e)
@@ -1668,6 +1744,19 @@ public class IM implements ResultsListener
                                 pl.url = "https://osmo.mobi/u/" + jo.getString("url");
                                 pl.description = jo.optString("description","");
                                 LocalService.simlimkslist.add(pl);
+
+                                if (jo.optInt("active") == 1)
+                                {
+                                    pl.active = true;
+                                }
+                                else
+                                {
+                                    pl.active = false;
+                                }
+                                pl.count=jo.optInt("count");
+                                pl.start=jo.optLong("start");
+                                pl.finish=jo.optLong("finish");
+                                pl.time=jo.optLong("time");
                                 if (LocalService.simlinksadapter != null)
                                     {
                                         LocalService.simlinksadapter.notifyDataSetChanged();

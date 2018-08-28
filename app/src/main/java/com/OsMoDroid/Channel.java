@@ -81,6 +81,7 @@ public class Channel implements Serializable, ResultsListener
                                 try
                                     {
                                         Device dev = new Device(jsonObject.getInt("u"), jsonObject.getString("name"), jsonObject.getString("color"),jsonObject.getInt("state"));
+                                        dev.gu=jsonObject.optInt("gu");
                                         if (jsonObject.has("lat") && jsonObject.has("lon"))
                                             {
                                                 dev.lat = Float.parseFloat(jsonObject.getString("lat"));

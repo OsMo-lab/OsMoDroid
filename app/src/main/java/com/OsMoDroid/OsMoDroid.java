@@ -22,7 +22,7 @@ public class OsMoDroid extends Application
         public static final String NOTIFIESFILENAME = "messagelist";
         public static final String DEVLIST = "devlist";
         public static final String CHANNELLIST = "chlist";
-        public static final String app_code = "73gU82aLi6vRa9";
+        public static final String app_code = "09min9hytu";
         public static final String TRACKER_GCM_ID = "80";
         public static final String TRACKER_BATTERY_INFO = "11";
         public static final String TRACKER_SATELLITES_INFO = "13";
@@ -40,6 +40,7 @@ public class OsMoDroid extends Application
         public static final String TRACKER_SESSION_STOP = "2";
         public static final String TTS = "46";
         public static final String WHERE = "12";
+        public static final String WHERE_GPS_ONLY = "15";
         public static final String SIGNAL_STATUS = "30";
         public static final String SIGNAL_OFF = "32";
         public static final String SIGNAL_ON = "31";

@@ -35,6 +35,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class MainFragment extends Fragment implements GPSLocalServiceClient.upd
     {
         private BroadcastReceiver receiver;
@@ -177,14 +181,14 @@ public class MainFragment extends Fragment implements GPSLocalServiceClient.upd
 
                         //globalsendToggle.setVisibility(View.GONE);
                     }
-                if(LocalService.channelList.size()==0)
-                    {
-                        sosButton.setVisibility(View.GONE);
-                    }
-                else
-                    {
-                        sosButton.setVisibility(View.VISIBLE);
-                    }
+//                if(LocalService.channelList.size()==0)
+//                    {
+//                        sosButton.setVisibility(View.GONE);
+//                    }
+//                else
+//                    {
+//                        sosButton.setVisibility(View.VISIBLE);
+//                    }
                 Button osmandButton = (Button)getView().findViewById(R.id.osmandButton);
                 if(LocalService.osmandbind)
                     {
@@ -430,23 +434,34 @@ public class MainFragment extends Fragment implements GPSLocalServiceClient.upd
                     {
                         sosButton.setChecked(globalActivity.mService.sos);
                     }
-                sosButton.setVisibility(View.GONE);
+                final EditText taskEditText = new EditText(globalActivity);
+                final AlertDialog.Builder builder = new AlertDialog.Builder(globalActivity);
+
+                builder.setView(taskEditText);
+               // sosButton.setVisibility(View.GONE);
                 sosButton.setOnClickListener(new OnClickListener()
                 {
                     @Override
                     public void onClick(View v)
                         {
                             sosButton.setChecked(!sosButton.isChecked());
-                            AlertDialog.Builder builder = new AlertDialog.Builder(globalActivity);//Context parameter
+                          //Context parameter
                             builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener()
                             {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which)
                                     {
-                                        globalActivity.mService.myIM.sendToServer("SOS", true);
+                                        JSONObject jo=new JSONObject();
+                                        try {
+                                            jo.put("data", taskEditText.getText().toString());
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                        globalActivity.mService.myIM.sendToServer("SOS|"+jo.optString("data"), true);
                                     }
                             });
                             builder.setNegativeButton(android.R.string.no, null);
+
                             if(!sosButton.isChecked())
                                 {
                                     builder.setMessage(R.string.agree_sos_);
@@ -455,6 +470,9 @@ public class MainFragment extends Fragment implements GPSLocalServiceClient.upd
                                 {
                                     builder.setMessage(R.string.agreesosno);
                                 }
+                            if(taskEditText.getParent()!=null) {
+                                ((ViewGroup) taskEditText.getParent()).removeView(taskEditText);
+                            }
                             AlertDialog alertDialog = builder.create();
                             alertDialog.show();
                         }

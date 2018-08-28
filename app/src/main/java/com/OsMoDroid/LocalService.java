@@ -18,8 +18,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
-import java.util.prefs.PreferenceChangeEvent;
-import java.util.prefs.PreferenceChangeListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -43,7 +41,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -60,6 +57,7 @@ import android.location.GpsStatus;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.net.ConnectivityManager;
@@ -78,7 +76,7 @@ import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.os.SystemClock;
 import android.os.Vibrator;
-import android.preference.Preference;
+import android.provider.Settings;
 import android.provider.Settings.Secure;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.TextToSpeech.OnInitListener;
@@ -99,6 +97,7 @@ import android.widget.Toast;
 
 import com.OsMoDroid.Netutil.MyAsyncTask;
 import com.github.mikephil.charting.data.Entry;
+import com.google.firebase.messaging.RemoteMessage;
 
 import net.osmand.aidl.map.ALatLon;
 
@@ -247,7 +246,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
         public static ArrayList<String> messagelist = new ArrayList<String>();
         public static ArrayList<String> debuglist = new ArrayList<String>();
         public static ArrayList<PermLink> simlimkslist = new ArrayList<PermLink>();
-        public static ArrayAdapter<PermLink> simlinksadapter;
+        public static PermLinksAdapter simlinksadapter;
         public static List<ChatMessage> chatmessagelist = new ArrayList<ChatMessage>();
         public static ArrayList<String> gcmtodolist = new ArrayList<String>();
         public static Device currentDevice;
@@ -421,12 +420,13 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                                     .setSmallIcon(android.R.drawable.ic_menu_send)
                                     .setAutoCancel(true)
                                     .setDefaults(Notification.DEFAULT_LIGHTS)
-                                    .setContentIntent(contentIntent).setNumber(numberofnotif);
+                                    .setContentIntent(contentIntent).setNumber(numberofnotif).setChannelId("silent");
                             if (!OsMoDroid.settings.getBoolean("silentnotify", false))
                                 {
-                                    notificationBuilder.setDefaults(Notification.DEFAULT_LIGHTS | Notification.DEFAULT_VIBRATE | Notification.DEFAULT_SOUND);
+                                    notificationBuilder.setDefaults(Notification.DEFAULT_LIGHTS | Notification.DEFAULT_VIBRATE | Notification.DEFAULT_SOUND).setChannelId("noisy");
                                 }
                             Notification notification = notificationBuilder.build();
+
                             LocalService.mNotificationManager.notify(OsMoDroid.mesnotifyid, notification);
                             if (OsMoDroid.mesactivityVisible)
                                 {
@@ -479,6 +479,9 @@ public class LocalService extends Service implements LocationListener, GpsStatus
         private long lastsmstime=0;
         private OsmAndAidlHelper osmand;
         private MapView mMapView;
+        private NotificationChannel silentchannel;
+        private NotificationChannel noisechannel;
+
         static String formatInterval(final long l)
             {
                 return String.format("%02d:%02d:%02d", l / (1000 * 60 * 60), (l % (1000 * 60 * 60)) / (1000 * 60), ((l % (1000 * 60 * 60)) % (1000 * 60)) / 1000);
@@ -537,17 +540,29 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                 if (state&&myIM.connOpened && !myIM.connecting)
                     {
                                 int icon = R.drawable.eyeo;
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+                        {
+                            icon=R.drawable.eyeo26;
+                        }
                                 updateNotification(icon);
                     }
                 else if (state&&myIM.connecting)
                     {
                                 int icon = R.drawable.eyeu;
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+                        {
+                            icon=R.drawable.eyeu26;
+                        }
                                 updateNotification(icon);
 
                     }
                 else if (state)
                     {
                                 int icon = R.drawable.eyen;
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+                        {
+                            icon=R.drawable.eyen26;
+                        }
                                 updateNotification(icon);
                     }
                 in.removeExtra("startmessage");
@@ -847,10 +862,14 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                 in = new Intent("OsMoDroid");
                 mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    NotificationChannel channel = new NotificationChannel("default",
-                            "OsMoDroid",
-                            NotificationManager.IMPORTANCE_DEFAULT);
-                    mNotificationManager.createNotificationChannel(channel);
+                    silentchannel = new NotificationChannel("silent","OsMoDroid Silent",NotificationManager.IMPORTANCE_LOW);
+                    noisechannel = new NotificationChannel("noisy","OsMoDroid Noisy",NotificationManager.IMPORTANCE_DEFAULT);
+                    AudioAttributes attributes = new AudioAttributes.Builder()
+                            .setUsage(AudioAttributes.USAGE_NOTIFICATION)
+                            .build();
+                    noisechannel.setSound(Settings.System.DEFAULT_NOTIFICATION_URI, attributes);
+                    mNotificationManager.createNotificationChannel(silentchannel);
+                    mNotificationManager.createNotificationChannel(noisechannel);
                 }
                     if (!OsMoDroid.settings.getBoolean("ondestroy", false))
                     {
@@ -1557,6 +1576,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                 foregroundnotificationBuilder.setContentTitle("OsMoDroid");
                 foregroundnotificationBuilder.setSmallIcon(icon);
                 foregroundnotificationBuilder.setContentIntent(osmodroidLaunchIntent);
+                foregroundnotificationBuilder.setChannelId("silent");
 
                 Intent is = new Intent(this, LocalService.class);
                 is.putExtra("ACTION", "STOP");
@@ -1917,7 +1937,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                         .setSmallIcon(android.R.drawable.arrow_up_float)
                         .setAutoCancel(true)
                         .setContentIntent(contentIntent)
-                        .setProgress(100, 0, false);
+                        .setProgress(100, 0, false).setChannelId("silent");
                 Notification notification = notificationBuilder.build();
                 int uploadid = OsMoDroid.uploadnotifyid();
                 LocalService.mNotificationManager.notify(uploadid, notification);
@@ -2774,7 +2794,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                                         .setSmallIcon(R.drawable.warn)
                                         .setAutoCancel(true)
                                         .setDefaults(Notification.DEFAULT_LIGHTS)
-                                        .setContentIntent(contentIntent);
+                                        .setContentIntent(contentIntent).setChannelId("silent");
                             }
                         else
                             {
@@ -2785,7 +2805,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                                         .setContentTitle("OsMoDroid")
                                         .setSmallIcon(R.drawable.warn)
                                         .setAutoCancel(true)
-                                        .setDefaults(Notification.DEFAULT_LIGHTS | Notification.DEFAULT_VIBRATE | Notification.DEFAULT_SOUND)
+                                        .setDefaults(Notification.DEFAULT_LIGHTS | Notification.DEFAULT_VIBRATE | Notification.DEFAULT_SOUND).setChannelId("noisy")
                                         .setContentIntent(contentIntent);
                             }
                         Notification notification = notificationBuilder.build();

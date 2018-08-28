@@ -70,7 +70,8 @@ public class SimLinksFragment extends Fragment
                 View view = inflater.inflate(R.layout.simlinks, container, false);
                 final ListView lv1 = (ListView) view.findViewById(R.id.listView1);
                 lv1.setEmptyView(view.findViewById(android.R.id.empty));
-                LocalService.simlinksadapter = new ArrayAdapter<PermLink>(getActivity(), android.R.layout.simple_list_item_1, LocalService.simlimkslist);
+                LocalService.simlinksadapter = new PermLinksAdapter(getActivity(), R.layout.deviceitem, LocalService.simlimkslist,globalActivity.mService);
+
                 lv1.setAdapter(LocalService.simlinksadapter);
                 registerForContextMenu(lv1);
                 lv1.setOnItemClickListener(new OnItemClickListener()

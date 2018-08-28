@@ -59,6 +59,27 @@ public class DebugFragment extends Fragment
                 lv1.setTranscriptMode(ListView.TRANSCRIPT_MODE_NORMAL);
                 LocalService.debugAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, LocalService.debuglist);
                 lv1.setAdapter(LocalService.debugAdapter);
+                lv1.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+                    @Override
+                    public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int pos, long id) {
+                        ClipboardManager clipboard = (ClipboardManager) getActivity().getApplicationContext().getSystemService(Context.CLIPBOARD_SERVICE);
+                        clipboard.setText( (String)arg0.getItemAtPosition(pos));
+                        Toast.makeText(getActivity(), "Text copied to clipboard", Toast.LENGTH_SHORT).show();
+
+                        return true;
+                    }
+                });
+                lv1.setOnItemClickListener(new OnItemClickListener()
+                {
+                    @Override
+                    public void onItemClick(AdapterView<?> adapter, View v, int position,
+                                            long arg3)
+                    {
+                        ClipboardManager clipboard = (ClipboardManager) getActivity().getApplicationContext().getSystemService(Context.CLIPBOARD_SERVICE);
+                        clipboard.setText( (String)adapter.getItemAtPosition(position));
+
+                    }
+                });
                 return view;
             }
         @Override

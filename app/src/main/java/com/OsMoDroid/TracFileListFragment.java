@@ -111,7 +111,7 @@ public class TracFileListFragment extends Fragment implements ResultsListener
                                 .setSmallIcon(android.R.drawable.arrow_up_float)
                                 .setAutoCancel(true)
                                 .setContentIntent(contentIntent)
-                                .setProgress(100, 0, false);
+                                .setProgress(100, 0, false).setChannelId("silent");
                         ;
                         Notification notification = notificationBuilder.build();
                         int uploadid = OsMoDroid.uploadnotifyid();
