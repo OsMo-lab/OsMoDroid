@@ -179,6 +179,13 @@ public class GPSLocalServiceClient extends AppCompatActivity implements ResultsL
                             intentAction(needIntent);
                             needIntent = null;
                         }
+                    if(OsMoDroid.settings.getBoolean("autostartsession", false))
+                    {
+                        if(!mService.state)
+                        {
+                            mService.startServiceWork(true);
+                        }
+                    }
                     if (mService.myIM != null)
                         {
                             mService.bitmapmapview();

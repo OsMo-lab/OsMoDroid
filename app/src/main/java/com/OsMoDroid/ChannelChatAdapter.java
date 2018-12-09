@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.PaintDrawable;
 import android.opengl.Visibility;
+import android.text.util.Linkify;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -60,6 +61,7 @@ public class ChannelChatAdapter extends ArrayAdapter<ChatMessage>
                         txtFrom.setTextColor(Color.YELLOW);
                         txtTime.setTextColor(Color.YELLOW);
                     }
+                Linkify.addLinks(txtText, Linkify.ALL);
                 return row;
             }
     }

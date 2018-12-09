@@ -10,7 +10,6 @@ import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -22,12 +21,10 @@ import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View.OnClickListener;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
@@ -35,8 +32,6 @@ public class TracFileListFragment extends Fragment implements ResultsListener
     {
         int count = 0;
         int progress = 0;
-        private TrackFileAdapter trackFileAdapter;
-        private ArrayList<TrackFile> trackFileList = new ArrayList<TrackFile>();
         private File path;
         private ProgressDialog progressDialog;
         private ReadTrackList readTask;
@@ -100,7 +95,7 @@ public class TracFileListFragment extends Fragment implements ResultsListener
                 final AdapterContextMenuInfo acmi = (AdapterContextMenuInfo) item.getMenuInfo();
                 if (item.getItemId() == 1)
                     {
-                        File file = new File(sdDir, "OsMoDroid/" + trackFileList.get((int) acmi.id).fileName);
+                        File file = new File(sdDir, "OsMoDroid/" + LocalService.trackFileList.get((int) acmi.id).fileName);
                         PendingIntent contentIntent = PendingIntent.getActivity(getActivity(), 0, new Intent(), 0);
                         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(
                                 LocalService.serContext.getApplicationContext(),"default")
@@ -120,7 +115,7 @@ public class TracFileListFragment extends Fragment implements ResultsListener
                     }
                 if (item.getItemId() == 2)
                     {
-                        File fileName = new File(sdDir, "OsMoDroid/" + trackFileList.get((int) acmi.id).fileName);
+                        File fileName = new File(sdDir, "OsMoDroid/" + LocalService.trackFileList.get((int) acmi.id).fileName);
                         ColoredGPX load = new ColoredGPX(0, fileName, "#0000FF", null);
                         Iterator<ColoredGPX> it = LocalService.showedgpxList.iterator();
                         while (it.hasNext())
@@ -131,44 +126,63 @@ public class TracFileListFragment extends Fragment implements ResultsListener
                                         it.remove();
                                     }
                             }
-                        trackFileList.get((int) acmi.id).showedonmap = false;
-                        trackFileAdapter.notifyDataSetChanged();
+                        LocalService.trackFileList.get((int) acmi.id).showedonmap = false;
+                        LocalService.trackFileAdapter.notifyDataSetChanged();
                         fileName.delete();
                         getFileList();
                     }
                 if (item.getItemId() == 3)
                     {
-                        int indexoftrack=0;
-
-
-                                File fileName = new File(sdDir, "OsMoDroid/" + trackFileList.get((int) acmi.id).fileName);
-                                Log.d(getClass().getSimpleName(), "filename=" + fileName);
-                                ColoredGPX load = new ColoredGPX(0, fileName, "#0000FF", null);
-                                Iterator<ColoredGPX> it = LocalService.showedgpxList.iterator();
-                                boolean exist = false;
-
-                                while (it.hasNext())
-                                    {
-                                        ColoredGPX cg = it.next();
-                                        if (cg.gpxfile.equals(load.gpxfile))
-                                            {
-                                                exist = true;
-                                                break;
-                                            }
-                                        indexoftrack++;
-                                    }
-                                if (!exist)
-                                    {
-                                        LocalService.showedgpxList.add(load);
-                                        load.initPathOverlay();
-                                        trackFileList.get((int) acmi.id).showedonmap = true;
-                                    }
-
-
-                        trackFileAdapter.notifyDataSetChanged();
-                        if(LocalService.showedgpxList.get(indexoftrack).centerGeoPoint!=null)
+                        if(LocalService.trackFileList.get((int) acmi.id).fromServer)
+                        {
+                            for(ColoredGPX cg:LocalService.showedgpxList)
                             {
-                                Log.d(this.getClass().getName(), "TrackFileListFragment centerGeoPoint="+LocalService.showedgpxList.get(indexoftrack).centerGeoPoint);
+                                if(cg.u==LocalService.trackFileList.get((int) acmi.id).u)
+                                {
+                                    if (cg.centerGeoPoint != null) {
+                                        Log.d(this.getClass().getName(), "TrackFileListFragment centerGeoPoint=" + cg.centerGeoPoint);
+                                        OsMoDroid.editor.putInt("centerlat", cg.centerGeoPoint.getLatitudeE6());
+                                        OsMoDroid.editor.putInt("centerlon", cg.centerGeoPoint.getLongitudeE6());
+                                        OsMoDroid.editor.putInt("zoom", 10);
+                                        OsMoDroid.editor.putBoolean("isfollow", false);
+                                        OsMoDroid.editor.commit();
+                                        globalActivity.drawClickListener.selectItem(OsMoDroid.context.getString(R.string.map), null);
+                                        LocalService.currentItemName = OsMoDroid.context.getString(R.string.map);
+
+                                    }
+                                }
+                            }
+
+
+                        }
+                        else {
+                            int indexoftrack = 0;
+
+
+                            File fileName = new File(sdDir, "OsMoDroid/" + LocalService.trackFileList.get((int) acmi.id).fileName);
+                            Log.d(getClass().getSimpleName(), "filename=" + fileName);
+                            ColoredGPX load = new ColoredGPX(0, fileName, "#0000FF", null);
+                            Iterator<ColoredGPX> it = LocalService.showedgpxList.iterator();
+                            boolean exist = false;
+
+                            while (it.hasNext()) {
+                                ColoredGPX cg = it.next();
+                                if (cg.gpxfile.equals(load.gpxfile)) {
+                                    exist = true;
+                                    break;
+                                }
+                                indexoftrack++;
+                            }
+                            if (!exist) {
+                                LocalService.showedgpxList.add(load);
+                                load.initPathOverlay();
+                                LocalService.trackFileList.get((int) acmi.id).showedonmap = true;
+                            }
+
+
+                            LocalService.trackFileAdapter.notifyDataSetChanged();
+                            if (LocalService.showedgpxList.get(indexoftrack).centerGeoPoint != null) {
+                                Log.d(this.getClass().getName(), "TrackFileListFragment centerGeoPoint=" + LocalService.showedgpxList.get(indexoftrack).centerGeoPoint);
                                 OsMoDroid.editor.putInt("centerlat", LocalService.showedgpxList.get(indexoftrack).centerGeoPoint.getLatitudeE6());
                                 OsMoDroid.editor.putInt("centerlon", LocalService.showedgpxList.get(indexoftrack).centerGeoPoint.getLongitudeE6());
                                 OsMoDroid.editor.putInt("zoom", 10);
@@ -177,13 +191,11 @@ public class TracFileListFragment extends Fragment implements ResultsListener
                                 globalActivity.drawClickListener.selectItem(OsMoDroid.context.getString(R.string.map), null);
                                 LocalService.currentItemName = OsMoDroid.context.getString(R.string.map);
 
-                            }
-                        else
-                            {
+                            } else {
 
                             }
 
-
+                        }
 
                     }
 
@@ -191,7 +203,8 @@ public class TracFileListFragment extends Fragment implements ResultsListener
                     {
                         globalActivity.drawClickListener.trackStatFragment = new TrackStatFragment();
                         Bundle bundle = new Bundle();
-                        bundle.putString("file",trackFileList.get((int) acmi.id).fileName );
+                        bundle.putString("file", LocalService.trackFileList.get((int) acmi.id).fileName );
+                        bundle.putBoolean("fromServer", LocalService.trackFileList.get((int) acmi.id).fromServer );
                         globalActivity.drawClickListener.trackStatFragment.setArguments(bundle);
                         globalActivity.showFragment(globalActivity.drawClickListener.trackStatFragment, true);
                     }
@@ -205,13 +218,17 @@ public class TracFileListFragment extends Fragment implements ResultsListener
             {
                 final AdapterContextMenuInfo acmi = (AdapterContextMenuInfo) menuInfo;
                 //menu.add(0, 1, 1, R.string.uploadtotrera).setIcon(android.R.drawable.arrow_up_float);
-                menu.add(0, 2, 3, R.string.delete).setIcon(android.R.drawable.ic_menu_delete);
-                if(trackFileList.get((int) acmi.id).showedonmap)
+                if(!LocalService.trackFileList.get((int) acmi.id).fromServer) {
+                    menu.add(0, 2, 3, R.string.delete).setIcon(android.R.drawable.ic_menu_delete);
+                }
+                if(LocalService.trackFileList.get((int) acmi.id).showedonmap)
                     {
                         menu.add(0, 3, 1, R.string.showonmap).setIcon(android.R.drawable.ic_menu_directions);
                     }
                 //menu.add(0, 4, 3, R.string.hidefromnmap).setIcon(android.R.drawable.ic_menu_manage);
-                menu.add(0, 5, 2, R.string.stat);
+                if(!LocalService.trackFileList.get((int) acmi.id).fromServer) {
+                    menu.add(0, 5, 2, R.string.stat);
+                }
 
                 super.onCreateContextMenu(menu, v, menuInfo);
             }
@@ -224,8 +241,8 @@ public class TracFileListFragment extends Fragment implements ResultsListener
                 progressDialog.setMessage(getActivity().getString(R.string.loading));
                 progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
                 final ListView lv1 = (ListView) view.findViewById(R.id.trackfilelistView);
-                trackFileAdapter = new TrackFileAdapter(getActivity(), R.layout.trackfileitem, trackFileList);
-                lv1.setAdapter(trackFileAdapter);
+                LocalService.trackFileAdapter = new TrackFileAdapter(getActivity(), R.layout.trackfileitem, LocalService.trackFileList);
+                lv1.setAdapter(LocalService.trackFileAdapter);
                 registerForContextMenu(lv1);
                 lv1.setOnItemClickListener(new OnItemClickListener()
                 {
@@ -258,9 +275,9 @@ public class TracFileListFragment extends Fragment implements ResultsListener
                 protected void onProgressUpdate(TrackFile... values)
                     {
                         progressDialog.setProgress(progress);
-                        trackFileList.add(values[0]);
-                        Collections.sort(trackFileList);
-                        trackFileAdapter.notifyDataSetChanged();
+                        LocalService.trackFileList.add(values[0]);
+                        Collections.sort(LocalService.trackFileList);
+                        LocalService.trackFileAdapter.notifyDataSetChanged();
                         super.onProgressUpdate(values);
                     }
                 @Override
@@ -312,8 +329,12 @@ public class TracFileListFragment extends Fragment implements ResultsListener
                 protected void onPostExecute(Void result)
                     {
                         //  progressDialog.dismiss();
-                        Collections.sort(trackFileList);
-                        trackFileAdapter.notifyDataSetChanged();
+                        Collections.sort(LocalService.trackFileList);
+                        if (OsMoDroid.settings.getBoolean("live", false))
+                        {
+                            LocalService.myIM.sendToServer("HISTORY", true);
+                        }
+                        LocalService.trackFileAdapter.notifyDataSetChanged();
                         super.onPostExecute(result);
                     }
                 /* (non-Javadoc)
@@ -322,10 +343,10 @@ public class TracFileListFragment extends Fragment implements ResultsListener
                 @Override
                 protected void onPreExecute()
                     {
-                        trackFileList.clear();
+                        LocalService.trackFileList.clear();
                         // progressDialog.show();
-                        Collections.sort(trackFileList);
-                        trackFileAdapter.notifyDataSetChanged();
+                        Collections.sort(LocalService.trackFileList);
+                        LocalService.trackFileAdapter.notifyDataSetChanged();
                         super.onPreExecute();
                     }
 

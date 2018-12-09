@@ -22,6 +22,7 @@ import java.util.TimeZone;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.api.IMapController;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.BoundingBox;
@@ -97,12 +98,16 @@ import android.widget.Toast;
 
 import com.OsMoDroid.Netutil.MyAsyncTask;
 import com.github.mikephil.charting.data.Entry;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.RemoteMessage;
 
 import net.osmand.aidl.map.ALatLon;
 
 import static com.OsMoDroid.IM.writeException;
 import static java.lang.Math.abs;
+import static org.osmdroid.util.GeometryMath.DEG2RAD;
+import static org.osmdroid.util.constants.GeoConstants.RADIUS_EARTH_METERS;
+
 public class LocalService extends Service implements LocationListener, GpsStatus.Listener, TextToSpeech.OnInitListener, ResultsListener, SensorEventListener, OsmAndHelper.OnOsmandMissingListener
 
     {
@@ -111,6 +116,8 @@ public class LocalService extends Service implements LocationListener, GpsStatus
         public static ArrayList<ColoredGPX> showedgpxList = new ArrayList<ColoredGPX>();
         static boolean connectcompleted =false;
         public static boolean osmandbind=false;
+        static TrackFileAdapter trackFileAdapter;
+        static ArrayList<TrackFile> trackFileList = new ArrayList<TrackFile>();
         long sessionopentime;
         boolean binded = false;
         private SensorManager mSensorManager;
@@ -932,7 +939,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                                 myIM.start();
                             }
                     }
-                if (OsMoDroid.settings.getBoolean("started", false))
+                if (OsMoDroid.settings.getBoolean("started", false)||OsMoDroid.settings.getBoolean("autostartsession", false))
                     {
                         startServiceWork(true);
                     }
@@ -2031,11 +2038,11 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                         GeoPoint prevGeoPoint = new GeoPoint(prevlocation_spd);
                         if (OsMoDroid.settings.getBoolean("imperial", false))
                             {
-                                workdistance = workdistance + curGeoPoint.distanceTo(prevGeoPoint) / 1.609344f;//location.distanceTo(prevlocation_spd);
+                                workdistance = workdistance +distanceBetween(curGeoPoint,prevGeoPoint)/ 1.609344f;//location.distanceTo(prevlocation_spd);
                             }
                         else
                             {
-                                workdistance = workdistance + curGeoPoint.distanceTo(prevGeoPoint);//location.distanceTo(prevlocation_spd);
+                                workdistance = workdistance + distanceBetween(curGeoPoint,prevGeoPoint);//location.distanceTo(prevlocation_spd);
                             }
                         if (OsMoDroid.settings.getBoolean("imperial", false))
                             {
@@ -2156,11 +2163,11 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                     {
                         distanceStringList.add(Integer.toString(index/1000)+','+Integer.toString(index%1000));
                     }
-                Entry e = new Entry(currentspeed* 3.6f,(int) workdistance);
+                Entry e = new Entry((int) workdistance,currentspeed* 3.6f);
                 speeddistanceEntryList.add(e);
-                Entry avge = new Entry(avgspeed * 3600f,(int) workdistance);
+                Entry avge = new Entry((int) workdistance,avgspeed * 3600f);
                 avgspeeddistanceEntryList.add(avge);
-                Entry alte = new Entry((float) location.getAltitude(),(int) workdistance);
+                Entry alte = new Entry((int) workdistance,(float) location.getAltitude());
                 altitudedistanceEntryList.add(alte);
 
 
@@ -2850,6 +2857,11 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                                     {
                                         try
                                             {
+                                                try {
+                                                    FirebaseInstanceId.getInstance().deleteInstanceId();
+                                                } catch (IOException e) {
+                                                    e.printStackTrace();
+                                                }
                                                 OsMoDroid.editor.putString("newkey", result.Jo.getString("device"));
                                                 OsMoDroid.editor.commit();
                                                 if (OsMoDroid.settings.getBoolean("live", false))
@@ -3180,6 +3192,31 @@ public class LocalService extends Service implements LocationListener, GpsStatus
               //  addlog("osmandupdDevice");
 
             }
+
+
+        public static float distanceBetween(final IGeoPoint that,final IGeoPoint other) {
+
+            final double a1 = DEG2RAD * that.getLatitude();
+            final double a2 = DEG2RAD * that.getLongitude();
+            final double b1 = DEG2RAD * other.getLatitude();
+            final double b2 = DEG2RAD * other.getLongitude();
+
+            final double cosa1 = Math.cos(a1);
+            final double cosb1 = Math.cos(b1);
+
+            final double t1 = cosa1 * Math.cos(a2) * cosb1 * Math.cos(b2);
+
+            final double t2 = cosa1 * Math.sin(a2) * cosb1 * Math.sin(b2);
+
+            final double t3 = Math.sin(a1) * Math.sin(b1);
+
+            final double tt = Math.acos(t1 + t2 + t3);
+            if(Float.isNaN((float)tt))
+            {
+                return 0f;
+            }
+            return  ((float)RADIUS_EARTH_METERS) * (float)tt;
+        }
     }
 
 

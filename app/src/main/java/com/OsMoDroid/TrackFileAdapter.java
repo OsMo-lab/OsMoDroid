@@ -1,5 +1,6 @@
 package com.OsMoDroid;
 import java.io.File;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -13,15 +14,25 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
-public class TrackFileAdapter extends ArrayAdapter<TrackFile>
+
+import com.bumptech.glide.Glide;
+
+import static com.OsMoDroid.LocalService.addlog;
+
+public class TrackFileAdapter extends ArrayAdapter<TrackFile> implements ResultsListener
     {
         private TextView fileName;
         private TextView fileDate;
         private TextView fileSize;
+        private ImageView imageView;
         private File sdDir = android.os.Environment.getExternalStorageDirectory();
+        Context context;
+
         public TrackFileAdapter(Context context, int textViewResourceId, List<TrackFile> objects)
             {
+
                 super(context, textViewResourceId, objects);
+                TrackFileAdapter.this.context=context;
 
             }
         @Override
@@ -37,7 +48,28 @@ public class TrackFileAdapter extends ArrayAdapter<TrackFile>
                 fileName = (TextView) row.findViewById(R.id.fileName);
                 fileDate = (TextView) row.findViewById(R.id.fileDate);
                 fileSize = (TextView) row.findViewById(R.id.fileSize);
-                fileName.setText(trackFile.fileName);
+                imageView= (ImageView) row.findViewById(R.id.imageView);
+                if(trackFile.fromServer) {
+                    imageView.setVisibility(View.VISIBLE);
+                    Glide.with(context)
+                            .load(trackFile.image)
+                            .into(imageView);
+                }
+                else
+                {
+                    imageView.setVisibility(View.GONE);
+                }
+                if(trackFile.fromServer)
+                {
+                    fileName.setText(trackFile.fileName + '\n' + trackFile.distantion + "KM");
+                   // fileName.setBackgroundColor(Color.parseColor("#FF8C00"));
+                }
+                else
+                {
+                    fileName.setText(trackFile.fileName);
+                  //  fileName.setBackgroundColor(Color.TRANSPARENT);
+                }
+
                 fileDate.setText(trackFile.fileDate);
                 fileSize.setText(trackFile.fileSize);
 //                if (trackFile.showedonmap)
@@ -60,45 +92,91 @@ public class TrackFileAdapter extends ArrayAdapter<TrackFile>
                                 TrackFile trackFile = getItem((Integer) v.getTag());
                                 if(!trackFile.showedonmap)
                                     {
-                                        File fileName = new File(sdDir, "OsMoDroid/" + trackFile.fileName);
-                                        Log.d(getClass().getSimpleName(), "filename=" + fileName);
-                                        ColoredGPX load = new ColoredGPX(0, fileName, "#0000FF", null);
-                                        Iterator<ColoredGPX> it = LocalService.showedgpxList.iterator();
-                                        boolean exist = false;
-                                        while (it.hasNext())
-                                            {
+                                        if(trackFile.fromServer)
+                                        {
+
+                                            ColoredGPX cgpx = new ColoredGPX(trackFile.u, new File(sdDir, "OsMoDroid/servergpx/" + trackFile.u+".gpx"), "#0000FF", trackFile.url);
+
+                                            cgpx.status = ColoredGPX.Statuses.DOWNLOADING;
+                                            Netutil.downloadfile(TrackFileAdapter.this,context, cgpx.url, cgpx);
+
+                                        }
+                                        else {
+                                            File fileName = new File(sdDir, "OsMoDroid/" + trackFile.fileName);
+                                            Log.d(getClass().getSimpleName(), "filename=" + fileName);
+                                            ColoredGPX load = new ColoredGPX(0, fileName, "#0000FF", null);
+                                            Iterator<ColoredGPX> it = LocalService.showedgpxList.iterator();
+                                            boolean exist = false;
+                                            while (it.hasNext()) {
                                                 ColoredGPX cg = it.next();
-                                                if (cg.gpxfile.equals(load.gpxfile))
-                                                    {
-                                                        exist = true;
-                                                    }
+                                                if (cg.gpxfile.equals(load.gpxfile)) {
+                                                    exist = true;
+                                                }
                                             }
-                                        if (!exist)
-                                            {
+                                            if (!exist) {
                                                 LocalService.showedgpxList.add(load);
                                                 load.initPathOverlay();
                                                 trackFile.showedonmap = true;
                                             }
+                                        }
                                     }
-                                else
+                                else {
+                                    if (trackFile.fromServer)
                                     {
+                                        Iterator<ColoredGPX> it = LocalService.showedgpxList.iterator();
+                                        while (it.hasNext()) {
+                                            ColoredGPX cg = it.next();
+                                            if (cg.u==trackFile.u) {
+                                                it.remove();
+                                            }
+                                        }
+                                        trackFile.showedonmap = false;
+                                    }
+                                    else
+                                        {
                                         File fileName = new File(sdDir, "OsMoDroid/" + trackFile.fileName);
                                         ColoredGPX load = new ColoredGPX(0, fileName, "#0000FF", null);
                                         Iterator<ColoredGPX> it = LocalService.showedgpxList.iterator();
-                                        while (it.hasNext())
-                                            {
-                                                ColoredGPX cg = it.next();
-                                                if (cg.gpxfile.equals(load.gpxfile))
-                                                    {
-                                                        it.remove();
-                                                    }
+                                        while (it.hasNext()) {
+                                            ColoredGPX cg = it.next();
+                                            if (cg.gpxfile.equals(load.gpxfile)) {
+                                                it.remove();
                                             }
+                                        }
                                         trackFile.showedonmap = false;
 
                                     }
+                                }
 
                             }
                     });
                 return row;
             }
+
+        @Override
+        public void onResultsSucceeded(APIComResult result)
+        {
+            Log.d(getClass().getSimpleName(), "download result=" + result.load);
+            Log.d(getClass().getSimpleName(), "add to showlist status"+result.load.status );
+            if(result.load.status== ColoredGPX.Statuses.DOWNLOADED)
+            {
+
+                LocalService.showedgpxList.add(result.load);
+                result.load.initPathOverlay();
+
+                for (TrackFile trackFile : LocalService.trackFileList) {
+                    if (trackFile.u == result.load.u) {
+                        trackFile.showedonmap = true;
+                        trackFile.fileName=result.load.gpxfile.getName();
+                    }
+                }
+
+
+            }
+            else
+            {
+                TrackFileAdapter.this.notifyDataSetChanged();
+            }
+            Collections.sort(LocalService.trackFileList);
+        }
     }

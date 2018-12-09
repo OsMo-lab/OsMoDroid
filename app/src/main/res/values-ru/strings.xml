@@ -362,4 +362,6 @@
   <string name="closesos">Закрыть!</string>
     <string name="requiregps">Приложению нужен доступ к GPS</string>
   <string name="requireSTORAGE">Приложению нужен доступ к карте памяти</string>
+    <string name="autostartses">Запускать сессию при старте приложения</string>
+  <string name="startsesonrun">Автозапуск мониторинга</string>
 </resources>

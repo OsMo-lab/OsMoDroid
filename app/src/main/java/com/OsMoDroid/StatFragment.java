@@ -33,7 +33,7 @@ import com.github.mikephil.charting.listener.OnChartGestureListener;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 
 import org.w3c.dom.Text;
-public class StatFragment extends Fragment implements OnChartGestureListener, OnChartValueSelectedListener
+public class StatFragment extends Fragment implements OnChartGestureListener,OnChartValueSelectedListener
     {
         private GPSLocalServiceClient globalActivity;
         private BroadcastReceiver receiver;
@@ -257,8 +257,9 @@ public class StatFragment extends Fragment implements OnChartGestureListener, On
                 mChart.setDrawGridBackground(false);
 
                 // no description text
-                mChart.setDescription("");
-                mChart.setNoDataTextDescription("You need to provide data for the chart.");
+//                mChart.setDescription("");
+                mChart.getDescription().setEnabled(false);
+                mChart.setNoDataText("You need to provide data for the chart.");
 
                 // enable touch gestures
                 mChart.setTouchEnabled(true);
@@ -286,13 +287,17 @@ public class StatFragment extends Fragment implements OnChartGestureListener, On
                 //leftAxis.setAxisMaxValue(50);
                 rightAxis.setAxisMinValue(0f);
 
-                speedLineData = new LineData(LocalService.distanceStringList);
+                //speedLineData = new LineData(LocalService.distanceStringList);
+                speedLineData = new LineData();
                 speedLineData.addDataSet(speedDataSet);
                 speedLineData.addDataSet(avgspeedDataSet);
                 speedLineData.addDataSet(altitudeDataSet);
 
-
+                speedDataSet.setDrawValues(false);
+                avgspeedDataSet.setDrawValues(false);
+                altitudeDataSet.setDrawValues(false);
                 mChart.setData(speedLineData);
+
 
                 mChart.invalidate();
                 receiver = new BroadcastReceiver()
@@ -317,15 +322,17 @@ public class StatFragment extends Fragment implements OnChartGestureListener, On
 
                                 TextView altTextView = (TextView)view.findViewById(R.id.altTextView);
                                 TextView climbTextView = (TextView) view.findViewById(R.id.climbTextView);
-                                if((intent.getIntExtra("altitude",0)!=Integer.MIN_VALUE))
-                                    {
+
                                         altTextView.setText(intent.getStringExtra("altitude"));
-                                    }
+
                                 climbTextView.setText(intent.getStringExtra("totalclimb"));
                                 if(mChart!=null)
                                     {
                                         try
                                             {
+                                                speedDataSet.setDrawValues(true);
+                                                avgspeedDataSet.setDrawValues(true);
+                                                altitudeDataSet.setDrawValues(true);
                                                 speedDataSet.notifyDataSetChanged();
                                                 avgspeedDataSet.notifyDataSetChanged();
                                                 altitudeDataSet.notifyDataSetChanged();
@@ -335,7 +342,7 @@ public class StatFragment extends Fragment implements OnChartGestureListener, On
                                             }
                                             catch (IllegalArgumentException e)
                                                 {
-                                                    LocalService.addlog("strange exception "+speedDataSet.getEntryCount() +' '+avgspeedDataSet.getEntryCount()+' '+altitudeDataSet.getEntryCount()+' '+speedLineData.getXValCount());
+                                                    LocalService.addlog("strange exception "+speedDataSet.getEntryCount() +' '+avgspeedDataSet.getEntryCount()+' '+altitudeDataSet.getEntryCount()+' ');
                                                 }
                                     }
                             }
@@ -375,10 +382,12 @@ public class StatFragment extends Fragment implements OnChartGestureListener, On
         public void onChartTranslate(MotionEvent me, float dX, float dY)
             {
             }
+
         @Override
-        public void onValueSelected(Entry e, int dataSetIndex, Highlight h)
-            {
-            }
+        public void onValueSelected(Entry e, Highlight h) {
+
+        }
+
         @Override
         public void onNothingSelected()
             {

@@ -1,4 +1,5 @@
 package com.OsMoDroid;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -27,6 +28,7 @@ import org.osmdroid.util.GeoPoint;
 
 import com.OsMoDroid.Channel.Point;
 import com.OsMoDroid.Netutil.MyAsyncTask;
+import com.google.firebase.iid.FirebaseInstanceId;
 //import android.R;
 import android.app.AlarmManager;
 import android.app.Notification;
@@ -35,6 +37,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
@@ -52,6 +55,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.speech.tts.TextToSpeech;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
@@ -67,259 +71,225 @@ import static com.OsMoDroid.LocalService.addlog;
 import static com.OsMoDroid.LocalService.myManager;
 import static com.OsMoDroid.OsMoDroid.context;
 import static com.OsMoDroid.OsMoDroid.timeshift;
+
 /**
  * @author dfokin
  *         Class for work with osmo server
  */
-public class IM implements ResultsListener
-    {
+public class IM implements ResultsListener {
 
-        private static Camera camera;
+    private static Camera camera;
 
-        final static SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        private static final int KEEP_ALIVE = 1000 * 270;
-        private static final long ERROR_RECONNECT_TIMEOUT = 3 * 1000;
-        private static final long ONLINE_TIMEOUT = 60 * 1000;
-        private static final String RECONNECT_INTENT = "com.osmodroid.reconnect";
-        private static final String GET_TOKEN_TIMEOUT_INTENT = "com.osmodroid.gettokentimeout";
-        private static final String KEEPALIVE_INTENT = "com.osmodroid.keepalive";
-        private static final String ONLINE_TIMEOUT_INTENT = "com.osmodroid.onlinetimeout";
-        static String SERVER_IP = "osmo.mobi";
-        static int SERVERPORT = 4260;
-        static long sendBytes = 0;
-        static long recievedBytes = 0;
-        private static int RECONNECT_TIMEOUT = 1000 * 30;
-        final boolean log = true;
-        static  long startTraffic = 0;
-        public Socket socket;
-        public SSLSocket sslsocket;
-        volatile public boolean authed = false;
-        public BufferedReader rd;
-        public PrintWriter wr;
-        volatile public boolean needopensession = false;
-        volatile public boolean needclosesession = false;
-        volatile protected boolean running = false;
-        volatile protected boolean start = false;
-        volatile protected boolean connOpened = false;
-        volatile protected boolean connecting = false;
-        AlarmManager manager;
-        PendingIntent reconnectPIntent;
-        PendingIntent keepAlivePIntent;
-        PendingIntent getTokenTimeoutPIntent;
-        //PendingIntent onlineTimeoutPIntent;
-        Thread connectThread;
-        Context parent;
-        int mestype = 0;
-        LocalService localService;
-        FileOutputStream fos;
-        ObjectOutputStream output = null;
-        int socketRetryInt = 0;
-        long connectcount = 0;
-        long erorconenctcount = 0;
-        private IMWriter iMWriter;
-        private IMReader iMReader;
-        volatile private boolean checkadressing = false;
-        private String token = "";
-        private String poll = "";
-        private Thread readerThread;
-        private Thread writerThread;
-        private int workserverint = -1;
-        private String workservername = "";
-        private MyAsyncTask sendidtask;
-        ArrayList<String> executedCommandArryaList = new ArrayList<String>();
-        BroadcastReceiver onlineTimeoutReceiver = new BroadcastReceiver()
-            {
-                @Override
-                public void onReceive(Context context, Intent intent)
-                    {
-                        boolean existactiveDevice=false;
-                        for(Channel ch : LocalService.channelList)
-                            {
-                                for(Device dev : ch.deviceList)
-                                    {
-                                        if(dev.state!=0)
-                                            {
-                                                if((System.currentTimeMillis()-dev.updatated)<15*60*1000)
-                                                    {
-                                                        existactiveDevice=true;
-                                                    }
-                                            }
-                                    }
-                            }
-                        LocalService.addlog("Online timeout onReceive, OsmodroidVisible="+OsMoDroid.gpslocalserviceclientVisible +" gcmtodo="+localService.gcmtodolist.size()+" where="+localService.where+" existactivedevice="+existactiveDevice+" state="+localService.state);
-                        if(OsMoDroid.gpslocalserviceclientVisible||localService.state||(localService.isOnline()&&localService.gcmtodolist.size()>0)||localService.where
-                                ||(OsMoDroid.settings.getBoolean("subscribebackground", false)&&existactiveDevice  )   )
-                            {
-                                setOnlineTimeout();
-                            }
-                        else
-                            {
-                                LocalService.addlog("Online timeout onReceive close because not visible");
-                                close();
-                            }
+    final static SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private static final int KEEP_ALIVE = 1000 * 270;
+    private static final long ERROR_RECONNECT_TIMEOUT = 3 * 1000;
+    private static final long ONLINE_TIMEOUT = 60 * 1000;
+    private static final String RECONNECT_INTENT = "com.osmodroid.reconnect";
+    private static final String GET_TOKEN_TIMEOUT_INTENT = "com.osmodroid.gettokentimeout";
+    private static final String KEEPALIVE_INTENT = "com.osmodroid.keepalive";
+    private static final String ONLINE_TIMEOUT_INTENT = "com.osmodroid.onlinetimeout";
+    static String SERVER_IP = "osmo.mobi";
+    static int SERVERPORT = 4260;
+    static long sendBytes = 0;
+    static long recievedBytes = 0;
+    private static int RECONNECT_TIMEOUT = 1000 * 30;
+    final boolean log = true;
+    static long startTraffic = 0;
+    public Socket socket;
+    public SSLSocket sslsocket;
+    volatile public boolean authed = false;
+    public BufferedReader rd;
+    public PrintWriter wr;
+    volatile public boolean needopensession = false;
+    volatile public boolean needclosesession = false;
+    volatile protected boolean running = false;
+    volatile protected boolean start = false;
+    volatile protected boolean connOpened = false;
+    volatile protected boolean connecting = false;
+    AlarmManager manager;
+    PendingIntent reconnectPIntent;
+    PendingIntent keepAlivePIntent;
+    PendingIntent getTokenTimeoutPIntent;
+    //PendingIntent onlineTimeoutPIntent;
+    Thread connectThread;
+    Context parent;
+    int mestype = 0;
+    LocalService localService;
+    FileOutputStream fos;
+    ObjectOutputStream output = null;
+    int socketRetryInt = 0;
+    long connectcount = 0;
+    long erorconenctcount = 0;
+    private IMWriter iMWriter;
+    private IMReader iMReader;
+    volatile private boolean checkadressing = false;
+    private String token = "";
+    private String poll = "";
+    private Thread readerThread;
+    private Thread writerThread;
+    private int workserverint = -1;
+    private String workservername = "";
+    private MyAsyncTask sendidtask;
+    ArrayList<String> executedCommandArryaList = new ArrayList<String>();
+    BroadcastReceiver onlineTimeoutReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            boolean existactiveDevice = false;
+            for (Channel ch : LocalService.channelList) {
+                for (Device dev : ch.deviceList) {
+                    if (dev.state != 0) {
+                        if ((System.currentTimeMillis() - dev.updatated) < 15 * 60 * 1000) {
+                            existactiveDevice = true;
+                        }
                     }
-            };
-        BroadcastReceiver keepAliveReceiver = new BroadcastReceiver()
-        {
-            @Override
-            public void onReceive(Context context, Intent intent)
-                {
-                    if (connOpened)
-                        {
-                            LocalService.addlog("Socket sendPing");
-                            if (log)
-                                {
-                                    Log.d(this.getClass().getName(), " send ping");
-                                }
-                            sendToServer("P", false);
-                        }
                 }
-        };
-        private boolean onlinebybcr=false;
-        private long lastsendnet=0;
-        private BroadcastReceiver bcr = new BroadcastReceiver()
-        {
-            @Override
-            public void onReceive(Context context, Intent intent)
-                {
-                    if (OsMoDroid.permanent&&(lastsendnet+RECONNECT_TIMEOUT<SystemClock.uptimeMillis()))
-                        {
-                            lastsendnet=SystemClock.uptimeMillis();
-                            Intent is = new Intent(context, LocalService.class);
-                            is.putExtra("GCM","NEEDSENDNET");
-                            context.startService(is);
-
-                            LocalService.addlog("Network broadcast receive - send NEEDSENDNET");
-
-
-                        }
-                }
-        };
-        BroadcastReceiver getTokenTimeoutReceiver = new BroadcastReceiver()
-        {
-            @Override
-            public void onReceive(Context context, Intent intent)
-                {
-                    context.unregisterReceiver(this);
-                    if (log)
-                        {
-                            Log.d(this.getClass().getName(), "checkaddres timeout reciever trigged");
-                        }
-                    LocalService.addlog("Get token timeout receiver trigged");
-                    sendidtask.cancel(true);
-                    checkadressing = false;
-                    stop();
-                    start();
-                }
-        };
-        BroadcastReceiver reconnectReceiver = new BroadcastReceiver()
-        {
-            @Override
-            public void onReceive(Context context, Intent intent)
-                {
-                    if(SystemClock.uptimeMillis()>timeonline+ONLINE_TIMEOUT)
-                        {
-                            parent.sendBroadcast(new Intent(ONLINE_TIMEOUT_INTENT));
-                        }
-                    LocalService.addlog("Socket reconnect receiver trigged onlinebybcr="+onlinebybcr);
-
-                            disablekeepAliveAlarm();
-                            stop();
-                            localService.internetnotify(false);
-                            localService.refresh();
-                            start();
-
-
-                    //context.unregisterReceiver(this);
-                }
-        };
-        public boolean needtosendpreference=false;
-        private boolean warnedsocketconnecterror=false;
-        private long timeonline=SystemClock.uptimeMillis();
-        private boolean flicking=false;
-        private long reconnecttime=0;
-        public IM(String server, int port, LocalService service)
-            {
-                RECONNECT_TIMEOUT = Integer.parseInt(OsMoDroid.settings.getString("timeout", "30")) * 1000;
-                if(RECONNECT_TIMEOUT<5000)
-                    {
-                        RECONNECT_TIMEOUT=5000;
-                    }
-                localService = service;
-                parent = service;
-                manager = (AlarmManager) (parent.getSystemService(Context.ALARM_SERVICE));
-                reconnectPIntent = PendingIntent.getBroadcast(parent, 0, new Intent(RECONNECT_INTENT), 0);
-                keepAlivePIntent = PendingIntent.getBroadcast(parent, 1, new Intent(KEEPALIVE_INTENT), 0);
-                getTokenTimeoutPIntent = PendingIntent.getBroadcast(parent, 2, new Intent(GET_TOKEN_TIMEOUT_INTENT), 0);
-                //onlineTimeoutPIntent = PendingIntent.getBroadcast(parent, 3, new Intent(ONLINE_TIMEOUT_INTENT), 0);
-                SERVER_IP = server;
-                SERVERPORT = port;
-                LocalService.addlog("IM create");
-                LocalService.addlog("GCMID="+OsMoDroid.settings.getString("GCMRegId",""));
-                iMWriter = new IMWriter();
-                writerThread = new Thread(iMWriter, "writer");
-                writerThread.start();
-                startTraffic=TrafficStats.getUidTxBytes(context.getApplicationInfo().uid);
             }
-        public void sendToServer(String str, boolean gui)
-            {
-                Message msg = new Message();
-                Bundle b = new Bundle();
-                b.putString("write", str);
-                b.putBoolean("pp", str.equals("PP"));
-                msg.setData(b);
-                if (running)
-                    {
-                        if (iMWriter.handler != null)
-                            {
-                                String[] data = str.split("\\===");
-                                ArrayList<String> cl = new ArrayList<String>();
-                                for (int index = 0; index < data.length; index++)
-                                    {
-                                        if (data[index].contains("|"))
-                                            {
-                                                data[index] = data[index].substring(0, data[index].indexOf('|'));
-                                            }
-                                        if (!data[index].equals("PP"))
-                                            {
-                                                cl.add(data[index]);
-                                            }
-                                    }
-                                executedCommandArryaList.addAll(cl);
-                                LocalService.addlog("Add to command order " + cl);
-                                iMWriter.handler.sendMessage(msg);
-                                localService.refresh();
-                            }
-                        else
-                            {
-                                LocalService.addlog("panic! handler is null");
-                                if (log)
-                                    {
-                                        Log.d(this.getClass().getName(), " handler is null!!!");
-                                    }
-                            }
-                    }
-                else
-                    {
-                        if (gui)
-                            {
-                                Toast.makeText(localService, localService.getString(R.string.offline_on), Toast.LENGTH_LONG).show();
-                            }
-                    }
+            LocalService.addlog("Online timeout onReceive, OsmodroidVisible=" + OsMoDroid.gpslocalserviceclientVisible + " gcmtodo=" + localService.gcmtodolist.size() + " where=" + localService.where + " existactivedevice=" + existactiveDevice + " state=" + localService.state);
+            if (OsMoDroid.gpslocalserviceclientVisible || localService.state || (localService.isOnline() && localService.gcmtodolist.size() > 0) || localService.where
+                    || (OsMoDroid.settings.getBoolean("subscribebackground", false) && existactiveDevice)) {
+                setOnlineTimeout();
+            } else {
+                LocalService.addlog("Online timeout onReceive close because not visible");
+                close();
             }
-        public void setOnlineTimeout()
-            {
-                LocalService.addlog("Socket void setOnlineTimeOut");
-                timeonline=SystemClock.uptimeMillis();
-                //parent.registerReceiver(onlineTimeoutReceiver, new IntentFilter(ONLINE_TIMEOUT_INTENT));
-                //localService.alertHandler.postDelayed(new Runnable()
-                  //  {
-                   //     public void run()
-                            {
-                  //              addlog( "handler online timeout");
-                    //           parent.sendBroadcast(new Intent(ONLINE_TIMEOUT_INTENT));
-                            }
-                    //}, ONLINE_TIMEOUT);
+        }
+    };
+    BroadcastReceiver keepAliveReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (connOpened) {
+                LocalService.addlog("Socket sendPing");
+                if (log) {
+                    Log.d(this.getClass().getName(), " send ping");
+                }
+                sendToServer("P", false);
+            }
+        }
+    };
+    private boolean onlinebybcr = false;
+    private long lastsendnet = 0;
+    private BroadcastReceiver bcr = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (OsMoDroid.permanent && (lastsendnet + RECONNECT_TIMEOUT < SystemClock.uptimeMillis())) {
+                lastsendnet = SystemClock.uptimeMillis();
+                Intent is = new Intent(context, LocalService.class);
+                is.putExtra("GCM", "NEEDSENDNET");
+                context.startService(is);
+
+                LocalService.addlog("Network broadcast receive - send NEEDSENDNET");
+
+
+            }
+        }
+    };
+    BroadcastReceiver getTokenTimeoutReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            context.unregisterReceiver(this);
+            if (log) {
+                Log.d(this.getClass().getName(), "checkaddres timeout reciever trigged");
+            }
+            LocalService.addlog("Get token timeout receiver trigged");
+            sendidtask.cancel(true);
+            checkadressing = false;
+            stop();
+            start();
+        }
+    };
+    BroadcastReceiver reconnectReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (SystemClock.uptimeMillis() > timeonline + ONLINE_TIMEOUT) {
+                parent.sendBroadcast(new Intent(ONLINE_TIMEOUT_INTENT));
+            }
+            LocalService.addlog("Socket reconnect receiver trigged onlinebybcr=" + onlinebybcr);
+
+            disablekeepAliveAlarm();
+            stop();
+            localService.internetnotify(false);
+            localService.refresh();
+            start();
+
+
+            //context.unregisterReceiver(this);
+        }
+    };
+    public boolean needtosendpreference = false;
+    private boolean warnedsocketconnecterror = false;
+    private long timeonline = SystemClock.uptimeMillis();
+    private boolean flicking = false;
+    private long reconnecttime = 0;
+
+    public IM(String server, int port, LocalService service) {
+        RECONNECT_TIMEOUT = Integer.parseInt(OsMoDroid.settings.getString("timeout", "30")) * 1000;
+        if (RECONNECT_TIMEOUT < 5000) {
+            RECONNECT_TIMEOUT = 5000;
+        }
+        localService = service;
+        parent = service;
+        manager = (AlarmManager) (parent.getSystemService(Context.ALARM_SERVICE));
+        reconnectPIntent = PendingIntent.getBroadcast(parent, 0, new Intent(RECONNECT_INTENT), 0);
+        keepAlivePIntent = PendingIntent.getBroadcast(parent, 1, new Intent(KEEPALIVE_INTENT), 0);
+        getTokenTimeoutPIntent = PendingIntent.getBroadcast(parent, 2, new Intent(GET_TOKEN_TIMEOUT_INTENT), 0);
+        //onlineTimeoutPIntent = PendingIntent.getBroadcast(parent, 3, new Intent(ONLINE_TIMEOUT_INTENT), 0);
+        SERVER_IP = server;
+        SERVERPORT = port;
+        LocalService.addlog("IM create");
+        LocalService.addlog("GCMID=" + OsMoDroid.settings.getString("GCMRegId", ""));
+        iMWriter = new IMWriter();
+        writerThread = new Thread(iMWriter, "writer");
+        writerThread.start();
+        startTraffic = TrafficStats.getUidTxBytes(context.getApplicationInfo().uid);
+    }
+
+    public void sendToServer(String str, boolean gui) {
+        Message msg = new Message();
+        Bundle b = new Bundle();
+        b.putString("write", str);
+        b.putBoolean("pp", str.equals("PP"));
+        msg.setData(b);
+        if (running) {
+            if (iMWriter.handler != null) {
+                String[] data = str.split("\\===");
+                ArrayList<String> cl = new ArrayList<String>();
+                for (int index = 0; index < data.length; index++) {
+                    if (data[index].contains("|")) {
+                        data[index] = data[index].substring(0, data[index].indexOf('|'));
+                    }
+                    if (!data[index].equals("PP")) {
+                        cl.add(data[index]);
+                    }
+                }
+                executedCommandArryaList.addAll(cl);
+                LocalService.addlog("Add to command order " + cl);
+                iMWriter.handler.sendMessage(msg);
+                localService.refresh();
+            } else {
+                LocalService.addlog("panic! handler is null");
+                if (log) {
+                    Log.d(this.getClass().getName(), " handler is null!!!");
+                }
+            }
+        } else {
+            if (gui) {
+                Toast.makeText(localService, localService.getString(R.string.offline_on), Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+    public void setOnlineTimeout() {
+        LocalService.addlog("Socket void setOnlineTimeOut");
+        timeonline = SystemClock.uptimeMillis();
+        //parent.registerReceiver(onlineTimeoutReceiver, new IntentFilter(ONLINE_TIMEOUT_INTENT));
+        //localService.alertHandler.postDelayed(new Runnable()
+        //  {
+        //     public void run()
+        {
+            //              addlog( "handler online timeout");
+            //           parent.sendBroadcast(new Intent(ONLINE_TIMEOUT_INTENT));
+        }
+        //}, ONLINE_TIMEOUT);
 
 //                manager.cancel(onlineTimeoutPIntent);
 //                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
@@ -330,27 +300,24 @@ public class IM implements ResultsListener
 //                    {
 //                        manager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + ONLINE_TIMEOUT, onlineTimeoutPIntent);
 //                    }
-            }
+    }
 
 
-        public void setkeepAliveAlarm()
-            {
-                if (log)
-                    {
-                        Log.d(this.getClass().getName(), "void setKeepAliveAlarm");
-                    }
-                LocalService.addlog("Socket void setkeepalive");
-                //parent.registerReceiver(keepAliveReceiver, new IntentFilter(KEEPALIVE_INTENT));
-                manager.cancel(keepAlivePIntent);
-                manager.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + KEEP_ALIVE, KEEP_ALIVE, keepAlivePIntent);
-            }
-        public void disablekeepAliveAlarm()
-            {
-                if (log)
-                    {
-                        Log.d(this.getClass().getName(), "void disableKeepAliveAlarm");
-                    }
-                LocalService.addlog("Socket void disablekeepalive");
+    public void setkeepAliveAlarm() {
+        if (log) {
+            Log.d(this.getClass().getName(), "void setKeepAliveAlarm");
+        }
+        LocalService.addlog("Socket void setkeepalive");
+        //parent.registerReceiver(keepAliveReceiver, new IntentFilter(KEEPALIVE_INTENT));
+        manager.cancel(keepAlivePIntent);
+        manager.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + KEEP_ALIVE, KEEP_ALIVE, keepAlivePIntent);
+    }
+
+    public void disablekeepAliveAlarm() {
+        if (log) {
+            Log.d(this.getClass().getName(), "void disableKeepAliveAlarm");
+        }
+        LocalService.addlog("Socket void disablekeepalive");
 //                try
 //                    {
 //                        parent.unregisterReceiver(keepAliveReceiver);
@@ -359,1160 +326,1041 @@ public class IM implements ResultsListener
 //                    {
 //                        e.printStackTrace();
 //                    }
-                manager.cancel(keepAlivePIntent);
+        manager.cancel(keepAlivePIntent);
+    }
+
+    synchronized public void setReconnectAlarm(final boolean fast) {
+        if (log) {
+            Log.d(this.getClass().getName(), "void setReconnectAlarm fast=" + fast);
+        }
+        localService.alertHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                LocalService.addlog("Socket setReconnectAlarm fast=" + fast);
             }
-        synchronized public void setReconnectAlarm(final boolean fast)
-            {
-                if (log)
-                    {
-                        Log.d(this.getClass().getName(), "void setReconnectAlarm fast="+fast);
-                    }
-                localService.alertHandler.post(new Runnable()
-                {
-                    @Override
-                    public void run()
-                        {
-                            LocalService.addlog("Socket setReconnectAlarm fast="+fast);
-                        }
-                });
-                //parent.registerReceiver(reconnectReceiver, new IntentFilter(RECONNECT_INTENT));
-                manager.cancel(reconnectPIntent);
-                reconnecttime=SystemClock.uptimeMillis();
-                addlog("Set reconnecttime="+reconnecttime);
-                if(fast)
-                {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
-                    {
-                        manager.setExact(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + ERROR_RECONNECT_TIMEOUT, reconnectPIntent);
-                    }
-                    else
-                    {
-                        manager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + ERROR_RECONNECT_TIMEOUT, reconnectPIntent);
+        });
+        //parent.registerReceiver(reconnectReceiver, new IntentFilter(RECONNECT_INTENT));
+        manager.cancel(reconnectPIntent);
+        if (reconnecttime == 0) {
+            reconnecttime = SystemClock.uptimeMillis();
+            addlog("Set reconnecttime=" + reconnecttime);
+        } else {
+            addlog("Set reconnecttime no executed because recconecttime already set =" + reconnecttime);
+        }
+        if (fast) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                manager.setExact(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + ERROR_RECONNECT_TIMEOUT, reconnectPIntent);
+            } else {
+                manager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + ERROR_RECONNECT_TIMEOUT, reconnectPIntent);
+            }
+        } else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                manager.setExact(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + RECONNECT_TIMEOUT, reconnectPIntent);
+            } else {
+                manager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + RECONNECT_TIMEOUT, reconnectPIntent);
+            }
+
+        }
+
+    }
+
+    /**
+     * Выключает IM
+     */
+    void close() {
+        // sendToServer("BYE", false);
+
+        if (log) {
+            Log.d(this.getClass().getName(), "void IM.close");
+        }
+        LocalService.addlog("Socket void close");
+        try {
+            parent.unregisterReceiver(bcr);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
+            parent.unregisterReceiver(reconnectReceiver);
+        } catch (Exception e) {
+        }
+        try {
+            parent.unregisterReceiver(keepAliveReceiver);
+        } catch (Exception e) {
+        }
+        try {
+            parent.unregisterReceiver(getTokenTimeoutReceiver);
+        } catch (Exception e) {
+        }
+        try {
+            parent.unregisterReceiver(onlineTimeoutReceiver);
+        } catch (Exception e) {
+        }
+        stop();
+        start = false;
+    }
+
+    ;
+
+    public void checkaddres() {
+        LocalService.addlog("Start get token" + ", key=" + OsMoDroid.settings.getString("newkey", ""));
+        if (!checkadressing) {
+            JSONObject postjson = getNET();
+            checkadressing = true;
+            APIcomParams params = null;
+            params = new APIcomParams("https://api.osmo.mobi/serv?app=o12gEq2Qyl&id=" + OsMoDroid.settings.getString("tracker_id", ""), "", "checkaddres");
+
+            sendidtask = new Netutil.MyAsyncTask(this);
+            sendidtask.execute(params);
+            Log.d(getClass().getSimpleName(), "get token start to execute");
+            parent.registerReceiver(getTokenTimeoutReceiver, new IntentFilter(GET_TOKEN_TIMEOUT_INTENT));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                manager.setExact(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + RECONNECT_TIMEOUT, getTokenTimeoutPIntent);
+            } else {
+                manager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + RECONNECT_TIMEOUT, getTokenTimeoutPIntent);
+            }
+        }
+    }
+
+    void start() {
+        if (SystemClock.uptimeMillis() > timeonline + ONLINE_TIMEOUT) {
+            parent.sendBroadcast(new Intent(ONLINE_TIMEOUT_INTENT));
+        }
+        if (OsMoDroid.settings.getBoolean("live", true)) {
+            start = true;
+            if (log) {
+                Log.d(this.getClass().getName(), "void IM.start");
+            }
+            LocalService.addlog("Socket void start");
+            running = true;
+            connecting = true;
+            localService.refresh();
+            iMReader = new IMReader();
+            connectThread = new Thread(new IMConnect(), "connecter");
+            readerThread = new Thread(iMReader, "reader");
+            connectThread.setPriority(Thread.MIN_PRIORITY);
+            readerThread.setPriority(Thread.MIN_PRIORITY);
+            writerThread.setPriority(Thread.MIN_PRIORITY);
+            if (workserverint == -1) {
+                checkaddres();
+            } else {
+                connectThread.start();
+            }
+            //
+            parent.registerReceiver(bcr, new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"));
+            parent.registerReceiver(onlineTimeoutReceiver, new IntentFilter(ONLINE_TIMEOUT_INTENT));
+            parent.registerReceiver(keepAliveReceiver, new IntentFilter(KEEPALIVE_INTENT));
+            parent.registerReceiver(reconnectReceiver, new IntentFilter(RECONNECT_INTENT));
+
+
+        } else {
+            LocalService.addlog("Socket void start - but offline mode enabled");
+        }
+    }
+
+    void stop() {
+        if (log) {
+            Log.d(this.getClass().getName(), "void IM.stop");
+        }
+        LocalService.addlog("Socket void stop");
+        executedCommandArryaList.clear();
+        running = false;
+        connOpened = false;
+        authed = false;
+        connecting = false;
+        localService.addlog("set connectcompleted=false");
+        LocalService.connectcompleted = false;
+        localService.alertHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                ondisconnect();
+            }
+        });
+        if (socket != null) {
+            try {
+                socket.close();
+            } catch (IOException e) {
+                LocalService.addlog("exeption close socket " + e.getMessage());
+                e.printStackTrace();
+            }
+        }
+        manager.cancel(getTokenTimeoutPIntent);
+        manager.cancel(reconnectPIntent);
+
+        // manager.cancel(onlineTimeoutPIntent);
+        localService.refresh();
+    }
+
+    void addToChannelChat(int channelU, JSONObject jo, boolean silent) throws JSONException {
+        if (log) {
+            Log.d(this.getClass().getName(), "type=chch");
+        }
+        if (log) {
+            Log.d(this.getClass().getName(), "Сообщение в чат канала " + jo);
+            //LocalService.addlog("Сообщение в чат канала " + jo);
+        }
+        ChatMessage m = new ChatMessage();
+        m.u = jo.optInt("u");
+        m.text = Netutil.unescape(jo.optString("text"));
+        m.time = OsMoDroid.sdf.format(new Date(timeshift + jo.optLong("time") * 1000));
+        m.name = jo.optString("name");
+        m.type = jo.optInt("type");
+        String fromDevice = "Незнамо кто";
+        // LocalService.addlog("Размер спсика групп " + LocalService.channelList.size());
+
+
+        {
+            if (!silent) {
+                fromDevice = jo.optString("name");
+                Intent intent = new Intent(localService, GPSLocalServiceClient.class).putExtra("channelpos", channelU);
+                intent.setAction("channelchat");
+                PendingIntent contentIntent = PendingIntent.getActivity(localService, 333, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+                Long when = System.currentTimeMillis();
+                NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(
+                        localService.getApplicationContext(), "default")
+                        .setWhen(when)
+                        .setContentText(fromDevice + ": " + jo.optString("text"))
+                        .setContentTitle(jo.optString("group"))
+                        .setSmallIcon(R.drawable.white9696)
+                        .setAutoCancel(true)
+                        .setDefaults(Notification.DEFAULT_LIGHTS)
+                        .setContentIntent(contentIntent).setChannelId("silent");
+                if (!OsMoDroid.settings.getBoolean("silentnotify", false)) {
+                    notificationBuilder.setDefaults(Notification.DEFAULT_LIGHTS | Notification.DEFAULT_VIBRATE | Notification.DEFAULT_SOUND).setChannelId("noisy");
+                }
+                Notification notification = notificationBuilder.build();
+                if (OsMoDroid.settings.getBoolean("chatnotify", true) || m.type != 0) {
+                    LocalService.mNotificationManager.notify(OsMoDroid.mesnotifyid + channelU, notification);
+                    if (LocalService.channelsmessagesAdapter != null && LocalService.currentChannel != null && LocalService.currentChannel.u == channelU && LocalService.chatVisible) {
+                        LocalService.mNotificationManager.cancel(OsMoDroid.mesnotifyid + channelU);
                     }
                 }
-                else
-                {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
-                    {
-                        manager.setExact(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + RECONNECT_TIMEOUT, reconnectPIntent);
-                    }
-                    else
-                    {
-                        manager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + RECONNECT_TIMEOUT, reconnectPIntent);
+
+
+            }
+            //channel.messagesstringList.add(m);
+            //Collections.sort(channel.messagesstringList);
+            if (LocalService.channelsmessagesAdapter != null && LocalService.currentChannel != null && LocalService.currentChannel.u == channelU) {
+                boolean exist = false;
+                for (ChatMessage message : LocalService.currentChannel.messagesstringList) {
+                    if (message.u == m.u) {
+                        exist = true;
                     }
 
                 }
-
-            }
-        /**
-         * Выключает IM
-         */
-        void close()
-            {
-               // sendToServer("BYE", false);
-
-                if (log)
-                    {
-                        Log.d(this.getClass().getName(), "void IM.close");
-                    }
-                LocalService.addlog("Socket void close");
-                try
-                    {
-                        parent.unregisterReceiver(bcr);
-                    }
-                catch (Exception e)
-                    {
-                        e.printStackTrace();
-                    }
-                try
-                    {
-                        parent.unregisterReceiver(reconnectReceiver);
-                    }
-                catch (Exception e)
-                    {
-                    }
-                try
-                    {
-                        parent.unregisterReceiver(keepAliveReceiver);
-                    }
-                catch (Exception e)
-                    {
-                    }
-                try
-                    {
-                        parent.unregisterReceiver(getTokenTimeoutReceiver);
-                    }
-                catch (Exception e)
-                    {
-                    }
-                try
-                    {
-                     parent.unregisterReceiver(onlineTimeoutReceiver);
-                    }
-                catch (Exception e)
-                    {
-                    }
-                stop();
-                start = false;
-            }
-        ;
-        public void checkaddres()
-            {
-                LocalService.addlog("Start get token" + ", key=" + OsMoDroid.settings.getString("newkey", ""));
-                if (!checkadressing)
-                    {
-                        JSONObject postjson = getNET();
-                        checkadressing = true;
-                        APIcomParams params = null;
-                        params = new APIcomParams("https://api.osmo.mobi/serv?app=o12gEq2Qyl&id="+OsMoDroid.settings.getString("tracker_id", ""), "", "checkaddres");
-
-                        sendidtask = new Netutil.MyAsyncTask(this);
-                        sendidtask.execute(params);
-                        Log.d(getClass().getSimpleName(), "get token start to execute");
-                        parent.registerReceiver(getTokenTimeoutReceiver, new IntentFilter(GET_TOKEN_TIMEOUT_INTENT));
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
-                            {
-                                manager.setExact(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + RECONNECT_TIMEOUT, getTokenTimeoutPIntent);
-                            }
-                        else
-                            {
-                                manager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + RECONNECT_TIMEOUT, getTokenTimeoutPIntent);
-                            }
-                    }
-            }
-        void start()
-            {
-                if(SystemClock.uptimeMillis()>timeonline+ONLINE_TIMEOUT)
-                    {
-                        parent.sendBroadcast(new Intent(ONLINE_TIMEOUT_INTENT));
-                    }
-                if(OsMoDroid.settings.getBoolean("live", true))
-                {
-                    start = true;
-                    if (log)
-                        {
-                            Log.d(this.getClass().getName(), "void IM.start");
-                        }
-                    LocalService.addlog("Socket void start");
-                    running = true;
-                    connecting = true;
-                    localService.refresh();
-                    iMReader = new IMReader();
-                    connectThread = new Thread(new IMConnect(), "connecter");
-                    readerThread = new Thread(iMReader, "reader");
-                    connectThread.setPriority(Thread.MIN_PRIORITY);
-                    readerThread.setPriority(Thread.MIN_PRIORITY);
-                    writerThread.setPriority(Thread.MIN_PRIORITY);
-                    if (workserverint == -1)
-                        {
-                            checkaddres();
-                        }
-                    else
-                        {
-                            connectThread.start();
-                        }
-                    //
-                    parent.registerReceiver(bcr, new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"));
-                    parent.registerReceiver(onlineTimeoutReceiver, new IntentFilter(ONLINE_TIMEOUT_INTENT));
-                    parent.registerReceiver(keepAliveReceiver, new IntentFilter(KEEPALIVE_INTENT));
-                    parent.registerReceiver(reconnectReceiver, new IntentFilter(RECONNECT_INTENT));
-
-
+                if (!exist) {
+                    LocalService.currentChannel.messagesstringList.add(m);
+                    Collections.sort(LocalService.currentChannel.messagesstringList);
+                    LocalService.channelsmessagesAdapter.notifyDataSetChanged();
                 }
-                else
-                    {
-                        LocalService.addlog("Socket void start - but offline mode enabled");
-                    }
             }
-        void stop()
-            {
-                if (log)
-                    {
-                        Log.d(this.getClass().getName(), "void IM.stop");
-                    }
-                LocalService.addlog("Socket void stop");
-                executedCommandArryaList.clear();
-                running = false;
-                connOpened = false;
-                authed = false;
-                connecting = false;
-                localService.addlog("set connectcompleted=false");
-                LocalService.connectcompleted=false;
-                localService.alertHandler.post(new Runnable()
-                {
-                    @Override
-                    public void run()
-                        {
-                            ondisconnect();
-                        }
-                });
-                if (socket != null)
-                    {
-                        try
-                            {
-                                socket.close();
-                            }
-                        catch (IOException e)
-                            {
-                                LocalService.addlog("exeption close socket " + e.getMessage());
-                                e.printStackTrace();
-                            }
-                    }
-                manager.cancel(getTokenTimeoutPIntent);
-                manager.cancel(reconnectPIntent);
+        }
+    }
 
-               // manager.cancel(onlineTimeoutPIntent);
-                localService.refresh();
+
+    void checkalarmindozemode() {
+        addlog("reconencttime=" + reconnecttime + " SystemClockUptime=" + SystemClock.uptimeMillis());
+        if (reconnecttime != 0 && SystemClock.uptimeMillis() > reconnecttime + RECONNECT_TIMEOUT) {
+            LocalService.addlog("stuck in doze mode - do recconect ");
+            manager.cancel(reconnectPIntent);
+            parent.sendBroadcast(new Intent(RECONNECT_INTENT));
+
+        }
+
+    }
+
+    synchronized void parseEx(String toParse, boolean gcm) throws JSONException {
+        if (SystemClock.uptimeMillis() > timeonline + ONLINE_TIMEOUT) {
+            parent.sendBroadcast(new Intent(ONLINE_TIMEOUT_INTENT));
+        }
+
+        //LocalService.addlog("recieve " + toParse);
+        if (log) {
+            Log.d(this.getClass().getName(), "recive " + toParse);
+        }
+
+
+        if (toParse.equals("P|")) {
+            LocalService.addlog("recieve pong");
+            return;
+        }
+        JSONObject jsonObject;
+        JSONObject jo = new JSONObject();
+        JSONArray ja = new JSONArray();
+        String command = "";
+        String param = "";
+        String addict = "";
+        try {
+            command = toParse.substring(0, toParse.indexOf('|'));
+        } catch (Exception e1) {
+            command = toParse;
+        }
+        if (command.indexOf(':') != -1) {
+            param = command.substring(command.indexOf(':') + 1);
+            command = command.substring(0, command.indexOf(':'));
+        }
+        if (toParse.contains("|")) {
+            addict = toParse.substring(toParse.indexOf('|') + 1);
+        }
+
+        try {
+            jo = new JSONObject(addict);
+        } catch (JSONException e) {
+            try {
+                if (log) {
+                    Log.d(this.getClass().getName(), "не JSONO ");
+                }
+                ja = new JSONArray(addict);
+            } catch (JSONException e1) {
+                // TODO Auto-generated catch block
+                if (log) {
+                    Log.d(this.getClass().getName(), "не JSONA ");
+                }
             }
+        }
+        if (!gcm) {
+            parseremovefromcommandlist(command, param);
+        }
 
-         void addToChannelChat(int channelU, JSONObject jo, boolean silent) throws JSONException
-            {
-                if (log)
-                    {
-                        Log.d(this.getClass().getName(), "type=chch");
-                    }
-                if (log)
-                    {
-                        Log.d(this.getClass().getName(), "Сообщение в чат канала " + jo);
-                        //LocalService.addlog("Сообщение в чат канала " + jo);
-                    }
-                ChatMessage m = new ChatMessage();
-                m.u = jo.optInt("u");
-                m.text = Netutil.unescape(jo.optString("text"));
-                m.time = OsMoDroid.sdf.format(new Date(timeshift+jo.optLong("time")*1000));
-                m.name = jo.optString("name");
-                m.type = jo.optInt("type");
-                String fromDevice = "Незнамо кто";
-               // LocalService.addlog("Размер спсика групп " + LocalService.channelList.size());
-
-
-
-
-                                    {
-                                        if (!silent)
-                                            {
-                                                fromDevice = jo.optString("name");
-                                                Intent intent = new Intent(localService, GPSLocalServiceClient.class).putExtra("channelpos", channelU);
-                                                intent.setAction("channelchat");
-                                                PendingIntent contentIntent = PendingIntent.getActivity(localService, 333, intent, PendingIntent.FLAG_CANCEL_CURRENT);
-                                                Long when = System.currentTimeMillis();
-                                                NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(
-                                                        localService.getApplicationContext(),"default")
-                                                        .setWhen(when)
-                                                        .setContentText(fromDevice + ": " + jo.optString("text"))
-                                                        .setContentTitle(jo.optString("group"))
-                                                        .setSmallIcon(R.drawable.white9696)
-                                                        .setAutoCancel(true)
-                                                        .setDefaults(Notification.DEFAULT_LIGHTS)
-                                                        .setContentIntent(contentIntent).setChannelId("silent");
-                                                if (!OsMoDroid.settings.getBoolean("silentnotify", false))
-                                                    {
-                                                        notificationBuilder.setDefaults(Notification.DEFAULT_LIGHTS | Notification.DEFAULT_VIBRATE | Notification.DEFAULT_SOUND).setChannelId("noisy");
-                                                    }
-                                                Notification notification = notificationBuilder.build();
-                                                if(OsMoDroid.settings.getBoolean("chatnotify", true)|| m.type!=0)
-                                                    {
-                                                        LocalService.mNotificationManager.notify(OsMoDroid.mesnotifyid + channelU, notification);
-                                                        if (LocalService.channelsmessagesAdapter != null && LocalService.currentChannel != null && LocalService.currentChannel.u == channelU && LocalService.chatVisible)
-                                                            {
-                                                                LocalService.mNotificationManager.cancel(OsMoDroid.mesnotifyid+channelU);
-                                                            }
-                                                    }
-
-
-                                            }
-                                        //channel.messagesstringList.add(m);
-                                        //Collections.sort(channel.messagesstringList);
-                                        if (LocalService.channelsmessagesAdapter != null && LocalService.currentChannel != null && LocalService.currentChannel.u == channelU)
-                                            {
-                                                boolean exist =false;
-                                                for(ChatMessage message:LocalService.currentChannel.messagesstringList )
-                                                {
-                                                    if(message.u==m.u)
-                                                    {
-                                                        exist=true;
-                                                    }
-
-                                                }
-                                                if(!exist)
-                                                {
-                                                    LocalService.currentChannel.messagesstringList.add(m);
-                                                    Collections.sort(LocalService.currentChannel.messagesstringList);
-                                                    LocalService.channelsmessagesAdapter.notifyDataSetChanged();
-                                                }
-                                            }
-                                    }
-                            }
-
-
-        void checkalarmindozemode()
-            {
-                addlog("reconencttime="+reconnecttime+" SystemClockUptime="+SystemClock.uptimeMillis());
-                if(reconnecttime!=0&&SystemClock.uptimeMillis()>reconnecttime+RECONNECT_TIMEOUT)
-                    {
-                        LocalService.addlog("stuck in doze mode - do recconect " );
-                        manager.cancel(reconnectPIntent);
-                        parent.sendBroadcast(new Intent(RECONNECT_INTENT));
-
-                    }
-
+        if (jo.has("error")) {
+            if (OsMoDroid.gpslocalserviceclientVisible) {
+                final String str = jo.optString("error") + ' ' + jo.optString("error_description");
+                Toast.makeText(localService, str, Toast.LENGTH_LONG).show();
             }
-        synchronized void parseEx(String toParse,boolean gcm) throws JSONException
-            {
-                if(SystemClock.uptimeMillis()>timeonline+ONLINE_TIMEOUT)
-                    {
-                        parent.sendBroadcast(new Intent(ONLINE_TIMEOUT_INTENT));
-                    }
-
-                //LocalService.addlog("recieve " + toParse);
-                if (log)
-                    {
-                        Log.d(this.getClass().getName(), "recive " + toParse);
-                    }
+        }
 
 
-                if (toParse.equals("P|"))
-                    {
-                        LocalService.addlog("recieve pong");
-                        return;
-                    }
-                JSONObject jsonObject;
-                JSONObject jo = new JSONObject();
-                JSONArray ja = new JSONArray();
-                String command = "";
-                String param = "";
-                String addict = "";
-                try
-                    {
-                        command = toParse.substring(0, toParse.indexOf('|'));
-                    }
-                catch (Exception e1)
-                    {
-                        command = toParse;
-                    }
-                if (command.indexOf(':') != -1)
-                    {
-                        param = command.substring(command.indexOf(':') + 1);
-                        command = command.substring(0, command.indexOf(':'));
-                    }
-                if(toParse.contains("|"))
-                    {
-                        addict = toParse.substring(toParse.indexOf('|') + 1);
-                    }
-
-                try
-                    {
-                        jo = new JSONObject(addict);
-                    }
-                catch (JSONException e)
-                    {
-                        try
-                            {
-                                if (log)
-                                    {
-                                        Log.d(this.getClass().getName(), "не JSONO ");
-                                    }
-                                ja = new JSONArray(addict);
-                            }
-                        catch (JSONException e1)
-                            {
-                                // TODO Auto-generated catch block
-                                if (log)
-                                    {
-                                        Log.d(this.getClass().getName(), "не JSONA ");
-                                    }
-                            }
-                    }
-                if(!gcm)
-                    {
-                        parseremovefromcommandlist(command, param);
-                    }
-
-                if (jo.has("error"))
-                    {
-                        if(OsMoDroid.gpslocalserviceclientVisible)
-                            {
-                                final String str = jo.optString("error")+ ' '+ jo.optString("error_description");
-                                Toast.makeText(localService, str, Toast.LENGTH_LONG).show();
-                            }
-                    }
+        parsedata(jo, ja, command, param, addict, gcm);
 
 
-                        parsedata(jo, ja, command, param, addict, gcm);
+    }
 
-
-
-
+    private void parseremovefromcommandlist(String command, String param) {
+        if (!running) {
+            running = true;
+        }
+        Iterator<String> comIter = executedCommandArryaList.iterator();
+        while (comIter.hasNext()) {
+            String str = comIter.next();
+            if (log) {
+                Log.d(this.getClass().getName(), "ExecutedListItem: " + str);
             }
-        private void parseremovefromcommandlist(String command, String param)
-            {
-                if (!running)
-                    {
-                        running = true;
-                    }
-                Iterator<String> comIter = executedCommandArryaList.iterator();
-                while (comIter.hasNext())
-                    {
-                        String str = comIter.next();
-                        if (log)
-                            {
-                                Log.d(this.getClass().getName(), "ExecutedListItem: " + str);
-                            }
-                        if (str.equals(command + ':' + param) || str.equals(command))
-                            {
-                                comIter.remove();
-                                if (log)
-                                    {
-                                        Log.d(this.getClass().getName(), "ExecutedListItem removed: " + str);
-                                    }
-                                LocalService.addlog("ExecutedListItem removed: " + str);
-                            }
-                    }
-                if (log)
-                    {
-                        Log.d(this.getClass().getName(), "ExecuteList=" + executedCommandArryaList.toString());
-                    }
-                LocalService.addlog("ExecuteList=" + executedCommandArryaList.toString());
-                if (executedCommandArryaList.size() == 0)
-                    {
-                        LocalService.addlog("Cancel reconnect alarm - no commands in order");
-                        manager.cancel(reconnectPIntent);
-                        reconnecttime=0;
-                        localService.refresh();
-                    }
+            if (str.equals(command + ':' + param) || str.equals(command)) {
+                comIter.remove();
+                if (log) {
+                    Log.d(this.getClass().getName(), "ExecutedListItem removed: " + str);
+                }
+                LocalService.addlog("ExecutedListItem removed: " + str);
             }
-        private void parsedata(JSONObject jo, JSONArray ja, String command, String param, final String addict, boolean gcm) throws JSONException
-            {
+        }
+        if (log) {
+            Log.d(this.getClass().getName(), "ExecuteList=" + executedCommandArryaList.toString());
+        }
+        LocalService.addlog("ExecuteList=" + executedCommandArryaList.toString());
+        if (executedCommandArryaList.size() == 0) {
+            LocalService.addlog("Cancel reconnect alarm - no commands in order");
+            manager.cancel(reconnectPIntent);
+            reconnecttime = 0;
+            localService.refresh();
+        }
+    }
 
-                JSONObject jsonObject;
+    private void parsedata(JSONObject jo, JSONArray ja, String command, String param, final String addict, boolean gcm) throws JSONException {
+
+        JSONObject jsonObject;
 //                if (command.equals("INIT"))
-                if (command.equals("AUTH"))
-                    {
-                        if (!jo.has("error"))
-                            {
-                                JSONObject postjson = getNET();
-                                sendToServer("NET|"+postjson.toString(),false);
-                                if (jo.optInt("motd") > OsMoDroid.settings.getInt("modtime", 0))
-                                    {
-                                        sendToServer("MD", false);
-                                    }
-                                else
-                                    {
-                                        localService.motd = OsMoDroid.settings.getString("motd", "");
-                                    }
-                                if (jo.optInt("pro") == 1)
-                                    {
-                                        localService.pro = true;
-                                    }
-                                else
-                                    {
-                                        localService.pro = false;
-                                    }
-                                OsMoDroid.editor.putString("device", jo.optString("id"));
-                                OsMoDroid.editor.putString("tracker_id", jo.optString("id"));
-                                OsMoDroid.editor.putString("motdtime", jo.optString("motd"));
-                                OsMoDroid.editor.putBoolean("pro", localService.pro);
-                                OsMoDroid.editor.commit();
-                                authed = true;
-                                setOnlineTimeout();
-                                if(jo.has("uid"))
-                                    {
-                                        if(jo.optInt("uid")>0)
-                                            {
-                                                OsMoDroid.editor.putString("u", jo.optString("name", ""));
-                                                OsMoDroid.editor.putString("p", jo.optString("uid", ""));
-                                                OsMoDroid.editor.commit();
+        if (command.equals("AUTH")) {
+            if (!jo.has("error")) {
+                JSONObject postjson = getNET();
+                sendToServer("NET|" + postjson.toString(), false);
+                if (jo.optInt("motd") > OsMoDroid.settings.getInt("modtime", 0)) {
+                    sendToServer("MD", false);
+                } else {
+                    localService.motd = OsMoDroid.settings.getString("motd", "");
+                }
+                if (jo.optInt("pro") == 1) {
+                    localService.pro = true;
+                } else {
+                    localService.pro = false;
+                }
+                OsMoDroid.editor.putString("device", jo.optString("id"));
+                OsMoDroid.editor.putString("tracker_id", jo.optString("id"));
+                OsMoDroid.editor.putString("motdtime", jo.optString("motd"));
+                OsMoDroid.editor.putBoolean("pro", localService.pro);
+                OsMoDroid.editor.commit();
+                authed = true;
+                setOnlineTimeout();
+                if (jo.has("uid")) {
+                    if (jo.optInt("uid") > 0) {
+                        OsMoDroid.editor.putString("u", jo.optString("name", ""));
+                        OsMoDroid.editor.putString("p", jo.optString("uid", ""));
+                        OsMoDroid.editor.commit();
 
-                                            }
-                                        else
-                                            {
-                                                OsMoDroid.editor.remove("p");
-                                                OsMoDroid.editor.remove("u");
-                                                OsMoDroid.editor.commit();
+                    } else {
+                        OsMoDroid.editor.remove("p");
+                        OsMoDroid.editor.remove("u");
+                        OsMoDroid.editor.commit();
 
-                                            }
-                                        localService.refresh();
-                                    }
+                    }
+                    localService.refresh();
+                }
 
 
-                                if (needopensession)
-                                    {
-                                        sendToServer("TO|"+localService.sessionopentime, false);
-                                    }
-                                if (needclosesession)
-                                    {
-                                        if (localService.sendingbuffer.size() == 0 && localService.buffer.size() != 0)
-                                            {
-                                                localService.sendingbuffer.addAll(localService.buffer);
-                                                localService.buffer.clear();
-                                                localService.myIM.sendToServer("B|" + new JSONArray(localService.sendingbuffer), false);
-                                            }
-                                        sendToServer("TC", false);
-                                    }
-                                if(OsMoDroid.settings.getBoolean("needsendgcmregid",true))
-                                    {
-                                        LocalService.myIM.sendToServer("GCM|" +OsMoDroid.settings.getString("GCMRegId",""), false);
-                                    }
-                                if(needclosesession)
-                                    {
-                                        sendToServer("DCU",false);
-                                    }
-                                if (LocalService.channelList.isEmpty())
-                                    {
-                                        sendToServer("GROUP", false);
-                                    }
-                                else
-                                    {
-                                        for (String s: LocalService.gcmtodolist)
-                                            {
-                                                parseEx(s,true);
-                                            }
-                                        LocalService.gcmtodolist.clear();
-                                        localService.addlog("set connectcompleted=true");
-                                        LocalService.connectcompleted =true;
-                                        localService.saveObject(LocalService.gcmtodolist, OsMoDroid.GCMTODOLIST);
-                                    }
-
+                if (needopensession) {
+                    sendToServer("TO|" + localService.sessionopentime, false);
+                }
+                if (needclosesession) {
+                    if (localService.sendingbuffer.size() == 0 && localService.buffer.size() != 0) {
+                        localService.sendingbuffer.addAll(localService.buffer);
+                        localService.buffer.clear();
+                        localService.myIM.sendToServer("B|" + new JSONArray(localService.sendingbuffer), false);
+                    } else {
+                        addlog("not send buffer becase, sendingbuffersize=" + localService.sendingbuffer.size() + " localService.buffer.size=" + localService.buffer.size());
+                    }
+                    sendToServer("TC", false);
+                }
+                if (OsMoDroid.settings.getBoolean("needsendgcmregid", true)) {
+                    LocalService.myIM.sendToServer("GCM|" + OsMoDroid.settings.getString("GCMRegId", ""), false);
+                }
+                if (needclosesession) {
+                    sendToServer("DCU", false);
+                }
+                if (LocalService.channelList.isEmpty()) {
+                    sendToServer("GROUP", false);
+                } else {
+                    for (String s : LocalService.gcmtodolist) {
+                        parseEx(s, true);
+                    }
+                    LocalService.gcmtodolist.clear();
+                    localService.addlog("set connectcompleted=true");
+                    LocalService.connectcompleted = true;
+                    localService.saveObject(LocalService.gcmtodolist, OsMoDroid.GCMTODOLIST);
+                }
 
 
 //                                if (LocalService.deviceList.isEmpty())
 //                                    {
 //                                        sendToServer("DEVICE", false);
 //                                    }
-                                setkeepAliveAlarm();
-                                localService.internetnotify(true);
-                                if (!OsMoDroid.settings.getBoolean("subscribebackground", false))
-                                    {
-                                        if(OsMoDroid.gpslocalserviceclientVisible)
-                                        {
-                                            sendToServer("PG:1", false);
-                                        }
-                                    }
-                                else
-                                    {
-                                        sendToServer("PG:1", false);
-                                    }
-
-                                if (jo.has("group"))
-                                    {
-                                        if (jo.optInt("group") == 1)
-                                            {
-                                                localService.globalsend = true;
-                                            }
-                                        if (jo.optInt("group") == 0)
-                                            {
-                                                localService.globalsend = false;
-                                            }
-                                        localService.refresh();
-                                    }
-                                if (jo.has("sos"))
-                                    {
-                                        if (jo.optInt("sos") == 1)
-                                            {
-                                                localService.sos = true;
-                                            }
-                                       else
-                                            {
-                                                localService.sos = false;
-                                            }
-                                        localService.refresh();
-                                    }
-                                if(jo.has("permanent"))
-                                    {
-                                        if (jo.optInt("permanent") == 1)
-                                            {
-                                                OsMoDroid.permanent = true;
-                                            }
-                                        else
-                                            {
-                                                OsMoDroid.permanent = false;
-                                            }
-                                    }
-                                localService.refresh();
-
-                            }
-                        else
-                            {
-
-                            if (jo.optInt("error") == 10 || jo.optInt("error") == 100 || jo.optString("token").equals("false"))
-                                {
-                                    localService.internetnotify(false);
-                                    close();
-                                    localService.notifywarnactivity(LocalService.unescape(jo.optString("error_description")), false, OsMoDroid.NOTIFY_NO_DEVICE);
-                                    //localService.motd=LocalService.unescape(result.Jo.optString("error_description"));
-                                    localService.sendid();
-                                    localService.refresh();
-                                }
-                            else if (jo.optInt("error") == 67 || jo.optInt("error") == 68 || jo.optInt("error") == 69)
-                                {
-                                    close();
-                                    localService.notifywarnactivity(LocalService.unescape(jo.optString("error_description")), true, OsMoDroid.NOTIFY_EXPIRY_USER);
-                                    localService.motd = LocalService.unescape(jo.optString("error_description"));
-                                    localService.refresh();
-                                }
-                            else if (jo.optInt("error") == 21 )
-                                {
-                                    close();
-                                    localService.notifywarnactivity(LocalService.unescape(jo.optString("error_description")), true,0);
-                                    localService.motd = LocalService.unescape(jo.optString("error_description"));
-                                    localService.refresh();
-                                }
-
-
-                            }
-                        localService.refresh();
+                setkeepAliveAlarm();
+                localService.internetnotify(true);
+                if (!OsMoDroid.settings.getBoolean("subscribebackground", false)) {
+                    if (OsMoDroid.gpslocalserviceclientVisible) {
+                        sendToServer("PG:1", false);
                     }
-                if (command.equals("MD"))
-                    {
-                        localService.motd = addict;
-                        OsMoDroid.editor.putString("modt", addict);
-                        OsMoDroid.editor.commit();
-                        localService.refresh();
+                } else {
+                    sendToServer("PG:1", false);
+                }
+
+                if (jo.has("group")) {
+                    if (jo.optInt("group") == 1) {
+                        localService.globalsend = true;
                     }
-                if (command.equals("GS"))
-                    {
-                        if (param.equals("1"))
-                            {
-                                localService.globalsend = true;
-                                localService.refresh();
-                            }
-                        if (param.equals("-1"))
-                            {
-                                localService.globalsend = false;
-                                localService.refresh();
-                            }
+                    if (jo.optInt("group") == 0) {
+                        localService.globalsend = false;
                     }
-                if (command.equals("SOS"))
-                    {
-                        if (addict.equals("1"))
-                            {
-                                localService.sos = true;
-                                localService.refresh();
-                            }
-                        if (addict.equals("-1"))
-                            {
-                                localService.sos = false;
-                                localService.refresh();
-                            }
+                    localService.refresh();
+                }
+                if (jo.has("sos")) {
+                    if (jo.optInt("sos") == 1) {
+                        localService.sos = true;
+                    } else {
+                        localService.sos = false;
                     }
-                if(command.equals("LA"))
-                {
-                    for(PermLink p: LocalService.simlimkslist)
-                    {
-                        if(p.u==Integer.parseInt(param))
-                        {
-                            p.active=true;
-                            if (LocalService.simlinksadapter != null)
-                            {
-                                LocalService.simlinksadapter.notifyDataSetChanged();
-                            }
-                        }
+                    localService.refresh();
+                }
+                if (jo.has("permanent")) {
+                    if (jo.optInt("permanent") == 1) {
+                        OsMoDroid.permanent = true;
+                    } else {
+                        OsMoDroid.permanent = false;
                     }
                 }
-                if(command.equals("LD"))
-                {
-                    for(PermLink p: LocalService.simlimkslist)
-                    {
-                        if(p.u==Integer.parseInt(param))
+                localService.refresh();
+
+            } else {
+
+                if (jo.optInt("error") == 10 || jo.optInt("error") == 100 || jo.optString("token").equals("false")) {
+                    localService.internetnotify(false);
+                    close();
+                    localService.notifywarnactivity(LocalService.unescape(jo.optString("error_description")), false, OsMoDroid.NOTIFY_NO_DEVICE);
+                    //localService.motd=LocalService.unescape(result.Jo.optString("error_description"));
+                    localService.sendid();
+                    localService.refresh();
+                } else if (jo.optInt("error") == 67 || jo.optInt("error") == 68 || jo.optInt("error") == 69) {
+                    close();
+                    localService.notifywarnactivity(LocalService.unescape(jo.optString("error_description")), true, OsMoDroid.NOTIFY_EXPIRY_USER);
+                    localService.motd = LocalService.unescape(jo.optString("error_description"));
+                    localService.refresh();
+                } else if (jo.optInt("error") == 21) {
+                    close();
+                    localService.notifywarnactivity(LocalService.unescape(jo.optString("error_description")), true, 0);
+                    localService.motd = LocalService.unescape(jo.optString("error_description"));
+                    localService.refresh();
+                }
+
+
+            }
+            localService.refresh();
+        }
+        if (command.equals("HISTORY")) {
+            for (int i = 0; i < ja.length(); i++) {
+                try {
+                    jsonObject = ja.getJSONObject(i);
+                    if (!jsonObject.getString("u").equals("null")) {
+//                                for (TrackFile tf : LocalService.trackFileList)
+//                                {
+//                                    if (tf.u == Integer.parseInt(jsonObject.optString("u")))
+//                                    {
+                        TrackFile tr = new TrackFile(jsonObject.optString("name"), jsonObject.optLong("start")*1000, jsonObject.optInt("size"));
+                        tr.u = jsonObject.getInt("u");
+                        tr.name = jsonObject.optString("name");
+                        tr.distantion=jsonObject.optString("distantion");
+                        tr.fromServer = true;
+                        tr.url = jsonObject.optString("gpx");
+                        tr.image = jsonObject.optString("image");
+                        boolean exist=false;
+                        for  (TrackFile t: LocalService.trackFileList)
                         {
-                            p.active=false;
-                            if (LocalService.simlinksadapter != null)
+                            if(t.u==tr.u)
                             {
-                                LocalService.simlinksadapter.notifyDataSetChanged();
+                                exist=true;
                             }
                         }
+                        if(!exist) {
+                            LocalService.trackFileList.add(0, tr);
+                        }
+                        Iterator<ColoredGPX> it = LocalService.showedgpxList.iterator();
+                        while (it.hasNext()) {
+                            ColoredGPX cg = it.next();
+                            if (cg.u == tr.u) {
+                                tr.showedonmap = true;
+                            }
+                        }
+                        //}
+                        //}
+
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    writeException(e);
+                }
+            }
+            Collections.sort(LocalService.trackFileList);
+            LocalService.trackFileAdapter.notifyDataSetChanged();
+        }
+
+        if (command.equals("MD")) {
+            localService.motd = addict;
+            OsMoDroid.editor.putString("modt", addict);
+            OsMoDroid.editor.commit();
+            localService.refresh();
+        }
+        if (command.equals("GS")) {
+            if (param.equals("1")) {
+                localService.globalsend = true;
+                localService.refresh();
+            }
+            if (param.equals("-1")) {
+                localService.globalsend = false;
+                localService.refresh();
+            }
+        }
+        if (command.equals("SOS")) {
+            if (addict.equals("1")) {
+                localService.sos = true;
+                localService.refresh();
+            }
+            if (addict.equals("-1")) {
+                localService.sos = false;
+                localService.refresh();
+            }
+        }
+        if (command.equals("LA")) {
+            for (PermLink p : LocalService.simlimkslist) {
+                if (p.u == Integer.parseInt(param)) {
+                    p.active = true;
+                    if (LocalService.simlinksadapter != null) {
+                        LocalService.simlinksadapter.notifyDataSetChanged();
                     }
                 }
-                if (command.equals("GA"))
-                    {
-                        for (Channel ch : LocalService.channelList)
-                            {
-                                if (ch.u == Integer.parseInt(param))
-                                    {
-                                        ch.updChannel(jo);
-                                        ch.send = true;
-                                        localService.osmAndAddAllChannels();
-                                    }
-                            }
-                        if (LocalService.channelsAdapter != null)
-                            {
-                                LocalService.channelsAdapter.notifyDataSetChanged();
-                            }
-                        if (log)
-                            {
-                                Log.d(getClass().getSimpleName(), "write group list to file");
-                            }
-                        localService.saveObject(LocalService.channelList, OsMoDroid.CHANNELLIST);
-                        //sendToServer("GROUP", false);
+            }
+        }
+        if (command.equals("LD")) {
+            for (PermLink p : LocalService.simlimkslist) {
+                if (p.u == Integer.parseInt(param)) {
+                    p.active = false;
+                    if (LocalService.simlinksadapter != null) {
+                        LocalService.simlinksadapter.notifyDataSetChanged();
                     }
-                if (command.equals("GD")&&!jo.has("error"))
-                    {
-                        for (Channel ch : LocalService.channelList)
-                            {
-                                if (ch.u == Integer.parseInt(param))
-                                    {
-                                        ch.send = false;
-                                        localService.osmAndDeleteChannel(ch);
-                                    }
-                            }
-                        if (LocalService.channelsAdapter != null)
-                            {
-                                LocalService.channelsAdapter.notifyDataSetChanged();
-                            }
-                        if (log)
-                            {
-                                Log.d(getClass().getSimpleName(), "write group list to file");
-                            }
-                        localService.saveObject(LocalService.channelList, OsMoDroid.CHANNELLIST);
-                    }
-                if (command.equals("GC"))
-                    {
-                        for (int k = 0; k < ja.length(); k++)
-                            {
-                                try
-                                    {
-                                        addToChannelChat(Integer.parseInt(param), ja.getJSONObject(k), true);
-                                    }
-                                catch (Exception e)
-                                    {
-                                        writeException(e);
-                                        e.printStackTrace();
-                                    }
-                            }
-                    }
-                // IM:7909|[{"u":"17","from":"45694","text":"xcvxcvz","time":"2015-04-11 22:35:18"}]
+                }
+            }
+        }
+        if (command.equals("GA")) {
+            for (Channel ch : LocalService.channelList) {
+                if (ch.u == Integer.parseInt(param)) {
+                    ch.updChannel(jo);
+                    ch.send = true;
+                    localService.osmAndAddAllChannels();
+                }
+            }
+            if (LocalService.channelsAdapter != null) {
+                LocalService.channelsAdapter.notifyDataSetChanged();
+            }
+            if (log) {
+                Log.d(getClass().getSimpleName(), "write group list to file");
+            }
+            localService.saveObject(LocalService.channelList, OsMoDroid.CHANNELLIST);
+            //sendToServer("GROUP", false);
+        }
+        if (command.equals("GD") && !jo.has("error")) {
+            for (Channel ch : LocalService.channelList) {
+                if (ch.u == Integer.parseInt(param)) {
+                    ch.send = false;
+                    localService.osmAndDeleteChannel(ch);
+                }
+            }
+            if (LocalService.channelsAdapter != null) {
+                LocalService.channelsAdapter.notifyDataSetChanged();
+            }
+            if (log) {
+                Log.d(getClass().getSimpleName(), "write group list to file");
+            }
+            localService.saveObject(LocalService.channelList, OsMoDroid.CHANNELLIST);
+        }
+        if (command.equals("GC")) {
+            for (int k = 0; k < ja.length(); k++) {
+                try {
+                    addToChannelChat(Integer.parseInt(param), ja.getJSONObject(k), true);
+                } catch (Exception e) {
+                    writeException(e);
+                    e.printStackTrace();
+                }
+            }
+        }
+        // IM:7909|[{"u":"17","from":"45694","text":"xcvxcvz","time":"2015-04-11 22:35:18"}]
 
-                //recive IMP|["46191","\u043f\u0432\u0438\u044c\u0431\u043b\u0440","2015-04-16 22:52:13"]
+        //recive IMP|["46191","\u043f\u0432\u0438\u044c\u0431\u043b\u0440","2015-04-16 22:52:13"]
 
-                if (command.equals("GRPA"))
-                    {
-                        //02-08 19:50:40.608 1149-1149/com.OsMoDroid D/com.OsMoDroid.LocalService$6: recive GRPA|{"u":7515,"type":1,"group_id":"QUZM_6745","name":"tytstysy","description":"","policy":"","url":"https:\/\/osmo.mobi\/g\/reyxtidvyzysdhmn","UC":true}
-                        if(jo.has("UC"))
-                            {
+        if (command.equals("GRPA")) {
+            //02-08 19:50:40.608 1149-1149/com.OsMoDroid D/com.OsMoDroid.LocalService$6: recive GRPA|{"u":7515,"type":1,"group_id":"QUZM_6745","name":"tytstysy","description":"","policy":"","url":"https:\/\/osmo.mobi\/g\/reyxtidvyzysdhmn","UC":true}
+            if (jo.has("UC")) {
 
-                                localService.saveObject(LocalService.channelList, OsMoDroid.CHANNELLIST);
-                                localService.refresh();
-                                stop();
-                                start();
+                localService.saveObject(LocalService.channelList, OsMoDroid.CHANNELLIST);
+                localService.refresh();
+                stop();
+                start();
 
-                            }
-                        else
-                            {
-                                sendToServer("GROUP", false);
-                            }
-                    }
-                if (command.equals("NEEDSENDALARM"))
-                    {
-                        sendToServer("ALARM", false);
-                    }
-                if (command.equals("NEEDSENDNET"))
-                    {
-                        if(!executedCommandArryaList.contains("NET")) {
+            } else {
+                sendToServer("GROUP", false);
+            }
+        }
+        if (command.equals("NEEDSENDALARM")) {
+            sendToServer("ALARM", false);
+        }
+        if (command.equals("NEEDSENDNET")) {
+            if (!executedCommandArryaList.contains("NET")) {
 
-                            JSONObject postjson = getNET();
-                            sendToServer("NET|" + postjson.toString(), false);
-                        }
-                    }
+                JSONObject postjson = getNET();
+                sendToServer("NET|" + postjson.toString(), false);
+            }
+        }
 
-                if(command.equals("NEEDSENDCHARGE"))
-                    {
-                        sendToServer("CHARGE|"+addict,false);
-                    }
-                if(command.equals("SMS"))
-                    {
-                        sendToServer("T|"+addict+"X",false);
-                    }
-                if (command.equals("TO"))
-                    {
-                        localService.sessionstarted = true;
-                        sendBytes = 0;
-                        recievedBytes = 0;
-                        connectcount = 0;
-                        erorconenctcount = 0;
-                        needopensession = false;
-                        OsMoDroid.editor.putString("viewurl", "https://osmo.mobi/s/" + jo.optString("url"));
-                        OsMoDroid.editor.commit();
-                        if (localService.sendingbuffer.size() == 0 && localService.buffer.size() != 0)
-                            {
-                                localService.sendingbuffer.addAll(localService.buffer);
-                                localService.buffer.clear();
-                                sendToServer("B|" + new JSONArray(localService.sendingbuffer), false);
-                            }
-                        localService.refresh();
-                    }
-                if (command.equals("TC"))
-                    {
-                        localService.sessionstarted = false;
-                        needclosesession = false;
-                        OsMoDroid.editor.putString("viewurl", "");
-                        OsMoDroid.editor.commit();
-                        localService.refresh();
-                    }
-                if (command.equals("T"))
-                    {
-                        localService.sendcounter++;
-                        localService.sending = "";
-                        if (localService.sendingbuffer.size() == 0 && localService.buffer.size() != 0)
-                            {
-                                localService.sendingbuffer.addAll(localService.buffer);
-                                localService.buffer.clear();
-                                sendToServer("B|" + new JSONArray(localService.sendingbuffer), false);
-                            }
-                        if (localService.sendsound && !localService.mayak)
-                            {
-                                localService.soundPool.play(localService.sendpalyer, 1f, 1f, 1, 0, 1f);
-                                localService.mayak = false;
-                            }
-                        String time = OsMoDroid.sdf3.format(new Date(System.currentTimeMillis()));
-                        localService.sendresult = time + " " + localService.getString(R.string.succes);
-                        localService.refresh();
-                        return;
-                    }
-                if (command.equals("B"))
-                    {
-                        localService.buffercounter = localService.buffercounter - localService.sendingbuffer.size();
-                        localService.sendcounter = localService.sendcounter + localService.sendingbuffer.size();
-                        localService.sendingbuffer.clear();
-                        localService.refresh();
-                    }
-                if (command.equals("PP"))
-                    {
-                        sendToServer("PP", false);
-                    }
-                if (command.equals("GCM"))
-                    {
-                        OsMoDroid.editor.putBoolean("needsendgcmregid", false);
-                        OsMoDroid.editor.commit();
-                    }
-                if(command.equals("DCU"))
-                    {
-                        needtosendpreference=false;
-                    }
-                if (command.equals("RC"))
-                    {
-                        if (param.equals("PP"))
-                            {
-                                sendToServer("PP", false);
-                            }
-                        if (param.equals(OsMoDroid.SOS))
-                        {
-                            Intent dialogIntent = new Intent(localService, SosActivity.class);
-                            dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            dialogIntent.putExtra("message",addict);
-                            localService.startActivity(dialogIntent);
-                        }
-                        if (param.equals(OsMoDroid.SOSEXT))
-                            {
-                                Intent dialogIntent = new Intent(localService, SosActivity.class);
-                                dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                dialogIntent.putExtra("jo",addict);
-                                localService.startActivity(dialogIntent);
-                            }
-                        if (param.equals(OsMoDroid.SOS_OFF))
-                            {
-                                localService.sendBroadcast(new Intent("closesos"));
-                            }
+        if (command.equals("NEEDSENDCHARGE")) {
+            sendToServer("CHARGE|" + addict, false);
+        }
+        if (command.equals("SMS")) {
+            sendToServer("T|" + addict + "X", false);
+        }
+        if (command.equals("TO")) {
+            localService.sessionstarted = true;
+            sendBytes = 0;
+            recievedBytes = 0;
+            connectcount = 0;
+            erorconenctcount = 0;
+            needopensession = false;
+            OsMoDroid.editor.putString("viewurl", "https://osmo.mobi/s/" + jo.optString("url"));
+            OsMoDroid.editor.commit();
+            if (localService.sendingbuffer.size() == 0 && localService.buffer.size() != 0) {
+                localService.sendingbuffer.addAll(localService.buffer);
+                localService.buffer.clear();
+                sendToServer("B|" + new JSONArray(localService.sendingbuffer), false);
+            } else {
+                addlog("not send buffer becase, sendingbuffersize=" + localService.sendingbuffer.size() + " localService.buffer.size=" + localService.buffer.size());
+            }
+            localService.refresh();
+        }
+        if (command.equals("TC")) {
+            localService.sessionstarted = false;
+            needclosesession = false;
+            OsMoDroid.editor.putString("viewurl", "");
+            OsMoDroid.editor.commit();
+            localService.refresh();
+        }
+        if (command.equals("T")) {
+            localService.sendcounter++;
+            localService.sending = "";
+            if (localService.sendingbuffer.size() == 0 && localService.buffer.size() != 0) {
+                localService.sendingbuffer.addAll(localService.buffer);
+                localService.buffer.clear();
+                sendToServer("B|" + new JSONArray(localService.sendingbuffer), false);
+            } else {
+                addlog("not send buffer becase, sendingbuffersize=" + localService.sendingbuffer.size() + " localService.buffer.size=" + localService.buffer.size());
+            }
+            if (localService.sendsound && !localService.mayak) {
+                localService.soundPool.play(localService.sendpalyer, 1f, 1f, 1, 0, 1f);
+                localService.mayak = false;
+            }
+            String time = OsMoDroid.sdf3.format(new Date(System.currentTimeMillis()));
+            localService.sendresult = time + " " + localService.getString(R.string.succes);
+            localService.refresh();
+            return;
+        }
+        if (command.equals("B")) {
+            localService.buffercounter = localService.buffercounter - localService.sendingbuffer.size();
+            localService.sendcounter = localService.sendcounter + localService.sendingbuffer.size();
+            localService.sendingbuffer.clear();
+            localService.refresh();
+        }
+        if (command.equals("PP")) {
+            sendToServer("PP", false);
+        }
+        if (command.equals("GCM")) {
+            OsMoDroid.editor.putBoolean("needsendgcmregid", false);
+            OsMoDroid.editor.commit();
+        }
+        if (command.equals("DCU")) {
+            needtosendpreference = false;
+        }
+        if (command.equals("RC")) {
+            if (param.equals("PP")) {
+                sendToServer("PP", false);
+            }
+            if (param.equals(OsMoDroid.SOS)) {
+                Intent dialogIntent = new Intent(localService, SosActivity.class);
+                dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                dialogIntent.putExtra("message", addict);
+                localService.startActivity(dialogIntent);
+            }
+            if (param.equals(OsMoDroid.SOSEXT)) {
+                Intent dialogIntent = new Intent(localService, SosActivity.class);
+                dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                dialogIntent.putExtra("jo", addict);
+                localService.startActivity(dialogIntent);
+            }
+            if (param.equals(OsMoDroid.SOS_OFF)) {
+                localService.sendBroadcast(new Intent("closesos"));
+            }
 
-                        if (param.equals(OsMoDroid.TRACKER_GCM_ID))
-                            {
-                                sendToServer("GCM|" + OsMoDroid.settings.getString("GCMRegId", "no"), false);
-                                sendToServer("RCR:" + OsMoDroid.TRACKER_GCM_ID + "|1", false);
+            if (param.equals(OsMoDroid.TRACKER_GCM_ID)) {
 
-                            }
-                        if(param.equals(OsMoDroid.UPDATE_MOTD))
-                            {
-                                localService.motd = LocalService.unescape(addict);
-                                OsMoDroid.editor.putString("startmessage", LocalService.unescape(addict));
-                                OsMoDroid.editor.commit();
-                                localService.refresh();
-                                sendToServer("RCR:"+OsMoDroid.UPDATE_MOTD+"|1",false);
-                            }
+                sendToServer("GCM|" + FirebaseInstanceId.getInstance().getToken(), false);
+                //sendToServer("GCM|" + OsMoDroid.settings.getString("GCMRegId", "no"), false);
+                sendToServer("RCR:" + OsMoDroid.TRACKER_GCM_ID + "|1", false);
 
-                        if (param.equals(OsMoDroid.FLASH_ON))
-                            {
-                                localService.alertHandler.removeCallbacks(flickRunable);
-                              flashOn();
-                                sendToServer("RCR:" + OsMoDroid.FLASH_ON + "|1", false);
-                            }
-                        if (param.equals(OsMoDroid.FLASH_OFF))
-                            {
-                                localService.alertHandler.removeCallbacks(flickRunable);
-                                flashoff();
-                                sendToServer("RCR:" + OsMoDroid.FLASH_OFF + "|1", false);
-                            }
-                        if (param.equals(OsMoDroid.FLASH_BLINK))
-                            {
-                                localService.alertHandler.removeCallbacks(flickRunable);
-                                flick();
-                                sendToServer("RCR:" + OsMoDroid.FLASH_BLINK + "|1", false);
-                            }
-                        if(param.equals(OsMoDroid.CHANGE_MOTD_TEXT))
-                            {
-                                localService.motd=addict;
-                                localService.refresh();
-                                sendToServer("RCR:"+OsMoDroid.CHANGE_MOTD_TEXT+"|1",false);
-                            }
+            }
+            if (param.equals(OsMoDroid.UPDATE_MOTD)) {
+                localService.motd = LocalService.unescape(addict);
+                OsMoDroid.editor.putString("startmessage", LocalService.unescape(addict));
+                OsMoDroid.editor.commit();
+                localService.refresh();
+                sendToServer("RCR:" + OsMoDroid.UPDATE_MOTD + "|1", false);
+            }
+
+            if (param.equals(OsMoDroid.FLASH_ON)) {
+                localService.alertHandler.removeCallbacks(flickRunable);
+                flashOn();
+                sendToServer("RCR:" + OsMoDroid.FLASH_ON + "|1", false);
+            }
+            if (param.equals(OsMoDroid.FLASH_OFF)) {
+                localService.alertHandler.removeCallbacks(flickRunable);
+                flashoff();
+                sendToServer("RCR:" + OsMoDroid.FLASH_OFF + "|1", false);
+            }
+            if (param.equals(OsMoDroid.FLASH_BLINK)) {
+                localService.alertHandler.removeCallbacks(flickRunable);
+                flick();
+                sendToServer("RCR:" + OsMoDroid.FLASH_BLINK + "|1", false);
+            }
+            if (param.equals(OsMoDroid.CHANGE_MOTD_TEXT)) {
+                localService.motd = addict;
+                localService.refresh();
+                sendToServer("RCR:" + OsMoDroid.CHANGE_MOTD_TEXT + "|1", false);
+            }
 
 
-
-                        if (param.equals(OsMoDroid.REFRESH_GROUPS))
+            if (param.equals(OsMoDroid.REFRESH_GROUPS)) {
+                Runnable runnable = new Runnable() {
+                    public void run() {
+                        try {
+                            File dir = new File(android.os.Environment.getExternalStorageDirectory() + "/OsMoDroid/channelsgpx/");
+                            dir.mkdirs();
+                            //if (dir.isDirectory())
                             {
-                                Runnable runnable = new Runnable() {
-                                    public void run() {
-                                        try {
-                                            File dir = new File(android.os.Environment.getExternalStorageDirectory()+"/OsMoDroid/channelsgpx/");
-                                            dir.mkdirs();
-                                            //if (dir.isDirectory())
-                                            {
-                                                String[] children = dir.list();
-                                                for (int i = 0; i < children.length; i++)
-                                                {
-                                                    new File(dir, children[i]).delete();
-                                                }
-                                            }
-                                            sendToServer("GROUP",false);
-                                            sendToServer("RCR:" + OsMoDroid.REFRESH_GROUPS + "|1", false);
-                                        } catch (Exception e) {
-
-                                            e.printStackTrace();
-                                            StringWriter sw = new StringWriter();
-                                            e.printStackTrace(new PrintWriter(sw));
-                                            String exceptionAsString = sw.toString();
-                                            LocalService.addlog(exceptionAsString);
-                                            sendToServer("GROUP",false);
-                                            sendToServer("RCR:" + OsMoDroid.REFRESH_GROUPS + "|1", false);
-                                        }
-                                    }
-                                };
-                                runnable.run();
-
-
-                            }
-                        if (param.equals(OsMoDroid.REFRESH_DEVICES))
-                            {
-                                sendToServer("DEVICE",false);
-                                sendToServer("RCR:" + OsMoDroid.REFRESH_DEVICES + "|1", false);
-                            }
-                        if (param.equals(OsMoDroid.TRACKER_SESSION_START))
-                            {
-                                if(!localService.state)
-                                    {
-                                        localService.startServiceWork(true);
-                                    }
-                                sendToServer("RCR:" + OsMoDroid.TRACKER_SESSION_START + "|1", false);
-                            }
-                        if (param.equals(OsMoDroid.TRACKER_SESSION_STOP))
-                            {
-                                if(localService.state)
-                                    {
-                                        localService.stopServiceWork(true);
-                                    }
-                                sendToServer("RCR:" + OsMoDroid.TRACKER_SESSION_STOP + "|1", false);
-                            }
-                        if (param.equals(OsMoDroid.TRACKER_SESSION_CONTINUE))
-                        {
-                            if(localService.paused)
-                                {
-                                    localService.startServiceWork(false);
-                                }
-                            sendToServer("RCR:" + OsMoDroid.TRACKER_SESSION_PAUSE + "|1", false);
-                        }
-                        if (param.equals(OsMoDroid.TRACKER_SESSION_PAUSE))
-                            {
-                                if(localService.state)
-                                    {
-                                        localService.setPause(true);
-                                        localService.stopServiceWork(false);
-                                    }
-                                sendToServer("RCR:" + OsMoDroid.TRACKER_SESSION_PAUSE + "|1", false);
-                            }
-                        if (param.equals(OsMoDroid.TTS))
-                            {
-                                if (OsMoDroid.settings.getBoolean("ttsremote", false) && localService.tts != null)
-                                    {
-                                        localService.tts.speak(addict, TextToSpeech.QUEUE_ADD, null);
-                                    }
-                            }
-                        if(param.equals(OsMoDroid.SIGNAL_STATUS))
-                            {
-                                sendToServer("RCR:"+OsMoDroid.SIGNAL_STATUS+'|'+(localService.signalisationOn?1:0),false);
-                            }
-                        if (param.equals(OsMoDroid.ALARM_ON))
-                            {
-                                localService.playAlarmOn();
-                                sendToServer("RCR:" + OsMoDroid.ALARM_ON + "|1", false);
-                            }
-                        if (param.equals(OsMoDroid.ALARM_OFF))
-                            {
-                                localService.playAlarmOff();
-                                sendToServer("RCR:" + OsMoDroid.ALARM_OFF + "|1", false);
-                            }
-                        if (param.equals(OsMoDroid.SIGNAL_ON))
-                            {
-                                localService.enableSignalisation();
-                                sendToServer("RCR:" + OsMoDroid.SIGNAL_ON + "|1", false);
-                            }
-                        if (param.equals(OsMoDroid.SIGNAL_OFF))
-                            {
-                                localService.disableSignalisation();
-                                sendToServer("RCR:" + OsMoDroid.SIGNAL_OFF + "|1", false);
-                            }
-                        if (param.equals(OsMoDroid.TRACKER_BATTERY_INFO))
-                            {
-                                try
-                                    {
-                                        localService.batteryinfo(localService);
-                                    }
-                                catch (JSONException e)
-                                    {
-                                        e.printStackTrace();
-                                        writeException(e);
-                                    }
-                            }
-                        if (param.equals(OsMoDroid.TRACKER_SATELLITES_INFO))
-                            {
-                                try
-                                    {
-                                        localService.satelliteinfo(localService);
-                                    }
-                                catch (JSONException e)
-                                    {
-                                        writeException(e);
-                                        e.printStackTrace();
-                                    }
-                            }
-                        if (param.equals(OsMoDroid.TRACKER_SYSTEM_INFO))
-                            {
-                                try
-                                    {
-                                        localService.systeminfo(localService);
-                                    }
-                                catch (JSONException e)
-                                    {
-                                        e.printStackTrace();
-                                    }
-                            }
-                        if (param.equals(OsMoDroid.TRACKER_WIFI_INFO))
-                            {
-                                try
-                                    {
-                                        localService.wifiinfo(localService);
-                                    }
-                                catch (JSONException e)
-                                    {
-                                        writeException(e);
-                                        e.printStackTrace();
-                                    }
-                            }
-                        if (param.equals(OsMoDroid.TRACKER_WIFI_OFF))
-                            {
-                                localService.wifioff(localService);
-                            }
-                        if (param.equals(OsMoDroid.TRACKER_WIFI_ON))
-                            {
-                                localService.wifion(localService);
-                            }
-                        if (param.equals(OsMoDroid.TRACKER_VIBRATE))
-                            {
-                                localService.vibrate(localService, 3000);
-                            }
-                        if (param.equals(OsMoDroid.TRACKER_EXIT))
-                            {
-                                sendToServer("RCR:" + OsMoDroid.TRACKER_EXIT + "|1", false);
-                                LocalService.gcmtodolist.clear();
-                                localService.addlog("set connectcompleted=true");
-                                LocalService.connectcompleted =true;
-                                localService.saveObject(LocalService.gcmtodolist, OsMoDroid.GCMTODOLIST);
-                                localService.stopSelf();
-                                System.exit(0);
-                            }
-                        if (param.equals(OsMoDroid.TRACKER_GET_PREFS))
-                            {
-                                localService.getpreferences(localService);
-                            }
-                        if (param.equals(OsMoDroid.TRACKER_SET_PREFS))
-                            {
-                                localService.setpreferences(jo,localService);
-                            }
-                        if (param.equals(OsMoDroid.WHERE_GPS_ONLY))
-                        {
-                            sendToServer("RCR:" + OsMoDroid.WHERE + "|1", false);
-                            localService.where = true;
-                            List<String> list = myManager.getProviders(true);
-                            if (list.contains(LocationManager.GPS_PROVIDER))
-                            {
-                                if (!localService.state)
-                                {
-                                    localService.alertHandler.post(new Runnable()
-                                    {
-                                        public void run()
-                                        {
-                                            myManager.requestSingleUpdate(LocationManager.GPS_PROVIDER, localService.singleLocationListener, null);
-
-                                            if (log)
-                                            {
-                                                addlog("подписались на GPS");
-                                            }
-                                        }
-                                    });
-
+                                String[] children = dir.list();
+                                for (int i = 0; i < children.length; i++) {
+                                    new File(dir, children[i]).delete();
                                 }
                             }
+                            sendToServer("GROUP", false);
+                            sendToServer("RCR:" + OsMoDroid.REFRESH_GROUPS + "|1", false);
+                        } catch (Exception e) {
 
-                            localService.alertHandler.postDelayed(new Runnable()
-                            {
-                                public void run()
-                                {
-                                    addlog( "отписались");
-                                    myManager.removeUpdates(localService.singleLocationListener);
-                                    localService.where=false;
-                                }
-                            }, 5*60*1000);
+                            e.printStackTrace();
+                            StringWriter sw = new StringWriter();
+                            e.printStackTrace(new PrintWriter(sw));
+                            String exceptionAsString = sw.toString();
+                            LocalService.addlog(exceptionAsString);
+                            sendToServer("GROUP", false);
+                            sendToServer("RCR:" + OsMoDroid.REFRESH_GROUPS + "|1", false);
                         }
-                        if (param.equals(OsMoDroid.WHERE))
-                            {
-                                sendToServer("RCR:" + OsMoDroid.WHERE + "|1", false);
-                                localService.where = true;
-                                List<String> list = myManager.getProviders(true);
-                                if (list.contains(LocationManager.GPS_PROVIDER))
-                                    {
-                                        if (!localService.state)
-                                            {
-                                                localService.alertHandler.post(new Runnable()
-                                                    {
-                                                        public void run()
-                                                            {
-                                                                myManager.requestSingleUpdate(LocationManager.GPS_PROVIDER, localService.singleLocationListener, null);
+                    }
+                };
+                runnable.run();
 
-                                                                if (log)
-                                                                    {
-                                                                        addlog("подписались на GPS");
-                                                                    }
-                                                            }
-                                                    });
-                                                if (list.contains(LocationManager.NETWORK_PROVIDER))
-                                                    {
-                                                        localService.alertHandler.postDelayed(new Runnable()
-                                                            {
-                                                                public void run()
-                                                                    {
-                                                                        myManager.requestSingleUpdate(LocationManager.NETWORK_PROVIDER, localService.singleLocationListener, null);
-                                                                        if (log)
-                                                                            {
-                                                                                addlog( "подписались на NETWORK");
-                                                                            }
-                                                                    }
-                                                            }, 30000);
-                                                    }
-                                            }
+
+            }
+            if (param.equals(OsMoDroid.REFRESH_DEVICES)) {
+                sendToServer("DEVICE", false);
+                sendToServer("RCR:" + OsMoDroid.REFRESH_DEVICES + "|1", false);
+            }
+            if (param.equals(OsMoDroid.TRACKER_SESSION_START)) {
+                if (!localService.state) {
+                    localService.startServiceWork(true);
+                }
+                sendToServer("RCR:" + OsMoDroid.TRACKER_SESSION_START + "|1", false);
+            }
+            if (param.equals(OsMoDroid.TRACKER_SESSION_STOP)) {
+                if (localService.state) {
+                    localService.stopServiceWork(true);
+                }
+                sendToServer("RCR:" + OsMoDroid.TRACKER_SESSION_STOP + "|1", false);
+            }
+            if (param.equals(OsMoDroid.TRACKER_SESSION_CONTINUE)) {
+                if (localService.paused) {
+                    localService.startServiceWork(false);
+                }
+                sendToServer("RCR:" + OsMoDroid.TRACKER_SESSION_PAUSE + "|1", false);
+            }
+            if (param.equals(OsMoDroid.TRACKER_SESSION_PAUSE)) {
+                if (localService.state) {
+                    localService.setPause(true);
+                    localService.stopServiceWork(false);
+                }
+                sendToServer("RCR:" + OsMoDroid.TRACKER_SESSION_PAUSE + "|1", false);
+            }
+            if (param.equals(OsMoDroid.TTS)) {
+                if (OsMoDroid.settings.getBoolean("ttsremote", false) && localService.tts != null) {
+                    localService.tts.speak(addict, TextToSpeech.QUEUE_ADD, null);
+                }
+            }
+            if (param.equals(OsMoDroid.SIGNAL_STATUS)) {
+                sendToServer("RCR:" + OsMoDroid.SIGNAL_STATUS + '|' + (localService.signalisationOn ? 1 : 0), false);
+            }
+            if (param.equals(OsMoDroid.ALARM_ON)) {
+                localService.playAlarmOn();
+                sendToServer("RCR:" + OsMoDroid.ALARM_ON + "|1", false);
+            }
+            if (param.equals(OsMoDroid.ALARM_OFF)) {
+                localService.playAlarmOff();
+                sendToServer("RCR:" + OsMoDroid.ALARM_OFF + "|1", false);
+            }
+            if (param.equals(OsMoDroid.SIGNAL_ON)) {
+                localService.enableSignalisation();
+                sendToServer("RCR:" + OsMoDroid.SIGNAL_ON + "|1", false);
+            }
+            if (param.equals(OsMoDroid.SIGNAL_OFF)) {
+                localService.disableSignalisation();
+                sendToServer("RCR:" + OsMoDroid.SIGNAL_OFF + "|1", false);
+            }
+            if (param.equals(OsMoDroid.TRACKER_BATTERY_INFO)) {
+                try {
+                    localService.batteryinfo(localService);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    writeException(e);
+                }
+            }
+            if (param.equals(OsMoDroid.TRACKER_SATELLITES_INFO)) {
+                try {
+                    localService.satelliteinfo(localService);
+                } catch (JSONException e) {
+                    writeException(e);
+                    e.printStackTrace();
+                }
+            }
+            if (param.equals(OsMoDroid.TRACKER_SYSTEM_INFO)) {
+                try {
+                    localService.systeminfo(localService);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (param.equals(OsMoDroid.TRACKER_WIFI_INFO)) {
+                try {
+                    localService.wifiinfo(localService);
+                } catch (JSONException e) {
+                    writeException(e);
+                    e.printStackTrace();
+                }
+            }
+            if (param.equals(OsMoDroid.TRACKER_WIFI_OFF)) {
+                localService.wifioff(localService);
+            }
+            if (param.equals(OsMoDroid.TRACKER_WIFI_ON)) {
+                localService.wifion(localService);
+            }
+            if (param.equals(OsMoDroid.TRACKER_VIBRATE)) {
+                localService.vibrate(localService, 3000);
+            }
+            if (param.equals(OsMoDroid.TRACKER_EXIT)) {
+                sendToServer("RCR:" + OsMoDroid.TRACKER_EXIT + "|1", false);
+                LocalService.gcmtodolist.clear();
+                localService.addlog("set connectcompleted=true");
+                LocalService.connectcompleted = true;
+                localService.saveObject(LocalService.gcmtodolist, OsMoDroid.GCMTODOLIST);
+                localService.stopSelf();
+                System.exit(0);
+            }
+            if (param.equals(OsMoDroid.TRACKER_GET_PREFS)) {
+                localService.getpreferences(localService);
+            }
+            if (param.equals(OsMoDroid.TRACKER_SET_PREFS)) {
+                localService.setpreferences(jo, localService);
+            }
+            if (param.equals(OsMoDroid.WHERE_GPS_ONLY)) {
+                sendToServer("RCR:" + OsMoDroid.WHERE_GPS_ONLY + "|1", false);
+                localService.where = true;
+                List<String> list = myManager.getProviders(true);
+                if (list.contains(LocationManager.GPS_PROVIDER)) {
+                    if (!localService.state) {
+                        localService.alertHandler.post(new Runnable() {
+                            public void run() {
+                                if (ActivityCompat.checkSelfPermission(LocalService.serContext, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(LocalService.serContext, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                                    // TODO: Consider calling
+                                    //    ActivityCompat#requestPermissions
+                                    // here to request the missing permissions, and then overriding
+                                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                                    //                                          int[] grantResults)
+                                    // to handle the case where the user grants the permission. See the documentation
+                                    // for ActivityCompat#requestPermissions for more details.
+                                    return;
+                                }
+                                myManager.requestSingleUpdate(LocationManager.GPS_PROVIDER, localService.singleLocationListener, null);
+
+                                if (log) {
+                                    addlog("подписались на GPS");
+                                }
+                            }
+                        });
+
+                    }
+                }
+
+                localService.alertHandler.postDelayed(new Runnable() {
+                    public void run() {
+                        addlog("отписались");
+                        myManager.removeUpdates(localService.singleLocationListener);
+                        localService.where = false;
+                    }
+                }, 5 * 60 * 1000);
+            }
+            if (param.equals(OsMoDroid.WHERE_NETWORK_ONLY)) {
+                sendToServer("RCR:" + OsMoDroid.WHERE_NETWORK_ONLY + "|1", false);
+                localService.where = true;
+                List<String> list = myManager.getProviders(true);
+                if (list.contains(LocationManager.NETWORK_PROVIDER)) {
+                    if (!localService.state) {
+                        localService.alertHandler.post(new Runnable() {
+                            public void run() {
+                                if (ActivityCompat.checkSelfPermission(LocalService.serContext, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(LocalService.serContext, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                                    // TODO: Consider calling
+                                    //    ActivityCompat#requestPermissions
+                                    // here to request the missing permissions, and then overriding
+                                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                                    //                                          int[] grantResults)
+                                    // to handle the case where the user grants the permission. See the documentation
+                                    // for ActivityCompat#requestPermissions for more details.
+                                    return;
+                                }
+                                myManager.requestSingleUpdate(LocationManager.NETWORK_PROVIDER, localService.singleLocationListener, null);
+
+                                if (log) {
+                                    addlog("подписались на NETWORK");
+                                }
+                            }
+                        });
+
+                    }
+                }
+
+                localService.alertHandler.postDelayed(new Runnable() {
+                    public void run() {
+                        addlog("отписались");
+                        myManager.removeUpdates(localService.singleLocationListener);
+                        localService.where = false;
+                    }
+                }, 5 * 60 * 1000);
+            }
+            if (param.equals(OsMoDroid.WHERE)) {
+                sendToServer("RCR:" + OsMoDroid.WHERE + "|1", false);
+                localService.where = true;
+                List<String> list = myManager.getProviders(true);
+                if (list.contains(LocationManager.GPS_PROVIDER)) {
+                    if (!localService.state) {
+                        localService.alertHandler.post(new Runnable() {
+                            public void run() {
+                                if (ActivityCompat.checkSelfPermission(LocalService.serContext, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(LocalService.serContext, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                                    // TODO: Consider calling
+                                    //    ActivityCompat#requestPermissions
+                                    // here to request the missing permissions, and then overriding
+                                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                                    //                                          int[] grantResults)
+                                    // to handle the case where the user grants the permission. See the documentation
+                                    // for ActivityCompat#requestPermissions for more details.
+                                    return;
+                                }
+                                myManager.requestSingleUpdate(LocationManager.GPS_PROVIDER, localService.singleLocationListener, null);
+
+                                if (log) {
+                                    addlog("подписались на GPS");
+                                }
+                            }
+                        });
+                        if (list.contains(LocationManager.NETWORK_PROVIDER)) {
+                            localService.alertHandler.postDelayed(new Runnable() {
+                                public void run() {
+                                    if (ActivityCompat.checkSelfPermission(LocalService.serContext, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(LocalService.serContext, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                                        // TODO: Consider calling
+                                        //    ActivityCompat#requestPermissions
+                                        // here to request the missing permissions, and then overriding
+                                        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                                        //                                          int[] grantResults)
+                                        // to handle the case where the user grants the permission. See the documentation
+                                        // for ActivityCompat#requestPermissions for more details.
+                                        return;
                                     }
-                                else if (list.contains(LocationManager.NETWORK_PROVIDER))
-                                    {
-                                        localService.alertHandler.postDelayed(new Runnable()
-                                            {
-                                                public void run()
-                                                    {
-                                                        myManager.requestSingleUpdate(LocationManager.NETWORK_PROVIDER, localService.singleLocationListener, null);
+                                    myManager.requestSingleUpdate(LocationManager.NETWORK_PROVIDER, localService.singleLocationListener, null);
+                                    if (log) {
+                                        addlog("подписались на NETWORK");
+                                    }
+                                }
+                            }, 30000);
+                        }
+                    }
+                } else if (list.contains(LocationManager.NETWORK_PROVIDER)) {
+                    localService.alertHandler.postDelayed(new Runnable() {
+                        public void run() {
+                            if (ActivityCompat.checkSelfPermission(LocalService.serContext, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(LocalService.serContext, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                                // TODO: Consider calling
+                                //    ActivityCompat#requestPermissions
+                                // here to request the missing permissions, and then overriding
+                                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                                //                                          int[] grantResults)
+                                // to handle the case where the user grants the permission. See the documentation
+                                // for ActivityCompat#requestPermissions for more details.
+                                return;
+                            }
+                            myManager.requestSingleUpdate(LocationManager.NETWORK_PROVIDER, localService.singleLocationListener, null);
                                                         if (log)
                                                             {
                                                                 addlog( "подписались на NETWORK");

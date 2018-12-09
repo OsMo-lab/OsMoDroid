@@ -362,4 +362,6 @@
     <string name="closesos">Close</string>
     <string name="requiregps">THIS APP REQUIRED GPS</string>
     <string name="requireSTORAGE">THIS APP REQUIRED WRITE TO SDCARD TO SHOW MAP</string>
+    <string name="autostartses">Auto start session after launch</string>
+    <string name="startsesonrun">Start session on run</string>
 </resources>

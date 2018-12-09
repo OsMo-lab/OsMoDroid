@@ -65,6 +65,7 @@ public class SosActivity extends Activity
 
                 Button b1 = (Button)findViewById(R.id.buttonSOS1);
                 Button b2 = (Button)findViewById(R.id.buttonSOS2);
+                Button b3 = (Button)findViewById(R.id.buttonSOS3);
                 if(getIntent().hasExtra("jo"))
                     {
                         try
@@ -75,6 +76,7 @@ public class SosActivity extends Activity
                                 sound= jo.optInt ("sound");//0/1/2) - звук (нет/СОС сирена/уведомления (стандартный звук нотификации))
                                 String button1=jo.optString("button1");// - текст первой кнопки (не выводить кнопку если нет такого свойства или пустое)
                                 String button2= jo.optString("button2");// текст второй кнопки (не выводить кнопку если нет такого свойства или пустое)
+                                String button3= jo.optString("button3");// текст второй кнопки (не выводить кнопку если нет такого свойства или пустое)
                                 txt.setText(title+'\n'+message);
                                 final String group=jo.optString("group");
                                 Linkify.addLinks(txt, Linkify.ALL);
@@ -121,6 +123,23 @@ public class SosActivity extends Activity
                                                     }
                                             });
                                     }
+                                if(button3.equals(""))
+                                {
+                                    b3.setVisibility(View.GONE);
+                                }
+                                else
+                                {
+                                    b3.setText(button3);
+                                    b3.setOnClickListener(new View.OnClickListener()
+                                    {
+                                        @Override
+                                        public void onClick(View v)
+                                        {
+                                            LocalService.myIM.sendToServer("BT:"+group+"|3",true);
+                                            finish();
+                                        }
+                                    });
+                                }
 
 
 
@@ -135,6 +154,7 @@ public class SosActivity extends Activity
                 else
                     {
                         b2.setVisibility(View.GONE);
+                        b3.setVisibility(View.GONE);
                         b1.setText(R.string.closesos);
                         b1.setOnClickListener(new View.OnClickListener()
                             {

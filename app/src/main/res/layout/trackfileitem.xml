@@ -1,34 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="fill_parent" android:layout_height="fill_parent"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent" android:layout_height="wrap_content"
               android:orientation="horizontal">
 
     <CheckBox
+        android:id="@+id/showTrackCheckBox"
         android:layout_width="wrap_content"
-        android:layout_height="fill_parent"
-        android:focusable="false"
-        android:id="@+id/showTrackCheckBox"/>
+        android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:layout_alignBottom="@+id/fileDate"
+        android:focusable="false" />
 
-    <LinearLayout
-    android:orientation="vertical"
-    android:layout_width="0dip" android:layout_weight="1"
-    android:layout_height="fill_parent">
 
-        <TextView
-            android:id="@+id/fileName"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
+    <TextView
+        android:id="@+id/fileName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/showTrackCheckBox"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
-        <TextView
-            android:id="@+id/fileDate"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content" />
+    <TextView
+        android:id="@+id/fileDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/showTrackCheckBox"
+        android:layout_below="@id/fileName"
+         />
 
-         <TextView
-             android:id="@+id/fileSize"
-             android:layout_width="fill_parent"
-             android:layout_height="wrap_content" />
+    <TextView
+        android:id="@+id/fileSize"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/showTrackCheckBox"
+        android:layout_below="@id/fileDate"/>
 
-    </LinearLayout>
-</LinearLayout>
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="400dp"
+        android:layout_height="400dp"
+
+
+        android:layout_below="@+id/fileDate"
+
+        android:layout_alignParentRight="true"
+
+        android:layout_marginRight="10dp"
+        />
+
+
+</RelativeLayout>
