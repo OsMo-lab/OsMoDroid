@@ -104,6 +104,7 @@ import com.google.firebase.messaging.RemoteMessage;
 import net.osmand.aidl.map.ALatLon;
 
 import static com.OsMoDroid.IM.writeException;
+import static com.OsMoDroid.OsMoDroid.context;
 import static java.lang.Math.abs;
 import static org.osmdroid.util.GeometryMath.DEG2RAD;
 import static org.osmdroid.util.constants.GeoConstants.RADIUS_EARTH_METERS;
@@ -488,6 +489,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
         private MapView mMapView;
         private NotificationChannel silentchannel;
         private NotificationChannel noisechannel;
+        private int health;
 
         static String formatInterval(final long l)
             {
@@ -606,7 +608,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                         in.putExtra("executedlistsize", myIM.executedCommandArryaList.size());
                     }
                 in.putExtra("motd", motd);
-                in.putExtra("traffic", Long.toString((TrafficStats.getUidTxBytes(OsMoDroid.context.getApplicationInfo().uid)-myIM.startTraffic) / 1024) + OsMoDroid.dot.getDecimalSeparator() + Long.toString((TrafficStats.getUidTxBytes(OsMoDroid.context.getApplicationInfo().uid)-myIM.startTraffic) % 1000) + "KB " + myIM.connectcount + "|" + myIM.erorconenctcount);
+                in.putExtra("traffic", Long.toString((TrafficStats.getUidTxBytes(context.getApplicationInfo().uid)-myIM.startTraffic) / 1024) + OsMoDroid.dot.getDecimalSeparator() + Long.toString((TrafficStats.getUidTxBytes(context.getApplicationInfo().uid)-myIM.startTraffic) % 1000) + "KB " + myIM.connectcount + "|" + myIM.erorconenctcount);
                 in.putExtra("pro", pro);
 
                 sendBroadcast(in);
@@ -772,6 +774,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                             plugged = intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1);
                             temperature = intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, -1);
                             voltage = intent.getIntExtra(BatteryManager.EXTRA_VOLTAGE, -1);
+                            health = intent.getIntExtra(BatteryManager.EXTRA_HEALTH, -1);
                             int level = -1;
                             if (rawlevel >= 0 && scale > 0)
                                 {
@@ -914,18 +917,20 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                                 {
                                     Log.d(this.getClass().getName(), "ondisconnect in localservice");
                                 }
+                            addlog("ondisconnect, sendingbufeer size="+sendingbuffer.size()+ " .buffer.size=" + buffer.size());
+                            buffer.addAll(sendingbuffer);
+                            sendingbuffer.clear();
                             if (!sending.equals(""))
                                 {
                                     buffer.add(sending);
                                     sending = "";
                                     buffercounter++;
-                                    buffer.addAll(sendingbuffer);
-                                    sendingbuffer.clear();
                                     String time = OsMoDroid.sdf3.format(new Date(System.currentTimeMillis()));
                                     sendresult = time + " " + getString(R.string.error);
                                     updateNotification(-1);
                                     refresh();
                                 }
+
                         }
                 };
                 if (OsMoDroid.settings.getString("newkey", "").equals(""))
@@ -954,6 +959,12 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                 int[] ids = AppWidgetManager.getInstance(this).getAppWidgetIds(myWidget);
                 if(ids.length > 0)
                     {
+                        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+                        Display display = wm.getDefaultDisplay();
+                        Point size = new Point();
+                        display.getSize(size);
+                        int w = size.x/3;
+                        int h = size.x/3;
                         //AppWidgetManager.getInstance(this).getAppWidgetInfo(ids[0]).
                         ImageButton c =(ImageButton) linearview.findViewById(R.id.imageButtonCenter);
                                 c.setVisibility(View.GONE);
@@ -969,8 +980,8 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                         mMapView.setTileSource(TileSourceFactory.MAPNIK);
                         //mMapView.setTilesScaledToDpi(true);
                         rl.addView(mMapView, 0);
-                        int w = 600;
-                        int h = 600;
+//                        int w = 300;
+//                        int h = 300;
                         linearview.measure(MeasureSpec.makeMeasureSpec(w, MeasureSpec.EXACTLY),
                                 MeasureSpec.makeMeasureSpec(h, MeasureSpec.EXACTLY));
                         linearview.layout(0, 0, linearview.getMeasuredWidth(), linearview.getMeasuredHeight());
@@ -991,6 +1002,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                 postjson.put("temperature", temperature);
                 postjson.put("voltage", voltage);
                 postjson.put("plugged", plugged);
+                postjson.put("health", health);
                 myIM.sendToServer("RCR:" + OsMoDroid.TRACKER_BATTERY_INFO + "|" + postjson.toString(), false);
             }
         private String capitalize(String s)
@@ -1033,6 +1045,9 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                 postjson.put("androidversion", androidver);
                 postjson.put("devicename", getDeviceName());
                 postjson.put("display", Integer.toString(width) + "x" + Integer.toString(height));
+                postjson.put("tz", TimeZone.getDefault().getDisplayName());
+                postjson.put("locale", Locale.getDefault().getDisplayLanguage());
+
                 myIM.sendToServer("RCR:" + OsMoDroid.TRACKER_SYSTEM_INFO + "|" + postjson.toString(), false);
             }
         void vibrate(Context context, long milliseconds)
@@ -1143,7 +1158,11 @@ public class LocalService extends Service implements LocationListener, GpsStatus
         @Override
         public void onDestroy()
             {
-                osmand.cleanupResources();
+                try {
+                    osmand.cleanupResources();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
 
                 if (tts != null)
@@ -1358,6 +1377,8 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                                     {
                                         startServiceWork(true);
                                     }
+
+
                             }
                         if(intent.hasExtra("GCM"))
                             {
@@ -1587,6 +1608,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
 
                 Intent is = new Intent(this, LocalService.class);
                 is.putExtra("ACTION", "STOP");
+
                 PendingIntent stop = PendingIntent.getService(this, 0, is, PendingIntent.FLAG_UPDATE_CURRENT);
                 foregroundnotificationBuilder.addAction(android.R.drawable.ic_delete, getString(R.string.stop_monitoring), stop);
                 Notification notification = foregroundnotificationBuilder.build();
@@ -1671,21 +1693,13 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                 String IMEI = null;
                 try
                     {
-                        try {
-                            IMEI = SHA1(mngr.getDeviceId());
-                        } catch (NoSuchAlgorithmException e) {
-                            e.printStackTrace();
-                        } catch (UnsupportedEncodingException e) {
-                            e.printStackTrace();
-                        }
-                        catch (SecurityException e)
-                        {
 
-                        }
+                            IMEI = SHA1(mngr.getDeviceId());
+
                     }
                 catch (Exception e)
                     {
-                        addlog(e.getMessage());
+                       writeException(e);
                     }
                 if (version == null)
                     {
@@ -1700,7 +1714,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                         IMEI = "unknown";
                     }
 
-                        APIcomParams params = new APIcomParams("https://api.osmo.mobi/new", "platform=" + getDeviceName() + version + android.os.Build.PRODUCT + "&app=" + OsMoDroid.app_code + "&id=" + androidID + "&imei=" + IMEI, "sendid");
+                        APIcomParams params = new APIcomParams("https://api.osmo.mobi/new", "platform=" + getDeviceName() + version + android.os.Build.PRODUCT + "&app=" + OsMoDroid.app_code + "&id=" + androidID + "&imei=" + IMEI+"&tz=" + TimeZone.getDefault().getDisplayName()+"&locale=" + Locale.getDefault().getDisplayLanguage(), "sendid");
                         MyAsyncTask sendidtask = new Netutil.MyAsyncTask(this);
                         sendidtask.execute(params);
                         Log.d(getClass().getSimpleName(), "sendidtask start to execute");
@@ -2734,7 +2748,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                                 @Override
                                 public void run()
                                     {
-                                        Bitmap bm = Bitmap.createBitmap(linearview.getMeasuredWidth(), linearview.getMeasuredHeight(), Bitmap.Config.ARGB_8888);
+                                        Bitmap bm = Bitmap.createBitmap(linearview.getMeasuredWidth(), linearview.getMeasuredHeight(), Bitmap.Config.ARGB_4444);
                                         Canvas c = new Canvas(bm);
                                         linearview.draw(c);
                                         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(getApplicationContext());
@@ -2938,45 +2952,45 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                 AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this.getApplicationContext());
                 ComponentName thisWidget = new ComponentName(this,OsMoWidget.class);
                 int[] allWidgetIds =  appWidgetManager.getAppWidgetIds(thisWidget);
-                Intent is = new Intent(this, LocalService.class);
+                Intent is1 = new Intent(this, LocalService.class);
                 for (int widgetId : allWidgetIds) {
                     RemoteViews remoteViews = new RemoteViews(this.getApplicationContext().getPackageName(),R.layout.os_mo_widget);
                     if(state)
                         {
                             remoteViews.setImageViewResource(R.id.imageButtonWidget, R.drawable.on);
-                            is.putExtra("ACTION", "STOP");
+                            is1.putExtra("ACTION", "STOP");
                             Log.d(getClass().getSimpleName(), "on updatewidgets set action=STOP state=" + state);
                         }
                     else
                         {
                             remoteViews.setImageViewResource(R.id.imageButtonWidget, R.drawable.off);
-                            is.putExtra("ACTION", "START");
+                            is1.putExtra("ACTION", "START");
                             Log.d(getClass().getSimpleName(), "on updatewidgets set action=START state=" + state);
                         }
-                    PendingIntent stop = PendingIntent.getService(this, 0, is, PendingIntent.FLAG_UPDATE_CURRENT);
-                    remoteViews.setOnClickPendingIntent(R.id.imageButtonWidget, stop);
+                    PendingIntent stop1 = PendingIntent.getService(this, 0, is1, PendingIntent.FLAG_UPDATE_CURRENT);
+                    remoteViews.setOnClickPendingIntent(R.id.imageButtonWidget, stop1);
                     appWidgetManager.updateAppWidget(widgetId, remoteViews);
 
                 }
                 thisWidget = new ComponentName(this,DoubleOsmoWidget.class);
                 allWidgetIds =  appWidgetManager.getAppWidgetIds(thisWidget);
-                is = new Intent(this, LocalService.class);
+                Intent is2 = new Intent(this, LocalService.class);
                 for (int widgetId : allWidgetIds) {
                     RemoteViews remoteViews = new RemoteViews(this.getApplicationContext().getPackageName(),R.layout.double_osmo_widget);
                     if(state)
                         {
                             remoteViews.setImageViewResource(R.id.imageButtonWidget, R.drawable.on);
-                            is.putExtra("ACTION", "STOP");
+                            is2.putExtra("ACTION", "STOP");
                             Log.d(getClass().getSimpleName(), "on updatewidgets set action=STOP state=" + state);
                         }
                     else
                         {
                             remoteViews.setImageViewResource(R.id.imageButtonWidget, R.drawable.off);
-                            is.putExtra("ACTION", "START");
+                            is2.putExtra("ACTION", "START");
                             Log.d(getClass().getSimpleName(), "on updatewidgets set action=START state=" + state);
                         }
-                    PendingIntent stop = PendingIntent.getService(this, 0, is, PendingIntent.FLAG_UPDATE_CURRENT);
-                    remoteViews.setOnClickPendingIntent(R.id.imageButtonWidget, stop);
+                    PendingIntent stop2 = PendingIntent.getService(this, 0, is2, PendingIntent.FLAG_UPDATE_CURRENT);
+                    remoteViews.setOnClickPendingIntent(R.id.imageButtonWidget, stop2);
                     remoteViews.setTextViewText(R.id.textViewWidget, OsMoDroid.df2.format(workdistance / 1000)+'\n'+OsMoDroid.df0.format(avgspeed*3600)+'\n'+formatInterval(timeperiod));
 
                     Intent notificationIntent = new Intent(this, GPSLocalServiceClient.class);
@@ -2984,6 +2998,22 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                     notificationIntent.addCategory(Intent.CATEGORY_LAUNCHER);
                     osmodroidLaunchIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
                     remoteViews.setOnClickPendingIntent(R.id.textViewWidget, osmodroidLaunchIntent);
+
+                    appWidgetManager.updateAppWidget(widgetId, remoteViews);
+
+                }
+                thisWidget = new ComponentName(this,SOSWidget.class);
+                allWidgetIds =  appWidgetManager.getAppWidgetIds(thisWidget);
+                Intent is3 = new Intent(this, LocalService.class);
+                for (int widgetId : allWidgetIds) {
+                    RemoteViews remoteViews = new RemoteViews(this.getApplicationContext().getPackageName(),R.layout.soswidget);
+
+
+                        is3.putExtra("GCM", "WIDGETSOS");
+
+
+                    PendingIntent stop3 = PendingIntent.getService(this, 101, is3, PendingIntent.FLAG_UPDATE_CURRENT);
+                    remoteViews.setOnClickPendingIntent(R.id.soswidgetbutton, stop3);
 
                     appWidgetManager.updateAppWidget(widgetId, remoteViews);
 
@@ -3079,6 +3109,26 @@ public class LocalService extends Service implements LocationListener, GpsStatus
 
             }
 
+        public void sendwidgetinfo(LocalService localService) {
+            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this.getApplicationContext());
+            ComponentName thisWidget1 = new ComponentName(this,OsMoWidget.class);
+            ComponentName thisWidget2 = new ComponentName(this,DoubleOsmoWidget.class);
+            ComponentName thisWidget3 = new ComponentName(this,MapWidget.class);
+            ComponentName thisWidget4 = new ComponentName(this,SOSWidget.class);
+            int[] allWidgetIds1 =  appWidgetManager.getAppWidgetIds(thisWidget1);
+            int[] allWidgetIds2 =  appWidgetManager.getAppWidgetIds(thisWidget2);
+            int[] allWidgetIds3 =  appWidgetManager.getAppWidgetIds(thisWidget3);
+            int[] allWidgetIds4 =  appWidgetManager.getAppWidgetIds(thisWidget4);
+            JSONArray ja = new JSONArray();
+            ja.put(allWidgetIds1.length);
+            ja.put(allWidgetIds2.length);
+            ja.put(allWidgetIds3.length);
+            ja.put(allWidgetIds4.length);
+
+            myIM.sendToServer("RCR:" + OsMoDroid.WIDGETINFO + "|" + ja.toString(), false);
+
+        }
+
 
         public class LocalBinder extends Binder
             {
@@ -3098,7 +3148,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                             //if(OsMoDroid.debug)ExceptionHandler.reportOnlyHandler(parent.getApplicationContext()).uncaughtException(Thread.currentThread(), new Throwable(str));
                             if (OsMoDroid.debug)
                                 {
-                                    debuglist.add(IM.sdf1.format(new Date(System.currentTimeMillis())) + " " + str + " S=" + IM.sendBytes + " R=" + IM.recievedBytes+ " overall by netstat="+(TrafficStats.getUidTxBytes(OsMoDroid.context.getApplicationInfo().uid)-IM.startTraffic));
+                                    debuglist.add(IM.sdf1.format(new Date(System.currentTimeMillis())) + " " + str + " S=" + IM.sendBytes + " R=" + IM.recievedBytes+ " overall by netstat="+(TrafficStats.getUidTxBytes(context.getApplicationInfo().uid)-IM.startTraffic));
                                     if (debuglist.size() > 50000)
                                         {
                                             debuglist.remove(0);

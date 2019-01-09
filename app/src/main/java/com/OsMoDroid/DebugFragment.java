@@ -133,7 +133,9 @@ public class DebugFragment extends Fragment
                     {
                         case 1:
                             LocalService.debuglist.clear();
-                            LocalService.debugAdapter.notifyDataSetChanged();
+                            if(LocalService.debugAdapter!=null) {
+                                LocalService.debugAdapter.notifyDataSetChanged();
+                            }
                             break;
                         case 2:
                             String sendtext = getDebugAsString();

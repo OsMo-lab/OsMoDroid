@@ -361,6 +361,7 @@ public class IM implements ResultsListener {
             }
 
         }
+        checkalarmindozemode();
 
     }
 
@@ -560,6 +561,7 @@ public class IM implements ResultsListener {
     void checkalarmindozemode() {
         addlog("reconencttime=" + reconnecttime + " SystemClockUptime=" + SystemClock.uptimeMillis());
         if (reconnecttime != 0 && SystemClock.uptimeMillis() > reconnecttime + RECONNECT_TIMEOUT) {
+            reconnecttime=0;
             LocalService.addlog("stuck in doze mode - do recconect ");
             manager.cancel(reconnectPIntent);
             parent.sendBroadcast(new Intent(RECONNECT_INTENT));
@@ -680,7 +682,7 @@ public class IM implements ResultsListener {
                 if (jo.optInt("pro") == 1) {
                     localService.pro = true;
                 } else {
-                    localService.pro = false;
+                    localService.pro = true;
                 }
                 OsMoDroid.editor.putString("device", jo.optString("id"));
                 OsMoDroid.editor.putString("tracker_id", jo.optString("id"));
@@ -957,6 +959,9 @@ public class IM implements ResultsListener {
         if (command.equals("NEEDSENDALARM")) {
             sendToServer("ALARM", false);
         }
+        if (command.equals("WIDGETSOS")) {
+            sendToServer("SOS", false);
+        }
         if (command.equals("NEEDSENDNET")) {
             if (!executedCommandArryaList.contains("NET")) {
 
@@ -1202,6 +1207,10 @@ public class IM implements ResultsListener {
                     writeException(e);
                     e.printStackTrace();
                 }
+
+            }
+            if (param.equals(OsMoDroid.WIDGETINFO)) {
+                localService.sendwidgetinfo(localService);
             }
             if (param.equals(OsMoDroid.TRACKER_WIFI_OFF)) {
                 localService.wifioff(localService);

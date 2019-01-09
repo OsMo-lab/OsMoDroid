@@ -312,7 +312,7 @@ public class MainFragment extends Fragment implements GPSLocalServiceClient.upd
                             {
                                 Intent sendIntent = new Intent(Intent.ACTION_SEND);
                                 sendIntent.setType("text/plain");
-                                sendIntent.putExtra(android.content.Intent.EXTRA_TEXT, getString(R.string.iamhere) + OsMoDroid.settings.getString("viewurl", ""));
+                                sendIntent.putExtra(android.content.Intent.EXTRA_TEXT, getString(R.string.iamhere) +" "+ OsMoDroid.settings.getString("viewurl", ""));
                                 startActivity(Intent.createChooser(sendIntent, getActivity().getString(R.string.sharelink)));
                             }
                         else

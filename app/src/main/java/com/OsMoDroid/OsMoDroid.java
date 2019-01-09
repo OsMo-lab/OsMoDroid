@@ -39,6 +39,7 @@ public class OsMoDroid extends Application
         public static final String TRACKER_SESSION_START = "1";
         public static final String TRACKER_SESSION_STOP = "2";
         public static final String TTS = "46";
+        public static final String WIDGETINFO = "36";
         public static final String WHERE = "12";
         public static final String WHERE_GPS_ONLY = "15";
         public static final String WHERE_NETWORK_ONLY = "16";

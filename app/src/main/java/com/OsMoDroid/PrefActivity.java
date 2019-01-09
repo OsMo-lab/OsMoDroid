@@ -1,40 +1,125 @@
 package com.OsMoDroid;
 import com.OsMoDroid.R;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
+import android.preference.PreferenceCategory;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.widget.Toast;
 
 import java.io.File;
 //import android.util.Log;
-public class PrefActivity extends PreferenceActivity
-    {
+public class PrefActivity extends PreferenceActivity {
+    private static final int PERMISSION_REQUEST_CODE = 555;
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+
+    }
+
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == PERMISSION_REQUEST_CODE && grantResults.length == 1) {
+            if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
+                Toast.makeText(this, "Need permission", Toast.LENGTH_LONG).show();
+            }
+            else
+            {
+                if(permissions[0].equals("RECEIVE_SMS"))
+                {
+                    Preference g = findPreference("getsms");
+                    g.setEnabled(true);
+                }
+                if(permissions[0].equals("SEND_SMS"))
+                {
+                    Preference s = findPreference("sendsms");
+                    s.setEnabled(true);
+                }
+            }
+
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+    }
+
+    Preference.OnPreferenceChangeListener op = new Preference.OnPreferenceChangeListener() {
+        @Override
+        public boolean onPreferenceChange(Preference preference, Object newValue) {
+            if(newValue.toString().equals("true")) {
+
+                if (preference.getKey().equals("sendsms")) {
+                    if (ContextCompat.checkSelfPermission(PrefActivity.this,
+                            Manifest.permission.SEND_SMS)
+                            != PackageManager.PERMISSION_GRANTED) {
+                        ActivityCompat.requestPermissions(PrefActivity.this, new String[]{
+                                Manifest.permission.SEND_SMS
+                        }, PERMISSION_REQUEST_CODE);
+                    }
+                }
+                if (preference.getKey().equals("getsms")) {
+                    if (ContextCompat.checkSelfPermission(PrefActivity.this,
+                            Manifest.permission.RECEIVE_SMS)
+                            != PackageManager.PERMISSION_GRANTED) {
+                        ActivityCompat.requestPermissions(PrefActivity.this, new String[]{
+                                Manifest.permission.RECEIVE_SMS
+                        }, PERMISSION_REQUEST_CODE);
+                    }
+                }
+            }
+            else
+            {
+                return true;
+            }
+            return false;
+        }
+    };
+
         @Override
         protected void onCreate(Bundle savedInstanceState)
             {
                 super.onCreate(savedInstanceState);
                 //  Log.d(getClass().getSimpleName(), "oncreate() prefactivity");
                 addPreferencesFromResource(R.xml.pref);
-//                if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
-//                    {
-//                        Preference prefereces = findPreference("sdpath");
-//                        prefereces.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
-//                            {
-//                                public boolean onPreferenceClick(Preference preference)
-//                                    {
-//                                        Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT)
-//                                                .addCategory(Intent.CATEGORY_OPENABLE)
-//                                                .setType("*/*");
-//                                        startActivityForResult(intent, 1);
-//                                        return true;
-//                                    }
-//                            });
-//                    }
+                if (true||android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+                    PreferenceCategory category = (PreferenceCategory) findPreference("smsprefcategory");
+                    getPreferenceScreen().removePreference(category);
+                }
+                else
+                {
+                    Preference s = findPreference("sendsms");
+                    Preference g = findPreference("getsms");
+                    s.setOnPreferenceChangeListener(op);
+                    g.setOnPreferenceChangeListener(op);
+
+                }
+
+/*
+if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
+{
+Preference prefereces = findPreference("sdpath");
+prefereces.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
+{
+public boolean onPreferenceClick(Preference preference)
+{
+Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT)
+.addCategory(Intent.CATEGORY_OPENABLE)
+.setType("* /*");
+startActivityForResult(intent, 1);
+return true;
+}
+});
+}
+*/
             }
         @Override
         protected void onDestroy()
