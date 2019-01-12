@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -22,6 +23,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.util.Linkify;
 import android.util.Log;
@@ -41,23 +43,36 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-import com.mapzen.tangram.HttpHandler;
+//import com.mapzen.tangram.HttpHandler;
+import com.mapzen.tangram.CameraUpdateFactory;
 import com.mapzen.tangram.LngLat;
 import com.mapzen.tangram.MapController;
 import com.mapzen.tangram.MapData;
 import com.mapzen.tangram.MapView;
 import com.mapzen.tangram.Marker;
+import com.mapzen.tangram.MarkerPickListener;
 import com.mapzen.tangram.MarkerPickResult;
 import com.mapzen.tangram.SceneError;
 import com.mapzen.tangram.SceneUpdate;
 import com.mapzen.tangram.TouchInput;
 import com.mapzen.tangram.geometry.Polyline;
+import com.mapzen.tangram.networking.DefaultHttpHandler;
+import com.mapzen.tangram.networking.HttpHandler;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import okhttp3.Cache;
+import okhttp3.Cache;
+import okhttp3.CacheControl;
+import okhttp3.HttpUrl;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+
 import static com.OsMoDroid.LocalService.addlog;
-public class MapFragment extends Fragment implements DeviceChange,  LocationListener, MapController.MarkerPickListener
+public class MapFragment extends Fragment implements DeviceChange,  LocationListener, MarkerPickListener, MapController.SceneLoadListener, MapView.MapReadyCallback,
+        TouchInput.TapResponder,
+        TouchInput.DoubleTapResponder, TouchInput.LongPressResponder
     {
         MapView mMapView;
         private ArrayList<Marker> allTracksWayPoints= new ArrayList<>();
@@ -77,10 +92,11 @@ public class MapFragment extends Fragment implements DeviceChange,  LocationList
                 Log.d(getClass().getSimpleName(), "map ondestroyview");
                 if(mapController!=null)
                     {
-                        OsMoDroid.editor.putInt("centerlat", (int) (mapController.getPosition().latitude * 1000000));
-                        OsMoDroid.editor.putInt("centerlon", (int) (mapController.getPosition().longitude * 1000000));
-                        OsMoDroid.editor.putInt("zoom", (int) mapController.getZoom());
+                        //OsMoDroid.editor.putInt("centerlat", (int) (mapController.getPosition().latitude * 1000000));
+                        //OsMoDroid.editor.putInt("centerlon", (int) (mapController.getPosition().longitude * 1000000));
+                        //OsMoDroid.editor.putInt("zoom", (int) mapController.getZoom());
                         OsMoDroid.editor.commit();
+                        mapController=null;
                     }
                 if(mMapView!=null)
                     {
@@ -94,7 +110,7 @@ public class MapFragment extends Fragment implements DeviceChange,  LocationList
         int followdev = -1;
         private Marker myLocationMarker;
         public static final String DEFAULT_STYLE = "style: 'points', interactive: true,  size: [20px, 20px], collide: false";
-        public static final String LOCATION_STYLE = "style: 'points',  size: [36px, 36px], collide: false";
+        public static final String LOCATION_STYLE = "style: 'points',  size: [36px, 36px], collide: false, color : 'white'";
         private boolean isFollow=true;
         private Location center;
         private ImageButton centerImageButton;
@@ -154,7 +170,7 @@ public class MapFragment extends Fragment implements DeviceChange,  LocationList
                         case 5:
                             markerToUs.clear();
                             allTracksWayPoints.clear();
-                            mapController.loadSceneFile("asset:///bubble-wrap-style-more-labels.zip", sceneUpdates);
+                            mapController.loadSceneFile("asset:///bubble-wrap-style.zip", sceneUpdates);
                             createMarker();
                             MapFragment.this.onChannelListChange();
                             OsMoDroid.editor.putInt("selectedTileSourceInt", 1);
@@ -309,6 +325,191 @@ public class MapFragment extends Fragment implements DeviceChange,  LocationList
                         Log.d(getClass().getSimpleName(), "on marker click null" );
                     }
             }
+
+        @Override
+        public void onSceneReady(int sceneId, SceneError sceneError) {
+            if (sceneError == null)
+            {
+                Toast.makeText(getContext(), "Scene ready: " + sceneId, Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(getContext(), "Scene load error: " + sceneId + " "
+                        + sceneError.getSceneUpdate().toString()
+                        + " " + sceneError.getError().toString(), Toast.LENGTH_SHORT).show();
+            }
+        }
+
+        @Override
+        public void onMapReady(@Nullable MapController m) {
+            this.mapController=m;
+            showTracks();
+            mapController.setCameraType(MapController.CameraType.ISOMETRIC);
+            markerToUs.clear();
+            allTracksWayPoints.clear();
+            switch (OsMoDroid.settings.getInt("selectedTileSourceInt",1))
+            {
+                case 1:
+                    mapController.loadSceneFile("asset:///bubble-wrap-style.zip", sceneUpdates);
+                    break;
+                case 2:
+                    mapController.loadSceneFile("asset:///walkabout-style-more-labels.zip", sceneUpdates);
+                    break;
+                case 3:
+                    mapController.loadSceneFile("asset:///cinnabar-style-more-labels.zip", sceneUpdates);
+                    break;
+                case 4:
+                    mapController.loadSceneFile("asset:///zinc-style-more-labels.zip", sceneUpdates);
+                    break;
+                case 5:
+                    mapController.loadSceneFile("asset:///refill-style-more-labels.zip", sceneUpdates);
+                    break;
+                case 6:
+                    mapController.loadSceneFile("asset:///tron-style-more-labels.zip", sceneUpdates);
+                    break;
+                default:
+                    break;
+            }
+            Location location = LocalService.myManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            if (location != null)
+                //mapController.setPositionEased(new LngLat(location.getLongitude(), location.getLatitude()), 200);
+                mapController.updateCameraPosition(CameraUpdateFactory.setPosition(new LngLat(location.getLongitude(), location.getLatitude())), 200);
+
+            if (mapController.getCameraPosition().zoom < 12)
+                mapController.updateCameraPosition(CameraUpdateFactory.setZoom(12),1000);
+            mapController.addDataLayer("osmo");
+            mapController.setPickRadius(3);
+            mapController.setMarkerPickListener(MapFragment.this);
+            createMarker();
+            Bundle bundle = getArguments();
+            if (OsMoDroid.settings.getInt("centerlat", -1) != -1&&bundle==null)
+            {
+                if (mapController != null)
+                {
+                    // mapController.setZoom(OsMoDroid.settings.getInt("zoom", 10));
+                    mapController.updateCameraPosition(CameraUpdateFactory.setZoom(OsMoDroid.settings.getInt("zoom", 10)));
+                    // mapController.setPosition(new LngLat( OsMoDroid.settings.getInt("centerlon", 0)/(double)1000000, OsMoDroid.settings.getInt("centerlat", 0)/(double)1000000));
+                    mapController.updateCameraPosition(CameraUpdateFactory.setPosition(new LngLat( OsMoDroid.settings.getInt("centerlon", 0)/(double)1000000, OsMoDroid.settings.getInt("centerlat", 0)/(double)1000000)),1000, MapController.EaseType.CUBIC);
+                    Log.d(this.getClass().getName(), "Center map on ="+OsMoDroid.settings.getInt("centerlat", 0)+ OsMoDroid.settings.getInt("centerlon", 0));
+                    isFollow=false;
+                }
+            }
+
+
+        }
+
+        @Override
+        public boolean onDoubleTap(float x, float y) {
+            return false;
+        }
+
+        @Override
+        public void onLongPress(float x, float y) {
+
+            if(LocalService.channelList.size()>0)
+            {
+                LngLat l =mapController.screenPositionToLngLat(new PointF(x,y));
+                final JSONObject jo = new JSONObject();
+                try
+                {
+                    jo.put("lat", l.latitude);
+                    jo.put("lon", l.longitude);
+                }
+                catch (JSONException e1)
+                {
+                    e1.printStackTrace();
+                }
+                LinearLayout layout = new LinearLayout(getContext());
+                layout.setOrientation(LinearLayout.VERTICAL);
+                final TextView txv5 = new TextView(getContext());
+                txv5.setText(R.string.point_name_);
+                layout.addView(txv5);
+                final EditText pointName = new EditText(getContext());
+                layout.addView(pointName);
+                final TextView txv6 = new TextView(getContext());
+                txv6.setText(R.string.chanal);
+                layout.addView(txv6);
+                final Spinner groupSpinner = new Spinner(getContext());
+                layout.addView(groupSpinner);
+                List<Channel> activeChannelList = new ArrayList<Channel>();
+                for(Channel ch: LocalService.channelList)
+                {
+                    if(ch.send)
+                    {
+                        activeChannelList.add(ch);
+                    }
+                }
+                ArrayAdapter<Channel> dataAdapter = new ArrayAdapter<Channel>(getContext(), R.layout.spinneritem, activeChannelList);
+                groupSpinner.setAdapter(dataAdapter);
+                AlertDialog alertdialog1 = new AlertDialog.Builder(getContext()).setPositiveButton(R.string.yes, new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which)
+                    {
+                    }
+                }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which)
+                    {
+                    }
+                }).create();
+                alertdialog1.setView(layout);
+                alertdialog1.setTitle(getContext().getString(R.string.point_create));
+                alertdialog1.setMessage(getContext().getString(R.string.point_create_description));
+
+                alertdialog1.show();
+                alertdialog1.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(new CustomListener(alertdialog1)
+                {
+                    @Override
+                    public void onClick(View v)
+                    {
+                        if (LocalService.myIM.authed)
+                        {
+                            if(groupSpinner.getSelectedItem()!=null)
+                            {
+                                try
+                                {
+                                    jo.put("name", pointName.getText().toString());
+                                    jo.put("group", ((Channel) groupSpinner.getSelectedItem()).u);
+                                }
+                                catch (JSONException e1)
+                                {
+                                    e1.printStackTrace();
+                                }
+                                LocalService.myIM.sendToServer("GPA|" + jo.toString(), true);
+                                super.dialog.dismiss();
+                            }
+                            else
+                            {
+                                Toast.makeText(getContext(), R.string.needselectpoint, Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                        else
+                        {
+                            Toast.makeText(getContext(), R.string.CheckInternet, Toast.LENGTH_SHORT).show();
+
+                        }
+                    }
+                });
+
+
+            }
+            else
+            {
+                Toast.makeText(getContext(), R.string.nogroupstosendpoint, Toast.LENGTH_SHORT).show();
+            }
+
+        }
+
+        @Override
+        public boolean onSingleTapUp(float x, float y) {
+            return false;
+        }
+
+        @Override
+        public boolean onSingleTapConfirmed(float x, float y) {
+            return false;
+        }
+
         static  class MarkerToU
             {
                 Marker marker;
@@ -386,15 +587,24 @@ public class MapFragment extends Fragment implements DeviceChange,  LocationList
                 LocalService.myManager.removeUpdates(this);
                 super.onPause();
             }
-        HttpHandler getHttpHandler()
-            {
-                File cacheDir = OsMoDroid.context.getExternalCacheDir();
-                if (cacheDir != null && cacheDir.exists())
-                    {
-                        return new HttpHandler(new File(cacheDir, "tile_cache"), 100 * 1024 * 1024);
+        HttpHandler getHttpHandler() {
+            return new DefaultHttpHandler() {
+                @Override
+                protected void configureClient(OkHttpClient.Builder builder) {
+                    File cacheDir = getContext().getExternalCacheDir();
+                    if (cacheDir != null && cacheDir.exists()) {
+                        builder.cache(new Cache(cacheDir, 16 * 1024 * 1024));
                     }
-                return new HttpHandler();
-            }
+                }
+                CacheControl tileCacheControl = new CacheControl.Builder().maxStale(7, TimeUnit.DAYS).build();
+                @Override
+                protected void configureRequest(HttpUrl url, Request.Builder builder) {
+                    if ("tile.nextzen.com".equals(url.host())) {
+                        builder.cacheControl(tileCacheControl);
+                    }
+                }
+            };
+        }
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -411,7 +621,7 @@ public class MapFragment extends Fragment implements DeviceChange,  LocationList
                         {
                             if(mapController!=null)
                                 {
-                                    mapController.setZoom(mapController.getZoom() + 1.0f);
+                                    mapController.updateCameraPosition(CameraUpdateFactory.zoomIn());
                                 }
                         }
                 });
@@ -422,7 +632,7 @@ public class MapFragment extends Fragment implements DeviceChange,  LocationList
                         {
                             if(mapController!=null)
                                 {
-                                    mapController.setZoom(mapController.getZoom() - 1.0f);
+                                    mapController.updateCameraPosition(CameraUpdateFactory.zoomOut());
                                 }
                         }
                 });
@@ -430,30 +640,15 @@ public class MapFragment extends Fragment implements DeviceChange,  LocationList
 
                     mMapView.setKeepScreenOn(true);
                     speddTextView = (TextView) view.findViewById(R.id.mapSpeedtextView);
-            sceneUpdates.add(new SceneUpdate("global.sdk_mapzen_api_key", MAPZEN_API_KEY));
+            sceneUpdates.add(new SceneUpdate("global.sdk_api_key", MAPZEN_API_KEY));
 
 
-            mapController=mMapView.getMap(new MapController.SceneLoadListener()
-                {
-                    @Override
-                    public void onSceneReady(int sceneId, SceneError sceneError)
-                        {
-                            if (sceneError == null)
-                            {
-                                Toast.makeText(getContext(), "Scene ready: " + sceneId, Toast.LENGTH_SHORT).show();
-                            } else {
-                                Toast.makeText(getContext(), "Scene load error: " + sceneId + " "
-                                        + sceneError.getSceneUpdate().toString()
-                                        + " " + sceneError.getError().toString(), Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                });
+
+            mMapView.getMapAsync(this, getHttpHandler());
 
 
-                                    showTracks();
 
-                                    mapController.setHttpHandler(getHttpHandler());
-                                    mapController.setCameraType(MapController.CameraType.ISOMETRIC);
+
                                     centerImageButton.setOnClickListener(new View.OnClickListener()
                                         {
                                             @Override
@@ -461,217 +656,167 @@ public class MapFragment extends Fragment implements DeviceChange,  LocationList
                                                 {
                                                     if (center != null && mapController != null)
                                                         {
-                                                            mapController.setPositionEased(new LngLat(center.getLongitude(), center.getLatitude()), 200, MapController.EaseType.CUBIC);
+                                                           // mapController.setPositionEased(new LngLat(center.getLongitude(), center.getLatitude()), 200, MapController.EaseType.CUBIC);
+                                                            mapController.updateCameraPosition(CameraUpdateFactory.setPosition(new LngLat(center.getLongitude(), center.getLatitude())), 200, MapController.EaseType.CUBIC);
                                                         }
                                                     isFollow = true;
                                                     followdev=-1;
                                                 }
                                         });
                                     //mapzenMap.setStyle(new BubbleWrapStyle());
-                                    markerToUs.clear();
-                                    allTracksWayPoints.clear();
-                                    switch (OsMoDroid.settings.getInt("selectedTileSourceInt",1))
-                                        {
-                                            case 1:
-                                                mapController.loadSceneFile("asset:///bubble-wrap-style-more-labels.zip", sceneUpdates);
-                                                break;
-                                            case 2:
-                                                mapController.loadSceneFile("asset:///walkabout-style-more-labels.zip", sceneUpdates);
-                                                break;
-                                            case 3:
-                                                mapController.loadSceneFile("asset:///cinnabar-style-more-labels.zip", sceneUpdates);
-                                                break;
-                                            case 4:
-                                                mapController.loadSceneFile("asset:///zinc-style-more-labels.zip", sceneUpdates);
-                                                break;
-                                            case 5:
-                                                mapController.loadSceneFile("asset:///refill-style-more-labels.zip", sceneUpdates);
-                                                break;
-                                            case 6:
-                                                mapController.loadSceneFile("asset:///tron-style-more-labels.zip", sceneUpdates);
-                                                break;
-                                            default:
-                                                break;
-                                        }
 
+//                                    mapController.setTapResponder(new TouchInput.TapResponder()
+//                                        {
+//                                            @Override
+//                                            public boolean onSingleTapUp(float x, float y)
+//                                                {
+//                                                    return false;
+//                                                }
+//                                            @Override
+//                                            public boolean onSingleTapConfirmed(float x, float y)
+//                                                {
+//
+//                                                    mapController.pickMarker(x, y);
+//                                                    return true;
+//                                                }
+//                                        });
 
-                                    mapController.addDataLayer("osmo");
-                                    mapController.setPickRadius(3);
-                                    mapController.setTapResponder(new TouchInput.TapResponder()
-                                        {
-                                            @Override
-                                            public boolean onSingleTapUp(float x, float y)
-                                                {
-                                                    return false;
-                                                }
-                                            @Override
-                                            public boolean onSingleTapConfirmed(float x, float y)
-                                                {
-//                                            PointF touchPoint = mapController.lngLatToScreenPosition();
-                                                    mapController.pickMarker(x, y);
-                                                    return true;
-                                                }
-                                        });
-                                    mapController.setMarkerPickListener(MapFragment.this);
-                                    mapController.setLongPressResponder(new TouchInput.LongPressResponder()
-                                        {
-                                            @Override
-                                            public void onLongPress(float x, float y)
-                                                {
-                                                    if(LocalService.channelList.size()>0)
-                                                        {
-                                                            LngLat l =mapController.screenPositionToLngLat(new PointF(x,y));
-                                                            final JSONObject jo = new JSONObject();
-                                                            try
-                                                                {
-                                                                    jo.put("lat", l.latitude);
-                                                                    jo.put("lon", l.longitude);
-                                                                }
-                                                            catch (JSONException e1)
-                                                                {
-                                                                    e1.printStackTrace();
-                                                                }
-                                                            LinearLayout layout = new LinearLayout(getContext());
-                                                            layout.setOrientation(LinearLayout.VERTICAL);
-                                                            final TextView txv5 = new TextView(getContext());
-                                                            txv5.setText(R.string.point_name_);
-                                                            layout.addView(txv5);
-                                                            final EditText pointName = new EditText(getContext());
-                                                            layout.addView(pointName);
-                                                            final TextView txv6 = new TextView(getContext());
-                                                            txv6.setText(R.string.chanal);
-                                                            layout.addView(txv6);
-                                                            final Spinner groupSpinner = new Spinner(getContext());
-                                                            layout.addView(groupSpinner);
-                                                            List<Channel> activeChannelList = new ArrayList<Channel>();
-                                                            for(Channel ch: LocalService.channelList)
-                                                                {
-                                                                    if(ch.send)
-                                                                        {
-                                                                            activeChannelList.add(ch);
-                                                                        }
-                                                                }
-                                                            ArrayAdapter<Channel> dataAdapter = new ArrayAdapter<Channel>(getContext(), R.layout.spinneritem, activeChannelList);
-                                                            groupSpinner.setAdapter(dataAdapter);
-                                                            AlertDialog alertdialog1 = new AlertDialog.Builder(getContext()).setPositiveButton(R.string.yes, new DialogInterface.OnClickListener()
-                                                                {
-                                                                    @Override
-                                                                    public void onClick(DialogInterface dialog, int which)
-                                                                        {
-                                                                        }
-                                                                }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener()
-                                                                {
-                                                                    @Override
-                                                                    public void onClick(DialogInterface dialog, int which)
-                                                                        {
-                                                                        }
-                                                                }).create();
-                                                            alertdialog1.setView(layout);
-                                                            alertdialog1.setTitle(getContext().getString(R.string.point_create));
-                                                            alertdialog1.setMessage(getContext().getString(R.string.point_create_description));
-
-                                                            alertdialog1.show();
-                                                            alertdialog1.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(new CustomListener(alertdialog1)
-                                                                {
-                                                                    @Override
-                                                                    public void onClick(View v)
-                                                                        {
-                                                                            if (LocalService.myIM.authed)
-                                                                                {
-                                                                                    if(groupSpinner.getSelectedItem()!=null)
-                                                                                        {
-                                                                                            try
-                                                                                                {
-                                                                                                    jo.put("name", pointName.getText().toString());
-                                                                                                    jo.put("group", ((Channel) groupSpinner.getSelectedItem()).u);
-                                                                                                }
-                                                                                            catch (JSONException e1)
-                                                                                                {
-                                                                                                    e1.printStackTrace();
-                                                                                                }
-                                                                                            LocalService.myIM.sendToServer("GPA|" + jo.toString(), true);
-                                                                                            super.dialog.dismiss();
-                                                                                        }
-                                                                                    else
-                                                                                        {
-                                                                                            Toast.makeText(getContext(), R.string.needselectpoint, Toast.LENGTH_SHORT).show();
-                                                                                        }
-                                                                                }
-                                                                            else
-                                                                                {
-                                                                                    Toast.makeText(getContext(), R.string.CheckInternet, Toast.LENGTH_SHORT).show();
-
-                                                                                }
-                                                                        }
-                                                                });
-
-
-                                                        }
-                                                    else
-                                                        {
-                                                            Toast.makeText(getContext(), R.string.nogroupstosendpoint, Toast.LENGTH_SHORT).show();
-                                                        }
-                                                }
-                                        });
+//                                    mapController.setLongPressResponder(new TouchInput.LongPressResponder()
+//                                        {
+//                                            @Override
+//                                            public void onLongPress(float x, float y)
+//                                                {
+//                                                    if(LocalService.channelList.size()>0)
+//                                                        {
+//                                                            LngLat l =mapController.screenPositionToLngLat(new PointF(x,y));
+//                                                            final JSONObject jo = new JSONObject();
+//                                                            try
+//                                                                {
+//                                                                    jo.put("lat", l.latitude);
+//                                                                    jo.put("lon", l.longitude);
+//                                                                }
+//                                                            catch (JSONException e1)
+//                                                                {
+//                                                                    e1.printStackTrace();
+//                                                                }
+//                                                            LinearLayout layout = new LinearLayout(getContext());
+//                                                            layout.setOrientation(LinearLayout.VERTICAL);
+//                                                            final TextView txv5 = new TextView(getContext());
+//                                                            txv5.setText(R.string.point_name_);
+//                                                            layout.addView(txv5);
+//                                                            final EditText pointName = new EditText(getContext());
+//                                                            layout.addView(pointName);
+//                                                            final TextView txv6 = new TextView(getContext());
+//                                                            txv6.setText(R.string.chanal);
+//                                                            layout.addView(txv6);
+//                                                            final Spinner groupSpinner = new Spinner(getContext());
+//                                                            layout.addView(groupSpinner);
+//                                                            List<Channel> activeChannelList = new ArrayList<Channel>();
+//                                                            for(Channel ch: LocalService.channelList)
+//                                                                {
+//                                                                    if(ch.send)
+//                                                                        {
+//                                                                            activeChannelList.add(ch);
+//                                                                        }
+//                                                                }
+//                                                            ArrayAdapter<Channel> dataAdapter = new ArrayAdapter<Channel>(getContext(), R.layout.spinneritem, activeChannelList);
+//                                                            groupSpinner.setAdapter(dataAdapter);
+//                                                            AlertDialog alertdialog1 = new AlertDialog.Builder(getContext()).setPositiveButton(R.string.yes, new DialogInterface.OnClickListener()
+//                                                                {
+//                                                                    @Override
+//                                                                    public void onClick(DialogInterface dialog, int which)
+//                                                                        {
+//                                                                        }
+//                                                                }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener()
+//                                                                {
+//                                                                    @Override
+//                                                                    public void onClick(DialogInterface dialog, int which)
+//                                                                        {
+//                                                                        }
+//                                                                }).create();
+//                                                            alertdialog1.setView(layout);
+//                                                            alertdialog1.setTitle(getContext().getString(R.string.point_create));
+//                                                            alertdialog1.setMessage(getContext().getString(R.string.point_create_description));
+//
+//                                                            alertdialog1.show();
+//                                                            alertdialog1.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(new CustomListener(alertdialog1)
+//                                                                {
+//                                                                    @Override
+//                                                                    public void onClick(View v)
+//                                                                        {
+//                                                                            if (LocalService.myIM.authed)
+//                                                                                {
+//                                                                                    if(groupSpinner.getSelectedItem()!=null)
+//                                                                                        {
+//                                                                                            try
+//                                                                                                {
+//                                                                                                    jo.put("name", pointName.getText().toString());
+//                                                                                                    jo.put("group", ((Channel) groupSpinner.getSelectedItem()).u);
+//                                                                                                }
+//                                                                                            catch (JSONException e1)
+//                                                                                                {
+//                                                                                                    e1.printStackTrace();
+//                                                                                                }
+//                                                                                            LocalService.myIM.sendToServer("GPA|" + jo.toString(), true);
+//                                                                                            super.dialog.dismiss();
+//                                                                                        }
+//                                                                                    else
+//                                                                                        {
+//                                                                                            Toast.makeText(getContext(), R.string.needselectpoint, Toast.LENGTH_SHORT).show();
+//                                                                                        }
+//                                                                                }
+//                                                                            else
+//                                                                                {
+//                                                                                    Toast.makeText(getContext(), R.string.CheckInternet, Toast.LENGTH_SHORT).show();
+//
+//                                                                                }
+//                                                                        }
+//                                                                });
+//
+//
+//                                                        }
+//                                                    else
+//                                                        {
+//                                                            Toast.makeText(getContext(), R.string.nogroupstosendpoint, Toast.LENGTH_SHORT).show();
+//                                                        }
+//                                                }
+//                                        });
 
 
                                     MapFragment.this.onChannelListChange();
-                                    createMarker();
-//                                    Criteria c = new Criteria();
-//                                    c.setAccuracy(Criteria.ACCURACY_FINE);
-                                    Location location = LocalService.myManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                                    if (location != null)
-                                        mapController.setPositionEased(new LngLat(location.getLongitude(), location.getLatitude()), 200);
-                                    if (mapController.getZoom() < 12)
-                                        mapController.setZoomEased(12, 1000);
-                                    //LocalService.myManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, MapFragment.this);
-//                                    try
-//                                        {
-//                                            LocalService.myManager.requestLocationUpdates(0,0f,c,(LocationListener) MapFragment.this,MapFragment.this.getActivity().getMainLooper());
-//                                        }
-//                                    catch (Exception e)
-//                                        {
-//                                            e.printStackTrace();
-//                                        }
-                                    mapController.setPanResponder(new TouchInput.PanResponder()
-                                        {
-                                            @Override
-                                            public boolean onPan(float startX, float startY, float endX, float endY)
-                                                {
-                                                    isFollow = false;
-                                                    return false;
-                                                }
-                                            @Override
-                                            public boolean onFling(float posX, float posY, float velocityX, float velocityY)
-                                                {
-                                                    return false;
-                                                }
-                                        });
-                                    mapController.setDoubleTapResponder(new TouchInput.DoubleTapResponder()
-                                        {
-                                            @Override
-                                            public boolean onDoubleTap(float x, float y)
-                                                {
-                                                    LngLat tappedPos = mapController.screenPositionToLngLat(new PointF(x, y));
-                                                    LngLat currentPos = mapController.getPosition();
-                                                    mapController.setZoom(mapController.getZoom() + 1.0f);
-                                                    mapController.setPosition(new LngLat(0.5f * (tappedPos.longitude + currentPos.longitude), 0.5f * (tappedPos.latitude + currentPos.latitude)));
-                                                    return true;
-                                                }
-                                        });
-                                    Bundle bundle = getArguments();
-                                    if (OsMoDroid.settings.getInt("centerlat", -1) != -1&&bundle==null)
-                                        {
-                                            if (mapController != null)
-                                                {
-                                                    mapController.setZoom(OsMoDroid.settings.getInt("zoom", 10));
-                                                    mapController.setPosition(new LngLat( OsMoDroid.settings.getInt("centerlon", 0)/(double)1000000, OsMoDroid.settings.getInt("centerlat", 0)/(double)1000000));
-                                                    Log.d(this.getClass().getName(), "Center map on ="+OsMoDroid.settings.getInt("centerlat", 0)+ OsMoDroid.settings.getInt("centerlon", 0));
-                                                    isFollow=false;
-                                                }
-                                        }
 
-                        //},"asset:///cinnabar-style-more-labels.zip", sceneUpdates);
+
+
+
+//                                    mapController.setPanResponder(new TouchInput.PanResponder()
+//                                        {
+//                                            @Override
+//                                            public boolean onPan(float startX, float startY, float endX, float endY)
+//                                                {
+//                                                    isFollow = false;
+//                                                    return false;
+//                                                }
+//                                            @Override
+//                                            public boolean onFling(float posX, float posY, float velocityX, float velocityY)
+//                                                {
+//                                                    return false;
+//                                                }
+//                                        });
+//                                    mapController.setDoubleTapResponder(new TouchInput.DoubleTapResponder()
+//                                        {
+//                                            @Override
+//                                            public boolean onDoubleTap(float x, float y)
+//                                                {
+//                                                    LngLat tappedPos = mapController.screenPositionToLngLat(new PointF(x, y));
+//                                                    LngLat currentPos = mapController.getPosition();
+//                                                    mapController.setZoom(mapController.getZoom() + 1.0f);
+//                                                    mapController.setPosition(new LngLat(0.5f * (tappedPos.longitude + currentPos.longitude), 0.5f * (tappedPos.latitude + currentPos.latitude)));
+//                                                    return true;
+//                                                }
+//                                        });
+
+
+
 
             return view;
         }
@@ -701,16 +846,16 @@ public class MapFragment extends Fragment implements DeviceChange,  LocationList
 
 
             myLocationMarker.setDrawOrder(2000);
-            myLocationMarker.setStylingFromString("{ " + LOCATION_STYLE + ",color : 'white' }");
-
+            myLocationMarker.setStylingFromString("{ " + LOCATION_STYLE + " }");
             myLocationMarker.setDrawable(R.drawable.myloc);
             Location location = LocalService.myManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-            if (location != null)
+            if (location != null&&mapController!=null)
                 {
                     myLocationMarker.setPoint(new LngLat(location.getLongitude(), location.getLatitude()));
                     if(isFollow)
                         {
-                            mapController.setPositionEased(new LngLat(location.getLongitude(), location.getLatitude()), 1000, MapController.EaseType.CUBIC);
+                           // mapController.setPositionEased(new LngLat(location.getLongitude(), location.getLatitude()), 1000, MapController.EaseType.CUBIC);
+                            mapController.updateCameraPosition(CameraUpdateFactory.setPosition(new LngLat(location.getLongitude(), location.getLatitude())),1000, MapController.EaseType.CUBIC);
                         }
                 }
         }
@@ -878,7 +1023,8 @@ public class MapFragment extends Fragment implements DeviceChange,  LocationList
                 center.set(location);
                 if(isFollow&&mapController!=null)
                     {
-                        mapController.setPositionEased(new LngLat(location.getLongitude(), location.getLatitude()), 200, MapController.EaseType.CUBIC);
+                      //  mapController.setPositionEased(new LngLat(location.getLongitude(), location.getLatitude()), 200, MapController.EaseType.CUBIC);
+                        mapController.updateCameraPosition(CameraUpdateFactory.setPosition(new LngLat(location.getLongitude(), location.getLatitude())),200, MapController.EaseType.CUBIC);
                     }
                 if(myLocationMarker!=null)
                     {
@@ -886,8 +1032,11 @@ public class MapFragment extends Fragment implements DeviceChange,  LocationList
                         if (location.hasBearing())
                             {
                                 addlog("has bearing");
-                                addlog( "on bearing: "+"{ " + DEFAULT_STYLE + ", angle: " + (int) location.getBearing() + " }");
-                                myLocationMarker.setStylingFromString("{ " + LOCATION_STYLE + ", angle: " + (int) location.getBearing() + " }");
+                                addlog( "on bearing: "+"{ " + LOCATION_STYLE + ", angle: " + ((int) location.getBearing()) + " }");
+                                //myLocationMarker.setDrawable(R.drawable.myloc);
+                                myLocationMarker.setDrawOrder(2000);
+                                myLocationMarker.setStylingFromString("{ " + LOCATION_STYLE + ", angle: " + ((int) location.getBearing()) + " }");
+
                             }
                     }
 
@@ -916,7 +1065,8 @@ public class MapFragment extends Fragment implements DeviceChange,  LocationList
                                 m.textMarker.setPointEased(point,6000, MapController.EaseType.SINE);
                                 if(dev.u==followdev)
                                     {
-                                        mapController.setPositionEased(point,200, MapController.EaseType.SINE);
+                                   //     mapController.setPositionEased(point,200, MapController.EaseType.SINE);
+                                        mapController.updateCameraPosition(CameraUpdateFactory.setPosition(point),200,MapController.EaseType.SINE);
                                     }
 
                             }
