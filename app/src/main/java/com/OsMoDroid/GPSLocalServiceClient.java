@@ -32,6 +32,7 @@ import com.OsMoDroid.LocalService.LocalBinder;
 import com.OsMoDroid.Netutil.MyAsyncTask;
 import com.OsMoDroid.R;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Notification;
@@ -48,6 +49,7 @@ import android.content.SharedPreferences.Editor;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.graphics.Color;
@@ -62,14 +64,18 @@ import android.os.PowerManager.WakeLock;
 import android.preference.PreferenceManager;
 import android.provider.Settings.Global;
 import android.provider.Settings.Secure;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.telephony.TelephonyManager;
 import android.text.ClipboardManager;
 import android.text.Html;
@@ -81,6 +87,7 @@ import android.util.Log;
 //import android.view.Menu;
 //import android.view.MenuItem;
 //import android.view.SubMenu;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -104,10 +111,11 @@ import android.widget.ToggleButton;
 import static android.text.InputType.TYPE_CLASS_TEXT;
 import static android.text.InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS;
 import static android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD;
-public class GPSLocalServiceClient extends ActionBarActivity implements ResultsListener
+public class GPSLocalServiceClient extends AppCompatActivity implements ResultsListener
     {
+        private static final int PERMISSION_REQUEST_CODE = 777;
         //SharedPreferences OsMoDroid.settings;
-        public android.support.v7.app.ActionBar actionBar;
+        public ActionBar actionBar;
         boolean messageShowed = false;
         int speedbearing_gpx;
         int bearing_gpx;
@@ -171,6 +179,13 @@ public class GPSLocalServiceClient extends ActionBarActivity implements ResultsL
                             intentAction(needIntent);
                             needIntent = null;
                         }
+                    if(OsMoDroid.settings.getBoolean("autostartsession", false))
+                    {
+                        if(!mService.state)
+                        {
+                            mService.startServiceWork(true);
+                        }
+                    }
                     if (mService.myIM != null)
                         {
                             mService.bitmapmapview();
@@ -180,15 +195,15 @@ public class GPSLocalServiceClient extends ActionBarActivity implements ResultsL
                                 }
                             if (mService.myIM.connOpened && !mService.myIM.connecting)
                                 {
-                                    actionBar.setLogo(R.drawable.eyeo);
+                                    actionBar.setIcon(R.drawable.eyeo);
                                 }
                             else if (mService.myIM.connecting)
                                 {
-                                    actionBar.setLogo(R.drawable.eyeu);
+                                    actionBar.setIcon(R.drawable.eyeu);
                                 }
                             else
                                 {
-                                    actionBar.setLogo(R.drawable.eyen);
+                                    actionBar.setIcon(R.drawable.eyen);
                                 }
                             if (!OsMoDroid.settings.getBoolean("subscribebackground", false) && mBound)
                                 {
@@ -310,13 +325,24 @@ public class GPSLocalServiceClient extends ActionBarActivity implements ResultsL
         public void onCreate(Bundle savedInstanceState)
             {
                 Log.d(this.getClass().getSimpleName(), "onCreate() gpsclient");
+                if (ContextCompat.checkSelfPermission(this,
+                        android.Manifest.permission.ACCESS_FINE_LOCATION)
+                        != PackageManager.PERMISSION_GRANTED  ||ContextCompat.checkSelfPermission(this,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        != PackageManager.PERMISSION_GRANTED ) {
+                    ActivityCompat.requestPermissions(this,new String[] {
+                            Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE
+
+                    },PERMISSION_REQUEST_CODE);
+                }
                 LocalService.alertHandler.removeCallbacksAndMessages(null);
                 super.onCreate(savedInstanceState);
                 actionBar = getSupportActionBar();
                 actionBar.setDisplayHomeAsUpEnabled(true);
-                actionBar.setHomeButtonEnabled(true);
-                actionBar.setDisplayUseLogoEnabled(true);
-
+                //actionBar.setDisplayShowHomeEnabled(true);
+                //actionBar.setDisplayUseLogoEnabled(true);
+                //actionBar.setHomeButtonEnabled(true);
+                actionBar.setHomeAsUpIndicator(R.drawable.eyeo);
                 OsMoDroid.activity = this;
                 PreferenceManager.setDefaultValues(this, R.xml.pref, true);
                 ReadPref();
@@ -403,28 +429,32 @@ public class GPSLocalServiceClient extends ActionBarActivity implements ResultsL
                                 {
                                     if (intent.getBooleanExtra("connect", false) && !intent.getBooleanExtra("connecting", false))
                                         {
-                                            actionBar.setLogo(R.drawable.eyeo);
+                                            actionBar.setIcon(R.drawable.eyeo);
+                                            actionBar.setHomeAsUpIndicator(R.drawable.eyeo);
                                             if(intent.hasExtra("executedlistsize"))
                                                 {
                                                     if(intent.getIntExtra("executedlistsize",0)>0)
                                                         {
-                                                            actionBar.setLogo(R.drawable.anim);
+                                                            actionBar.setIcon(R.drawable.anim);
+                                                            actionBar.setHomeAsUpIndicator(R.drawable.anim);
                                                         }
                                                 }
                                         }
                                     else if (intent.getBooleanExtra("connecting", false))
                                         {
-                                            actionBar.setLogo(R.drawable.eyeu);
+                                            actionBar.setIcon(R.drawable.eyeu);
+                                            actionBar.setHomeAsUpIndicator(R.drawable.eyeu);
                                         }
                                     else
                                         {
-                                            actionBar.setLogo(R.drawable.eyen);
+                                            actionBar.setIcon(R.drawable.eyen);
+                                            actionBar.setHomeAsUpIndicator(R.drawable.eyen);
                                         }
                                 }
 
                         }
                 };
-                registerReceiver(mIMstatusReciever, new IntentFilter("OsMoDroidV"));
+                registerReceiver(mIMstatusReciever, new IntentFilter("OsMoDroid"));
                 if (mService.myIM != null)
                     {
                         if (!mService.myIM.start&&OsMoDroid.settings.getBoolean("live", true))
@@ -645,6 +675,13 @@ public class GPSLocalServiceClient extends ActionBarActivity implements ResultsL
                                 Log.d(this.getClass().getSimpleName(), "on new intent=notif");
                                 NotifFragment notif = new NotifFragment();
                                 drawClickListener.selectItem(getString(R.string.notifications), null);
+                                //showFragment(notif,false);
+                            }
+                        else if (intent.getAction().equals("mapfromwidget"))
+                            {
+                                Log.d(this.getClass().getSimpleName(), "on new intent=mapfromwidget");
+                                //MapFragment notif = new MapFragment();
+                                drawClickListener.selectItem(getString(R.string.map), null);
                                 //showFragment(notif,false);
                             }
                         else if (intent.getAction().equals("channelchat"))
@@ -1330,4 +1367,18 @@ public class GPSLocalServiceClient extends ActionBarActivity implements ResultsL
                 void update();
             }
 
+        @Override
+        public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+            if (requestCode == PERMISSION_REQUEST_CODE && grantResults.length == 2) {
+                if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
+                    Toast.makeText(this, R.string.requiregps, Toast.LENGTH_LONG).show();
+                }
+                if (grantResults[1] == PackageManager.PERMISSION_DENIED) {
+                    Toast t = Toast.makeText(this, R.string.requireSTORAGE, Toast.LENGTH_LONG);
+                    t.setGravity(Gravity.CENTER,0,0);
+                    t.show();
+                }
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+            }
+        }
     }

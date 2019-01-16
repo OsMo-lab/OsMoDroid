@@ -13,7 +13,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.os.AsyncTaskCompat;
+//import android.support.v4.os.AsyncTaskCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.util.Log;
 import android.util.Xml;
@@ -43,6 +43,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.util.ArrayList;
 
+import static android.content.ContentValues.TAG;
 import static java.lang.Math.abs;
 public class TrackStatFragment extends Fragment
     {
@@ -122,7 +123,16 @@ public class TrackStatFragment extends Fragment
                                                             Bundle bundle = getArguments();
                                                             if (bundle != null)
                                                                 {
-                                                                    File file = new File(sdDir, "OsMoDroid/" + bundle.getString("file"));
+                                                                    String path;
+                                                                    if(bundle.getBoolean("fromServer"))
+                                                                    {
+                                                                        path="OsMoDroid/servergpx/";
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        path="OsMoDroid/";
+                                                                    }
+                                                                    File file = new File(sdDir, path + bundle.getString("file"));
                                                                     StatfromFile s = new StatfromFile(context);
                                                                     s.execute(file);
                                                                 }
@@ -182,12 +192,12 @@ public class TrackStatFragment extends Fragment
                         speedLineData.notifyDataChanged();
                         speedDataSet.notifyDataSetChanged();
                         eleDataSet.notifyDataSetChanged();
-                        speedLineData = new LineData(distanceStringList);
+                        speedLineData = new LineData();
 
-                        speedLineData.addDataSet(speedDataSet);
-                        speedLineData.addDataSet(avgspeedDataSet);
-                        speedLineData.addDataSet(eleDataSet);
-                        mChart.clearValues();
+                      //  speedLineData.addDataSet(speedDataSet);
+                      //  speedLineData.addDataSet(avgspeedDataSet);
+                      //  speedLineData.addDataSet(eleDataSet);
+                        //mChart.clearValues();
 
 
 
@@ -216,8 +226,9 @@ public class TrackStatFragment extends Fragment
 //                mChart.setOnChartGestureListener(this);
 //                mChart.setOnChartValueSelectedListener(this);
                         mChart.setDrawGridBackground(false);
-                        mChart.setDescription("");
-                        mChart.setNoDataTextDescription("You need to provide data for the chart.");
+                        //mChart.setDescription("");
+                        mChart.getDescription().setEnabled(false);
+                        mChart.setNoDataText("You need to provide data for the chart.");
                         mChart.setTouchEnabled(true);
                         mChart.setDragEnabled(true);
                         mChart.setScaleEnabled(true);
@@ -228,10 +239,16 @@ public class TrackStatFragment extends Fragment
                         YAxis rightAxis = mChart.getAxisRight();
                         leftAxis.removeAllLimitLines();
                         leftAxis.setAxisMinValue(0f);
-                        speedLineData = new LineData(distanceStringList);
-                        speedLineData.addDataSet(speedDataSet);
-                        speedLineData.addDataSet(avgspeedDataSet);
-                        speedLineData.addDataSet(eleDataSet);
+                        speedLineData = new LineData();
+                        if(speedDataSet.getEntryCount()>0) {
+                            speedLineData.addDataSet(speedDataSet);
+                        }
+                        if(avgspeedDataSet.getEntryCount()>0) {
+                            speedLineData.addDataSet(avgspeedDataSet);
+                        }
+                        if(eleDataSet.getEntryCount()>0) {
+                            speedLineData.addDataSet(eleDataSet);
+                        }
                         mChart.setData(speedLineData);
                         mChart.invalidate();
                         averagespeed=3600f*milage/timeinway;
@@ -283,7 +300,11 @@ public class TrackStatFragment extends Fragment
                                     if(prevlat!=0&&prevlon!=0)
                                         {
                                             GeoPoint prevGeoPoint = new GeoPoint(prevlat, prevlon);
-                                            workdistance = workdistance + curGeoPoint.distanceTo(prevGeoPoint);
+                                            if(Float.isNaN(LocalService.distanceBetween(curGeoPoint,prevGeoPoint)))
+                                            {
+                                                int a=1;
+                                            }
+                                            workdistance = workdistance + LocalService.distanceBetween(curGeoPoint,prevGeoPoint);
                                         }
                                     prevlat=lat;
                                     prevlon=lon;
@@ -338,23 +359,35 @@ public class TrackStatFragment extends Fragment
                                     if((int)workdistance<currentroundeddistance)
                                         {
                                             countofmeasures++;
-                                            sumspeed=sumspeed+Float.parseFloat(speed)* 3.6f;
+                                            if (!speed.equals("")) {
+                                                sumspeed = sumspeed + Float.parseFloat(speed) * 3.6f;
+                                            }
+
                                             sumele=sumele+Float.parseFloat(ele);
                                             Entry e = speeddistanceEntryList.get(speeddistanceEntryList.size()-1);
-                                            e.setVal(sumspeed/countofmeasures);
+                                            e.setY(sumspeed/countofmeasures);
+                                            e.setX(currentroundeddistance);
                                             Entry elee=eledistanceEntryList.get(eledistanceEntryList.size()-1);
-                                            elee.setVal(sumele/countofmeasures);
+                                            elee.setY(sumele/countofmeasures);
+                                            elee.setX(currentroundeddistance);
                                             currentroundeddistance=(int)workdistance - (int) workdistance%step+step;
                                         }
                                     else
                                         {
                                             currentroundeddistance=(int)workdistance - (int) workdistance%step + step;
                                             countofmeasures=1;
-                                            sumspeed=Float.parseFloat(speed)* 3.6f;
+                                            if(!speed.equals("")) {
+                                                sumspeed = Float.parseFloat(speed) * 3.6f;
+                                            }
+                                            else
+                                            {
+                                                sumspeed = 0;
+                                            }
+
                                             sumele=Float.parseFloat(ele);
-                                            Entry e = new Entry(Float.parseFloat(speed)* 3.6f,currentroundeddistance);
+                                            Entry e = new Entry(currentroundeddistance,Float.parseFloat(speed)* 3.6f);
                                             speeddistanceEntryList.add(e);
-                                            Entry elee = new Entry(Float.parseFloat(ele),currentroundeddistance);
+                                            Entry elee = new Entry(currentroundeddistance,Float.parseFloat(ele));
                                             eledistanceEntryList.add(elee);
                                             if(firsttime==0)
                                                 {
@@ -363,7 +396,7 @@ public class TrackStatFragment extends Fragment
                                                 }
                                             else
                                                 {
-                                                    Entry avgspeedentry= new Entry( 3600f*workdistance / (curtime - firsttime),currentroundeddistance );
+                                                    Entry avgspeedentry= new Entry( currentroundeddistance,3600f*workdistance / (curtime - firsttime) );
                                                     avgspeeddistanceEntryList.add(avgspeedentry);
                                                 }
                                         }
@@ -422,6 +455,10 @@ public class TrackStatFragment extends Fragment
                                     milage=workdistance;
 
                                 }
+                                else
+                            {
+                                LocalService.addlog("Error r ");
+                            }
 
                         }
 
@@ -462,8 +499,14 @@ public class TrackStatFragment extends Fragment
 
 
                 speedDataSet = new LineDataSet(speeddistanceEntryList,  getString(R.string.speed));
+                speedDataSet.setMode(LineDataSet.Mode.HORIZONTAL_BEZIER);
+                speedDataSet.setCubicIntensity(0.5f);
                 avgspeedDataSet = new LineDataSet(avgspeeddistanceEntryList, getString(R.string.average));
+                avgspeedDataSet.setMode(LineDataSet.Mode.HORIZONTAL_BEZIER);
+                avgspeedDataSet.setCubicIntensity(0.5f);
                 eleDataSet = new LineDataSet(eledistanceEntryList,  getString(R.string.altitude));
+                eleDataSet.setMode(LineDataSet.Mode.HORIZONTAL_BEZIER);
+                eleDataSet.setCubicIntensity(0.5f);
                 speedDataSet.setLineWidth(3);
                 avgspeedDataSet.setLineWidth(3);
                 eleDataSet.setLineWidth(3);
@@ -489,8 +532,8 @@ public class TrackStatFragment extends Fragment
 //                mChart.setOnChartGestureListener(this);
 //                mChart.setOnChartValueSelectedListener(this);
                 mChart.setDrawGridBackground(false);
-                mChart.setDescription("");
-                mChart.setNoDataTextDescription("You need to provide data for the chart.");
+                //mChart.setDescription("");
+                mChart.setNoDataText("You need to provide data for the chart.");
                 mChart.setTouchEnabled(true);
                 mChart.setDragEnabled(true);
                 mChart.setScaleEnabled(true);
@@ -501,11 +544,17 @@ public class TrackStatFragment extends Fragment
                 YAxis rightAxis = mChart.getAxisRight();
                 leftAxis.removeAllLimitLines();
                 leftAxis.setAxisMinValue(0f);
-                speedLineData = new LineData(distanceStringList);
-                speedLineData.addDataSet(speedDataSet);
-                speedLineData.addDataSet(avgspeedDataSet);
-                speedLineData.addDataSet(eleDataSet);
-                mChart.setData(speedLineData);
+                speedLineData = new LineData();
+                if(speedDataSet.getEntryCount()>0) {
+                    speedLineData.addDataSet(speedDataSet);
+                }
+                if(avgspeedDataSet.getEntryCount()>0) {
+                    speedLineData.addDataSet(avgspeedDataSet);
+                }
+                if(eleDataSet.getEntryCount()>0) {
+                    speedLineData.addDataSet(eleDataSet);
+                }
+                //mChart.setData(speedLineData);
                 mChart.invalidate();
 
                 return view;
@@ -518,8 +567,16 @@ public class TrackStatFragment extends Fragment
                 Bundle bundle = getArguments();
                 if (bundle != null)
                     {
-
-                        File file = new File(sdDir, "OsMoDroid/" + bundle.getString("file"));
+                        String path;
+                        if(bundle.getBoolean("fromServer"))
+                        {
+                            path="OsMoDroid/servergpx/";
+                        }
+                        else
+                        {
+                            path="OsMoDroid/";
+                        }
+                        File file = new File(sdDir, path + bundle.getString("file"));
                         StatfromFile s = new StatfromFile(context);
                         s.execute(file);
                     }

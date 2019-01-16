@@ -14,6 +14,7 @@ import android.util.Log;
 public class Device implements Comparable<Device>, Serializable
     {
         public int u;
+        public int gu;
         public String tracker_id;
         public String name="";
         public String app;
@@ -64,7 +65,7 @@ public class Device implements Comparable<Device>, Serializable
         public String toString()
             {
                 return "Device:tracker_id=" + tracker_id + ",name=" + name + ",app=" + app + ",last=" + last + ",url=" + url + ",where=" + where + ",lat=" + lat + ",lon=" + lon
-                        + ",online=" + online + ",state=" + state + ",uid=" + uid + ",speed=" + speed + " color=" + color;
+                        + ",online=" + online + ",state=" + state + ",uid=" + uid + ",speed=" + speed + " color=" + color+" gu="+gu;
             }
         @Override
         public boolean equals(Object o)

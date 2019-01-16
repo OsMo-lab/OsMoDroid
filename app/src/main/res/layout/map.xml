@@ -52,6 +52,13 @@
         android:layout_above="@+id/mapCopyright"
         android:layout_centerHorizontal="true"/>
 
+    <TextView
+        android:id="@+id/toFoltextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/mapCopyright"
+        android:layout_alignParentStart="true" />
+
 </RelativeLayout>
 
  

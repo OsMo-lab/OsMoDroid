@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.widget.Toast;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -17,8 +18,8 @@ import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-public class OsmAndHelper
-    {
+
+public class OsmAndHelper {
 	private static final String PREFIX = "osmand.api://";
 
 	// Result codes
@@ -192,8 +193,8 @@ public class OsmAndHelper
 	 *                    Sent as URI parameter.
 	 */
 	public void addFavorite(double lat, double lon, String name,
-                            String description, String category, String color,
-                            boolean visible) {
+							String description, String category, String color,
+							boolean visible) {
 		// test favorite
 		Map<String, String> params = new HashMap<>();
 		params.put(PARAM_LAT, String.valueOf(lat));
@@ -347,8 +348,8 @@ public class OsmAndHelper
 	 * @param force     - Stop previous navigation if active. Sent as URI parameter.
 	 */
 	public void navigate(String startName, double startLat, double startLon,
-                         String destName, double destLat, double destLon,
-                         String profile, boolean force) {
+						 String destName, double destLat, double destLon,
+						 String profile, boolean force) {
 		// test navigate
 		Map<String, String> params = new HashMap<>();
 		params.put(PARAM_START_LAT, String.valueOf(startLat));
@@ -368,23 +369,27 @@ public class OsmAndHelper
 	 * @param intentBuilder - contains intent parameters.
 	 */
 	private void sendRequest(OsmAndIntentBuilder intentBuilder) {
+		try {
 		Uri uri = intentBuilder.getUri();
-		Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-		intent.addFlags(intentBuilder.getFlags());
-		Map<String, String> extraData = intentBuilder.getExtraData();
-		if (extraData != null) {
-			for (String key : extraData.keySet()) {
-				intent.putExtra(key, extraData.get(key));
+			Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+			intent.addFlags(intentBuilder.getFlags());
+			Map<String, String> extraData = intentBuilder.getExtraData();
+			if (extraData != null) {
+				for (String key : extraData.keySet()) {
+					intent.putExtra(key, extraData.get(key));
+				}
 			}
-		}
-		if (intentBuilder.getGpxUri() != null) {
-//			ClipData clipData = ClipData.newRawUri("Gpx", intentBuilder.getGpxUri());
-//			intent.setClipData(clipData);
-		}
-		if (isIntentSafe(intent)) {
-			mActivity.startActivityForResult(intent, mRequestCode);
-		} else {
-			mOsmandMissingListener.osmandMissing();
+			if (intentBuilder.getGpxUri() != null) {
+				ClipData clipData = ClipData.newRawUri("Gpx", intentBuilder.getGpxUri());
+				intent.setClipData(clipData);
+			}
+			if (isIntentSafe(intent)) {
+				mActivity.startActivityForResult(intent, mRequestCode);
+			} else {
+				mOsmandMissingListener.osmandMissing();
+			}
+		} catch (Exception e) {
+			Toast.makeText(mActivity, e.getMessage(), Toast.LENGTH_LONG).show();
 		}
 	}
 
@@ -457,7 +462,7 @@ public class OsmAndHelper
 		}
 
 		private static String getUriString(@NonNull @NotNull String command,
-                                           @Nullable Map<String, String> parameters) {
+										   @Nullable Map<String, String> parameters) {
 			StringBuilder stringBuilder = new StringBuilder(PREFIX);
 			stringBuilder.append(command);
 			if (parameters != null && parameters.size() > 0) {

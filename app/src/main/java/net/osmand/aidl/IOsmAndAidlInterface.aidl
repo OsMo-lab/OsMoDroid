@@ -3,6 +3,16 @@ package net.osmand.aidl;
 import net.osmand.aidl.map.ALatLon;
 import net.osmand.aidl.map.SetMapLocationParams;
 
+import net.osmand.aidl.favorite.group.AFavoriteGroup;
+import net.osmand.aidl.favorite.group.AddFavoriteGroupParams;
+import net.osmand.aidl.favorite.group.RemoveFavoriteGroupParams;
+import net.osmand.aidl.favorite.group.UpdateFavoriteGroupParams;
+
+import net.osmand.aidl.favorite.AFavorite;
+import net.osmand.aidl.favorite.AddFavoriteParams;
+import net.osmand.aidl.favorite.RemoveFavoriteParams;
+import net.osmand.aidl.favorite.UpdateFavoriteParams;
+
 import net.osmand.aidl.mapmarker.AMapMarker;
 import net.osmand.aidl.mapmarker.AddMapMarkerParams;
 import net.osmand.aidl.mapmarker.RemoveMapMarkerParams;
@@ -12,6 +22,8 @@ import net.osmand.aidl.calculateroute.CalculateRouteParams;
 
 import net.osmand.aidl.gpx.ImportGpxParams;
 import net.osmand.aidl.gpx.ShowGpxParams;
+import net.osmand.aidl.gpx.StartGpxRecordingParams;
+import net.osmand.aidl.gpx.StopGpxRecordingParams;
 import net.osmand.aidl.gpx.HideGpxParams;
 import net.osmand.aidl.gpx.ASelectedGpxFile;
 
@@ -28,6 +40,14 @@ import net.osmand.aidl.maplayer.AMapLayer;
 import net.osmand.aidl.maplayer.AddMapLayerParams;
 import net.osmand.aidl.maplayer.RemoveMapLayerParams;
 import net.osmand.aidl.maplayer.UpdateMapLayerParams;
+
+import net.osmand.aidl.navigation.NavigateParams;
+import net.osmand.aidl.navigation.NavigateGpxParams;
+
+import net.osmand.aidl.note.TakePhotoNoteParams;
+import net.osmand.aidl.note.StartVideoRecordingParams;
+import net.osmand.aidl.note.StartAudioRecordingParams;
+import net.osmand.aidl.note.StopRecordingParams;
 
 interface IOsmAndAidlInterface {
 
@@ -54,4 +74,26 @@ interface IOsmAndAidlInterface {
 
 	boolean setMapLocation(in SetMapLocationParams params);
     boolean calculateRoute(in CalculateRouteParams params);
+
+    boolean refreshMap();
+
+    boolean addFavoriteGroup(in AddFavoriteGroupParams params);
+    boolean removeFavoriteGroup(in RemoveFavoriteGroupParams params);
+    boolean updateFavoriteGroup(in UpdateFavoriteGroupParams params);
+
+    boolean addFavorite(in AddFavoriteParams params);
+    boolean removeFavorite(in RemoveFavoriteParams params);
+    boolean updateFavorite(in UpdateFavoriteParams params);
+
+    boolean startGpxRecording(in StartGpxRecordingParams params);
+	boolean stopGpxRecording(in StopGpxRecordingParams params);
+
+	boolean takePhotoNote(in TakePhotoNoteParams params);
+	boolean startVideoRecording(in StartVideoRecordingParams params);
+	boolean startAudioRecording(in StartAudioRecordingParams params);
+	boolean stopRecording(in StopRecordingParams params);
+
+	boolean navigate(in NavigateParams params);
+	boolean navigateGpx(in NavigateGpxParams params);
+
 }

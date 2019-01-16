@@ -4,10 +4,16 @@ public class PermLink
         int u;
         String url;
         String description;
+        int timeout;
+        long start;
+        long finish;
+        long time;
+        int count;
+        boolean active;
         @Override
         public String toString()
             {
-                // TODO Auto-generated method stub
+
                 if(description.equals(""))
                     {
                         return url;

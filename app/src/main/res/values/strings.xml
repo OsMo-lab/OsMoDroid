@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">OsMoDroidGL</string>
+    <string name="app_name">OsMoDroid</string>
     <string name="start">Start</string>
     <string name="stop">Stop</string>
     <string name="serviceStatus">State:</string>
@@ -352,10 +352,16 @@
     <string name="passdontequal">Password not equals</string>
     <string name="smsexchange">Exchange by  SMS</string>
     <string name="sendsms">Send SMS</string>
-    <string name="sendsmsnumber">Send SMS to numer</string>
+    <string name="sendsmsnumber">Send SMS to number</string>
     <string name="sendsmsperiod">Send SMS period</string>
     <string name="getsms">Get SMS</string>
-    <string name="getsmsnumber">Get SMS numer</string>
+    <string name="getsmsnumber">Get SMS number</string>
     <string name="alreadyregistered">Are you already registered ?</string>
     <string name="osmand">Osmand integration</string>
+    <string name="open_osmand">Open Osmand</string>
+    <string name="closesos">Close</string>
+    <string name="requiregps">THIS APP REQUIRED GPS</string>
+    <string name="requireSTORAGE">THIS APP REQUIRED WRITE TO SDCARD TO SHOW MAP</string>
+    <string name="autostartses">Auto start session after launch</string>
+    <string name="startsesonrun">Start session on run</string>
 </resources>

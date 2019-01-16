@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
-  <string name="app_name">OsMoDroidGL</string>
+  <string name="app_name">OsMoDroid</string>
   <string name="start">Запустить</string>
   <string name="stop">Остановить</string>
   <string name="serviceStatus">Состояние:</string>
@@ -358,4 +358,10 @@
   <string name="getsmsnumber">Номер отправителя SMS</string>
     <string name="alreadyregistered">Уже зарегистрированы?</string>
     <string name="osmand">Интеграция с OSMAND</string>
+  <string name="open_osmand">Открыть карту в Osmand</string>
+  <string name="closesos">Закрыть!</string>
+    <string name="requiregps">Приложению нужен доступ к GPS</string>
+  <string name="requireSTORAGE">Приложению нужен доступ к карте памяти</string>
+    <string name="autostartses">Запускать сессию при старте приложения</string>
+  <string name="startsesonrun">Автозапуск мониторинга</string>
 </resources>

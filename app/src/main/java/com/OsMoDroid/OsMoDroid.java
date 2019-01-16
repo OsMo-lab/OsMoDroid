@@ -6,8 +6,6 @@ import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
 import android.view.inputmethod.InputMethodManager;
 
-
-
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.squareup.leakcanary.LeakCanary;
 
@@ -24,7 +22,7 @@ public class OsMoDroid extends Application
         public static final String NOTIFIESFILENAME = "messagelist";
         public static final String DEVLIST = "devlist";
         public static final String CHANNELLIST = "chlist";
-        public static final String app_code = "HJIascaEFWQCsafgbA";
+        public static final String app_code = "hY7aV32Kbz";
         public static final String TRACKER_GCM_ID = "80";
         public static final String TRACKER_BATTERY_INFO = "11";
         public static final String TRACKER_SATELLITES_INFO = "13";
@@ -41,7 +39,10 @@ public class OsMoDroid extends Application
         public static final String TRACKER_SESSION_START = "1";
         public static final String TRACKER_SESSION_STOP = "2";
         public static final String TTS = "46";
+        public static final String WIDGETINFO = "36";
         public static final String WHERE = "12";
+        public static final String WHERE_GPS_ONLY = "15";
+        public static final String WHERE_NETWORK_ONLY = "16";
         public static final String SIGNAL_STATUS = "30";
         public static final String SIGNAL_OFF = "32";
         public static final String SIGNAL_ON = "31";
@@ -74,6 +75,7 @@ public class OsMoDroid extends Application
         final static DecimalFormatSymbols dot = new DecimalFormatSymbols();
         public static final String GCMTODOLIST = "gcmtodolist";
         public static final String SOS ="99" ;
+        public static final String SOSEXT ="98" ;
         public static final String SOS_OFF ="100" ;
         public static final String UPDATE_MOTD="95";
         public static boolean mesactivityVisible = false;
@@ -88,6 +90,7 @@ public class OsMoDroid extends Application
         private static int notifyid = 1;
         public static FirebaseAnalytics mFirebaseAnalytics;
         static long timeshift=0;
+        public static boolean permanent=false;
         public static int notifyidApp()
             {
                 return notifyid++;
@@ -106,14 +109,12 @@ public class OsMoDroid extends Application
         @Override
         public void onCreate()
             {
-
                 settings = PreferenceManager.getDefaultSharedPreferences(this);
                 editor = settings.edit();
                 context = getApplicationContext();
                 Thread.setDefaultUncaughtExceptionHandler(ExceptionHandler.inContext(context));
                 inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 OpenStreetMapTileProviderConstants.setUserAgentValue(BuildConfig.APPLICATION_ID);
-
                 super.onCreate();
                 LeakCanary.install(this);
                 mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);

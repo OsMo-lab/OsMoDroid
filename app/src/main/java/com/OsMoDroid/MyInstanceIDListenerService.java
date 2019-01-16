@@ -26,6 +26,7 @@ public class MyInstanceIDListenerService extends FirebaseInstanceIdService
                 OsMoDroid.editor.commit();
                 // TODO: Implement this method to send any registration to your app's servers.
                 sendRegistrationToServer(refreshedToken);
+
             }
         private void sendRegistrationToServer(String token)
             {
