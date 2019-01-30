@@ -953,7 +953,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                 LayoutInflater inflater = LayoutInflater.from(getApplicationContext());
                 linearview = inflater.inflate(R.layout.map, null, false);
                 RelativeLayout rl = (RelativeLayout) linearview.findViewById(R.id.relative);
-                MapFragment.CustomTileProvider customTileProvider;
+               // MapFragment.CustomTileProvider customTileProvider;
 
                 ComponentName myWidget = new ComponentName(this, MapWidget.class);
                 int[] ids = AppWidgetManager.getInstance(this).getAppWidgetIds(myWidget);

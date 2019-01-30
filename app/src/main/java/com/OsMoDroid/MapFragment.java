@@ -72,8 +72,7 @@ import okhttp3.Request;
 import static com.OsMoDroid.LocalService.addlog;
 public class MapFragment extends Fragment implements DeviceChange,  LocationListener, MarkerPickListener, MapController.SceneLoadListener, MapView.MapReadyCallback,
         TouchInput.TapResponder,
-        TouchInput.DoubleTapResponder, TouchInput.LongPressResponder
-    {
+        TouchInput.DoubleTapResponder, TouchInput.LongPressResponder  {
         MapView mMapView;
         private ArrayList<Marker> allTracksWayPoints= new ArrayList<>();
         @Override
@@ -92,9 +91,9 @@ public class MapFragment extends Fragment implements DeviceChange,  LocationList
                 Log.d(getClass().getSimpleName(), "map ondestroyview");
                 if(mapController!=null)
                     {
-                        //OsMoDroid.editor.putInt("centerlat", (int) (mapController.getPosition().latitude * 1000000));
-                        //OsMoDroid.editor.putInt("centerlon", (int) (mapController.getPosition().longitude * 1000000));
-                        //OsMoDroid.editor.putInt("zoom", (int) mapController.getZoom());
+                        OsMoDroid.editor.putInt("centerlat", (int) (mapController.getCameraPosition().latitude * 1000000));
+                        OsMoDroid.editor.putInt("centerlon", (int) (mapController.getCameraPosition().longitude * 1000000));
+                        OsMoDroid.editor.putInt("zoom", (int) mapController.getCameraPosition().zoom);
                         OsMoDroid.editor.commit();
                         mapController=null;
                     }
@@ -109,8 +108,9 @@ public class MapFragment extends Fragment implements DeviceChange,  LocationList
         View view;
         int followdev = -1;
         private Marker myLocationMarker;
-        public static final String DEFAULT_STYLE = "style: 'points', interactive: true,  size: [20px, 20px], collide: false";
+        public static final String DEFAULT_STYLE = "style: 'points', interactive: true,  size: [20px, 20px], collide: false, order: 2000";
         public static final String LOCATION_STYLE = "style: 'points',  size: [36px, 36px], collide: false, color : 'white'";
+
         private boolean isFollow=true;
         private Location center;
         private ImageButton centerImageButton;
@@ -154,7 +154,7 @@ public class MapFragment extends Fragment implements DeviceChange,  LocationList
                 MenuItem buublewrap = menu2.add(0, 5, 1, "Bubble Wrap");
                 MenuItem Outwalk = menu2.add(0, 6, 2, "WalkAbout");
                 MenuItem cinnabar = menu2.add(0, 7, 3, "Cinnabar");
-                MenuItem zinc = menu2.add(0, 8, 4, "Zinc");
+                MenuItem zinc = menu2.add(0, 8, 4, "Default");
                 MenuItem refill = menu2.add(0, 9, 5, "Refill");
                 MenuItem tron = menu2.add(0, 10, 6, "Tron");
 
@@ -165,12 +165,15 @@ public class MapFragment extends Fragment implements DeviceChange,  LocationList
         @Override
         public boolean onOptionsItemSelected(MenuItem item)
             {
+                String sceneYaml;
                 switch (item.getItemId())
                     {
                         case 5:
                             markerToUs.clear();
                             allTracksWayPoints.clear();
-                            mapController.loadSceneFile("asset:///bubble-wrap-style.zip", sceneUpdates);
+                            //mapController.loadSceneFile("asset:///bubble-wrap-style.zip", sceneUpdates);
+                            sceneYaml = "import: [asset:///bubble-wrap-style.zip, asset:///label-11.zip]";
+                            mapController.loadSceneYaml(sceneYaml, "", sceneUpdates);
                             createMarker();
                             MapFragment.this.onChannelListChange();
                             OsMoDroid.editor.putInt("selectedTileSourceInt", 1);
@@ -179,7 +182,9 @@ public class MapFragment extends Fragment implements DeviceChange,  LocationList
                         case 6:
                             markerToUs.clear();
                             allTracksWayPoints.clear();
-                            mapController.loadSceneFile("asset:///walkabout-style-more-labels.zip", sceneUpdates);
+                            //mapController.loadSceneFile("asset:///walkabout-style.zip", sceneUpdates);
+                            sceneYaml = "import: [asset:///walkabout-style.zip, asset:///label-11.zip]";
+                            mapController.loadSceneYaml(sceneYaml, "", sceneUpdates);
                             createMarker();
                             MapFragment.this.onChannelListChange();
                             OsMoDroid.editor.putInt("selectedTileSourceInt", 2);
@@ -188,7 +193,9 @@ public class MapFragment extends Fragment implements DeviceChange,  LocationList
                         case 7:
                             markerToUs.clear();
                             allTracksWayPoints.clear();
-                            mapController.loadSceneFile("asset:///cinnabar-style-more-labels.zip", sceneUpdates);
+                            //mapController.loadSceneFile("asset:///cinnabar-style.zip", sceneUpdates);
+                            sceneYaml = "import: [asset:///cinnabar-style.zip, asset:///label-11.zip]";
+                            mapController.loadSceneYaml(sceneYaml, "", sceneUpdates);
                             createMarker();
                             MapFragment.this.onChannelListChange();
                             OsMoDroid.editor.putInt("selectedTileSourceInt", 3);
@@ -197,7 +204,9 @@ public class MapFragment extends Fragment implements DeviceChange,  LocationList
                         case 8:
                             markerToUs.clear();
                             allTracksWayPoints.clear();
-                            mapController.loadSceneFile("asset:///zinc-style-more-labels.zip", sceneUpdates);
+                            //mapController.loadSceneFile("asset:///sdk-default-style.zip", sceneUpdates);
+                            sceneYaml = "import: [asset:///sdk-default-style.zip, asset:///label-11.zip]";
+                            mapController.loadSceneYaml(sceneYaml, "", sceneUpdates);
                             createMarker();
                             MapFragment.this.onChannelListChange();
                             OsMoDroid.editor.putInt("selectedTileSourceInt", 4);
@@ -206,7 +215,9 @@ public class MapFragment extends Fragment implements DeviceChange,  LocationList
                         case 9:
                             markerToUs.clear();
                             allTracksWayPoints.clear();
-                            mapController.loadSceneFile("asset:///refill-style-more-labels.zip", sceneUpdates);
+                            //mapController.loadSceneFile("asset:///refill-style.zip", sceneUpdates);
+                            sceneYaml = "import: [asset:///refill-style.zip, asset:///label-11.zip]";
+                            mapController.loadSceneYaml(sceneYaml, "", sceneUpdates);
                             createMarker();
                             MapFragment.this.onChannelListChange();
                             OsMoDroid.editor.putInt("selectedTileSourceInt", 5);
@@ -215,7 +226,9 @@ public class MapFragment extends Fragment implements DeviceChange,  LocationList
                         case 10:
                             markerToUs.clear();
                             allTracksWayPoints.clear();
-                            mapController.loadSceneFile("asset:///tron-style-more-labels.zip", sceneUpdates);
+                            //mapController.loadSceneFile("asset:///tron-style.zip", sceneUpdates);
+                            sceneYaml = "import: [asset:///trone-style.zip, asset:///label-11.zip]";
+                            mapController.loadSceneYaml(sceneYaml, "", sceneUpdates);
                             createMarker();
                             MapFragment.this.onChannelListChange();
                             OsMoDroid.editor.putInt("selectedTileSourceInt", 6);
@@ -230,6 +243,7 @@ public class MapFragment extends Fragment implements DeviceChange,  LocationList
         @Override
         public void onMarkerPick(MarkerPickResult markerPickResult, float positionX, float positionY)
             {
+                Log.d(getClass().getSimpleName(), "onMarkerPick: ");
                 if (markerPickResult != null)
                     {
                         for (MarkerToU m : markerToUs)
@@ -345,29 +359,43 @@ public class MapFragment extends Fragment implements DeviceChange,  LocationList
             mapController.setCameraType(MapController.CameraType.ISOMETRIC);
             markerToUs.clear();
             allTracksWayPoints.clear();
+            String sceneYaml;
             switch (OsMoDroid.settings.getInt("selectedTileSourceInt",1))
             {
                 case 1:
-                    mapController.loadSceneFile("asset:///bubble-wrap-style.zip", sceneUpdates);
+                    //mapController.loadSceneFile("asset:///bubble-wrap-style.zip", sceneUpdates);
+                    sceneYaml = "import: [asset:///bubble-wrap-style.zip, asset:///label-11.zip]";
+                    mapController.loadSceneYaml(sceneYaml, "", sceneUpdates);
                     break;
                 case 2:
-                    mapController.loadSceneFile("asset:///walkabout-style-more-labels.zip", sceneUpdates);
+                    //mapController.loadSceneFile("asset:///walkabout-style.zip", sceneUpdates);
+                    sceneYaml = "import: [asset:///bubble-wrap-style.zip, asset:///label-11.zip]";
+                    mapController.loadSceneYaml(sceneYaml, "", sceneUpdates);
                     break;
                 case 3:
-                    mapController.loadSceneFile("asset:///cinnabar-style-more-labels.zip", sceneUpdates);
+                    //mapController.loadSceneFile("asset:///cinnabar-style.zip", sceneUpdates);
+                    sceneYaml = "import: [asset:///cinnabar-style.zip, asset:///label-11.zip]";
+                    mapController.loadSceneYaml(sceneYaml, "", sceneUpdates);
                     break;
                 case 4:
-                    mapController.loadSceneFile("asset:///zinc-style-more-labels.zip", sceneUpdates);
+                    //mapController.loadSceneFile("asset:///sdk-default-style.zip", sceneUpdates);
+                    sceneYaml = "import: [asset:///sdk-default-style.zip, asset:///label-11.zip]";
+                    mapController.loadSceneYaml(sceneYaml, "", sceneUpdates);
                     break;
                 case 5:
-                    mapController.loadSceneFile("asset:///refill-style-more-labels.zip", sceneUpdates);
+                    //mapController.loadSceneFile("asset:///refill-style", sceneUpdates);
+                    sceneYaml = "import: [asset:///refill-style.zip, asset:///label-11.zip]";
+                    mapController.loadSceneYaml(sceneYaml, "", sceneUpdates);
                     break;
                 case 6:
-                    mapController.loadSceneFile("asset:///tron-style-more-labels.zip", sceneUpdates);
+                    //mapController.loadSceneFile("asset:///tron-style.zip", sceneUpdates);
+                    sceneYaml = "import: [asset:///tron-style.zip, asset:///label-11.zip]";
+                    mapController.loadSceneYaml(sceneYaml, "", sceneUpdates);
                     break;
                 default:
                     break;
             }
+            //mapController. loadSceneFile("asset:///label-11.zip", sceneUpdates);
             Location location = LocalService.myManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
             if (location != null)
                 //mapController.setPositionEased(new LngLat(location.getLongitude(), location.getLatitude()), 200);
@@ -378,7 +406,49 @@ public class MapFragment extends Fragment implements DeviceChange,  LocationList
             mapController.addDataLayer("osmo");
             mapController.setPickRadius(3);
             mapController.setMarkerPickListener(MapFragment.this);
+            final TouchInput touchInput = mapController.getTouchInput();
+            final TouchInput.PanResponder defPanResponed = mapController.getPanResponder();
+            touchInput.setTapResponder(this);
+            touchInput.setDoubleTapResponder(this);
+            touchInput.setLongPressResponder(this);
+            touchInput.setPanResponder(new TouchInput.PanResponder() {
+                @Override
+                public boolean onPanBegin() {
+                    defPanResponed.onPanBegin();
+
+                    return false;
+                }
+
+                @Override
+                public boolean onPan(float startX, float startY, float endX, float endY) {
+                    isFollow = false;
+                    defPanResponed.onPan( startX,  startY,  endX,  endY);
+                    return false;
+                }
+
+                @Override
+                public boolean onPanEnd() {
+                    defPanResponed.onPanEnd();
+                    return false;
+                }
+
+                @Override
+                public boolean onFling(float posX, float posY, float velocityX, float velocityY) {
+                    defPanResponed.onFling(posX,posY,velocityX,velocityY);
+                    return false;
+                }
+
+                @Override
+                public boolean onCancelFling() {
+                    defPanResponed.onCancelFling();
+                    return false;
+                }
+            });
+
+
+
             createMarker();
+            onChannelListChange();
             Bundle bundle = getArguments();
             if (OsMoDroid.settings.getInt("centerlat", -1) != -1&&bundle==null)
             {
@@ -398,7 +468,11 @@ public class MapFragment extends Fragment implements DeviceChange,  LocationList
 
         @Override
         public boolean onDoubleTap(float x, float y) {
+            LngLat tappedPos = mapController.screenPositionToLngLat(new PointF(x, y));
+            mapController.updateCameraPosition(CameraUpdateFactory.newLngLatZoom(tappedPos,mapController.getCameraPosition().zoom+1f), 50);
+            
             return false;
+
         }
 
         @Override
@@ -507,10 +581,14 @@ public class MapFragment extends Fragment implements DeviceChange,  LocationList
 
         @Override
         public boolean onSingleTapConfirmed(float x, float y) {
+            mapController.pickMarker(x, y);
             return false;
+
         }
 
-        static  class MarkerToU
+
+
+    static  class MarkerToU
             {
                 Marker marker;
 
@@ -637,18 +715,14 @@ public class MapFragment extends Fragment implements DeviceChange,  LocationList
                         }
                 });
                     mMapView = (MapView) view.findViewById(R.id.glMapView);
-
                     mMapView.setKeepScreenOn(true);
                     speddTextView = (TextView) view.findViewById(R.id.mapSpeedtextView);
             sceneUpdates.add(new SceneUpdate("global.sdk_api_key", MAPZEN_API_KEY));
 
 
 
+
             mMapView.getMapAsync(this, getHttpHandler());
-
-
-
-
                                     centerImageButton.setOnClickListener(new View.OnClickListener()
                                         {
                                             @Override
@@ -663,161 +737,10 @@ public class MapFragment extends Fragment implements DeviceChange,  LocationList
                                                     followdev=-1;
                                                 }
                                         });
-                                    //mapzenMap.setStyle(new BubbleWrapStyle());
 
-//                                    mapController.setTapResponder(new TouchInput.TapResponder()
-//                                        {
-//                                            @Override
-//                                            public boolean onSingleTapUp(float x, float y)
-//                                                {
-//                                                    return false;
-//                                                }
-//                                            @Override
-//                                            public boolean onSingleTapConfirmed(float x, float y)
-//                                                {
-//
-//                                                    mapController.pickMarker(x, y);
-//                                                    return true;
-//                                                }
-//                                        });
-
-//                                    mapController.setLongPressResponder(new TouchInput.LongPressResponder()
-//                                        {
-//                                            @Override
-//                                            public void onLongPress(float x, float y)
-//                                                {
-//                                                    if(LocalService.channelList.size()>0)
-//                                                        {
-//                                                            LngLat l =mapController.screenPositionToLngLat(new PointF(x,y));
-//                                                            final JSONObject jo = new JSONObject();
-//                                                            try
-//                                                                {
-//                                                                    jo.put("lat", l.latitude);
-//                                                                    jo.put("lon", l.longitude);
-//                                                                }
-//                                                            catch (JSONException e1)
-//                                                                {
-//                                                                    e1.printStackTrace();
-//                                                                }
-//                                                            LinearLayout layout = new LinearLayout(getContext());
-//                                                            layout.setOrientation(LinearLayout.VERTICAL);
-//                                                            final TextView txv5 = new TextView(getContext());
-//                                                            txv5.setText(R.string.point_name_);
-//                                                            layout.addView(txv5);
-//                                                            final EditText pointName = new EditText(getContext());
-//                                                            layout.addView(pointName);
-//                                                            final TextView txv6 = new TextView(getContext());
-//                                                            txv6.setText(R.string.chanal);
-//                                                            layout.addView(txv6);
-//                                                            final Spinner groupSpinner = new Spinner(getContext());
-//                                                            layout.addView(groupSpinner);
-//                                                            List<Channel> activeChannelList = new ArrayList<Channel>();
-//                                                            for(Channel ch: LocalService.channelList)
-//                                                                {
-//                                                                    if(ch.send)
-//                                                                        {
-//                                                                            activeChannelList.add(ch);
-//                                                                        }
-//                                                                }
-//                                                            ArrayAdapter<Channel> dataAdapter = new ArrayAdapter<Channel>(getContext(), R.layout.spinneritem, activeChannelList);
-//                                                            groupSpinner.setAdapter(dataAdapter);
-//                                                            AlertDialog alertdialog1 = new AlertDialog.Builder(getContext()).setPositiveButton(R.string.yes, new DialogInterface.OnClickListener()
-//                                                                {
-//                                                                    @Override
-//                                                                    public void onClick(DialogInterface dialog, int which)
-//                                                                        {
-//                                                                        }
-//                                                                }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener()
-//                                                                {
-//                                                                    @Override
-//                                                                    public void onClick(DialogInterface dialog, int which)
-//                                                                        {
-//                                                                        }
-//                                                                }).create();
-//                                                            alertdialog1.setView(layout);
-//                                                            alertdialog1.setTitle(getContext().getString(R.string.point_create));
-//                                                            alertdialog1.setMessage(getContext().getString(R.string.point_create_description));
-//
-//                                                            alertdialog1.show();
-//                                                            alertdialog1.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(new CustomListener(alertdialog1)
-//                                                                {
-//                                                                    @Override
-//                                                                    public void onClick(View v)
-//                                                                        {
-//                                                                            if (LocalService.myIM.authed)
-//                                                                                {
-//                                                                                    if(groupSpinner.getSelectedItem()!=null)
-//                                                                                        {
-//                                                                                            try
-//                                                                                                {
-//                                                                                                    jo.put("name", pointName.getText().toString());
-//                                                                                                    jo.put("group", ((Channel) groupSpinner.getSelectedItem()).u);
-//                                                                                                }
-//                                                                                            catch (JSONException e1)
-//                                                                                                {
-//                                                                                                    e1.printStackTrace();
-//                                                                                                }
-//                                                                                            LocalService.myIM.sendToServer("GPA|" + jo.toString(), true);
-//                                                                                            super.dialog.dismiss();
-//                                                                                        }
-//                                                                                    else
-//                                                                                        {
-//                                                                                            Toast.makeText(getContext(), R.string.needselectpoint, Toast.LENGTH_SHORT).show();
-//                                                                                        }
-//                                                                                }
-//                                                                            else
-//                                                                                {
-//                                                                                    Toast.makeText(getContext(), R.string.CheckInternet, Toast.LENGTH_SHORT).show();
-//
-//                                                                                }
-//                                                                        }
-//                                                                });
-//
-//
-//                                                        }
-//                                                    else
-//                                                        {
-//                                                            Toast.makeText(getContext(), R.string.nogroupstosendpoint, Toast.LENGTH_SHORT).show();
-//                                                        }
-//                                                }
-//                                        });
 
 
                                     MapFragment.this.onChannelListChange();
-
-
-
-
-//                                    mapController.setPanResponder(new TouchInput.PanResponder()
-//                                        {
-//                                            @Override
-//                                            public boolean onPan(float startX, float startY, float endX, float endY)
-//                                                {
-//                                                    isFollow = false;
-//                                                    return false;
-//                                                }
-//                                            @Override
-//                                            public boolean onFling(float posX, float posY, float velocityX, float velocityY)
-//                                                {
-//                                                    return false;
-//                                                }
-//                                        });
-//                                    mapController.setDoubleTapResponder(new TouchInput.DoubleTapResponder()
-//                                        {
-//                                            @Override
-//                                            public boolean onDoubleTap(float x, float y)
-//                                                {
-//                                                    LngLat tappedPos = mapController.screenPositionToLngLat(new PointF(x, y));
-//                                                    LngLat currentPos = mapController.getPosition();
-//                                                    mapController.setZoom(mapController.getZoom() + 1.0f);
-//                                                    mapController.setPosition(new LngLat(0.5f * (tappedPos.longitude + currentPos.longitude), 0.5f * (tappedPos.latitude + currentPos.latitude)));
-//                                                    return true;
-//                                                }
-//                                        });
-
-
-
-
             return view;
         }
         private void createMarker() {
@@ -854,132 +777,114 @@ public class MapFragment extends Fragment implements DeviceChange,  LocationList
                     myLocationMarker.setPoint(new LngLat(location.getLongitude(), location.getLatitude()));
                     if(isFollow)
                         {
-                           // mapController.setPositionEased(new LngLat(location.getLongitude(), location.getLatitude()), 1000, MapController.EaseType.CUBIC);
-                            mapController.updateCameraPosition(CameraUpdateFactory.setPosition(new LngLat(location.getLongitude(), location.getLatitude())),1000, MapController.EaseType.CUBIC);
+                           mapController.updateCameraPosition(CameraUpdateFactory.setPosition(new LngLat(location.getLongitude(), location.getLatitude())),1000, MapController.EaseType.CUBIC);
                         }
                 }
         }
          void showTracks()
             {
-                mapData = mapController.addDataLayer("touch");
-                mapData.clear();
-                for(Marker m: allTracksWayPoints)
-                    {
+                if(mapController!=null) {
+                    mapData = mapController.addDataLayer("touch");
+                    mapData.clear();
+                    for (Marker m : allTracksWayPoints) {
                         mapController.removeMarker(m);
                     }
-                allTracksWayPoints.clear();
-                for(Channel ch: LocalService.channelList)
-                    {
-                        if(ch.send)
-                            {
-                                for (ColoredGPX cg : ch.gpxList)
-                                    {
-                                        Log.d(getClass().getSimpleName(), "for coloredgpx");
-                                        if (cg.status == ColoredGPX.Statuses.LOADED)
-                                            {
-                                                int currentSegment = -1;
-                                                Log.d(getClass().getSimpleName(), "for loaded coloredgpx size " + cg.points.size());
-                                                ArrayList<LngLat> lngLats = new ArrayList<>();
-                                                for (SegmentPoint sp : cg.points)
-                                                    {
-                                                        if (sp.segment == currentSegment)
-                                                            {
-                                                                Log.d(getClass().getSimpleName(), "for segment=currentsegment");
-                                                                //Log.d(getClass().getSimpleName(), "for segemntpoint " + sp.y / (double) 1000000 + ' ' + sp.x / (double) 1000000);
-                                                                lngLats.add(new LngLat(sp.y / (double) 1000000, sp.x / (double) 1000000));
-                                                            }
-                                                        else
-                                                            {
-                                                                if (lngLats.size() > 0)
-                                                                    {
-                                                                        Log.d(getClass().getSimpleName(), "for lngLats size>0");
-                                                                        Map<String, String> props = new HashMap<>();
-                                                                        props.put("type", "line");
-                                                                        props.put("color", String.format("#%06X", (0xFFFFFF & cg.color)));
-                                                                        Log.d(getClass().getSimpleName(), "for color= " + String.format("#%06X", (0xFFFFFF & cg.color)) + ' ' + lngLats.size());
-                                                                        mapData.addPolyline(lngLats, props);
-                                                                    }
-                                                                currentSegment = sp.segment;
-                                                                lngLats = new ArrayList<>();
-                                                            }
-                                                    }
+                    allTracksWayPoints.clear();
+                    for (Channel ch : LocalService.channelList) {
+                        if (ch.send) {
+                            for (ColoredGPX cg : ch.gpxList) {
+                                Log.d(getClass().getSimpleName(), "for coloredgpx");
+                                if (cg.status == ColoredGPX.Statuses.LOADED) {
+                                    int currentSegment = -1;
+                                    Log.d(getClass().getSimpleName(), "for loaded coloredgpx size " + cg.points.size());
+                                    ArrayList<LngLat> lngLats = new ArrayList<>();
+                                    for (SegmentPoint sp : cg.points) {
+                                        if (sp.segment == currentSegment) {
+                                            Log.d(getClass().getSimpleName(), "for segment=currentsegment");
+                                            //Log.d(getClass().getSimpleName(), "for segemntpoint " + sp.y / (double) 1000000 + ' ' + sp.x / (double) 1000000);
+                                            lngLats.add(new LngLat(sp.y / (double) 1000000, sp.x / (double) 1000000));
+                                        } else {
+                                            if (lngLats.size() > 0) {
                                                 Log.d(getClass().getSimpleName(), "for lngLats size>0");
                                                 Map<String, String> props = new HashMap<>();
                                                 props.put("type", "line");
                                                 props.put("color", String.format("#%06X", (0xFFFFFF & cg.color)));
                                                 Log.d(getClass().getSimpleName(), "for color= " + String.format("#%06X", (0xFFFFFF & cg.color)) + ' ' + lngLats.size());
                                                 mapData.addPolyline(lngLats, props);
-                                                for (Channel.Point p : cg.waypoints)
-                                                    {
-                                                        Marker m = mapController.addMarker();
-                                                        m.setUserData(p);
-                                                        m.setPoint(new LngLat(p.lon, p.lat));
-                                                        m.setStylingFromString("{ " + DEFAULT_STYLE + ", color: '" + String.format("#%06X", (0xFFFFFF & cg.color)) + "' }");
-                                                        allTracksWayPoints.add(m);
+                                            }
+                                            currentSegment = sp.segment;
+                                            lngLats = new ArrayList<>();
+                                        }
+                                    }
+                                    Log.d(getClass().getSimpleName(), "for lngLats size>0");
+                                    Map<String, String> props = new HashMap<>();
+                                    props.put("type", "line");
+                                    props.put("color", String.format("#%06X", (0xFFFFFF & cg.color)));
+                                    Log.d(getClass().getSimpleName(), "for color= " + String.format("#%06X", (0xFFFFFF & cg.color)) + ' ' + lngLats.size());
+                                    mapData.addPolyline(lngLats, props);
+                                    for (Channel.Point p : cg.waypoints) {
+                                        Marker m = mapController.addMarker();
+                                        m.setUserData(p);
+                                        m.setPoint(new LngLat(p.lon, p.lat));
+                                        m.setStylingFromString("{ " + DEFAULT_STYLE + ", color: '" + String.format("#%06X", (0xFFFFFF & cg.color)) + "' }");
+                                        allTracksWayPoints.add(m);
 //                                                        Marker t = mapController.addMarker();
 //                                                        t.setPoint(new LngLat(p.lon, p.lat));
 //                                                        String name = p.name.replace('/',' ');
 //                                                        //t.setStylingFromString("{ style: 'text', text_wrap: 18, max_lines: 3 ,text_source: \"function() { return '"+ name +"'; }\", collide: true,offset: [0px, -12px] ,font: { size: 10px, fill: '#ffffff', stroke: { color: '#000000', width: 2px } } }");
 //                                                        t.setStylingFromString("{ style: 'text', text_source: '\"function() { return '" + name+ "'; }\", collide: true,offset: [0px, -12px] ,font: { size: 10px, fill: '#ffffff', stroke: { color: '#000000', width: 2px } } }");
-                                                        //allTracksWayPoints.add(t);
+                                        //allTracksWayPoints.add(t);
 
-                                                    }
+                                    }
 
-                                            }
-                                    }
-                                for(Channel.Point p: ch.pointList)
-                                    {
-                                        Marker m = mapController.addMarker();
-                                        m.setUserData(p);
-                                        m.setPoint(new LngLat(p.lon, p.lat));
-                                        m.setStylingFromString("{ " + DEFAULT_STYLE + ", color: '" + String.format("#%06X", (0xFFFFFF & Color.parseColor(p.color))) + "' }");
-                                        allTracksWayPoints.add(m);
-                                    }
+                                }
                             }
-                    }
-                for(ColoredGPX cg:LocalService.showedgpxList)
-                    {
-                     //   Log.d(getClass().getSimpleName(), "for coloredgpx");
-                        if(cg.status== ColoredGPX.Statuses.LOADED)
-                            {
-                                int currentSegment=-1;
-                               // Log.d(getClass().getSimpleName(), "for loaded coloredgpx size "+cg.points.size());
-                                ArrayList<LngLat> lngLats = new ArrayList<>();
-                                for (SegmentPoint sp : cg.points)
-                                    {
-                                        if(sp.segment==currentSegment)
-                                            {
-                                              //  Log.d(getClass().getSimpleName(), "for segment=currentsegment");
-                                                //Log.d(getClass().getSimpleName(), "for segemntpoint " + sp.y / (double) 1000000 + ' ' + sp.x / (double) 1000000);
-                                                lngLats.add(new LngLat(sp.y / (double) 1000000, sp.x / (double) 1000000));
-                                            }
-                                        else
-                                            {
-                                                if(lngLats.size()>0)
-                                                    {
-                                                     //   Log.d(getClass().getSimpleName(), "for lngLats size>0");
-                                                        Map<String, String> props = new HashMap<>();
-                                                        props.put("type", "line");
-                                                        props.put("color", String.format("#%06X", (0xFFFFFF & cg.color)));
-                                                       // Log.d(getClass().getSimpleName(), "for color= " + String.format("#%06X", (0xFFFFFF & cg.color)) + ' ' + lngLats.size());
-                                                        mapData.addPolyline(lngLats, props);
-                                                    }
-
-                                                currentSegment=sp.segment;
-                                                lngLats = new ArrayList<>();
-
-                                            }
-                                    }
-                                Log.d(getClass().getSimpleName(), "for lngLats size>0");
-                                Map<String, String> props = new HashMap<>();
-                                props.put("type", "line");
-                                props.put("color", String.format("#%06X", (0xFFFFFF & cg.color)));
-                                //Log.d(getClass().getSimpleName(), "for color= " + String.format("#%06X", (0xFFFFFF & cg.color)) + ' ' + lngLats.size());
-                                mapData.addPolyline(lngLats, props);
-
-
+                            for (Channel.Point p : ch.pointList) {
+                                Marker m = mapController.addMarker();
+                                m.setUserData(p);
+                                m.setPoint(new LngLat(p.lon, p.lat));
+                                m.setStylingFromString("{ " + DEFAULT_STYLE + ", color: '" + String.format("#%06X", (0xFFFFFF & Color.parseColor(p.color))) + "' }");
+                                allTracksWayPoints.add(m);
                             }
+                        }
                     }
+                    for (ColoredGPX cg : LocalService.showedgpxList) {
+                        //   Log.d(getClass().getSimpleName(), "for coloredgpx");
+                        if (cg.status == ColoredGPX.Statuses.LOADED) {
+                            int currentSegment = -1;
+                            // Log.d(getClass().getSimpleName(), "for loaded coloredgpx size "+cg.points.size());
+                            ArrayList<LngLat> lngLats = new ArrayList<>();
+                            for (SegmentPoint sp : cg.points) {
+                                if (sp.segment == currentSegment) {
+                                    //  Log.d(getClass().getSimpleName(), "for segment=currentsegment");
+                                    //Log.d(getClass().getSimpleName(), "for segemntpoint " + sp.y / (double) 1000000 + ' ' + sp.x / (double) 1000000);
+                                    lngLats.add(new LngLat(sp.y / (double) 1000000, sp.x / (double) 1000000));
+                                } else {
+                                    if (lngLats.size() > 0) {
+                                        //   Log.d(getClass().getSimpleName(), "for lngLats size>0");
+                                        Map<String, String> props = new HashMap<>();
+                                        props.put("type", "line");
+                                        props.put("color", String.format("#%06X", (0xFFFFFF & cg.color)));
+                                        // Log.d(getClass().getSimpleName(), "for color= " + String.format("#%06X", (0xFFFFFF & cg.color)) + ' ' + lngLats.size());
+                                        mapData.addPolyline(lngLats, props);
+                                    }
+
+                                    currentSegment = sp.segment;
+                                    lngLats = new ArrayList<>();
+
+                                }
+                            }
+                            Log.d(getClass().getSimpleName(), "for lngLats size>0");
+                            Map<String, String> props = new HashMap<>();
+                            props.put("type", "line");
+                            props.put("color", String.format("#%06X", (0xFFFFFF & cg.color)));
+                            //Log.d(getClass().getSimpleName(), "for color= " + String.format("#%06X", (0xFFFFFF & cg.color)) + ' ' + lngLats.size());
+                            mapData.addPolyline(lngLats, props);
+
+
+                        }
+                    }
+                }
             }
 //        private static BitmapDrawable getBitmapDrawable(VectorDrawable vectorDrawable) {
 //            Bitmap bitmap = Bitmap.createBitmap(vectorDrawable.getIntrinsicWidth(),
@@ -1028,11 +933,15 @@ public class MapFragment extends Fragment implements DeviceChange,  LocationList
                     }
                 if(myLocationMarker!=null)
                     {
-                        myLocationMarker.setPointEased(new LngLat(location.getLongitude(), location.getLatitude()), 200, MapController.EaseType.CUBIC);
+                        try {
+                            myLocationMarker.setPointEased(new LngLat(location.getLongitude(), location.getLatitude()), 200, MapController.EaseType.CUBIC);
+                        } catch (RuntimeException e) {
+                            addlog("tangram pointer to locationmarker is null, panic");
+                        }
                         if (location.hasBearing())
                             {
-                                addlog("has bearing");
-                                addlog( "on bearing: "+"{ " + LOCATION_STYLE + ", angle: " + ((int) location.getBearing()) + " }");
+//                                addlog("has bearing");
+//                                addlog( "on bearing: "+"{ " + LOCATION_STYLE + ", angle: " + ((int) location.getBearing()) + " }");
                                 //myLocationMarker.setDrawable(R.drawable.myloc);
                                 myLocationMarker.setDrawOrder(2000);
                                 myLocationMarker.setStylingFromString("{ " + LOCATION_STYLE + ", angle: " + ((int) location.getBearing()) + " }");
@@ -1056,10 +965,12 @@ public class MapFragment extends Fragment implements DeviceChange,  LocationList
         @Override
         public void onDeviceChange(Device dev)
             {
+                Log.d(getClass().getSimpleName(), "map on device change");
                 for (MarkerToU m: markerToUs)
                     {
                         if(m.u==dev.u)
                             {
+                                Log.d(getClass().getSimpleName(), "map on device change - move");
                                 LngLat point = new LngLat((double) dev.lon, (double) dev.lat);
                                 m.marker.setPointEased(point,6000, MapController.EaseType.SINE);
                                 m.textMarker.setPointEased(point,6000, MapController.EaseType.SINE);
