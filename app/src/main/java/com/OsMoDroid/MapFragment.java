@@ -369,7 +369,7 @@ public class MapFragment extends Fragment implements DeviceChange,  LocationList
                     break;
                 case 2:
                     //mapController.loadSceneFile("asset:///walkabout-style.zip", sceneUpdates);
-                    sceneYaml = "import: [asset:///bubble-wrap-style.zip, asset:///label-11.zip]";
+                    sceneYaml = "import: [asset:////walkabout-style.zip, asset:///label-11.zip]";
                     mapController.loadSceneYaml(sceneYaml, "", sceneUpdates);
                     break;
                 case 3:
