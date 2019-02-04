@@ -145,7 +145,7 @@ public class IM implements ResultsListener {
                 }
             }
             LocalService.addlog("Online timeout onReceive, OsmodroidVisible=" + OsMoDroid.gpslocalserviceclientVisible + " gcmtodo=" + localService.gcmtodolist.size() + " where=" + localService.where + " existactivedevice=" + existactiveDevice + " state=" + localService.state);
-            if (OsMoDroid.gpslocalserviceclientVisible || localService.state || (localService.isOnline() && localService.gcmtodolist.size() > 0) || localService.where
+            if (OsMoDroid.gpslocalserviceclientVisible ||localService.followmonstarted|| localService.state || (localService.isOnline() && localService.gcmtodolist.size() > 0) || localService.where
                     || (OsMoDroid.settings.getBoolean("subscribebackground", false) && existactiveDevice)) {
                 setOnlineTimeout();
             } else {
@@ -1127,6 +1127,14 @@ public class IM implements ResultsListener {
             if (param.equals(OsMoDroid.REFRESH_DEVICES)) {
                 sendToServer("DEVICE", false);
                 sendToServer("RCR:" + OsMoDroid.REFRESH_DEVICES + "|1", false);
+            }
+            if (param.equals(OsMoDroid.TRACKER_FOLLOW_START)) {
+               localService.startFollow(addict);
+                sendToServer("RCR:" + OsMoDroid.TRACKER_FOLLOW_START + "|1", false);
+            }
+            if (param.equals(OsMoDroid.TRACKER_FOLLOW_STOP)) {
+                localService.stopFollow();
+                sendToServer("RCR:" + OsMoDroid.TRACKER_FOLLOW_STOP + "|1", false);
             }
             if (param.equals(OsMoDroid.TRACKER_SESSION_START)) {
                 if (!localService.state) {

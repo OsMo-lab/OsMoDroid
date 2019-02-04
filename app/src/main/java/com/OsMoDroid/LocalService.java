@@ -29,6 +29,7 @@ import org.osmdroid.util.BoundingBox;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 
+import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -131,6 +132,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
         Boolean sos = false;
         Boolean signalisationOn = false;
         int notifyid = 2;
+        boolean followmonstarted=false;
        // int gpson;
        // int gpsoff;
        // int ineton;
@@ -275,6 +277,29 @@ public class LocalService extends Service implements LocationListener, GpsStatus
         public static ArrayList<Entry> avgspeeddistanceEntryList = new ArrayList<Entry>();
         public static ArrayList<Entry> altitudedistanceEntryList = new ArrayList<Entry>();
         public static ArrayList<String> distanceStringList = new ArrayList<String>();
+
+        LocationListener followLocationListener = new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+                myIM.sendToServer(locationtoSending(location)+'F',false);
+            }
+
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+
+            }
+
+            @Override
+            public void onProviderEnabled(String provider) {
+
+            }
+
+            @Override
+            public void onProviderDisabled(String provider) {
+
+            }
+        };
+
         LocationListener singleLocationListener = new LocationListener()
             {
                 @Override
@@ -1158,6 +1183,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
         @Override
         public void onDestroy()
             {
+                stopFollow();
                 try {
                     osmand.cleanupResources();
                 } catch (Exception e) {
@@ -1176,7 +1202,8 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                     {
                         Log.d(this.getClass().getName(), "Disable signalisation after destroy");
                     }
-                if (state)
+
+                    if (state)
                     {
                         stopServiceWork(false);
                     }
@@ -1369,6 +1396,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                         if (intent.hasExtra("ACTION"))
                             {
                                 Log.d(getClass().getSimpleName(), "on handleStart intent has ACTION=" + intent.getStringExtra("ACTION"));
+                                stopFollow();
                                 if (intent.getStringExtra("ACTION").equals("STOP")&& state)
                                     {
                                         stopServiceWork(true);
@@ -1521,7 +1549,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                             {
                                 closeGPX();
                             }
-                        requestLocationUpdates();
+                        requestLocationUpdates(LocalService.this);
                     }
                 if (myIM.start == false && live)
                     {
@@ -1538,6 +1566,53 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                     }
                 addlog("apply pref");
             }
+
+        public void startFollow(String text)
+        {
+            if(!followmonstarted&&!state)
+            {
+                requestLocationUpdates(followLocationListener);
+                int icon = R.drawable.eye;
+                CharSequence tickerText = text; //getString(R.string.Working);
+                long when = System.currentTimeMillis();
+                Intent notificationIntent = new Intent(this, GPSLocalServiceClient.class);
+                notificationIntent.setAction(Intent.ACTION_MAIN);
+                notificationIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+                osmodroidLaunchIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+                foregroundnotificationBuilder = new NotificationCompat.Builder(this,"default");
+                foregroundnotificationBuilder.setWhen(System.currentTimeMillis());
+                foregroundnotificationBuilder.setContentText(tickerText);
+                foregroundnotificationBuilder.setContentTitle("OsMoDroid");
+                foregroundnotificationBuilder.setSmallIcon(icon);
+                foregroundnotificationBuilder.setContentIntent(osmodroidLaunchIntent);
+                foregroundnotificationBuilder.setChannelId("silent");
+
+                Intent is = new Intent(this, LocalService.class);
+                is.putExtra("ACTION", "STOP");
+
+                PendingIntent stop = PendingIntent.getService(this, 0, is, PendingIntent.FLAG_UPDATE_CURRENT);
+                foregroundnotificationBuilder.addAction(android.R.drawable.ic_delete, getString(R.string.stop_monitoring), stop);
+                Notification notification = foregroundnotificationBuilder.build();
+                //notification = new Notification(icon, tickerText, when);
+                //notification.setLatestEventInfo(getApplicationContext(), "OsMoDroid", getString(R.string.monitoringactive), osmodroidLaunchIntent);
+                startForeground(OSMODROID_ID, notification);
+                followmonstarted=true;
+                addlog("follow started");
+            }
+
+        }
+        public void stopFollow()
+        {
+            if(followmonstarted)
+            {
+                myManager.removeUpdates(followLocationListener);
+                stopForeground(true);
+                followmonstarted=false;
+                addlog("follow stoped");
+            }
+
+        }
+
         public void startServiceWork(boolean opensession)
             {
                 addlog("startservicework opensession="+opensession);
@@ -1590,7 +1665,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                             }
                     }
                 setPause(false);
-                requestLocationUpdates();
+                requestLocationUpdates(LocalService.this);
                 int icon = R.drawable.eye;
                 CharSequence tickerText = getString(R.string.monitoringstarted); //getString(R.string.Working);
                 long when = System.currentTimeMillis();
@@ -1682,6 +1757,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                 byte[] sha1hash = md.digest();
                 return convertToHex(sha1hash);
             }
+        @SuppressLint("MissingPermission")
         public void sendid()
             {
                 OsMoDroid.editor.putString("p", "");
@@ -1735,7 +1811,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                         tts = null;
                     }
             }
-        public void requestLocationUpdates()
+        public void requestLocationUpdates(LocationListener locationListener)
             {
                 if (log)
                     {
@@ -1752,7 +1828,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                         if (list.contains(LocationManager.GPS_PROVIDER))
                             {
                                 try {
-                                    myManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, pollperiod, 0, LocalService.this);
+                                    myManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, pollperiod, 0, locationListener);
                                     myManager.addGpsStatusListener(LocalService.this);
                                 } catch (SecurityException e) {
                                     e.printStackTrace();
@@ -1771,7 +1847,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                         if (list.contains(LocationManager.NETWORK_PROVIDER))
                             {
                                 try {
-                                    myManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, pollperiod, 0, LocalService.this);
+                                    myManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, pollperiod, 0, locationListener);
                                 } catch (SecurityException e) {
                                     e.printStackTrace();
                                 }
@@ -2496,46 +2572,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                 //T|L53.1:30.3S2A4H2B23
                 if (myIM != null && myIM.authed && sending.equals("")&&sessionstarted)
                     {
-                        if (log)
-                            {
-                                Log.d(this.getClass().getName(), "Отправка:" + myIM.authed + " s " + sending);
-                            }
-                        if ((location.getSpeed() * 3.6) >= 6)
-                            {
-                                sending =
-                                        "T|L" + OsMoDroid.df6.format(location.getLatitude()) + ":" + OsMoDroid.df6.format(location.getLongitude())
-                                                + "S" + OsMoDroid.df0.format(location.getSpeed())
-                                                + "A" + OsMoDroid.df0.format(location.getAltitude())
-                                                + "H" + OsMoDroid.df0.format(location.getAccuracy())
-                                                + "C" + OsMoDroid.df0.format(location.getBearing());
-                                if (usebuffer)
-                                    {
-                                        sending = sending + "T" + location.getTime() / 1000;
-                                    }
-                            }
-                        if ((location.getSpeed() * 3.6) < 6)
-                            {
-                                sending =
-                                        "T|L" + OsMoDroid.df6.format(location.getLatitude()) + ":" + OsMoDroid.df6.format(location.getLongitude())
-                                                + "S" + OsMoDroid.df0.format(location.getSpeed())
-                                                + "A" + OsMoDroid.df0.format(location.getAltitude())
-                                                + "H" + OsMoDroid.df0.format(location.getAccuracy());
-                                if (usebuffer)
-                                    {
-                                        sending = sending + "T" + location.getTime() / 1000;
-                                    }
-                            }
-                        if ((location.getSpeed() * 3.6) <= 1)
-                            {
-                                sending =
-                                        "T|L" + OsMoDroid.df6.format(location.getLatitude()) + ":" + OsMoDroid.df6.format(location.getLongitude())
-                                                + "A" + OsMoDroid.df0.format(location.getAltitude())
-                                                + "H" + OsMoDroid.df0.format(location.getAccuracy());
-                                if (usebuffer)
-                                    {
-                                        sending = sending + "T" + location.getTime() / 1000;
-                                    }
-                            }
+                        sending=locationtoSending(location);
                         if(!gps)
                             {
                                 sending=sending+"M";
@@ -2605,6 +2642,52 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                         addlog(Boolean.toString(myIM==null)+Boolean.toString(!myIM.authed)+Boolean.toString(OsMoDroid.settings.getBoolean("sendsms",false)));
                     }
             }
+
+        private String locationtoSending(Location location) {
+            String sending="";
+            if (log)
+                {
+                    Log.d(this.getClass().getName(), "Отправка:" + myIM.authed + " s " + sending);
+                }
+            if ((location.getSpeed() * 3.6) >= 6)
+                {
+                    sending =
+                            "T|L" + OsMoDroid.df6.format(location.getLatitude()) + ":" + OsMoDroid.df6.format(location.getLongitude())
+                                    + "S" + OsMoDroid.df0.format(location.getSpeed())
+                                    + "A" + OsMoDroid.df0.format(location.getAltitude())
+                                    + "H" + OsMoDroid.df0.format(location.getAccuracy())
+                                    + "C" + OsMoDroid.df0.format(location.getBearing());
+                    if (usebuffer)
+                        {
+                            sending = sending + "T" + location.getTime() / 1000;
+                        }
+                }
+            if ((location.getSpeed() * 3.6) < 6)
+                {
+                    sending =
+                            "T|L" + OsMoDroid.df6.format(location.getLatitude()) + ":" + OsMoDroid.df6.format(location.getLongitude())
+                                    + "S" + OsMoDroid.df0.format(location.getSpeed())
+                                    + "A" + OsMoDroid.df0.format(location.getAltitude())
+                                    + "H" + OsMoDroid.df0.format(location.getAccuracy());
+                    if (usebuffer)
+                        {
+                            sending = sending + "T" + location.getTime() / 1000;
+                        }
+                }
+            if ((location.getSpeed() * 3.6) <= 1)
+                {
+                    sending =
+                            "T|L" + OsMoDroid.df6.format(location.getLatitude()) + ":" + OsMoDroid.df6.format(location.getLongitude())
+                                    + "A" + OsMoDroid.df0.format(location.getAltitude())
+                                    + "H" + OsMoDroid.df0.format(location.getAccuracy());
+                    if (usebuffer)
+                        {
+                            sending = sending + "T" + location.getTime() / 1000;
+                        }
+                }
+                return sending;
+        }
+
         public void onGpsStatusChanged(int event)
             {
                 int MaxPrn = 0;
