@@ -3,12 +3,14 @@ import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.os.Build;
 import android.preference.PreferenceManager;
 import android.view.inputmethod.InputMethodManager;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.squareup.leakcanary.LeakCanary;
 
+import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.constants.OpenStreetMapTileProviderConstants;
 
 import java.text.DecimalFormat;
@@ -22,7 +24,7 @@ public class OsMoDroid extends Application
         public static final String NOTIFIESFILENAME = "messagelist";
         public static final String DEVLIST = "devlist";
         public static final String CHANNELLIST = "chlist";
-        public static final String app_code = "hY7aV32Kbz";
+        public static final String app_code = "sgaGasf43g";
         public static final String TRACKER_GCM_ID = "80";
         public static final String TRACKER_BATTERY_INFO = "11";
         public static final String TRACKER_SATELLITES_INFO = "13";
@@ -116,7 +118,7 @@ public class OsMoDroid extends Application
                 context = getApplicationContext();
                 Thread.setDefaultUncaughtExceptionHandler(ExceptionHandler.inContext(context));
                 inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                OpenStreetMapTileProviderConstants.setUserAgentValue(BuildConfig.APPLICATION_ID);
+                Configuration.getInstance().load(this,settings);
                 super.onCreate();
                 LeakCanary.install(this);
                 mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);

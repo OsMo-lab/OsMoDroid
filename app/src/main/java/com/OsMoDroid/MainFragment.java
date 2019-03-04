@@ -558,6 +558,16 @@ public class MainFragment extends Fragment implements GPSLocalServiceClient.upd
                                                                                         return;
                                                                                     }
                                                                             });
+                                                                alertdialog.setButton2(getString(R.string.No),
+                                                                        new DialogInterface.OnClickListener()
+                                                                        {
+                                                                            public void onClick(DialogInterface dialog, int which)
+                                                                            {
+                                                                                return;
+                                                                            }
+                                                                        });
+
+                                                                alertdialog.show();
                                                             }
 
 
@@ -590,7 +600,7 @@ public class MainFragment extends Fragment implements GPSLocalServiceClient.upd
                 {
                     public void onClick(View v)
                         {
-                            if(globalActivity.mService.buffer.size()==0)
+                            if(globalActivity.mService.buffer.size()==0||LocalService.paused)
                                 {
                                     if (OsMoDroid.settings.getBoolean("usegps", true))
                                         {
@@ -638,6 +648,15 @@ public class MainFragment extends Fragment implements GPSLocalServiceClient.upd
                                                             return;
                                                         }
                                                 });
+                                    alertdialog.setButton2(getString(R.string.No),
+                                            new DialogInterface.OnClickListener()
+                                            {
+                                                public void onClick(DialogInterface dialog, int which)
+                                                {
+                                                    return;
+                                                }
+                                            });
+                                    alertdialog.show();
                                 }
                         }
                 });

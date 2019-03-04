@@ -493,7 +493,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
         private boolean bindedremote;
         private boolean bindedlocaly;
         private int pollperiod = 0;
-        boolean paused = false;
+        static boolean paused = false;
         private static boolean log = true;
         String sending = "";
         ArrayList<String> buffer = new ArrayList<String>();
@@ -1070,8 +1070,8 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                 postjson.put("androidversion", androidver);
                 postjson.put("devicename", getDeviceName());
                 postjson.put("display", Integer.toString(width) + "x" + Integer.toString(height));
-                postjson.put("tz", TimeZone.getDefault().getDisplayName());
-                postjson.put("locale", Locale.getDefault().getDisplayLanguage());
+                postjson.put("tz", TimeZone.getDefault().getID());
+                postjson.put("locale", Locale.getDefault().getISO3Language());
 
                 myIM.sendToServer("RCR:" + OsMoDroid.TRACKER_SYSTEM_INFO + "|" + postjson.toString(), false);
             }
@@ -1569,11 +1569,19 @@ public class LocalService extends Service implements LocationListener, GpsStatus
 
         public void startFollow(String text)
         {
-            if(!followmonstarted&&!state)
+            try {
+                JSONObject jo = new JSONObject(text);
+                //RC:7|{"interval":5, "source": "gps", "message": "Вася наблюдает за вами"}
+                int interval = jo.optInt("interval", 5);
+                String source = jo.optString("source", "all");
+                String message = jo.optString("message", "Server watch you");
+
+
+            if(!state)
             {
-                requestLocationUpdates(followLocationListener);
+                myManager.removeUpdates(followLocationListener);
+                requestLocationUpdates(followLocationListener,  source , interval);
                 int icon = R.drawable.eye;
-                CharSequence tickerText = text; //getString(R.string.Working);
                 long when = System.currentTimeMillis();
                 Intent notificationIntent = new Intent(this, GPSLocalServiceClient.class);
                 notificationIntent.setAction(Intent.ACTION_MAIN);
@@ -1581,11 +1589,11 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                 osmodroidLaunchIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
                 foregroundnotificationBuilder = new NotificationCompat.Builder(this,"default");
                 foregroundnotificationBuilder.setWhen(System.currentTimeMillis());
-                foregroundnotificationBuilder.setContentText(tickerText);
+                foregroundnotificationBuilder.setContentText(message);
                 foregroundnotificationBuilder.setContentTitle("OsMoDroid");
                 foregroundnotificationBuilder.setSmallIcon(icon);
                 foregroundnotificationBuilder.setContentIntent(osmodroidLaunchIntent);
-                foregroundnotificationBuilder.setChannelId("silent");
+                foregroundnotificationBuilder.setChannelId("noisy");
 
                 Intent is = new Intent(this, LocalService.class);
                 is.putExtra("ACTION", "STOP");
@@ -1593,11 +1601,14 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                 PendingIntent stop = PendingIntent.getService(this, 0, is, PendingIntent.FLAG_UPDATE_CURRENT);
                 foregroundnotificationBuilder.addAction(android.R.drawable.ic_delete, getString(R.string.stop_monitoring), stop);
                 Notification notification = foregroundnotificationBuilder.build();
-                //notification = new Notification(icon, tickerText, when);
-                //notification.setLatestEventInfo(getApplicationContext(), "OsMoDroid", getString(R.string.monitoringactive), osmodroidLaunchIntent);
                 startForeground(OSMODROID_ID, notification);
                 followmonstarted=true;
                 addlog("follow started");
+
+            }
+            } catch (JSONException e) {
+                addlog("incorrect data in command -json not parsed");
+                return;
             }
 
         }
@@ -1790,7 +1801,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                         IMEI = "unknown";
                     }
 
-                        APIcomParams params = new APIcomParams("https://api.osmo.mobi/new", "platform=" + getDeviceName() + version + android.os.Build.PRODUCT + "&app=" + OsMoDroid.app_code + "&id=" + androidID + "&imei=" + IMEI+"&tz=" + TimeZone.getDefault().getDisplayName()+"&locale=" + Locale.getDefault().getDisplayLanguage(), "sendid");
+                        APIcomParams params = new APIcomParams("https://api.osmo.mobi/new", "platform=" + getDeviceName() + version + android.os.Build.PRODUCT + "&app=" + OsMoDroid.app_code + "&id=" + androidID + "&imei=" + IMEI+"&tz=" + TimeZone.getDefault().getDisplayName(Locale.ENGLISH)+"&locale=" + Locale.getDefault().getISO3Language(), "sendid");
                         MyAsyncTask sendidtask = new Netutil.MyAsyncTask(this);
                         sendidtask.execute(params);
                         Log.d(getClass().getSimpleName(), "sendidtask start to execute");
@@ -1811,6 +1822,34 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                         tts = null;
                     }
             }
+        public void requestLocationUpdates(LocationListener locationListener, String source, int interval) throws SecurityException
+        {
+            addlog("poll period "+interval*1000);
+            addlog("Source "+source);
+            List<String> list = myManager.getAllProviders();
+            switch (source)
+            {
+                case ("gps"):
+                    if (list.contains(LocationManager.GPS_PROVIDER)) {
+                        myManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, interval * 1000, 0, locationListener);
+                    }
+                    break;
+                case ("net"):
+                    if (list.contains(LocationManager.NETWORK_PROVIDER)) {
+                        myManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, interval * 1000, 0, locationListener);
+                    }
+                    break;
+                case ("all"):
+                    if (list.contains(LocationManager.GPS_PROVIDER)) {
+                        myManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, interval * 1000, 0, locationListener);
+                    }
+                    if (list.contains(LocationManager.NETWORK_PROVIDER)) {
+                        myManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, interval * 1000, 0, locationListener);
+                    }
+
+                    break;
+            }
+        }
         public void requestLocationUpdates(LocationListener locationListener)
             {
                 if (log)

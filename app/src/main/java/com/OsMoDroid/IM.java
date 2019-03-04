@@ -408,7 +408,7 @@ public class IM implements ResultsListener {
             JSONObject postjson = getNET();
             checkadressing = true;
             APIcomParams params = null;
-            params = new APIcomParams("https://api.osmo.mobi/serv?app=o12gEq2Qyl&id=" + OsMoDroid.settings.getString("tracker_id", ""), "", "checkaddres");
+            params = new APIcomParams("https://api.osmo.mobi/serv?app="+OsMoDroid.app_code+"&id=" + OsMoDroid.settings.getString("tracker_id", ""), "", "checkaddres");
 
             sendidtask = new Netutil.MyAsyncTask(this);
             sendidtask.execute(params);
@@ -1129,8 +1129,12 @@ public class IM implements ResultsListener {
                 sendToServer("RCR:" + OsMoDroid.REFRESH_DEVICES + "|1", false);
             }
             if (param.equals(OsMoDroid.TRACKER_FOLLOW_START)) {
-               localService.startFollow(addict);
-                sendToServer("RCR:" + OsMoDroid.TRACKER_FOLLOW_START + "|1", false);
+                try {
+                    localService.startFollow(addict);
+                    sendToServer("RCR:" + OsMoDroid.TRACKER_FOLLOW_START + "|1", false);
+                } catch (Exception e) {
+                    sendToServer("RCR:" + OsMoDroid.TRACKER_FOLLOW_START + "|0", false);
+                }
             }
             if (param.equals(OsMoDroid.TRACKER_FOLLOW_STOP)) {
                 localService.stopFollow();
