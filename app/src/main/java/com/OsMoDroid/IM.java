@@ -712,9 +712,9 @@ public class IM implements ResultsListener {
                 }
                 if (needclosesession) {
                     if (localService.sendingbuffer.size() == 0 && localService.buffer.size() != 0) {
-                        localService.sendingbuffer.addAll(localService.buffer);
-                        localService.buffer.clear();
-                        localService.myIM.sendToServer("B|" + new JSONArray(localService.sendingbuffer), false);
+                        localService.sendingbuffer.addAll(localService.buffer.subList(0,localService.buffer.size()>100?100:localService.buffer.size()));
+                        localService.buffer.removeAll(localService.sendingbuffer);
+                        sendToServer("B|" + new JSONArray(localService.sendingbuffer), false);
                     } else {
                         addlog("not send buffer becase, sendingbuffersize=" + localService.sendingbuffer.size() + " localService.buffer.size=" + localService.buffer.size());
                     }
@@ -986,8 +986,8 @@ public class IM implements ResultsListener {
             OsMoDroid.editor.putString("viewurl", "https://osmo.mobi/s/" + jo.optString("url"));
             OsMoDroid.editor.commit();
             if (localService.sendingbuffer.size() == 0 && localService.buffer.size() != 0) {
-                localService.sendingbuffer.addAll(localService.buffer);
-                localService.buffer.clear();
+                localService.sendingbuffer.addAll(localService.buffer.subList(0,localService.buffer.size()>100?100:localService.buffer.size()));
+                localService.buffer.removeAll(localService.sendingbuffer);
                 sendToServer("B|" + new JSONArray(localService.sendingbuffer), false);
             } else {
                 addlog("not send buffer becase, sendingbuffersize=" + localService.sendingbuffer.size() + " localService.buffer.size=" + localService.buffer.size());
@@ -1005,8 +1005,8 @@ public class IM implements ResultsListener {
             localService.sendcounter++;
             localService.sending = "";
             if (localService.sendingbuffer.size() == 0 && localService.buffer.size() != 0) {
-                localService.sendingbuffer.addAll(localService.buffer);
-                localService.buffer.clear();
+                localService.sendingbuffer.addAll(localService.buffer.subList(0,localService.buffer.size()>100?100:localService.buffer.size()));
+                localService.buffer.removeAll(localService.sendingbuffer);
                 sendToServer("B|" + new JSONArray(localService.sendingbuffer), false);
             } else {
                 addlog("not send buffer becase, sendingbuffersize=" + localService.sendingbuffer.size() + " localService.buffer.size=" + localService.buffer.size());
@@ -1024,6 +1024,13 @@ public class IM implements ResultsListener {
             localService.buffercounter = localService.buffercounter - localService.sendingbuffer.size();
             localService.sendcounter = localService.sendcounter + localService.sendingbuffer.size();
             localService.sendingbuffer.clear();
+            if (localService.sendingbuffer.size() == 0 && localService.buffer.size() != 0) {
+                localService.sendingbuffer.addAll(localService.buffer.subList(0,localService.buffer.size()>100?100:localService.buffer.size()));
+                localService.buffer.removeAll(localService.sendingbuffer);
+                sendToServer("B|" + new JSONArray(localService.sendingbuffer), false);
+            } else {
+                addlog("not send buffer becase, sendingbuffersize=" + localService.sendingbuffer.size() + " localService.buffer.size=" + localService.buffer.size());
+            }
             localService.refresh();
         }
         if (command.equals("PP")) {

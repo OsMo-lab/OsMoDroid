@@ -2001,8 +2001,8 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                             {
                                 if (sendingbuffer.size() == 0 && buffer.size() != 0)
                                     {
-                                        sendingbuffer.addAll(buffer);
-                                        buffer.clear();
+                                        sendingbuffer.addAll(buffer.subList(0,buffer.size()>100?100:buffer.size()));
+                                        buffer.removeAll(sendingbuffer);
                                         myIM.sendToServer("B|" + new JSONArray(sendingbuffer), false);
                                     }
                                 myIM.sendToServer("TC", false);
@@ -2014,7 +2014,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                                 myIM.needclosesession = true;
                                 myIM.needopensession = false;
                             }
-                        buffer.clear();
+                        //buffer.clear();
                     }
                 if (gpx && fileheaderok && stopsession)
                     {
@@ -2814,17 +2814,33 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                                         }
                                         for (Device dev : ch.deviceList)
                                             {
-                                                double lat = dev.lat;
-                                                double lon = dev.lon;
-                                                if(nord==0){ nord = lat;}
-                                                if(sud==0){ sud = lat;}
-                                                if(ovest==0){ovest = lon;}
-                                                if(est==0){est = lon;}
+                                                int count=0;
+                                                if(dev.lat!=0&&dev.lon!=0) {
+                                                    count++;
+                                                    double lat = dev.lat;
+                                                    double lon = dev.lon;
+                                                    if (nord == 0) {
+                                                        nord = lat;
+                                                    }
+                                                    if (sud == 0) {
+                                                        sud = lat;
+                                                    }
+                                                    if (ovest == 0) {
+                                                        ovest = lon;
+                                                    }
+                                                    if (est == 0) {
+                                                        est = lon;
+                                                    }
 
-                                                if ( (lat > nord)) nord = lat;
-                                                if ( (lat < sud))  sud = lat;
-                                                if ( (lon < ovest)) ovest = lon;
-                                                if ( (lon > est)) est = lon;
+                                                    if ((lat > nord)) nord = lat;
+                                                    if ((lat < sud)) sud = lat;
+                                                    if ((lon < ovest)) ovest = lon;
+                                                    if ((lon > est)) est = lon;
+                                                }
+                                                if(count<2)
+                                                {
+                                                    odin=true;
+                                                }
 
 
                                             }
