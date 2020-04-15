@@ -6,7 +6,7 @@
     
     <PreferenceCategory android:title="@string/general">
         <CheckBoxPreference android:title="@string/dark_theme" android:defaultValue="true" android:key="darktheme" />
-        <EditTextPreference android:summary="@string/milliseconds" android:title="@string/gps_poll_period" android:key="refreshrate" android:defaultValue="5000"/>
+<!--        <com.pavelsikun.seekbarpreference.SeekBarPreference android:summary="@string/seconds" android:title="@string/gps_poll_period" android:key="refreshrateinteger" android:defaultValue="5"/>-->
         <EditTextPreference android:summary="@string/seconds" android:title="@string/network_timeout" android:key="timeout" android:defaultValue="30"/>
         <CheckBoxPreference
             android:defaultValue="false"
@@ -22,7 +22,7 @@
             android:key="live"
             android:title="@string/live_monitoring"/>
 
-                    <PreferenceScreen android:title="@string/monitoring_settings" android:dependency="live">
+                    <!--<PreferenceScreen android:title="@string/monitoring_settings" android:dependency="live">
                             <EditTextPreference
                                 android:digits="0123456789"
                                 android:inputType="number"
@@ -74,7 +74,7 @@
                                 android:title="@string/transfer_unsent"
                                 android:summary="@string/useful_with_unstable_internet_connections_may_use_more_data_"
                                 android:defaultValue="true"/>
-                    </PreferenceScreen>
+                    </PreferenceScreen>-->
     </PreferenceCategory>
     
     <PreferenceCategory android:title="@string/offline">

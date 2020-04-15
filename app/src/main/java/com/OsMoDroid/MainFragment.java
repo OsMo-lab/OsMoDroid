@@ -167,7 +167,11 @@ public class MainFragment extends Fragment implements GPSLocalServiceClient.upd
                         stop.setEnabled(false);
                     }
                 TextView t2 = (TextView) getView().findViewById(R.id.URL);
-                Linkify.addLinks(t2, Linkify.ALL);
+                try {
+        //            Linkify.addLinks(t2, Linkify.ALL);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 Button auth = (Button) getView().findViewById(R.id.authButton);
                 if (OsMoDroid.settings.getString("u", "").equals(""))
                     {
@@ -381,9 +385,16 @@ public class MainFragment extends Fragment implements GPSLocalServiceClient.upd
             {
                 Log.d(getClass().getSimpleName(), "mainfragment onCreateView");
                 final View view = inflater.inflate(R.layout.main, container, false);
+                TextView tt = (TextView) view.findViewById(R.id.Location);
+                try {
+                    tt.setAutoLinkMask(Linkify.ALL);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
                 if (!OsMoDroid.settings.getString("startmessage", "").equals(""))
                     {
-                        TextView tt = (TextView) view.findViewById(R.id.Location);
+
                         tt.setText(getString(R.string.servermessage) + ":\n" + OsMoDroid.settings.getString("startmessage", ""));
                     }
 //		 if (globalActivity.mService!=null&&globalActivity.mService.myIM!=null&&!OsMoDroid.settings.getString("key", "").equals("")){
@@ -720,7 +731,11 @@ public class MainFragment extends Fragment implements GPSLocalServiceClient.upd
                                         {
                                             dt.setText(dt.getText() + "\n" + getString(R.string.approximate_traffic) + ':' + intent.getStringExtra("traffic"));
                                         }
-                                    Linkify.addLinks(dt, Linkify.ALL);
+                                    try {
+                                        Linkify.addLinks(dt, Linkify.ALL);
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
                                     //TextView t = (TextView) view.findViewById(R.id.Location);
                                     globalActivity.sendcounter = intent.getIntExtra("sendcounter", 0);
                                     globalActivity.buffercounter = intent.getIntExtra("buffercounter", 0);
@@ -791,7 +806,11 @@ public class MainFragment extends Fragment implements GPSLocalServiceClient.upd
                                     if (!(startmessage == null))
                                         {
                                             TextView tt = (TextView) view.findViewById(R.id.Location);
-                                            tt.setText(getString(R.string.servermessage) + ":\n" + startmessage);
+                                            try {
+                                                tt.setText(getString(R.string.servermessage) + ":\n" + startmessage);
+                                            } catch (Exception e) {
+                                                e.printStackTrace();
+                                            }
                                             globalActivity.messageShowed = true;
                                         }
                                     if (globalActivity.sendresult == null)

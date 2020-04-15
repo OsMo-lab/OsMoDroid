@@ -6,6 +6,7 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.util.Log;
 import android.widget.RemoteViews;
 
@@ -26,6 +27,14 @@ public class SOSWidget extends AppWidgetProvider {
         is.putExtra("GCM", "WIDGETSOS");
         is.setClass(context,LocalService.class);
         PendingIntent sospintent = PendingIntent.getService(context.getApplicationContext(), 101, is, 0);
+        if(LocalService.sos)
+        {
+            views.setInt(R.id.soswidgetbutton, "setBackgroundColor", Color.RED);
+        }
+        else
+        {
+            views.setInt(R.id.soswidgetbutton, "setBackgroundColor", Color.parseColor("#ffff8800"));
+        }
 
         views.setOnClickPendingIntent(R.id.soswidgetbutton, sospintent);
         appWidgetManager.updateAppWidget(new ComponentName(context, OsMoWidget.class), views);

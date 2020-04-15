@@ -34,7 +34,7 @@ public class AuthActivity extends Activity
                     public void onPageStarted(WebView view, String url, Bitmap favicon)
                         {
                             Log.d(getClass().getSimpleName(), "open url = " + url);
-                            if (url.contains("api.osmo.mobi/rd"))
+                            if (url.contains("api2.osmo.mobi/rd"))
                                 {
                                     Uri uri = Uri.parse(url);
                                     String u = uri.getQueryParameter("nick");

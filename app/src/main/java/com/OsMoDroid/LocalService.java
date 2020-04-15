@@ -129,7 +129,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
         static final int OSMODROID_ID = 1;
         Boolean sessionstarted = false;
         Boolean globalsend = false;
-        Boolean sos = false;
+        static Boolean sos = false;
         Boolean signalisationOn = false;
         int notifyid = 2;
         boolean followmonstarted=false;
@@ -215,7 +215,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
         private String gpxbuffer = new String();
         private String satellite = "";
         private String accuracy = "";
-        private boolean usebuffer = false;
+        private boolean usebuffer = true;
         private boolean usewake = false;
         static NotificationManager mNotificationManager;
         private String lastsendforbuffer = "First";
@@ -1303,7 +1303,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                     }
                 try
                     {
-                        pollperiod = Integer.parseInt(OsMoDroid.settings.getString("refreshrate", "0").equals("") ? "0" : OsMoDroid.settings.getString("refreshrate", "0"));
+                        //pollperiod = 1000*(OsMoDroid.settings.getInt("refreshrateinteger", 5));
                     }
                 catch (NumberFormatException e)
                     {
@@ -1329,7 +1329,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                 bearing_gpx = Integer.parseInt(OsMoDroid.settings.getString("bearing_gpx", "0").equals("") ? "0" : OsMoDroid.settings.getString("bearing", "0"));
                 hdop_gpx = Integer.parseInt(OsMoDroid.settings.getString("hdop_gpx", "30").equals("") ? "30" : OsMoDroid.settings.getString("hdop_gpx", "30"));
                 speed_gpx = Integer.parseInt(OsMoDroid.settings.getString("speed_gpx", "3").equals("") ? "3" : OsMoDroid.settings.getString("speed_gpx", "3"));
-                usebuffer = OsMoDroid.settings.getBoolean("usebuffer", false);
+                //usebuffer = OsMoDroid.settings.getBoolean("usebuffer", false);
                 usewake = OsMoDroid.settings.getBoolean("usewake", false);
                 notifyperiod = Integer.parseInt(OsMoDroid.settings.getString("notifyperiod", "30000").equals("") ? "30000" : OsMoDroid.settings.getString("notifyperiod", "30000"));
                 sendsound = OsMoDroid.settings.getBoolean("sendsound", false);
@@ -1801,7 +1801,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                         IMEI = "unknown";
                     }
 
-                        APIcomParams params = new APIcomParams("https://api.osmo.mobi/new", "platform=" + getDeviceName() + version + android.os.Build.PRODUCT + "&app=" + OsMoDroid.app_code + "&id=" + androidID + "&imei=" + IMEI+"&tz=" + TimeZone.getDefault().getDisplayName(Locale.ENGLISH)+"&locale=" + Locale.getDefault().getISO3Language(), "sendid");
+                        APIcomParams params = new APIcomParams("https://api2.osmo.mobi/new", "platform=" + getDeviceName() + version + android.os.Build.PRODUCT + "&app=" + OsMoDroid.app_code + "&id=" + androidID + "&imei=" + IMEI+"&tz=" + TimeZone.getDefault().getDisplayName(Locale.ENGLISH)+"&locale=" + Locale.getDefault().getISO3Language(), "sendid");
                         MyAsyncTask sendidtask = new Netutil.MyAsyncTask(this);
                         sendidtask.execute(params);
                         Log.d(getClass().getSimpleName(), "sendidtask start to execute");
@@ -2356,8 +2356,14 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                         //LocalService.addlog("Session started="+sessionstarted);
                         if (live)
                             {
+                                if((int) location.getAccuracy() < hdop)
+                                {
+                                    prevlocation.set(location);
+                                    sendlocation(location,true);
+                                }
+
                                 //LocalService.addlog("live and session satrted");
-                                if (bearing > 0)
+                                /*if (bearing > 0)
                                     {
                                         //LocalService.addlog("bearing>0");
                                         //if(log)Log.d(this.getClass().getName(), "Попали в проверку курса для отправки");
@@ -2425,7 +2431,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                                             {
                                                 //LocalService.addlog("modeAND and accuracy and speed - ELSE");
                                             }
-                                    }
+                                    }*/
                             }
                         else
                             {
@@ -3152,6 +3158,15 @@ public class LocalService extends Service implements LocationListener, GpsStatus
 
                     PendingIntent stop3 = PendingIntent.getService(this, 101, is3, PendingIntent.FLAG_UPDATE_CURRENT);
                     remoteViews.setOnClickPendingIntent(R.id.soswidgetbutton, stop3);
+                    Log.d(getClass().getSimpleName(), "on updatewidgets SOS state=" + sos);
+                    if(LocalService.sos)
+                    {
+                        remoteViews.setInt(R.id.soswidgetbutton, "setBackgroundColor", Color.RED);
+                    }
+                    else
+                    {
+                        remoteViews.setInt(R.id.soswidgetbutton, "setBackgroundColor", Color.parseColor("#ffff8800"));
+                    }
 
                     appWidgetManager.updateAppWidget(widgetId, remoteViews);
 

@@ -364,4 +364,5 @@
   <string name="requireSTORAGE">Приложению нужен доступ к карте памяти</string>
     <string name="autostartses">Запускать сессию при старте приложения</string>
   <string name="startsesonrun">Автозапуск мониторинга</string>
+  <string name="bogoogleplay">Не установлен Google Play, не все функции приложения будут доступны.</string>
 </resources>

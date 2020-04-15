@@ -58,7 +58,7 @@ public class Channel implements Serializable, ResultsListener
                 this.created = jo.optString("created");
 
                 this.browseurl = "https://osmo.mobi/g/" + jo.optString("url");
-                this.url = "https://api.osmo.mobi/s?g="+ jo.optString("url")+"&c=OsMoDroid";
+                this.url = "https://api2.osmo.mobi/s?g="+ jo.optString("url")+"&c=OsMoDroid";
                 this.myNameInGroup = jo.optString("nick");
                 this.gu=jo.optInt("gu");
                 this.type=jo.optInt("type");

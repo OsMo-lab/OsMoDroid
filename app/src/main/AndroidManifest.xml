@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.OsMoDroid"
     android:installLocation="auto"
-    android:versionCode="602"
-    android:versionName="2.6.3">
+    android:versionCode="608"
+    android:versionName="2.6.4">
 
     <uses-sdk android:targetSdkVersion="26" />
 

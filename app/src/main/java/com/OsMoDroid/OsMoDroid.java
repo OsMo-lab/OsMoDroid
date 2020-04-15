@@ -24,7 +24,7 @@ public class OsMoDroid extends Application
         public static final String NOTIFIESFILENAME = "messagelist";
         public static final String DEVLIST = "devlist";
         public static final String CHANNELLIST = "chlist";
-        public static final String app_code = "sgaGasf43g";
+        public static final String app_code = "Xxhao5468Z";
         public static final String TRACKER_GCM_ID = "80";
         public static final String TRACKER_BATTERY_INFO = "11";
         public static final String TRACKER_SATELLITES_INFO = "13";
@@ -87,7 +87,7 @@ public class OsMoDroid extends Application
         public static SharedPreferences settings;
         public static Context context;
         public static Editor editor;
-        public static boolean debug = true;
+        public static boolean debug = false;
         static int uploadnotifyid = MIN_UPLOAD_ID;
         static GPSLocalServiceClient activity;
         static InputMethodManager inputMethodManager;

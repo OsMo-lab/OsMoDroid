@@ -31,6 +31,8 @@ import org.json.JSONObject;
 import com.OsMoDroid.LocalService.LocalBinder;
 import com.OsMoDroid.Netutil.MyAsyncTask;
 import com.OsMoDroid.R;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 
 import android.Manifest;
 import android.app.Activity;
@@ -472,14 +474,16 @@ public class GPSLocalServiceClient extends AppCompatActivity implements ResultsL
                         getString(R.string.tracker), getString(R.string.stat), getString(R.string.map),
                         getString(R.string.chanals), getString(R.string.devices),
                         getString(R.string.links),
-                        getString(R.string.notifications), getString(R.string.tracks), getString(R.string.settings), getString(R.string.exit)};
+                        //getString(R.string.notifications),
+                        getString(R.string.tracks), getString(R.string.settings), getString(R.string.exit)};
                 if (OsMoDroid.debug)
                     {
                         menu1 = new String[]{
                                 getString(R.string.tracker), getString(R.string.stat), getString(R.string.map),
                                 getString(R.string.chanals), getString(R.string.devices),//
                                 getString(R.string.links),
-                                getString(R.string.notifications), getString(R.string.tracks), getString(R.string.settings), getString(R.string.exit), "debug"};
+                                //getString(R.string.notifications),
+                                getString(R.string.tracks), getString(R.string.settings), getString(R.string.exit), "debug"};
                     }
                 for (String s : menu1)
                     {
@@ -634,6 +638,10 @@ public class GPSLocalServiceClient extends AppCompatActivity implements ResultsL
 //			requestAuthTask.execute();
 //
 //		}
+//                if(!isGooglePlayServicesAvailable(this))
+//                {
+//                    //Toast.makeText(this, R.string.bogoogleplay, Toast.LENGTH_LONG).show();
+//                };
             }
         @Override
         protected void onResumeFragments()
@@ -673,8 +681,8 @@ public class GPSLocalServiceClient extends AppCompatActivity implements ResultsL
                         else if (intent.getAction().equals("notif"))
                             {
                                 Log.d(this.getClass().getSimpleName(), "on new intent=notif");
-                                NotifFragment notif = new NotifFragment();
-                                drawClickListener.selectItem(getString(R.string.notifications), null);
+                              //  NotifFragment notif = new NotifFragment();
+                              //  drawClickListener.selectItem(getString(R.string.notifications), null);
                                 //showFragment(notif,false);
                             }
                         else if (intent.getAction().equals("mapfromwidget"))
@@ -814,7 +822,6 @@ public class GPSLocalServiceClient extends AppCompatActivity implements ResultsL
             }
         void regin()
             {
-                //Send it to: https://api.osmo.mobi/signup?nick=[NICK]&email=[EMAIL]&password=[PASSWORD]&gender=[GENDER]
                 ScrollView scrollView = new ScrollView(this);
                 LinearLayout layout = new LinearLayout(this);
                 layout.setOrientation(LinearLayout.VERTICAL);
@@ -909,7 +916,7 @@ public class GPSLocalServiceClient extends AppCompatActivity implements ResultsL
                                             {
                                                 if(password.equals(rpassword))
                                                     {
-                                                        APIcomParams params = new APIcomParams("https://api.osmo.mobi/signup", "key=" + OsMoDroid.settings.getString("newkey", "") + "&email=" + email + "&password=" + password+ "&nick=" + nick+ "&gender=" + gender, "SIGNUP");
+                                                        APIcomParams params = new APIcomParams("https://api2.osmo.mobi/signup", "key=" + OsMoDroid.settings.getString("newkey", "") + "&email=" + email + "&password=" + password+ "&nick=" + nick+ "&gender=" + gender, "SIGNUP");
                                                         MyAsyncTask sendidtask = new Netutil.MyAsyncTask(GPSLocalServiceClient.this,GPSLocalServiceClient.this);
                                                         sendidtask.execute(params);
                                                         Log.d(getClass().getSimpleName(), "signin start to execute");
@@ -938,7 +945,6 @@ public class GPSLocalServiceClient extends AppCompatActivity implements ResultsL
             }
         void signin()
             {
-//Send it to: https://api.osmo.mobi/signin?email=[EMAIL]&password=[PASSWORD]
                 LinearLayout layout = new LinearLayout(this);
                 layout.setOrientation(LinearLayout.VERTICAL);
                 final TextView email = new TextView(this);
@@ -994,7 +1000,7 @@ public class GPSLocalServiceClient extends AppCompatActivity implements ResultsL
 
                                         if (!email.equals("")&&!password.equals(""))
                                             {
-                                                APIcomParams params = new APIcomParams("https://api.osmo.mobi/signin", "key="+OsMoDroid.settings.getString("newkey","")+"&email="+email+"&password="+password,"SIGNIN");
+                                                APIcomParams params = new APIcomParams("https://api2.osmo.mobi/signin", "key="+OsMoDroid.settings.getString("newkey","")+"&email="+email+"&password="+password,"SIGNIN");
                                                 MyAsyncTask sendidtask = new Netutil.MyAsyncTask(GPSLocalServiceClient.this,GPSLocalServiceClient.this);
                                                 sendidtask.execute(params);
                                                 Log.d(getClass().getSimpleName(), "signin start to execute");
@@ -1380,5 +1386,18 @@ public class GPSLocalServiceClient extends AppCompatActivity implements ResultsL
                 }
                 super.onRequestPermissionsResult(requestCode, permissions, grantResults);
             }
+        }
+
+
+        public boolean isGooglePlayServicesAvailable(Activity activity) {
+            GoogleApiAvailability googleApiAvailability = GoogleApiAvailability.getInstance();
+            int status = googleApiAvailability.isGooglePlayServicesAvailable(activity);
+            if (status != ConnectionResult.SUCCESS) {
+                if (googleApiAvailability.isUserResolvableError(status)) {
+                    googleApiAvailability.getErrorDialog(activity, status, 2404).show();
+                }
+                return false;
+            }
+            return true;
         }
     }

@@ -102,7 +102,7 @@
         android:id="@+id/Location"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:autoLink="all"
+
 
         android:textSize="20sp" />
 
