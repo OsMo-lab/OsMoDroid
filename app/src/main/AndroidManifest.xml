@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.OsMoDroid"
     android:installLocation="auto"
-    android:versionCode="608"
+    android:versionCode="609"
     android:versionName="2.6.4">
 
     <uses-sdk android:targetSdkVersion="26" />
@@ -60,6 +60,7 @@
     <uses-permission android:name="android.permission.SEND_SMS" />-->
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.FLASHLIGHT" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <uses-feature
         android:name="android.hardware.telephony"

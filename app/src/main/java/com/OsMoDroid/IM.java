@@ -897,7 +897,7 @@ public class IM implements ResultsListener {
                 }
             }
         }
-        if (command.equals("GA")) {
+        if (command.equals("GA")&& !jo.has("error")) {
             for (Channel ch : LocalService.channelList) {
                 if (ch.u == Integer.parseInt(param)) {
                     ch.updChannel(jo);

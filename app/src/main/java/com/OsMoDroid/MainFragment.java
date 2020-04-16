@@ -104,16 +104,16 @@ public class MainFragment extends Fragment implements GPSLocalServiceClient.upd
                                 getView().setBackgroundColor(Color.TRANSPARENT);
                             }
                     }
-                if (OsMoDroid.settings.getBoolean("pro", false))
-                    {
-                       // sosButton.setVisibility(View.VISIBLE);
-                        globalsendToggle.setVisibility(View.VISIBLE);
-                    }
-                else
-                    {
-                       // sosButton.setVisibility(View.GONE);
-                        globalsendToggle.setVisibility(View.GONE);
-                    }
+//                if (OsMoDroid.settings.getBoolean("pro", false))
+//                    {
+//                       // sosButton.setVisibility(View.VISIBLE);
+//                        globalsendToggle.setVisibility(View.VISIBLE);
+//                    }
+//                else
+//                    {
+//                       // sosButton.setVisibility(View.GONE);
+//                        globalsendToggle.setVisibility(View.GONE);
+//                    }
                 String startStatus = globalActivity.checkStarted() ? getString(R.string.Running)
                         : getString(R.string.NotRunning);
                 String statusText = getString(R.string.Sendcount) + globalActivity.sendcounter;

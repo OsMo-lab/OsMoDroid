@@ -156,10 +156,10 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
                 MenuItem adjdpi = menu.add(0, 9, 1, R.string.adjust_to_dpi);
                 adjdpi.setCheckable(true);
                 adjdpi.setChecked(OsMoDroid.settings.getBoolean("adjust_to_dpi", true));
-                MenuItem sputnik = menu2.add(0, 10, 1, "Sputnik");
+               // MenuItem sputnik = menu2.add(0, 10, 1, "Sputnik");
                 MenuItem wiki = menu2.add(0, 20, 1, "Wiki");
                 MenuItem chepe = menu2.add(0, 18, 1, "HotMap");
-                MenuItem mtb = menu2.add(0, 19, 1, "MTB");
+              //  MenuItem mtb = menu2.add(0, 19, 1, "MTB");
                 menu.add(0, 11, 1, R.string.size_of_point);
                 super.onCreateOptionsMenu(menu, inflater);
             }

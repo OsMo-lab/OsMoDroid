@@ -385,29 +385,29 @@ public class ChannelsFragment extends Fragment
                 emailEditText.setHint("joe@mail.com");
                 emailEditText.setInputType(TYPE_CLASS_TEXT | TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
                 layout.addView(emailEditText);
-                final TextView groupTypeTextView = new TextView(globalActivity);
-                groupTypeTextView.setText(R.string.group_type_txt);
-                layout.addView(groupTypeTextView);
-                final Spinner groupTypeSpinner = new Spinner(globalActivity);
-                layout.addView(groupTypeSpinner);
-                List<String> typeList = new ArrayList<String>();
-                typeList.add(getString(R.string.group_type_simple));
-                typeList.add(getString(R.string.group_type_famaly));
-                typeList.add(getString(R.string.group_type_poi));
-                //typeList.add(getString(R.string.travel));
-                ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(globalActivity, R.layout.spinneritem, typeList);
-                groupTypeSpinner.setAdapter(dataAdapter);
-                final TextView securityTextView = new TextView(globalActivity);
-                securityTextView.setText(R.string.groupaccess);
-                layout.addView(securityTextView);
-                final Spinner groupSecuritySpinner = new Spinner(globalActivity);
-                layout.addView(groupSecuritySpinner);
-                List<String> securityList = new ArrayList<String>();
-                securityList.add(getString(R.string.security_open));
-                securityList.add(getString(R.string.security_restricted));
-                securityList.add(getString(R.string.security_closed));
-                ArrayAdapter<String> datasecureAdapter = new ArrayAdapter<String>(globalActivity, R.layout.spinneritem, securityList);
-                groupSecuritySpinner.setAdapter(datasecureAdapter);
+//                final TextView groupTypeTextView = new TextView(globalActivity);
+//                groupTypeTextView.setText(R.string.group_type_txt);
+//                layout.addView(groupTypeTextView);
+//                final Spinner groupTypeSpinner = new Spinner(globalActivity);
+//                layout.addView(groupTypeSpinner);
+//                List<String> typeList = new ArrayList<String>();
+//                typeList.add(getString(R.string.group_type_simple));
+//                typeList.add(getString(R.string.group_type_famaly));
+//                typeList.add(getString(R.string.group_type_poi));
+//                //typeList.add(getString(R.string.travel));
+//                ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(globalActivity, R.layout.spinneritem, typeList);
+//                groupTypeSpinner.setAdapter(dataAdapter);
+//                final TextView securityTextView = new TextView(globalActivity);
+//                securityTextView.setText(R.string.groupaccess);
+//                layout.addView(securityTextView);
+//                final Spinner groupSecuritySpinner = new Spinner(globalActivity);
+//                layout.addView(groupSecuritySpinner);
+//                List<String> securityList = new ArrayList<String>();
+//                securityList.add(getString(R.string.security_open));
+//                securityList.add(getString(R.string.security_restricted));
+//                securityList.add(getString(R.string.security_closed));
+//                ArrayAdapter<String> datasecureAdapter = new ArrayAdapter<String>(globalActivity, R.layout.spinneritem, securityList);
+//                groupSecuritySpinner.setAdapter(datasecureAdapter);
                 if (!OsMoDroid.settings.getString("u", "").equals(""))
                     {
                         emailEditText.setVisibility(View.GONE);
@@ -457,25 +457,25 @@ public class ChannelsFragment extends Fragment
                                                        {
                                                            j.put("email",email);
                                                        }
-                                                    switch ((int)groupTypeSpinner.getSelectedItemId())
-                                                        {
-                                                            case 0:
-                                                                j.put("type",1);
-                                                                break;
-                                                            case 1:
-                                                                j.put("type",2);
-                                                                break;
-                                                            case 2:
-                                                                j.put("type",5);
-                                                                break;
-                                                            case 3:
-                                                                j.put("type",6);
-                                                                break;
-
-                                                        }
-
-
-                                                    j.put("private",groupSecuritySpinner.getSelectedItemId());
+//                                                    switch ((int)groupTypeSpinner.getSelectedItemId())
+//                                                        {
+//                                                            case 0:
+//                                                                j.put("type",1);
+//                                                                break;
+//                                                            case 1:
+//                                                                j.put("type",2);
+//                                                                break;
+//                                                            case 2:
+//                                                                j.put("type",5);
+//                                                                break;
+//                                                            case 3:
+//                                                                j.put("type",6);
+//                                                                break;
+//
+//                                                        }
+//
+//
+//                                                    j.put("private",groupSecuritySpinner.getSelectedItemId());
                                                 }
                                             catch (JSONException e)
                                                 {
