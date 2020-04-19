@@ -1,6 +1,8 @@
 package com.OsMoDroid;
 import android.graphics.Point;
 
+import org.osmdroid.util.PointL;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
@@ -11,22 +13,22 @@ class SerPoint implements Serializable
     {
 
 
-        private int x;
-         private int y;
-       transient Point point;
+        private long x;
+         private long y;
+       transient PointL point;
 
-        SerPoint(Point p)
+        SerPoint(PointL p)
             {
                 this.x=p.x;
                 this.y=p.y;
-                this.point=new Point(p);
+                this.point=new PointL(p);
             }
         private void readObject(ObjectInputStream input)
                 throws IOException, ClassNotFoundException {
             // deserialize the non-transient data members first;
             input.defaultReadObject();
             // Read the color
-            point= new Point(x,y);
+            point= new PointL(x,y);
         }
 
     }

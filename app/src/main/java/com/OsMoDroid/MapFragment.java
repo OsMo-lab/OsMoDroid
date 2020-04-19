@@ -12,7 +12,7 @@ import org.osmdroid.events.MapListener;
 import org.osmdroid.events.ScrollEvent;
 import org.osmdroid.events.ZoomEvent;
 import org.osmdroid.tileprovider.IRegisterReceiver;
-import org.osmdroid.tileprovider.MapTile;
+import org.osmdroid.util.MapTileIndex;
 import org.osmdroid.tileprovider.MapTileProviderBasic;
 import org.osmdroid.tileprovider.constants.OpenStreetMapTileProviderConstants;
 import org.osmdroid.tileprovider.modules.INetworkAvailablityCheck;
@@ -33,7 +33,7 @@ import org.osmdroid.views.overlay.ItemizedOverlayWithFocus;
 import org.osmdroid.views.overlay.Overlay;
 import org.osmdroid.views.overlay.OverlayItem;
 import org.osmdroid.views.overlay.OverlayItem.HotspotPlace;
-import org.osmdroid.views.overlay.PathOverlay;
+//import org.osmdroid.views.overlay.PathOverlay;
 import org.osmdroid.views.overlay.compass.CompassOverlay;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.IMyLocationConsumer;
@@ -50,6 +50,7 @@ import android.content.Intent;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
@@ -441,7 +442,7 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
 
                                 GeoPoint mapCenter = (GeoPoint) scrollEvent.getSource().getMapCenter();
 
-                                if(prevGeoPoint!=null&&mapCenter.distanceTo(prevGeoPoint)>100000/(scrollEvent.getSource().getZoomLevel()+1))
+                                if(prevGeoPoint!=null&&mapCenter.distanceToAsDouble(prevGeoPoint)>100000/(scrollEvent.getSource().getZoomLevel()+1))
                                     {
 
                                         sendcentercoords();
@@ -532,7 +533,7 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
                 final String[] wikiURL = new String[]{"https://maps.wikimedia.org/osm-intl/"};
 
                 bingTileSource = new BingMapTileSource(null);
-                sputnikTileSource = new SputnikTileSource("Sputnik",  aZoomMinLevel, aZoomMaxLevel, 512, aImageFilenameEnding, sputnikURL);
+                //sputnikTileSource = new SputnikTileSource("Sputnik",  aZoomMinLevel, aZoomMaxLevel, 512, aImageFilenameEnding, sputnikURL);
                 outdoorTileSource = new OutdoorTileSource("OutDoor",  aZoomMinLevel, aZoomMaxLevel, aTileSizePixels, aImageFilenameEnding, outdoorURL);
                 mtbTileSource = new OutdoorTileSource("MTB",  aZoomMinLevel, aZoomMaxLevel, aTileSizePixels, aImageFilenameEnding, mtbURL);
                 chepeTileSource = new OutdoorTileSource("Chepe",  aZoomMinLevel, aZoomMaxLevel, aTileSizePixels, aImageFilenameEnding, chepeURL);
@@ -614,7 +615,11 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
 //			}
                 //mMapView.getOverlays().add(myTracePathOverlay);
                 myLoc = new MyLocationNewOverlay( this, mMapView);
+                Bitmap bitmapNotMoving = BitmapFactory.decodeResource(getResources(), R.drawable.twotone_navigation_black_48);
+                Bitmap bitmapMoving = BitmapFactory.decodeResource(getResources(), R.drawable.twotone_navigation_black_48);
+                myLoc.setDirectionArrow( bitmapNotMoving, bitmapMoving);
                 myLoc.setOptionsMenuEnabled(true);
+
                 if (OsMoDroid.settings.getBoolean("isfollow", true))
                     {
                         myLoc.enableFollowLocation();
@@ -858,30 +863,31 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
                         super(aName,  aZoomMinLevel, aZoomMaxLevel,
                                 aTileSizePixels, aImageFilenameEnding, aBaseUrl);
                     }
+
                 @Override
-                public String getTileURLString(MapTile aTile)
-                    {
-                        //	x=710&y=381&z=10
-                        return getBaseUrl() + "x=" + aTile.getX() + "&y="
-                                + aTile.getY() + "&z=" + aTile.getZoomLevel();
-                    }
+                public String getTileURLString(long pMapTileIndex) {
+                    return getBaseUrl() + "z=" + MapTileIndex.getZoom(pMapTileIndex)  + "&y=" + MapTileIndex.getY(pMapTileIndex) + "&x=" +  MapTileIndex.getX(pMapTileIndex)
+                            + mImageFilenameEnding;
+                }
+
+
             }
-        class SputnikTileSource extends OnlineTileSourceBase
-            {
-                SputnikTileSource(String aName,  int aZoomMinLevel,
-                                  int aZoomMaxLevel, int aTileSizePixels,
-                                  String aImageFilenameEnding, String... aBaseUrl)
-                    {
-                        super(aName,  aZoomMinLevel, aZoomMaxLevel,
-                                aTileSizePixels, aImageFilenameEnding, aBaseUrl);
-                    }
-                @Override
-                public String getTileURLString(MapTile aTile)
-                    {
-                        //	x=710&y=381&z=10
-                        return getBaseUrl() + aTile.getZoomLevel() + '/' + aTile.getX() + '/' + aTile.getY() + ".png";
-                    }
-            }
+//        class SputnikTileSource extends OnlineTileSourceBase
+//            {
+//                SputnikTileSource(String aName,  int aZoomMinLevel,
+//                                  int aZoomMaxLevel, int aTileSizePixels,
+//                                  String aImageFilenameEnding, String... aBaseUrl)
+//                    {
+//                        super(aName,  aZoomMinLevel, aZoomMaxLevel,
+//                                aTileSizePixels, aImageFilenameEnding, aBaseUrl);
+//                    }
+//                @Override
+//                public String getTileURLString(MapTile aTile)
+//                    {
+//                        //	x=710&y=381&z=10
+//                        return getBaseUrl() + aTile.getZoomLevel() + '/' + aTile.getX() + '/' + aTile.getY() + ".png";
+//                    }
+//            }
         class OutdoorTileSource extends OnlineTileSourceBase
             {
                 OutdoorTileSource(String aName, int aZoomMinLevel,
@@ -892,9 +898,9 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
                                 aTileSizePixels, aImageFilenameEnding, aBaseUrl);
                     }
                 @Override
-                public String getTileURLString(MapTile aTile)
+                public String getTileURLString(long pMapTileIndex)
                     {
-                        return getBaseUrl() + aTile.getZoomLevel() + '/' + aTile.getX() + '/' + aTile.getY() + ".png";
+                        return getBaseUrl() + MapTileIndex.getZoom(pMapTileIndex) + '/' +  MapTileIndex.getX(pMapTileIndex) + '/' +  MapTileIndex.getY(pMapTileIndex) + ".png";
                     }
             }
         public class CustomTileProvider extends MapTileProviderBasic

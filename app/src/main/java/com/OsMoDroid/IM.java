@@ -25,6 +25,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.osmdroid.util.GeoPoint;
+import org.osmdroid.util.PointL;
 
 import com.OsMoDroid.Channel.Point;
 import com.OsMoDroid.Netutil.MyAsyncTask;
@@ -2340,7 +2341,7 @@ public class IM implements ResultsListener {
                                         if(lat!=0&&lon!=0)
                                             {
                                                 GeoPoint gp = new GeoPoint(lat, lon);
-                                                dev.devicePath.add(new SerPoint(new android.graphics.Point(gp.getLatitudeE6(),gp.getLongitudeE6())));
+                                                dev.devicePath.add(new SerPoint(new PointL(gp.getLatitudeE6(),gp.getLongitudeE6())));
 
                                             }
 
@@ -2431,7 +2432,7 @@ public class IM implements ResultsListener {
                             GeoPoint gp = new GeoPoint(dev.lat, dev.lon);
                             if(dev.state==1)
                                 {
-                                    dev.devicePath.add(new SerPoint(new android.graphics.Point(gp.getLatitudeE6(), gp.getLongitudeE6())));
+                                    dev.devicePath.add(new SerPoint(new PointL(gp.getLatitudeE6(),gp.getLongitudeE6())));
                                 }
                             if (LocalService.devlistener != null)
                                 {

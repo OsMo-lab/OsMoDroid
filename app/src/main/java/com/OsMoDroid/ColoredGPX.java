@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.osmdroid.api.IGeoPoint;
-import org.osmdroid.views.overlay.PathOverlay;
+//import org.osmdroid.views.overlay.  PathOverlay;
 
 import com.OsMoDroid.Netutil.InitTask;
 
@@ -30,7 +30,7 @@ public class ColoredGPX implements Serializable
         Statuses status = Statuses.EMPTY;
         transient List<SegmentPoint> points;// = new ArrayList<Point>(3000);
         List<Channel.Point> waypoints = new ArrayList<Channel.Point>(100);
-        transient Rect mLineBounds;// = new Rect();
+        //transient Rect mLineBounds;// = new Rect();
         transient IGeoPoint centerGeoPoint;
 
         public ColoredGPX(int u, File fileName, String scolor, String url)
@@ -55,7 +55,7 @@ public class ColoredGPX implements Serializable
 //				PathOverlay path = new PathOverlay(cg.color, 10, mResourceProxy);
 //				paths.add(path);
                         mPointsPrecomputed = 0;
-                        mLineBounds = new Rect();
+                        //mLineBounds = new Rect();
                         points = new ArrayList<SegmentPoint>(3000);
                         FileInputStream is = new FileInputStream(this.gpxfile);
                         Netutil.InitTask initTask = new InitTask(this);

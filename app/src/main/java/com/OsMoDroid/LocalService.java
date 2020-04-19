@@ -27,6 +27,7 @@ import org.osmdroid.api.IMapController;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.BoundingBox;
 import org.osmdroid.util.GeoPoint;
+import org.osmdroid.util.PointL;
 import org.osmdroid.views.MapView;
 
 import android.annotation.SuppressLint;
@@ -2194,7 +2195,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                         prevlocation_spd.set(location);
                         GeoPoint geopoint = new GeoPoint(location);
                         //if(devlistener!=null){devlistener.onNewPoint(geopoint);}
-                        mydev.devicePath.add(new SerPoint(new Point(geopoint.getLatitudeE6(), geopoint.getLongitudeE6())));
+                        mydev.devicePath.add(new SerPoint(new PointL(geopoint.getLatitudeE6(), geopoint.getLongitudeE6())));
                     }
                 if ((int) location.getAccuracy() < hdop_gpx)
                     {
