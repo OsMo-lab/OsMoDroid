@@ -420,7 +420,7 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
                 Log.d(getClass().getSimpleName(), "map onpause");
                 mMapView.getOverlays().remove(myLoc);
                 myLoc.disableMyLocation();
-                mMapView.setMapListener(null);
+                mMapView.removeMapListener(wrappedListener);
                 LocalService.myIM.sendToServer("SP:"+choverlay.followdev+"|0", false);
                 super.onPause();
             }
@@ -457,7 +457,7 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
                                 return false;
                             }
                     };
-                mMapView.setMapListener(wrappedListener);
+                mMapView.addMapListener(wrappedListener);
                 LocalService.myIM.sendToServer("SP:"+choverlay.followdev+"|1", false);
                 super.onResume();
             }
