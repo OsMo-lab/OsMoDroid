@@ -2660,7 +2660,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                                         addlog("try to send sms");
 
                                         String messageText = "L" + OsMoDroid.df6.format(location.getLatitude()) + ":" + OsMoDroid.df6.format(location.getLongitude())
-                                            + "S" + OsMoDroid.df0.format(location.getSpeed())
+                                            + "S" + OsMoDroid.df1.format(location.getSpeed())
                                             + "A" + OsMoDroid.df0.format(location.getAltitude())
                                             + "H" + OsMoDroid.df0.format(location.getAccuracy())
                                             + "C" + OsMoDroid.df0.format(location.getBearing());
@@ -2699,7 +2699,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                 {
                     sending =
                             "T|L" + OsMoDroid.df6.format(location.getLatitude()) + ":" + OsMoDroid.df6.format(location.getLongitude())
-                                    + "S" + OsMoDroid.df0.format(location.getSpeed())
+                                    + "S" + OsMoDroid.df1.format(location.getSpeed())
                                     + "A" + OsMoDroid.df0.format(location.getAltitude())
                                     + "H" + OsMoDroid.df0.format(location.getAccuracy())
                                     + "C" + OsMoDroid.df0.format(location.getBearing());
@@ -2712,7 +2712,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                 {
                     sending =
                             "T|L" + OsMoDroid.df6.format(location.getLatitude()) + ":" + OsMoDroid.df6.format(location.getLongitude())
-                                    + "S" + OsMoDroid.df0.format(location.getSpeed())
+                                    + "S" + OsMoDroid.df1.format(location.getSpeed())
                                     + "A" + OsMoDroid.df0.format(location.getAltitude())
                                     + "H" + OsMoDroid.df0.format(location.getAccuracy());
                     if (usebuffer)

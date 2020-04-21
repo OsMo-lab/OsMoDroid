@@ -143,7 +143,7 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
                                             {
                                                 if (d.lat != 0f && d.lon != 0f && d.clusterid == 0)
                                                     {
-                                                        if (OsMoDroid.settings.getBoolean("traces", true))
+                                                        //if (OsMoDroid.settings.getBoolean("traces", true))
                                                             {
                                                                 drawdevicepath(canvas, pj, d);
                                                             }
@@ -482,7 +482,9 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
                                 dev.iprecomputed++;
                             }
                        Point screenPoint = pj.toPixelsFromProjected(dev.devicePath.get(dev.devicePath.size()-1).point, this.mTempPoint1);
-                        if(OsMoDroid.settings.getBoolean("longpath",true))
+                        if(true
+                                //OsMoDroid.settings.getBoolean("longpath",true)
+                        )
                             {
                                 for (int i = dev.devicePath.size() - 2; i >= 0; i--)
                                     {
@@ -620,7 +622,7 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
                                 )
                                     {
                                         canvas.drawLine(screenPoint0.x, screenPoint0.y, screenPoint1.x, screenPoint1.y, gpx.paint);
-                                        if(OsMoDroid.settings.getBoolean("arrows",true))
+                                        //if(OsMoDroid.settings.getBoolean("arrows",true))
                                             {
                                                 float angleRad = (float) Math.atan2(screenPoint0.y - screenPoint1.y, screenPoint0.x - screenPoint1.x);
                                                 float angle = (float) (angleRad * 180 / Math.PI) + 90f;
@@ -685,7 +687,7 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
         @Override
         public void onRotate(float deltaAngle)
             {
-                if (OsMoDroid.settings.getBoolean("rotation", false))
+               // if (OsMoDroid.settings.getBoolean("rotation", false))
                     {
                         map.setMapOrientation(map.getMapOrientation() + deltaAngle);
                     }

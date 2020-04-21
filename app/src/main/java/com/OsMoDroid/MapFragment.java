@@ -121,6 +121,7 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
         private ITileSource mtbTileSource;
         private ITileSource wikiTileSource;
         private ITileSource hdMapnikTileSource;
+        private ITileSource topoTileSource;
         private ChannelsOverlay choverlay;
         private TextView speddTextView;
         private MapListener wrappedListener;
@@ -130,22 +131,22 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
             {
                 MenuItem shortname = menu.add(0, 17, 0, R.string.shortname);
                 MenuItem fullgpx = menu.add(0, 16, 0, R.string.fullgpx);
-                MenuItem longpath = menu.add(0, 15, 0, R.string.longpath);
-                MenuItem arrows = menu.add(0, 14, 0, R.string.show_arrows);
-                MenuItem traces = menu.add(0, 1, 0, R.string.showtraces);
-                MenuItem rotation = menu.add(0, 2, 0, R.string.enable_manual_rotation);
+                //MenuItem longpath = menu.add(0, 15, 0, R.string.longpath);
+                //MenuItem arrows = menu.add(0, 14, 0, R.string.show_arrows);
+                //MenuItem traces = menu.add(0, 1, 0, R.string.showtraces);
+                //MenuItem rotation = menu.add(0, 2, 0, R.string.enable_manual_rotation);
                 courserotation = menu.add(0, 3, 0, R.string.enable_course_rotation);
-                traces.setCheckable(true);
-                rotation.setCheckable(true);
+                //traces.setCheckable(true);
+                //rotation.setCheckable(true);
                 courserotation.setCheckable(true);
-                arrows.setCheckable(true);
-                longpath.setCheckable(true);
+                //arrows.setCheckable(true);
+                //longpath.setCheckable(true);
                 fullgpx.setCheckable(true);
                 shortname.setCheckable(true);
-                arrows.setChecked(OsMoDroid.settings.getBoolean("arrows", false));
-                traces.setChecked(OsMoDroid.settings.getBoolean("traces", true));
-                rotation.setChecked(OsMoDroid.settings.getBoolean("rotation", false));
-                longpath.setChecked(OsMoDroid.settings.getBoolean("longpath", true));
+                //arrows.setChecked(OsMoDroid.settings.getBoolean("arrows", false));
+                //traces.setChecked(OsMoDroid.settings.getBoolean("traces", true));
+                //rotation.setChecked(OsMoDroid.settings.getBoolean("rotation", false));
+                //longpath.setChecked(OsMoDroid.settings.getBoolean("longpath", true));
                 fullgpx.setChecked(OsMoDroid.settings.getBoolean("fullgpx", true));
                 shortname.setChecked(OsMoDroid.settings.getBoolean("shortname",false));
 
@@ -162,6 +163,7 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
                 MenuItem wiki = menu2.add(0, 20, 1, "Wiki");
                 MenuItem mapnikHD = menu2.add(0, 21, 1, "MapnikHD");
                 MenuItem chepe = menu2.add(0, 18, 1, "HotMap");
+                menu2.add(0, 22, 1, "Opentopomap");
               //  MenuItem mtb = menu2.add(0, 19, 1, "MTB");
                 menu.add(0, 11, 1, R.string.size_of_point);
                 super.onCreateOptionsMenu(menu, inflater);
@@ -369,6 +371,13 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
                             reinitchoverlay();
                             mMapView.invalidate();
                             break;
+                        case 22:
+                            mMapView.setTileSource(topoTileSource);
+                            OsMoDroid.editor.putInt("selectedTileSourceInt", 12);
+                            OsMoDroid.editor.commit();
+                            reinitchoverlay();
+                            mMapView.invalidate();
+                            break;
                         default:
                             break;
                     }
@@ -541,6 +550,7 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
                 final String[] mtbURL = new String[]{"http://tile.mtbmap.cz/mtbmap_tiles/"};
                 final String[] wikiURL = new String[]{"https://maps.wikimedia.org/osm-intl/"};
                 final String[] hdMapnikURL = new String[]{"https://osm.rrze.fau.de/osmhd/"};
+                final String[] topoURL = new String[]{"https://tile.opentopomap.org/"};
 
                 bingTileSource = new BingMapTileSource(null);
                 //sputnikTileSource = new SputnikTileSource("Sputnik",  aZoomMinLevel, aZoomMaxLevel, 512, aImageFilenameEnding, sputnikURL);
@@ -550,6 +560,7 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
                 mapSurferTileSource = new MAPSurferTileSource(name, aZoomMinLevel, aZoomMaxLevel, aTileSizePixels, aImageFilenameEnding, aBaseUrl);
                 wikiTileSource = new OutdoorTileSource("Wiki",  aZoomMinLevel, aZoomMaxLevel, aTileSizePixels, aImageFilenameEnding, wikiURL);
                 hdMapnikTileSource = new OutdoorTileSource("MapnikHD",  aZoomMinLevel, aZoomMaxLevel, 512, aImageFilenameEnding, hdMapnikURL);
+                topoTileSource = new OutdoorTileSource("Topo",  aZoomMinLevel, aZoomMaxLevel, aTileSizePixels, aImageFilenameEnding, topoURL);
                 View view = inflater.inflate(R.layout.map, container, false);
                 RelativeLayout rl = (RelativeLayout) view.findViewById(R.id.relative);
                 CustomTileProvider customTileProvider = new CustomTileProvider(getActivity());
@@ -614,6 +625,8 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
                             mMapView.setTileSource(wikiTileSource);
                         case 11:
                             mMapView.setTileSource(hdMapnikTileSource);
+                        case 12:
+                            mMapView.setTileSource(topoTileSource);
                         default:
                             break;
                     }
