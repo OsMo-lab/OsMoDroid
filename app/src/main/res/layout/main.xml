@@ -87,10 +87,15 @@
     </LinearLayout>
 
     <Button
-        android:id="@+id/authButton"
+        android:id="@+id/enterButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/auth" />
+    <Button
+        android:id="@+id/signButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/registration" />
 
     <Button
         android:id="@+id/osmandButton"

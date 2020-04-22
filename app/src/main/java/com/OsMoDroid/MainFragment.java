@@ -7,11 +7,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
-import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.location.LocationManager;
-import android.opengl.Visibility;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.provider.Settings;
@@ -30,8 +27,6 @@ import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -135,7 +130,7 @@ public class MainFragment extends Fragment implements GPSLocalServiceClient.upd
                     }
                 if (OsMoDroid.settings.getBoolean("usewake", false))
                     {
-                        globalActivity.wakeLock = globalActivity.pm.newWakeLock(PowerManager.FULL_WAKE_LOCK, "MyWakeLock");
+                        globalActivity.wakeLock = globalActivity.pm.newWakeLock(PowerManager.FULL_WAKE_LOCK, "globalActivity:wakeLoc");
                         globalActivity.wakeLock.acquire();
                     }
                 globalActivity.started = globalActivity.checkStarted();
@@ -172,16 +167,19 @@ public class MainFragment extends Fragment implements GPSLocalServiceClient.upd
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                Button auth = (Button) getView().findViewById(R.id.authButton);
+                Button enter = (Button) getView().findViewById(R.id.enterButton);
+                Button sign = (Button) getView().findViewById(R.id.signButton);
                 if (OsMoDroid.settings.getString("u", "").equals(""))
                     {
                         //globalsendToggle.setVisibility(View.GONE);
 
-                        auth.setVisibility(View.VISIBLE);
+                        enter.setVisibility(View.VISIBLE);
+                        sign.setVisibility(View.VISIBLE);
                     }
                 else
                     {
-                        auth.setVisibility(View.GONE);
+                        enter.setVisibility(View.GONE);
+                        sign.setVisibility(View.GONE);
 
                         //globalsendToggle.setVisibility(View.GONE);
                     }
@@ -307,7 +305,7 @@ public class MainFragment extends Fragment implements GPSLocalServiceClient.upd
                     }
                 if (item.getItemId() == 4)
                     {
-                        globalActivity.auth();
+                        globalActivity.signin();
                     }
 
                 if (item.getItemId() == 10)
@@ -488,21 +486,31 @@ public class MainFragment extends Fragment implements GPSLocalServiceClient.upd
                             alertDialog.show();
                         }
                 });
-                Button auth = (Button) view.findViewById(R.id.authButton);
-                auth.setOnClickListener(new OnClickListener()
+                Button enter = (Button) view.findViewById(R.id.enterButton);
+                Button sign = (Button) view.findViewById(R.id.signButton);
+                enter.setOnClickListener(new OnClickListener()
                 {
                     public void onClick(View v)
                         {
-                            globalActivity.auth();
+                            globalActivity.signin();
                         }
+                });
+                sign.setOnClickListener(new OnClickListener()
+                {
+                    public void onClick(View v)
+                    {
+                        globalActivity.regin();
+                    }
                 });
                 if (OsMoDroid.settings.getString("u", "").equals(""))
                     {
-                        auth.setVisibility(View.VISIBLE);
+                        enter.setVisibility(View.VISIBLE);
+                        sign.setVisibility(View.VISIBLE);
                     }
                 else
                     {
-                        auth.setVisibility(View.GONE);
+                        enter.setVisibility(View.GONE);
+                        sign.setVisibility(View.GONE);
                     }
                 Button osmandButton = (Button)view.findViewById(R.id.osmandButton);
                 if(LocalService.osmandbind)

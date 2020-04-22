@@ -9,36 +9,21 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.OutputStream;
 import java.lang.reflect.Field;
-import java.net.HttpURLConnection;
-import java.net.InetSocketAddress;
-import java.net.Proxy;
-import java.net.URL;
 import java.security.MessageDigest;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Stack;
-import java.util.UUID;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import com.OsMoDroid.LocalService.LocalBinder;
 import com.OsMoDroid.Netutil.MyAsyncTask;
-import com.OsMoDroid.R;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Notification;
-import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -47,25 +32,18 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
-import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.graphics.Color;
-import android.graphics.drawable.AnimationDrawable;
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Build;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.preference.PreferenceManager;
-import android.provider.Settings.Global;
-import android.provider.Settings.Secure;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.ActivityCompat;
@@ -74,17 +52,12 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.telephony.TelephonyManager;
-import android.text.ClipboardManager;
 import android.text.Html;
-import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.LinkMovementMethod;
 import android.text.method.PasswordTransformationMethod;
-import android.text.util.Linkify;
 import android.util.Log;
 //import android.view.Menu;
 //import android.view.MenuItem;
@@ -92,15 +65,9 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.WindowManager;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ArrayAdapter;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -108,10 +75,7 @@ import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 
-import static android.text.InputType.TYPE_CLASS_TEXT;
-import static android.text.InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS;
 import static android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD;
 public class GPSLocalServiceClient extends AppCompatActivity implements ResultsListener
     {
@@ -574,7 +538,7 @@ public class GPSLocalServiceClient extends AppCompatActivity implements ResultsL
                             }
                         if (requestCode == 1 && resultCode == Activity.RESULT_OK)
                             {
-                                Log.d(this.getClass().getSimpleName(), "void onActivityResult=auth");
+                                Log.d(this.getClass().getSimpleName(), "void onActivityResult=reg");
                                 if (live&& mBound)
                                     {
                                         mService.myIM.close();
@@ -767,9 +731,9 @@ public class GPSLocalServiceClient extends AppCompatActivity implements ResultsL
         @Override
         protected void onNewIntent(Intent intent)
             {
-                if (intent.hasExtra("auth"))
+                if (intent.hasExtra("enter"))
                     {
-                        auth();
+                        signin();
                     }
                 try
                     {
@@ -794,32 +758,32 @@ public class GPSLocalServiceClient extends AppCompatActivity implements ResultsL
                         e.printStackTrace();
                     }
             }
-        void auth()
-            {
-//                Intent intent = new Intent(this, AuthActivity.class);
-//                startActivityForResult(intent, 1);
-//First ask reg or sign
-                final AlertDialog askRegorSign = new AlertDialog.Builder(this)
-                 .setTitle(R.string.alreadyregistered)
-                    .setPositiveButton(R.string.yes,
-                            new DialogInterface.OnClickListener()
-                                {
-                                    public void onClick(DialogInterface dialog, int whichButton)
-                                        {
-                                            signin();
-                                        }
-                                })
-                    .setNegativeButton(R.string.No,
-                            new DialogInterface.OnClickListener()
-                                {
-                                    public void onClick(DialogInterface dialog, int whichButton)
-                                        {
-                                            regin();
-                                        }
-                                }).create();
-                askRegorSign.show();
-
-            }
+//        void reg()
+//            {
+////                Intent intent = new Intent(this, AuthActivity.class);
+////                startActivityForResult(intent, 1);
+////First ask reg or sign
+//                final AlertDialog askRegorSign = new AlertDialog.Builder(this)
+//                 .setTitle(R.string.alreadyregistered)
+//                    .setPositiveButton(R.string.yes,
+//                            new DialogInterface.OnClickListener()
+//                                {
+//                                    public void onClick(DialogInterface dialog, int whichButton)
+//                                        {
+//                                            signin();
+//                                        }
+//                                })
+//                    .setNegativeButton(R.string.No,
+//                            new DialogInterface.OnClickListener()
+//                                {
+//                                    public void onClick(DialogInterface dialog, int whichButton)
+//                                        {
+//                                            regin();
+//                                        }
+//                                }).create();
+//                askRegorSign.show();
+//
+//            }
         void regin()
             {
                 ScrollView scrollView = new ScrollView(this);

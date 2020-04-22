@@ -59,7 +59,7 @@
   <string name="send">&gt;&gt;</string>
   <string name="cancel">Отмена</string>
   <string name="speed">Скорость: км/ч</string>
-  <string name="auth">Авторизоваться</string>
+  <string name="auth">Войти</string>
   <string name="nomapapp">Не установленно ни одного приложения типа Карты</string>
   <string name="showonmap">Показать на карте</string>
   <string name="chanal">Группа </string>
@@ -365,4 +365,5 @@
     <string name="autostartses">Запускать сессию при старте приложения</string>
   <string name="startsesonrun">Автозапуск мониторинга</string>
   <string name="bogoogleplay">Не установлен Google Play, не все функции приложения будут доступны.</string>
+
 </resources>
