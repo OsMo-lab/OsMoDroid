@@ -366,5 +366,6 @@
   <string name="startsesonrun">Автозапуск мониторинга</string>
   <string name="bogoogleplay">Не установлен Google Play, не все функции приложения будут доступны.</string>
     <string name="invite">Код приглашения(если есть)</string>
+    <string name="familygroupabsent">Вы не создали группу Семья</string>
 
 </resources>

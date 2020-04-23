@@ -12,6 +12,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
+import android.widget.Toast;
+
 public class DrawerItemClickListener implements OnItemClickListener
     {
         MainFragment main;
@@ -127,6 +129,9 @@ public class DrawerItemClickListener implements OnItemClickListener
                                         break;
                                     }
                             }
+
+                           Toast.makeText(activity, activity.getString(R.string.familygroupabsent), Toast.LENGTH_SHORT).show();
+
 //                        ft.replace(R.id.fragment_container, devs);
                         currentItem = 3;
                     }

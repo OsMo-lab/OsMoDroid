@@ -366,5 +366,6 @@
     <string name="startsesonrun">Start session on run</string>
     <string name="bogoogleplay">No Google Services. Not all function will work</string>
     <string name="invite">Invite</string>
+    <string name="familygroupabsent">Family group is absent</string>
 
 </resources>
