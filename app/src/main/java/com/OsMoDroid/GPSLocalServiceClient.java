@@ -814,21 +814,27 @@ public class GPSLocalServiceClient extends AppCompatActivity implements ResultsL
                 layout.addView(email);
                 final EditText inputEmail = new EditText(this);
                 layout.addView(inputEmail);
-                final TextView passwordTextView = new TextView(this);
-                passwordTextView.setText(R.string.password);
-                layout.addView(passwordTextView);
-                final EditText passwordEditText = new EditText(this);
-                passwordEditText.setInputType(TYPE_TEXT_VARIATION_PASSWORD);
-                passwordEditText.setTransformationMethod(new PasswordTransformationMethod());
-                layout.addView(passwordEditText);
 
-                final TextView rpasswordTextView = new TextView(this);
-                rpasswordTextView.setText(R.string.repeatpassword);
-                layout.addView(rpasswordTextView);
-                final EditText rpasswordEditText = new EditText(this);
-                rpasswordEditText.setInputType(TYPE_TEXT_VARIATION_PASSWORD);
-                rpasswordEditText.setTransformationMethod(new PasswordTransformationMethod());
-                layout.addView(rpasswordEditText);
+                final TextView invite = new TextView(this);
+                email.setText(R.string.invite);
+                layout.addView(invite);
+                final EditText inputInvite = new EditText(this);
+                layout.addView(inputInvite);
+//                final TextView passwordTextView = new TextView(this);
+//                passwordTextView.setText(R.string.password);
+//                layout.addView(passwordTextView);
+//                final EditText passwordEditText = new EditText(this);
+//                passwordEditText.setInputType(TYPE_TEXT_VARIATION_PASSWORD);
+//                passwordEditText.setTransformationMethod(new PasswordTransformationMethod());
+//                layout.addView(passwordEditText);
+//
+//                final TextView rpasswordTextView = new TextView(this);
+//                rpasswordTextView.setText(R.string.repeatpassword);
+//                layout.addView(rpasswordTextView);
+//                final EditText rpasswordEditText = new EditText(this);
+//                rpasswordEditText.setInputType(TYPE_TEXT_VARIATION_PASSWORD);
+//                rpasswordEditText.setTransformationMethod(new PasswordTransformationMethod());
+//                layout.addView(rpasswordEditText);
 
 
 
@@ -860,9 +866,10 @@ public class GPSLocalServiceClient extends AppCompatActivity implements ResultsL
                                 if (mService.myIM.authed)
                                     {
                                         String email = inputEmail.getText().toString();
-                                        String password = passwordEditText.getText().toString();
-                                        String rpassword = rpasswordEditText.getText().toString();
+//                                        String password = passwordEditText.getText().toString();
+//                                        String rpassword = rpasswordEditText.getText().toString();
                                         String nick = nickEditText.getText().toString();
+                                        String invite = inputInvite.getText().toString();
                                         int gender=-1;
                                         switch (genderTypeSpinner.getSelectedItemPosition())
                                             {
@@ -876,20 +883,24 @@ public class GPSLocalServiceClient extends AppCompatActivity implements ResultsL
 
 
 
-                                        if (!email.equals("")&&!password.equals("")&&!nick.equals(""))
+                                        if (!email.equals("")
+                                                //&&!password.equals("")
+                                                &&!nick.equals(""))
                                             {
-                                                if(password.equals(rpassword))
+                                                //if(password.equals(rpassword))
                                                     {
-                                                        APIcomParams params = new APIcomParams("https://api2.osmo.mobi/signup", "key=" + OsMoDroid.settings.getString("newkey", "") + "&email=" + email + "&password=" + password+ "&nick=" + nick+ "&gender=" + gender, "SIGNUP");
+                                                        APIcomParams params = new APIcomParams("https://api2.osmo.mobi/signup", "key=" + OsMoDroid.settings.getString("newkey", "") + "&email=" + email +
+                                                                //"&password=" + password+
+                                                                "&nick=" + nick+ "&gender=" + gender + "&invite="+invite, "SIGNUP");
                                                         MyAsyncTask sendidtask = new Netutil.MyAsyncTask(GPSLocalServiceClient.this,GPSLocalServiceClient.this);
                                                         sendidtask.execute(params);
                                                         Log.d(getClass().getSimpleName(), "signin start to execute");
                                                         super.dialog.dismiss();
                                                         ;
                                                     }
-                                                else
+                                                //else
                                                     {
-                                                        Toast.makeText(GPSLocalServiceClient.this, R.string.passdontequal, Toast.LENGTH_SHORT).show();
+                                                  //      Toast.makeText(GPSLocalServiceClient.this, R.string.passdontequal, Toast.LENGTH_SHORT).show();
                                                     }
                                             }
                                         else

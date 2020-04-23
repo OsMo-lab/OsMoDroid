@@ -365,5 +365,6 @@
     <string name="autostartses">Auto start session after launch</string>
     <string name="startsesonrun">Start session on run</string>
     <string name="bogoogleplay">No Google Services. Not all function will work</string>
+    <string name="invite">Invite</string>
 
 </resources>
