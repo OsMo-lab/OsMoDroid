@@ -816,7 +816,7 @@ public class GPSLocalServiceClient extends AppCompatActivity implements ResultsL
                 layout.addView(inputEmail);
 
                 final TextView invite = new TextView(this);
-                email.setText(R.string.invite);
+                invite.setText(R.string.invite);
                 layout.addView(invite);
                 final EditText inputInvite = new EditText(this);
                 layout.addView(inputInvite);
@@ -936,7 +936,6 @@ public class GPSLocalServiceClient extends AppCompatActivity implements ResultsL
                 layout.addView(passwordEditText);
 
                 final TextView forgotpasswordTextView = new TextView(this);
-                forgotpasswordTextView.setText(R.string.repeatpassword);
                 forgotpasswordTextView.setText(Html.fromHtml("<a href=https://osmo.mobi/forgot> "+ "Forgot password"));
                 forgotpasswordTextView.setMovementMethod(LinkMovementMethod.getInstance());
                 layout.addView(forgotpasswordTextView);
