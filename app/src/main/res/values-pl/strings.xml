@@ -30,7 +30,7 @@
   <string name="Status">Status:</string>
   <string name="Sendcount">Wysłano:</string>
   <string name="ErrorRecieve">Błąd pobierania</string>
-  <string name="AuthWait">Próba logowania, proszę czekać...</string>
+  <string name="AuthWait">Próba logowania, proszę czekać…</string>
   <string name="CheckInternet">Błąd logowania. Sprawdź połączenie z internetem</string>
   <string name="CanNotWriteHeader">Nie można zapisać tytułu pliku ścieżki</string>
   <string name="CanNotWriteEnd">Nie można zapisać końcówkę pliku ścieżki</string>
@@ -38,7 +38,7 @@
   <string name="TrackCourseChange">Zmiana kursu ścieżki:</string>
   <string name="ServerError">Błąd serwera</string>
   <string name="buffer">Schowek:</string>
-  <string name="request">Próba logowania, proszę czekać...</string>
+  <string name="request">Próba logowania, proszę czekać…</string>
   <string name="noappcode">Nie podano hasła</string>
   <string name="nokey">Błąd logowania</string>
   <string name="getkey">Logowanie</string>
@@ -89,8 +89,8 @@
   <string name="stat">Statystyka</string>
   <string name="appauth">Autoryzacja aplikacji</string>
   <string name="inbuffer">W schowku: </string>
-  <string name="authpleasewait">Trwa logowanie, proszę czekać...</string>
-  <string name="commandpleasewait">Wykonywanie polecenia, proszę czekać...</string>
+  <string name="authpleasewait">Trwa logowanie, proszę czekać…</string>
+  <string name="commandpleasewait">Wykonywanie polecenia, proszę czekać…</string>
   <string name="resultenterchanalnoget">Rezultat wejścia do grupy jest nieznany</string>
   <string name="linksnotget">Linki nie zostały wczytane</string>
   <string name="noanswerfromserver">Brak odpowiedzi z serwera</string>
@@ -105,8 +105,7 @@
   <string name="device"> Urządzenie \\"</string>
   <string name="accuracy">Dokładność: </string>
   <string name="maximal">Maksymalna: </string>
-  <string name="kmch"> km/h
-</string>
+  <string name="kmch"> km/h</string>
   <string name="average">Średnia: </string>
   <string name="going">Odległość: </string>
   <string name="km"> km</string>
@@ -131,7 +130,7 @@
   <string name="linkcopied">Link został skopiowany do schowka</string>
   <string name="Stoping">Zatrzymanie</string>
   <string name="closesession">Zamknąć sesję?</string>
-  <string name="loading">Pobieranie...</string>
+  <string name="loading">Pobieranie…</string>
   <string name="deletelink">Usuń link</string>
   <string name="delete">Usuń</string>
   <string name="alarm">Alarm</string>

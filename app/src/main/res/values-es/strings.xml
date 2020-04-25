@@ -30,7 +30,7 @@
   <string name="Status">Estado:</string>
   <string name="Sendcount">Envía:</string>
   <string name="ErrorRecieve">Error recuperando</string>
-  <string name="AuthWait">Autorización solicitada, por favor, espere ...</string>
+  <string name="AuthWait">Autorización solicitada, por favor, espere…</string>
   <string name="CheckInternet">Fallo al autenticar. Compruebe que funciona la conexión a Internet</string>
   <string name="CanNotWriteHeader">No se ha podido escribir el fichero de pista</string>
   <string name="CanNotWriteEnd">No escrito final de fichero de pista</string>
@@ -38,7 +38,7 @@
   <string name="TrackCourseChange">Cambiando rumbo de pista:</string>
   <string name="ServerError">Error de Servidor</string>
   <string name="buffer">Buffer:</string>
-  <string name="request">Solicitud de autorización, por favor, espere ...</string>
+  <string name="request">Solicitud de autorización, por favor, espere…</string>
   <string name="noappcode">Contraseña vacía</string>
   <string name="nokey">Fallo de autorización</string>
   <string name="getkey">Autorizar</string>
@@ -89,8 +89,8 @@
   <string name="stat">Estadísticas</string>
   <string name="appauth">Aplicación autorizada</string>
   <string name="inbuffer">en buffer:</string>
-  <string name="authpleasewait">Solicitando autorización, por favor, espere ...</string>
-  <string name="commandpleasewait">Comando ejecutado, por favor, espere ...</string>
+  <string name="authpleasewait">Solicitando autorización, por favor, espere…</string>
+  <string name="commandpleasewait">Comando ejecutado, por favor, espere…</string>
   <string name="resultenterchanalnoget">Resultado de entrar al canal no recibido</string>
   <string name="linksnotget">Enlaces no leidos</string>
   <string name="noanswerfromserver">Sin respuesta del servidor</string>
@@ -130,7 +130,7 @@
   <string name="linkcopied">Enlaces copiados a portapapeles</string>
   <string name="Stoping">Parar</string>
   <string name="closesession">¿Cerrar sesión?</string>
-  <string name="loading">Cargando ...</string>
+  <string name="loading">Cargando…</string>
   <string name="deletelink">Eliminar enlace</string>
   <string name="delete">Eliminar</string>
   <string name="alarm">Alarma</string>

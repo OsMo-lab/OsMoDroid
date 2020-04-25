@@ -33,7 +33,7 @@
   <string name="Status">Status:</string>
   <string name="Sendcount">Skickat:</string>
   <string name="ErrorRecieve">Fel vid hämtning</string>
-  <string name="AuthWait">Begäran om godkännande; vänta ...</string>
+  <string name="AuthWait">Begäran om godkännande; vänta…</string>
   <string name="CheckInternet">Godkännande misslyckades. Kontollera din uppkoppling.</string>
   <string name="CanNotWriteHeader">Kan inte spara spåret på ditt SD-kort.</string>
   <string name="CanNotWriteEnd">Kan inte fullgöra sparandet av spåret på ditt SD-kort.</string>
@@ -41,7 +41,7 @@
   <string name="TrackCourseChange">Ändrar kursspår:</string>
   <string name="ServerError">Serverfel</string>
   <string name="buffer">Buffert:</string>
-  <string name="request">Begäran om godkännande; vänta ...</string>
+  <string name="request">Begäran om godkännande; vänta…</string>
   <string name="noappcode">Tomt lösenord</string>
   <string name="nokey">Godkännandet misslyckades (ingen nyckel)</string>
   <string name="getkey">Godkänd</string>
@@ -55,7 +55,7 @@
   <string name="message">Meddelande</string>
   <string name="sendsupport">Rapportera till supporten</string>
   <string name="about">Om</string>
-  <string name="abouttext">OsMoDroid - är den officiella OsMo-tjänstappen för Android. Med en smartphone och tjänsten OsMo kan dina vänner och din familj alltid hålla reda på var du är.\nHuvudutvecklare: Denis Fokin (c) 2012-2017\n\nGenom att använda denna app godkänner du användarvillkoren på https://osmo.mobi/terms\n\nOsMoDroid-sidan: http://osmodroid.mobi\n\nCopyrightinformation: http://osmodroid.mobi/copyright.html</string>
+  <string name="abouttext">OsMoDroid – är den officiella OsMo-tjänstappen för Android. Med en smartphone och tjänsten OsMo kan dina vänner och din familj alltid hålla reda på var du är.\nHuvudutvecklare: Denis Fokin (c) 2020\n\nGenom att använda denna app godkänner du användarvillkoren på https://osmo.mobi/terms\n\nOsMoDroid-sidan: https://osmodroid.com\n\nCopyrightinformation: https://osmodroid.com/copyright.html</string>
   <string name="send">&gt;&gt;</string>
   <string name="cancel">Avbryt</string>
   <string name="speed">Hastighet: km/h</string>
@@ -100,8 +100,8 @@
   <string name="stat">Statistik</string>
   <string name="appauth">Godkännande av appen</string>
   <string name="inbuffer">I buffert:</string>
-  <string name="authpleasewait">Begäran om godkännande; vänta ...</string>
-  <string name="commandpleasewait">Kommandot är utfört; vänta ...</string>
+  <string name="authpleasewait">Begäran om godkännande; vänta…</string>
+  <string name="commandpleasewait">Kommandot är utfört; vänta…</string>
   <string name="resultenterchanalnoget">Fick inget svar från servern angående begäran om tillträde till kanalen</string>
   <string name="linksnotget">Länkarna kunde inte hämtas</string>
   <string name="noanswerfromserver">Inget svar från servern</string>
@@ -143,7 +143,7 @@
   <string name="linkcopied">Länk kopierad till Urklipp</string>
   <string name="Stoping">Stopp</string>
   <string name="closesession">Avsluta trippen?</string>
-  <string name="loading">Laddar ...</string>
+  <string name="loading">Laddar…</string>
   <string name="uploadtrera">Skicka till OsMo?</string>
   <string name="servermessage">Meddelande av Dagen</string>
   <string name="deletelink">Ta bort länk</string>
@@ -216,9 +216,9 @@
   <string name="no_follow_">Följ inte</string>
   <string name="adjust_to_dpi">HD-karta</string>
   <string name="monitoring_settings">Inställningar för spårning</string>
-  <string name="milliseconds_how_often_to_send_location">Millisekunder - hur ofta platsinfo sänds</string>
+  <string name="milliseconds_how_often_to_send_location">Millisekunder – hur ofta platsinfo sänds</string>
   <string name="send_frequency">Skicka frekvens</string>
-  <string name="meters_must_move_at_least_this_far_to_send_location_update">Meter - Måste förflytta sig så här långt innan platsangivelse skickas</string>
+  <string name="meters_must_move_at_least_this_far_to_send_location_update">Meter – Måste förflytta sig så här långt innan platsangivelse skickas</string>
   <string name="send_distance">Skicka distans</string>
   <string name="degrees">Grader</string>
   <string name="course_deviation">Kursavvikelse</string>
@@ -235,8 +235,8 @@
   <string name="recorded_tracks_are_stored_on_the_memory_card_by_default_sdcard_osmodroid_">Inspelade spår lagrar på minneskortet (som standard /sdkort/OsMoDroid/)</string>
   <string name="record_track">Spela in spår</string>
   <string name="record_settings">Inställningar för inspelning</string>
-  <string name="milliseconds_how_often_to_save_location">Millisekunder - hur ofta platsen ska sparas</string>
-  <string name="meters_must_move_at_least_this_far_to_save_new_location">Meter - du måste röra sig åtminstone så här långt för att ny plats ska sparas</string>
+  <string name="milliseconds_how_often_to_save_location">Millisekunder – hur ofta platsen ska sparas</string>
+  <string name="meters_must_move_at_least_this_far_to_save_new_location">Meter – du måste röra sig åtminstone så här långt för att ny plats ska sparas</string>
   <string name="meters">meter</string>
   <string name="acceptable_location_accuracy">Acceptabel platsnoggrannhet</string>
   <string name="minimum_speed_to_save_">Lägsta hastighet att spara</string>
@@ -308,7 +308,7 @@
   <string name="usechatnotification">Aviseringar av chattmeddelanden</string>
   <string name="usechatsummary">Visar avisering när chattmeddelande från aktiv grupp mottages</string>
   <string name="altitude">Höjd: meter</string>
-  <string name="pleasewait">Vänta ...</string>
+  <string name="pleasewait">Vänta…</string>
   <string name="malt">Maxhöjd</string>
   <string name="minalt">Minimihöjd</string>
   <string name="maxspeed">Maxhastighet</string>

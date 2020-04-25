@@ -21,11 +21,11 @@
   <string name="No">الغي</string>
   <string name="Status">الحالة :</string>
   <string name="Sendcount">المبعوثة :</string>
-  <string name="AuthWait">جار طلب التصريح ، الرجاء الإنتظار ...</string>
+  <string name="AuthWait">جار طلب التصريح ، الرجاء الإنتظار…</string>
   <string name="CheckInternet">فشل الحصول على التصريح. إفحص ربطك بالانترنت.</string>
   <string name="ServerError">خطأ من السيرفر</string>
   <string name="buffer">صِوان :</string>
-  <string name="request">جار طلب التصريح ، الرجاء الإنتظار ...</string>
+  <string name="request">جار طلب التصريح ، الرجاء الإنتظار…</string>
   <string name="noappcode">كلمة المرور فارغة</string>
   <string name="nokey">فشل التصريح (لا يوجد مفتاح)</string>
   <string name="getkey">مرخص</string>
@@ -94,7 +94,7 @@
   <string name="more">المزيد</string>
   <string name="iamhere">أنا هنا !</string>
   <string name="Stoping">أوقف</string>
-  <string name="loading">تحميل ...</string>
+  <string name="loading">تحميل…</string>
   <string name="uploadtrera">الرفع إلى أسمو ؟</string>
   <string name="servermessage">رسالة اليوم</string>
   <string name="deletelink">إحذف الرابط</string>
@@ -154,7 +154,7 @@
   <string name="longpath">المسارات الطويلة</string>
   <string name="shortname">الأسماء القصيرة</string>
   <string name="altitude">الإرتفاع : أمتار</string>
-  <string name="pleasewait">الرجاء الإنتظار ...</string>
+  <string name="pleasewait">الرجاء الإنتظار…</string>
   <string name="malt">أقصى إرتفاع</string>
   <string name="minalt">أدنى إرتفاع</string>
   <string name="maxspeed">أقصى سرعة</string>
