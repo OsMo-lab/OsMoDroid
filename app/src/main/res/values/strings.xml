@@ -358,7 +358,7 @@
     <string name="getsmsnumber">Get SMS number</string>
     <string name="alreadyregistered">Are you already registered ?</string>
     <string name="osmand">Integrate with OsmAnd (experimental)</string>
-    <string name="open_osmand">Send map to OsmAnd map</string>
+    <string name="open_osmand">Send map to OsmAnd</string>
     <string name="closesos">Close</string>
     <string name="requiregps">THIS APP REQUIRED GPS</string>
     <string name="requireSTORAGE">THIS APP REQUIRED WRITE TO SDCARD TO SHOW MAP</string>
