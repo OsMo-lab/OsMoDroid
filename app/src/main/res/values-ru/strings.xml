@@ -357,14 +357,14 @@
   <string name="getsms">Получать СМС</string>
   <string name="getsmsnumber">Номер отправителя SMS</string>
   <string name="alreadyregistered">Уже зарегистрированы?</string>
-  <string name="osmand">Интеграция с OsmAnd (экспериментальная функция)</string>
-  <string name="open_osmand">Открыть карту в OsmAnd</string>
+  <string name="osmand">Интеграция с OsmAnd (экспериментально)</string>
+  <string name="open_osmand">Отправить данные в OsmAnd</string>
   <string name="closesos">Закрыть!</string>
   <string name="requiregps">Приложению нужен доступ к GPS</string>
   <string name="requireSTORAGE">Приложению нужен доступ к карте памяти</string>
   <string name="autostartses">Запускать трекер при старте приложения</string>
   <string name="startsesonrun">Автозапуск мониторинга</string>
   <string name="bogoogleplay">Не установлен Google Play, не все функции приложения будут доступны.</string>
-  <string name="invite">Код приглашения(если есть)</string>
-  <string name="familygroupabsent">Вы не создали группу Семья</string>
+  <string name="invite">Инвайт код</string>
+  <string name="familygroupabsent">У вас нет группы "Семья". Чтобы её создать, напишите на наш Patreon.com/osmomobi</string>
 </resources>
