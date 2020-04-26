@@ -1,8 +1,7 @@
 package com.OsMoDroid;
 import java.io.File;
 
-import android.app.Notification;
-import android.support.v4.app.NotificationCompat.Builder;
+import androidx.core.app.NotificationCompat.Builder;
 public class APIcomParams
     {
         //	String[] params = {"http://apim.esya.ru/?query="+action +";&key="+settings.getString("key", ""),"false","","APIM"};

@@ -3,14 +3,14 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Intent;
 import android.os.Build;
-import android.support.v4.app.NotificationCompat;
+
+import androidx.annotation.NonNull;
+import androidx.core.app.NotificationCompat;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
 import java.util.Map;
-
-import static com.OsMoDroid.LocalService.addlog;
 
 public class MyFcmListenerService extends FirebaseMessagingService
     {
@@ -51,7 +51,14 @@ public class MyFcmListenerService extends FirebaseMessagingService
 
     }
 
-}
+        @Override
+        public void onNewToken(@NonNull String s) {
+            Intent is = new Intent(this, LocalService.class);
+            is.putExtra("GCM","NEEDSENDTOKEN|"+s);
+            startService(is);
+        }
+
+    }
 //public class MyGcmListenerService extends GcmListenerService
 //    {
 //        @Override

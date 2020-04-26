@@ -1,17 +1,15 @@
 package com.OsMoDroid;
+
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.os.Build;
 import android.preference.PreferenceManager;
 import android.view.inputmethod.InputMethodManager;
-
 import com.google.firebase.analytics.FirebaseAnalytics;
-import com.squareup.leakcanary.LeakCanary;
+
 
 import org.osmdroid.config.Configuration;
-import org.osmdroid.tileprovider.constants.OpenStreetMapTileProviderConstants;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -124,7 +122,6 @@ public class OsMoDroid extends Application
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                LeakCanary.install(this);
                 mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
             }
     }

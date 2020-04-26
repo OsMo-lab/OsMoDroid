@@ -55,9 +55,9 @@ import android.os.SystemClock;
 import android.os.Handler;
 import android.os.Message;
 import android.speech.tts.TextToSpeech;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.NotificationCompat;
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -1069,7 +1069,7 @@ public class IM implements ResultsListener {
 
             if (param.equals(OsMoDroid.TRACKER_GCM_ID)) {
 
-                sendToServer("GCM|" + FirebaseInstanceId.getInstance().getToken(), false);
+                sendToServer("GCM|" + FirebaseInstanceId.getInstance().getInstanceId(), false);
                 //sendToServer("GCM|" + OsMoDroid.settings.getString("GCMRegId", "no"), false);
                 sendToServer("RCR:" + OsMoDroid.TRACKER_GCM_ID + "|1", false);
 

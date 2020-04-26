@@ -1,5 +1,4 @@
 package com.OsMoDroid;
-import com.OsMoDroid.R;
 
 import android.Manifest;
 import android.content.Intent;
@@ -10,11 +9,10 @@ import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceCategory;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.view.Gravity;
-import android.view.MenuItem;
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
 import android.widget.Toast;
 
 import java.io.File;

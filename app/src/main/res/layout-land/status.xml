@@ -182,13 +182,12 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/TextView04"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.5"
                 android:text="@string/totalclimb"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textSize="@dimen/sign_text_size"/>
+                android:textSize="@dimen/sign_text_size" />
 
             <TextView
                 android:id="@+id/climbTextView"
@@ -247,7 +246,6 @@
             android:orientation="vertical" >
 
             <TextView
-                android:id="@+id/TextView04"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.5"
