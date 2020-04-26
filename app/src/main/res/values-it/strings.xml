@@ -33,7 +33,7 @@
   <string name="Status">Stato:</string>
   <string name="Sendcount">Inviato:</string>
   <string name="ErrorRecieve">Errore durante il recupero</string>
-  <string name="AuthWait">Richiesta autorizzazione; attendere prego...</string>
+  <string name="AuthWait">Richiesta autorizzazione; attendere prego…</string>
   <string name="CheckInternet">Autenticazione fallita. Controlla la tua connessione dati.</string>
   <string name="CanNotWriteHeader">Non è possibile salvare la traccia nella tua memory card.</string>
   <string name="CanNotWriteEnd">Non è possibile completare il salvataggio della traccia nella tua memory card.</string>
@@ -41,7 +41,7 @@
   <string name="TrackCourseChange">Cambiando direzione del percorso:</string>
   <string name="ServerError">Errore del server</string>
   <string name="buffer">Buffer:</string>
-  <string name="request">Richiesta autorizzazione, attendere prego...</string>
+  <string name="request">Richiesta autorizzazione, attendere prego…</string>
   <string name="noappcode">Password vuota</string>
   <string name="nokey">Autorizzazione fallita (chiave assente)</string>
   <string name="getkey">Autorizzato</string>
@@ -55,7 +55,7 @@
   <string name="message">Messaggio</string>
   <string name="sendsupport">Notifica al supporto</string>
   <string name="about">Informazioni</string>
-  <string name="abouttext">OsMoDroid è l\'app ufficiale del servizio OsMo per Android. Tramite uno smartphone ed il servizio OsMo i tuoi amici e la tua famiglia sapranno sempre dove sei.\nSviluppatore principale: Denis Fokin (c) 2012-2017\n\nUtilizzando questa applicazione, accetti i termini e le condizioni d\'uso consultabili su https://osmo.mobi/terms\n\nSito OsMoDroid: http://osmodroid.mobi\n\nInformazioni sul copyright: http://osmodroid.mobi/copyright.html</string>
+  <string name="abouttext">OsMoDroid è l\'app ufficiale del servizio OsMo per Android. Tramite uno smartphone ed il servizio OsMo i tuoi amici e la tua famiglia sapranno sempre dove sei.\nSviluppatore principale: Denis Fokin (c) 2020\n\nUtilizzando questa applicazione, accetti i termini e le condizioni d\'uso consultabili su https://osmo.mobi/terms\n\nSito OsMoDroid: https://osmodroid.com\n\nInformazioni sul copyright: https://osmodroid.com/copyright.html</string>
   <string name="send">&gt;&gt;</string>
   <string name="cancel">Annulla</string>
   <string name="speed">Velocità: km/h</string>
@@ -100,8 +100,8 @@
   <string name="stat">Statistiche</string>
   <string name="appauth">Richiesta di autenticazione</string>
   <string name="inbuffer">Nel buffer:</string>
-  <string name="authpleasewait">Richiesta autorizzazione, attendere prego... </string>
-  <string name="commandpleasewait">Esecuzione comando; attendere prego... </string>
+  <string name="authpleasewait">Richiesta autorizzazione, attendere prego… </string>
+  <string name="commandpleasewait">Esecuzione comando; attendere prego… </string>
   <string name="resultenterchanalnoget">Non è stata ricevuta alcuna risposta dal server alla richiesta di ingresso nel canale</string>
   <string name="linksnotget">I link non possono essere recuperati</string>
   <string name="noanswerfromserver">Nessuna risposta dal server</string>
@@ -143,7 +143,7 @@
   <string name="linkcopied">Link copiato negli appunti</string>
   <string name="Stoping">Stop</string>
   <string name="closesession">Termina viaggio?</string>
-  <string name="loading">Caricamento...</string>
+  <string name="loading">Caricamento…</string>
   <string name="uploadtrera">Carica in OsMo?</string>
   <string name="servermessage">Messaggio del Giorno</string>
   <string name="deletelink">Rimuovi link</string>
@@ -216,9 +216,9 @@
   <string name="no_follow_">Non seguire</string>
   <string name="adjust_to_dpi">Mappa HD</string>
   <string name="monitoring_settings">Impostazioni monitoraggio</string>
-  <string name="milliseconds_how_often_to_send_location">Millisecondi - Ogni quanto inviare la posizione</string>
+  <string name="milliseconds_how_often_to_send_location">Millisecondi – Ogni quanto inviare la posizione</string>
   <string name="send_frequency">Frequenza di invio</string>
-  <string name="meters_must_move_at_least_this_far_to_send_location_update">Metri - Devi spostarti almeno tanto lontano per inviare la posizione</string>
+  <string name="meters_must_move_at_least_this_far_to_send_location_update">Metri – Devi spostarti almeno tanto lontano per inviare la posizione</string>
   <string name="send_distance">Distanza di invio</string>
   <string name="degrees">Gradi</string>
   <string name="course_deviation">Deviazione dal percorso</string>
@@ -235,8 +235,8 @@
   <string name="recorded_tracks_are_stored_on_the_memory_card_by_default_sdcard_osmodroid_">Le tracce salvate sono archiviate nella scheda di memoria (posizione di default /sdcard/OsMoDroid/)</string>
   <string name="record_track">Registra traccia</string>
   <string name="record_settings">Impostazioni di registrazione</string>
-  <string name="milliseconds_how_often_to_save_location">Millisecondi - Ogni quanto inviare la posizione</string>
-  <string name="meters_must_move_at_least_this_far_to_save_new_location">Metri - Ci si deve muovere di almeno questa distanza per salvare la nuova posizione</string>
+  <string name="milliseconds_how_often_to_save_location">Millisecondi – Ogni quanto inviare la posizione</string>
+  <string name="meters_must_move_at_least_this_far_to_save_new_location">Metri – Ci si deve muovere di almeno questa distanza per salvare la nuova posizione</string>
   <string name="meters">Metri</string>
   <string name="acceptable_location_accuracy">Precisione posizione accettabile</string>
   <string name="minimum_speed_to_save_">Velocità minima da salvare</string>
@@ -308,7 +308,7 @@
   <string name="usechatnotification">Notifiche per messaggi di chat</string>
   <string name="usechatsummary">Mostra notifica alla ricezione di un messaggio di chat da uno dei gruppi attivi</string>
   <string name="altitude">Quota: Metri</string>
-  <string name="pleasewait">Attendere prego...</string>
+  <string name="pleasewait">Attendere prego…</string>
   <string name="malt">Quota massima</string>
   <string name="minalt">Quota minima</string>
   <string name="maxspeed">Velocità massima</string>

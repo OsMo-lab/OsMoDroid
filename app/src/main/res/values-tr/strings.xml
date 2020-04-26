@@ -33,7 +33,7 @@
   <string name="Status">Durum:</string>
   <string name="Sendcount">Gönder:</string>
   <string name="ErrorRecieve">Hatayı telafi et</string>
-  <string name="AuthWait">Yetki isteniyor: lütfen bekleyin ...</string>
+  <string name="AuthWait">Yetki isteniyor: lütfen bekleyin…</string>
   <string name="CheckInternet">Kimlik doğrulaması yapılamadı. Veri bağlantınızı kontrol edin.</string>
   <string name="CanNotWriteHeader">Hafıza kartınız parçayı kurtaramadı.</string>
   <string name="CanNotWriteEnd">İzleme kaydı hafıza kartına kaydedilemedi.</string>
@@ -41,7 +41,7 @@
   <string name="TrackCourseChange">Yön parçasını değiştir:</string>
   <string name="ServerError">Sunucu Hatası</string>
   <string name="buffer">Tampon:</string>
-  <string name="request">Yetki isteniyor: lütfen bekleyin ...</string>
+  <string name="request">Yetki isteniyor: lütfen bekleyin…</string>
   <string name="noappcode">Parola boş</string>
   <string name="nokey">Yetkilendirme başarısız oldu (Anahtar yok)</string>
   <string name="getkey">Yetkili</string>
@@ -99,8 +99,8 @@
   <string name="stat">İstatistikler</string>
   <string name="appauth">Yetki Başvurusu</string>
   <string name="inbuffer">Tampon ile Koru:</string>
-  <string name="authpleasewait">Yetkilendirme isteniyor, lütfen bekleyiniz ...</string>
-  <string name="commandpleasewait">Komut gerçekleştiriliyor; lütfen bekleyiniz ...</string>
+  <string name="authpleasewait">Yetkilendirme isteniyor, lütfen bekleyiniz…</string>
+  <string name="commandpleasewait">Komut gerçekleştiriliyor; lütfen bekleyiniz…</string>
   <string name="resultenterchanalnoget">Kanal giriş isteğine bir sunucu cevabı alınamadı</string>
   <string name="linksnotget">Bağlantılar alınamadı</string>
   <string name="noanswerfromserver">Sunucudan yanıt yok</string>
@@ -142,7 +142,7 @@
   <string name="linkcopied">Link panoya kopyalandı</string>
   <string name="Stoping">Dur</string>
   <string name="closesession">Gezi tamamlandı mı?</string>
-  <string name="loading">Yükleniyor...</string>
+  <string name="loading">Yükleniyor…</string>
   <string name="uploadtrera">OsMo\'ya yüklensin mi?</string>
   <string name="servermessage">Günün Mesajı</string>
   <string name="deletelink">Bağlantıyı kaldır</string>
@@ -220,7 +220,7 @@
   <string name="inetoff">Veri bağlantısı kaybedildi</string>
   <string name="show_arrows">Okları göster</string>
   <string name="hidefromnmap">Haritadan gizle</string>
-  <string name="pleasewait">Lütfen bekle...</string>
+  <string name="pleasewait">Lütfen bekle…</string>
   <string name="time">Zaman</string>
   <string name="near">yakınında</string>
   <string name="you">Sen</string>

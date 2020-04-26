@@ -33,7 +33,7 @@
   <string name="Status">Статус:</string>
   <string name="Sendcount">Изпратени:</string>
   <string name="ErrorRecieve">Грешка при получаване</string>
-  <string name="AuthWait">Удостоверяване.Моля изчакайте...</string>
+  <string name="AuthWait">Удостоверяване.Моля изчакайте…</string>
   <string name="CheckInternet">Грешка при идентифицирането.Проверете интернет връзката.</string>
   <string name="CanNotWriteHeader">Невъзможност съхранение на тракфайла в картата памет.</string>
   <string name="CanNotWriteEnd">Невъзможност завършване съхранението на тракфайла в картата памет.</string>
@@ -41,7 +41,7 @@
   <string name="TrackCourseChange">Смяна курс трак:</string>
   <string name="ServerError">Грешка сървър</string>
   <string name="buffer">Буфер:</string>
-  <string name="request">Удостоверяване.Моля изчакайте...</string>
+  <string name="request">Удостоверяване.Моля изчакайте…</string>
   <string name="noappcode">Липсва парола</string>
   <string name="nokey">Удостоверяването неуспешно(временно)</string>
   <string name="getkey">Удостоверен</string>
@@ -55,7 +55,7 @@
   <string name="message">Съобщение</string>
   <string name="sendsupport">Съобщи на поддръжката</string>
   <string name="about">Относно</string>
-  <string name="abouttext">ОсМоДроид-Официалното приложение на ОсМо сервиз за Андроид.Използвайки смартфон и услугите на ОсМо,вашите приятели и семейство ще знаят винаги къде се намирате.Главен програмист:Денис Фокин(с)2012-2017.Използвайки приложението,Вие приемате условията на https://osmo.mobi/terms\n\nSite OsMoDroid:http://osmodroid.mobi\n\nАвторски права:http://osmodroid.mobi/copyright.html</string>
+  <string name="abouttext">ОсМоДроид-Официалното приложение на ОсМо сервиз за Андроид.Използвайки смартфон и услугите на ОсМо,вашите приятели и семейство ще знаят винаги къде се намирате.Главен програмист:Денис Фокин(с)2020.Използвайки приложението,Вие приемате условията на https://osmo.mobi/terms\n\nSite OsMoDroid:https://osmodroid.com\n\nАвторски права:https://osmodroid.com/copyright.html</string>
   <string name="send"> &gt;&gt;</string>
   <string name="cancel">Отмяна</string>
   <string name="speed">Скорост:км/ч</string>
@@ -100,8 +100,8 @@
   <string name="stat">Статистика</string>
   <string name="appauth">Упълномощаване приложението</string>
   <string name="inbuffer">Стопирани:</string>
-  <string name="authpleasewait">Изпълнява упълномощаване,моля изчакайте...</string>
-  <string name="commandpleasewait">Изпълнява команда,моля изчакайте...</string>
+  <string name="authpleasewait">Изпълнява упълномощаване,моля изчакайте…</string>
+  <string name="commandpleasewait">Изпълнява команда,моля изчакайте…</string>
   <string name="resultenterchanalnoget">Неполучен отговор от сървъра при вход в група</string>
   <string name="linksnotget">Връзките не се зачитат</string>
   <string name="noanswerfromserver">Няма отговор от сървъра</string>
@@ -143,7 +143,7 @@
   <string name="linkcopied">Връзката копирана в клипборда</string>
   <string name="Stoping">Спиране</string>
   <string name="closesession">Приключване на сесията?</string>
-  <string name="loading">Зареждане...</string>
+  <string name="loading">Зареждане…</string>
   <string name="uploadtrera">Трансфер в ОсМо?</string>
   <string name="servermessage">Актуално съобщение за деня</string>
   <string name="deletelink">Премахни връзката</string>
@@ -308,7 +308,7 @@
   <string name="usechatnotification">Известия при чат съобщения</string>
   <string name="usechatsummary">Показване всички известия от всички любими  групи при получаване в чата </string>
   <string name="altitude">Височина:Метри</string>
-  <string name="pleasewait">Моля,изчакайте...</string>
+  <string name="pleasewait">Моля,изчакайте…</string>
   <string name="malt">Макс.Височина</string>
   <string name="minalt">Мин.Височина</string>
   <string name="maxspeed">Макс.Скорост</string>

@@ -33,7 +33,7 @@
   <string name="Status">Status:</string>
   <string name="Sendcount">Gesendet:</string>
   <string name="ErrorRecieve">Fehler beim Abrufen</string>
-  <string name="AuthWait">Autorisierung wird beantragt...</string>
+  <string name="AuthWait">Autorisierung wird beantragt…</string>
   <string name="CheckInternet">Es ist etwas schief gelaufen! Überprüfe deine Datenverbindung.</string>
   <string name="CanNotWriteHeader">Konnte deine Track nicht auf die Speicherkarte speichern.</string>
   <string name="CanNotWriteEnd">Ich konnte den Speichervorgang auf die Speicherkarte nicht fertigstellen.</string>
@@ -41,7 +41,7 @@
   <string name="TrackCourseChange">Ändern sie die Spur:</string>
   <string name="ServerError">Server-Fehler</string>
   <string name="buffer">Puffer:</string>
-  <string name="request">Autorisierung wird beantragt...</string>
+  <string name="request">Autorisierung wird beantragt…</string>
   <string name="noappcode">Leeres Passwort</string>
   <string name="nokey">Autorisierung fehlgeschlagen (Kein Key)</string>
   <string name="getkey">Autorisiert</string>
@@ -55,7 +55,7 @@
   <string name="message">Nachricht</string>
   <string name="sendsupport">Support melden</string>
   <string name="about">Über</string>
-  <string name="abouttext">OsMoDroid - ist die offizielle app von OsMo-service für Android. Mit einem smartphone und service OsMo Ihre Freunde und Familie immer wissen, wo Sie sind.\nMain-Entwickler: Denis Fokin (c) 2012-2017\n\nBy mit dieser Anwendung, akzeptieren Sie den Nutzungsbedingungen zu https://osmo.mobi/terms\n\nSite OsMoDroid: http://osmodroid.mobi\n\nCopyright Informationen: http://osmodroid.mobi/copyright.html</string>
+  <string name="abouttext">OsMoDroid – ist die offizielle app von OsMo-service für Android. Mit einem smartphone und service OsMo Ihre Freunde und Familie immer wissen, wo Sie sind.\nMain-Entwickler: Denis Fokin (c) 2020\n\nBy mit dieser Anwendung, akzeptieren Sie den Nutzungsbedingungen zu https://osmo.mobi/terms\n\nSite OsMoDroid: https://osmodroid.com\n\nCopyright Informationen: https://osmodroid.com/copyright.html</string>
   <string name="send">&gt;&gt;</string>
   <string name="cancel">Abbrechen</string>
   <string name="speed">Geschwindigkeit: km/h</string>
@@ -100,8 +100,8 @@
   <string name="stat">Statistik</string>
   <string name="appauth">Applikation autorisieren</string>
   <string name="inbuffer">gepufferd:</string>
-  <string name="authpleasewait">Autorisierung wird angefragt, bitte warten ...</string>
-  <string name="commandpleasewait">Befehl ausgeführt, bitte warten ...</string>
+  <string name="authpleasewait">Autorisierung wird angefragt, bitte warten…</string>
+  <string name="commandpleasewait">Befehl ausgeführt, bitte warten…</string>
   <string name="resultenterchanalnoget">Keine Serverantwort zur Kanalanfrage erhalten</string>
   <string name="linksnotget">Link kann nicht empfangen werden</string>
   <string name="noanswerfromserver">Keine Antwort vom Server</string>
@@ -143,7 +143,7 @@
   <string name="linkcopied">Link in Zwischenablage kopiert</string>
   <string name="Stoping">Stop</string>
   <string name="closesession">Trip vervollständigen?</string>
-  <string name="loading">Laden...</string>
+  <string name="loading">Laden…</string>
   <string name="uploadtrera">Zu OsMo hochladen</string>
   <string name="servermessage">Die Nachricht des Tages</string>
   <string name="deletelink">Link entfernen</string>
@@ -217,7 +217,7 @@ Diese Anzeige hat eine permanente Referenz zum Überwachen Ihres Gerätes. Verf�
   <string name="no_follow_">nicht folgen</string>
   <string name="adjust_to_dpi">HD Karte</string>
   <string name="monitoring_settings">Überwachungseinstellungen</string>
-  <string name="milliseconds_how_often_to_send_location">Millisekunden - Wie oft die Position gesendet wird</string>
+  <string name="milliseconds_how_often_to_send_location">Millisekunden – Wie oft die Position gesendet wird</string>
   <string name="send_frequency">Senden frequenz</string>
   <string name="send_distance">Senden entfernung</string>
   <string name="degrees">Grad</string>
@@ -235,8 +235,8 @@ Diese Anzeige hat eine permanente Referenz zum Überwachen Ihres Gerätes. Verf�
   <string name="recorded_tracks_are_stored_on_the_memory_card_by_default_sdcard_osmodroid_">Standardmäßig werden Tracks auf der Speicherkarte gespeichert (/sdcard/OsMoDroid/)</string>
   <string name="record_track">Track aufzeichnen</string>
   <string name="record_settings">Aufzeichnungseinstellungen</string>
-  <string name="milliseconds_how_often_to_save_location">Millisekunden - Wie oft die Position gespeichert wird</string>
-  <string name="meters_must_move_at_least_this_far_to_save_new_location">Meter - Anzahl Meter bis zum Speichern der nächsten Position</string>
+  <string name="milliseconds_how_often_to_save_location">Millisekunden – Wie oft die Position gespeichert wird</string>
+  <string name="meters_must_move_at_least_this_far_to_save_new_location">Meter – Anzahl Meter bis zum Speichern der nächsten Position</string>
   <string name="meters">Meter</string>
   <string name="acceptable_location_accuracy">Akzeptierte Positionsgenauigkeit</string>
   <string name="minimum_speed_to_save_">Min. Geschwindigkeit zum speichern</string>
@@ -304,7 +304,7 @@ Ton wenn Internet oder GPS Signal verloren wird</string>
   <string name="exitfrom">Geozone verlassen</string>
   <string name="warnewdevice">Dieses Gerät wurde vom server\n entfernt, wird neu erstellt. Wenn Sie eine links(URL) erstellt haben, ist diese nun ungültig. Sie müssen der Gruppe erneut beitreten. Wenn Sie wollen können Sie den Support kontaktieren.</string>
   <string name="altitude">Höhe: Meter</string>
-  <string name="pleasewait">Bitte warten...</string>
+  <string name="pleasewait">Bitte warten…</string>
   <string name="malt">Maximale Höhe</string>
   <string name="minalt">Minimale Höhe</string>
   <string name="maxspeed">Maximal Geschwindigkeit</string>
