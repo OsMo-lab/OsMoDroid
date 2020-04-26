@@ -1,28 +1,30 @@
 package com.OsMoDroid;
-import java.text.SimpleDateFormat;
-
-import org.json.JSONException;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
-import androidx.core.view.MenuItemCompat;
 import android.text.ClipboardManager;
 import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ListView;
+
+import androidx.core.view.MenuItemCompat;
+import androidx.fragment.app.Fragment;
+
+import org.json.JSONException;
+
+import java.text.SimpleDateFormat;
 public class SimLinksFragment extends Fragment
     {
         //	ArrayList<String> list;

@@ -1,11 +1,11 @@
 package com.OsMoDroid;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.telephony.SmsMessage;
 import android.util.Log;
-import android.widget.Toast;
 
 import static com.OsMoDroid.IM.writeException;
 import static com.OsMoDroid.LocalService.addlog;

@@ -6,8 +6,8 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
 import android.view.inputmethod.InputMethodManager;
-import com.google.firebase.analytics.FirebaseAnalytics;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import org.osmdroid.config.Configuration;
 

@@ -1,4 +1,13 @@
 package com.OsMoDroid;
+
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.util.Log;
+
+import com.OsMoDroid.Netutil.InitTask;
+
+import org.osmdroid.api.IGeoPoint;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -6,18 +15,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.osmdroid.api.IGeoPoint;
 //import org.osmdroid.views.overlay.  PathOverlay;
-
-import com.OsMoDroid.Netutil.InitTask;
-
-import android.content.Context;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Path;
-import android.graphics.Point;
-import android.graphics.Rect;
-import android.util.Log;
 public class ColoredGPX implements Serializable
     {
         public int u;

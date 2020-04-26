@@ -1,32 +1,22 @@
 package com.OsMoDroid;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.io.Serializable;
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
 
+import android.graphics.Paint;
+import android.util.Log;
+
+import com.OsMoDroid.ColoredGPX.Statuses;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.File;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+
 //import org.osmdroid.views.overlay.PathOverlay;
-
-import com.OsMoDroid.ColoredGPX.Statuses;
-import com.OsMoDroid.Netutil.InitTask;
-
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.location.Address;
-import android.os.AsyncTask;
-import android.provider.Settings.Global;
-import android.util.Log;
 public class Channel implements Serializable, ResultsListener
     {
         public ArrayList<ColoredGPX> gpxList = new ArrayList<ColoredGPX>();

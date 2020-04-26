@@ -1,6 +1,5 @@
 package com.OsMoDroid;
 
-import android.app.Application;
 import android.app.Service;
 import android.content.ComponentName;
 import android.content.Context;
@@ -9,7 +8,8 @@ import android.content.ServiceConnection;
 import android.net.Uri;
 import android.os.IBinder;
 import android.os.RemoteException;
-import android.widget.Toast;
+
+import com.OsMoDroid.OsmAndHelper.OnOsmandMissingListener;
 
 import net.osmand.aidl.IOsmAndAidlInterface;
 import net.osmand.aidl.favorite.AFavorite;
@@ -47,15 +47,13 @@ import net.osmand.aidl.mapwidget.UpdateMapWidgetParams;
 import net.osmand.aidl.navigation.NavigateGpxParams;
 import net.osmand.aidl.navigation.NavigateParams;
 import net.osmand.aidl.note.StartAudioRecordingParams;
+import net.osmand.aidl.note.StartVideoRecordingParams;
 import net.osmand.aidl.note.StopRecordingParams;
 import net.osmand.aidl.note.TakePhotoNoteParams;
-import net.osmand.aidl.note.StartVideoRecordingParams;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.OsMoDroid.OsmAndHelper.OnOsmandMissingListener;
 
 import static com.OsMoDroid.LocalService.addlog;
 public class OsmAndAidlHelper {

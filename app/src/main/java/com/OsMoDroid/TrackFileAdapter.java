@@ -1,11 +1,6 @@
 package com.OsMoDroid;
-import java.io.File;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,7 +12,10 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
-import static com.OsMoDroid.LocalService.addlog;
+import java.io.File;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
 public class TrackFileAdapter extends ArrayAdapter<TrackFile> implements ResultsListener
     {

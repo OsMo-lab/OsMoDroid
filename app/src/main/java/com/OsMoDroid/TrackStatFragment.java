@@ -1,4 +1,5 @@
 package com.OsMoDroid;
+
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -6,9 +7,6 @@ import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
-//import android.support.v4.os.AsyncTaskCompat;
-import androidx.core.view.MenuItemCompat;
 import android.util.Log;
 import android.util.Xml;
 import android.view.LayoutInflater;
@@ -20,6 +18,9 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
+
+import androidx.core.view.MenuItemCompat;
+import androidx.fragment.app.Fragment;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.YAxis;
@@ -35,6 +36,8 @@ import java.io.FileInputStream;
 import java.util.ArrayList;
 
 import static java.lang.Math.abs;
+
+//import android.support.v4.os.AsyncTaskCompat;
 public class TrackStatFragment extends Fragment
     {
         private File sdDir = android.os.Environment.getExternalStorageDirectory();

@@ -3,6 +3,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.preference.PreferenceManager;
 import android.telephony.SmsMessage;
 public class BootComplitedReceiver extends BroadcastReceiver
@@ -18,8 +19,10 @@ public class BootComplitedReceiver extends BroadcastReceiver
                     {
                         if (settings.getBoolean("autostart", false))
                             {
-                                Intent is = new Intent(context, LocalService.class);
-                                context.startService(is);
+                                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+                                    Intent is = new Intent(context, LocalService.class);
+                                    context.startService(is);
+                                }
                             }
                     }
                 if (recievedIntent != null && recievedIntent.getAction() != null && recievedIntent.getAction().equalsIgnoreCase(ACTION_SMS))

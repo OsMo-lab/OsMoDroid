@@ -1,11 +1,8 @@
 package com.OsMoDroid;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.os.BatteryManager;
-
-import static android.os.BatteryManager.BATTERY_PLUGGED_AC;
-import static android.os.BatteryManager.BATTERY_PLUGGED_USB;
 /**
  * Created by 1 on 07.12.2016.
  */

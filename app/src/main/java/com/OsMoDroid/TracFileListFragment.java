@@ -1,9 +1,4 @@
 package com.OsMoDroid;
-import java.io.File;
-import java.io.FilenameFilter;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
 
 import android.app.Activity;
 import android.app.Notification;
@@ -12,22 +7,29 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
-import androidx.core.app.NotificationCompat;
-import androidx.core.view.MenuItemCompat;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ListView;
+
+import androidx.core.app.NotificationCompat;
+import androidx.core.view.MenuItemCompat;
+import androidx.fragment.app.Fragment;
+
+import java.io.File;
+import java.io.FilenameFilter;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
 public class TracFileListFragment extends Fragment implements ResultsListener
     {
         int count = 0;

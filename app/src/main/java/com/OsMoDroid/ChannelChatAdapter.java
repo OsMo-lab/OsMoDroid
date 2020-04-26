@@ -1,20 +1,15 @@
 package com.OsMoDroid;
-import java.util.ArrayList;
-import java.util.List;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.PaintDrawable;
-import android.opengl.Visibility;
 import android.text.util.Linkify;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.util.List;
 public class ChannelChatAdapter extends ArrayAdapter<ChatMessage>
     {
         //	private TextView txtFrom;

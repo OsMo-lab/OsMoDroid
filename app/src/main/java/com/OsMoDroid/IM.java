@@ -1,36 +1,5 @@
 package com.OsMoDroid;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.ObjectOutputStream;
-import java.io.OutputStreamWriter;
-import java.io.StringWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.InetAddress;
-import java.net.Socket;
-import java.net.SocketAddress;
-import java.net.InetSocketAddress;
-import java.security.cert.X509Certificate;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.osmdroid.util.GeoPoint;
-import org.osmdroid.util.PointL;
-
-import com.OsMoDroid.Channel.Point;
-import com.OsMoDroid.Netutil.MyAsyncTask;
-import com.google.firebase.iid.FirebaseInstanceId;
-//import android.R;
 import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.PendingIntent;
@@ -50,16 +19,48 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Looper;
-import android.os.SystemClock;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
+import android.os.SystemClock;
 import android.speech.tts.TextToSpeech;
+import android.util.Log;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
-import android.util.Log;
-import android.widget.Toast;
+
+import com.OsMoDroid.Channel.Point;
+import com.OsMoDroid.Netutil.MyAsyncTask;
+import com.google.firebase.iid.FirebaseInstanceId;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.osmdroid.util.GeoPoint;
+import org.osmdroid.util.PointL;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.ObjectOutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.Socket;
+import java.net.SocketAddress;
+import java.security.cert.X509Certificate;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSession;
@@ -72,6 +73,8 @@ import static com.OsMoDroid.LocalService.addlog;
 import static com.OsMoDroid.LocalService.myManager;
 import static com.OsMoDroid.OsMoDroid.context;
 import static com.OsMoDroid.OsMoDroid.timeshift;
+
+//import android.R;
 
 /**
  * @author dfokin

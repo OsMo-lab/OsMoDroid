@@ -1,5 +1,4 @@
 package com.OsMoDroid;
-import android.graphics.Point;
 
 import org.osmdroid.util.PointL;
 

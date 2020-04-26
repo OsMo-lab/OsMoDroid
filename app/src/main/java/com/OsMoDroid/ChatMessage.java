@@ -1,7 +1,6 @@
 package com.OsMoDroid;
-import java.io.Serializable;
 
-import android.graphics.Color;
+import java.io.Serializable;
 public class ChatMessage implements Comparable<ChatMessage>, Serializable
     {
         //    u = 468

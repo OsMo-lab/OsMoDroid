@@ -1,9 +1,7 @@
 package com.OsMoDroid;
-import java.util.ArrayList;
 
 import android.app.Activity;
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
 import android.text.util.Linkify;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +9,10 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import androidx.fragment.app.Fragment;
+
+import java.util.ArrayList;
 public class NotifFragment extends Fragment
     {
         ArrayList<String> list;

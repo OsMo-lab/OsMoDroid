@@ -1,7 +1,6 @@
 package com.OsMoDroid;
-import java.text.SimpleDateFormat;
 
-import android.util.Log;
+import java.text.SimpleDateFormat;
 public class TrackFile implements Comparable<TrackFile>
     {
         final private static SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");

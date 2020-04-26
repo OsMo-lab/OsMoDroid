@@ -1,5 +1,4 @@
 package com.OsMoDroid;
-import java.io.File;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
