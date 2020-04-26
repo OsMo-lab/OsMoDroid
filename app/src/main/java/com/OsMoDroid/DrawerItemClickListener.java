@@ -117,6 +117,7 @@ public class DrawerItemClickListener implements OnItemClickListener
 //                                //devs.setArguments(bundle.geti);
 //                                devs.deviceU = bundle.getInt("deviceU");
 //                            }
+                        boolean familyExist=false;
                         for (Channel ch:LocalService.channelList)
                             {
                                 if(ch.type==2)
@@ -126,11 +127,15 @@ public class DrawerItemClickListener implements OnItemClickListener
                                         b.putInt("channelpos", ch.u);
                                         chandev.setArguments(b);
                                         ft.replace(R.id.fragment_container, chandev);
+                                        familyExist=true;
                                         break;
                                     }
                             }
 
-                           Toast.makeText(activity, activity.getString(R.string.familygroupabsent), Toast.LENGTH_SHORT).show();
+                           if(familyExist)
+                           {
+                               Toast.makeText(activity, activity.getString(R.string.familygroupabsent), Toast.LENGTH_SHORT).show();
+                           }
 
 //                        ft.replace(R.id.fragment_container, devs);
                         currentItem = 3;
