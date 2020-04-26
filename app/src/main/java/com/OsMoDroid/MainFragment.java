@@ -213,7 +213,7 @@ public class MainFragment extends Fragment implements GPSLocalServiceClient.upd
                 MenuItem auth = menu2.add(0, 1, 1, R.string.RepeatAuth);
 //		MenuItem mi = menu.add(0, 2, 2, R.string.Settings);
 //		mi.setIcon(android.R.drawable.ic_menu_preferences);
-                MenuItem mi3 = menu2.add(0, 3, 3, R.string.EqualsParameters);
+              //  MenuItem mi3 = menu2.add(0, 3, 3, R.string.EqualsParameters);
 
                 MenuItem shareadress = menu.add(0, 10, 10, R.string.sharelink);
                 MenuItemCompat.setShowAsAction(shareadress, MenuItemCompat.SHOW_AS_ACTION_IF_ROOM);
@@ -266,43 +266,43 @@ public class MainFragment extends Fragment implements GPSLocalServiceClient.upd
 //			globalActivity.startActivityForResult(intent, 0);
 //			
 //		}
-                if (item.getItemId() == 3)
-                    {
-                        AlertDialog alertdialog1 = new AlertDialog.Builder(
-                                getActivity()).create();
-                        alertdialog1.setTitle(getString(R.string.AgreeParameterEqual));
-                        alertdialog1
-                                .setMessage(getString(R.string.TrackRecordParameterChanges));
-                        alertdialog1.setButton(getString(R.string.yes),
-                                new DialogInterface.OnClickListener()
-                                {
-                                    public void onClick(DialogInterface dialog, int which)
-                                        {
-                                            globalActivity.speedbearing_gpx = globalActivity.speedbearing;
-                                            globalActivity.bearing_gpx = globalActivity.bearing;
-                                            globalActivity.hdop_gpx = globalActivity.hdop;
-                                            globalActivity.period_gpx = globalActivity.period;
-                                            globalActivity.distance_gpx = globalActivity.distance;
-                                            OsMoDroid.editor.putString("period_gpx", Integer.toString(globalActivity.period_gpx));
-                                            OsMoDroid.editor.putString("distance_gpx", Integer.toString(globalActivity.distance_gpx));
-                                            OsMoDroid.editor.putString("speedbearing_gpx", Integer.toString(globalActivity.speedbearing_gpx));
-                                            OsMoDroid.editor.putString("bearing_gpx", Integer.toString(globalActivity.bearing_gpx));
-                                            OsMoDroid.editor.putString("hdop_gpx", Integer.toString(globalActivity.hdop_gpx));
-                                            OsMoDroid.editor.commit();
-                                            //	WritePref();
-                                            return;
-                                        }
-                                });
-                        alertdialog1.setButton2(getString(R.string.No),
-                                new DialogInterface.OnClickListener()
-                                {
-                                    public void onClick(DialogInterface dialog, int which)
-                                        {
-                                            return;
-                                        }
-                                });
-                        alertdialog1.show();
-                    }
+//                if (item.getItemId() == 3)
+//                    {
+//                        AlertDialog alertdialog1 = new AlertDialog.Builder(
+//                                getActivity()).create();
+//                        alertdialog1.setTitle(getString(R.string.AgreeParameterEqual));
+//                        alertdialog1
+//                                .setMessage(getString(R.string.TrackRecordParameterChanges));
+//                        alertdialog1.setButton(getString(R.string.yes),
+//                                new DialogInterface.OnClickListener()
+//                                {
+//                                    public void onClick(DialogInterface dialog, int which)
+//                                        {
+//                                            globalActivity.speedbearing_gpx = globalActivity.speedbearing;
+//                                            globalActivity.bearing_gpx = globalActivity.bearing;
+//                                            globalActivity.hdop_gpx = globalActivity.hdop;
+//                                            globalActivity.period_gpx = globalActivity.period;
+//                                            globalActivity.distance_gpx = globalActivity.distance;
+//                                            OsMoDroid.editor.putString("period_gpx", Integer.toString(globalActivity.period_gpx));
+//                                            OsMoDroid.editor.putString("distance_gpx", Integer.toString(globalActivity.distance_gpx));
+//                                            OsMoDroid.editor.putString("speedbearing_gpx", Integer.toString(globalActivity.speedbearing_gpx));
+//                                            OsMoDroid.editor.putString("bearing_gpx", Integer.toString(globalActivity.bearing_gpx));
+//                                            OsMoDroid.editor.putString("hdop_gpx", Integer.toString(globalActivity.hdop_gpx));
+//                                            OsMoDroid.editor.commit();
+//                                            //	WritePref();
+//                                            return;
+//                                        }
+//                                });
+//                        alertdialog1.setButton2(getString(R.string.No),
+//                                new DialogInterface.OnClickListener()
+//                                {
+//                                    public void onClick(DialogInterface dialog, int which)
+//                                        {
+//                                            return;
+//                                        }
+//                                });
+//                        alertdialog1.show();
+//                    }
                 if (item.getItemId() == 4)
                     {
                         globalActivity.signin();
@@ -367,7 +367,7 @@ public class MainFragment extends Fragment implements GPSLocalServiceClient.upd
                                 globalActivity.mService.channelList.clear();
                                 globalActivity.mService.myIM.stop();
                                 globalActivity.mService.myIM.start();
-                                globalActivity.ReadPref();
+                                //globalActivity.ReadPref();
                                 updateMainUI();
                                 globalActivity.mService.applyPreference();
                                 globalActivity.mService.refresh();

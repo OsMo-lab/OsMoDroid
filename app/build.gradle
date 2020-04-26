@@ -16,7 +16,7 @@ android {
             minifyEnabled false
             proguardFiles 'proguard.cfg'
             //proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            proguardFile 'C:/StudioProjects/GPSLocalService/app/proguard.cfg'
+            proguardFile 'proguard.cfg'
         }
     }
     lintOptions {
@@ -32,12 +32,17 @@ android {
 repositories {
     mavenCentral()
     maven { url "https://jitpack.io" }
+    maven{
+        url  'https://oss.sonatype.org/content/repositories/snapshots/'
+        name 'OSS-Sonatype'
+    }
 }
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.google.firebase:firebase-messaging:11.4.2'
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0-alpha'
-    compile 'org.osmdroid:osmdroid-android:6.1.6'
+    compile 'org.osmdroid:osmdroid-android:6.1.7-SNAPSHOT'
+
     compile 'com.android.support:appcompat-v7:27.1.1'
     debugCompile 'com.squareup.leakcanary:leakcanary-android:1.4-beta2'
     releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.4-beta2'

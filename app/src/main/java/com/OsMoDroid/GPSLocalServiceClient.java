@@ -93,7 +93,7 @@ public class GPSLocalServiceClient extends AppCompatActivity implements ResultsL
         boolean mBound = false;
         int speedbearing;
         int bearing;
-        boolean live = true;
+        boolean live = OsMoDroid.settings.getBoolean("live", true);;
         int hdop;
         int period;
         int distance;
@@ -311,7 +311,7 @@ public class GPSLocalServiceClient extends AppCompatActivity implements ResultsL
                 actionBar.setHomeAsUpIndicator(R.drawable.eyeo);
                 OsMoDroid.activity = this;
                 PreferenceManager.setDefaultValues(this, R.xml.pref, true);
-                ReadPref();
+                //ReadPref();
                 String sdState = android.os.Environment.getExternalStorageState();
                 if (sdState.equals(android.os.Environment.MEDIA_MOUNTED))
                     {
@@ -557,7 +557,7 @@ public class GPSLocalServiceClient extends AppCompatActivity implements ResultsL
                 super.onStart();
                 Log.d(this.getClass().getSimpleName(), "onStart() gpsclient");
                 OsMoDroid.gpslocalserviceclientVisible = true;
-                ReadPref();
+                //ReadPref();
                 started = checkStarted();
                 if(mBound)
                     {
@@ -1003,48 +1003,48 @@ public class GPSLocalServiceClient extends AppCompatActivity implements ResultsL
                 // Log.d(this.getClass().getSimpleName(), "oncheckstartedy() gpsclient");
                 return OsMoDroid.settings.getBoolean("started", false);
             }
-        void ReadPref()
-            {
-                Log.d(this.getClass().getSimpleName(), "readpref() gpsclient");
-                speed = Integer.parseInt(OsMoDroid.settings.getString("speed", "3").equals(
-                        "") ? "3" : OsMoDroid.settings.getString("speed", "3"));
-                period = Integer.parseInt(OsMoDroid.settings.getString("period", "10000").equals(
-                        "") ? "10000" : OsMoDroid.settings.getString("period", "10000"));
-                distance = Integer.parseInt(OsMoDroid.settings.getString("distance", "50")
-                        .equals("") ? "50" : OsMoDroid.settings.getString("distance", "50"));
-                speedbearing = Integer.parseInt(OsMoDroid.settings.getString("speedbearing", "2")
-                        .equals("") ? "2" : OsMoDroid.settings.getString("speedbearing", "2"));
-                bearing = Integer.parseInt(OsMoDroid.settings.getString("bearing", "10").equals(
-                        "") ? "10" : OsMoDroid.settings.getString("bearing", "2"));
-                hdop = Integer
-                        .parseInt(OsMoDroid.settings.getString("hdop", "30").equals("") ? "30"
-                                : OsMoDroid.settings.getString("hdop", "30"));
-                gpx = OsMoDroid.settings.getBoolean("gpx", false);
-                live = OsMoDroid.settings.getBoolean("live", true);
-                vibrate = OsMoDroid.settings.getBoolean("vibrate", false);
-                usecourse = OsMoDroid.settings.getBoolean("usecourse", false);
-                vibratetime = Integer.parseInt(OsMoDroid.settings.getString("vibratetime", "200")
-                        .equals("") ? "200" : OsMoDroid.settings.getString("vibratetime", "0"));
-                playsound = OsMoDroid.settings.getBoolean("playsound", false);
-                period_gpx = Integer.parseInt(OsMoDroid.settings.getString("period_gpx", "0")
-                        .equals("") ? "0" : OsMoDroid.settings.getString("period_gpx", "0"));
-                distance_gpx = Integer.parseInt(OsMoDroid.settings.getString("distance_gpx", "0")
-                        .equals("") ? "0" : OsMoDroid.settings.getString("distance_gpx", "0"));
-                speedbearing_gpx = Integer.parseInt(OsMoDroid.settings.getString(
-                        "speedbearing_gpx", "0").equals("") ? "0" : OsMoDroid.settings.getString(
-                        "speedbearing_gpx", "0"));
-                bearing_gpx = Integer.parseInt(OsMoDroid.settings.getString("bearing_gpx", "0")
-                        .equals("") ? "0" : OsMoDroid.settings.getString("bearing", "0"));
-                hdop_gpx = Integer.parseInt(OsMoDroid.settings.getString("hdop_gpx", "30")
-                        .equals("") ? "30" : OsMoDroid.settings.getString("hdop_gpx", "30"));
-                usebuffer = OsMoDroid.settings.getBoolean("usebuffer", false);
-                usewake = OsMoDroid.settings.getBoolean("usewake", false);
-                notifyperiod = Integer.parseInt(OsMoDroid.settings.getString("notifyperiod",
-                        "30000").equals("") ? "30000" : OsMoDroid.settings.getString(
-                        "notifyperiod", "30000"));
-                sendsound = OsMoDroid.settings.getBoolean("sendsound", false);
-                // pass = OsMoDroid.settings.getString("pass", "");
-            }
+//        void ReadPref()
+//            {
+//                Log.d(this.getClass().getSimpleName(), "readpref() gpsclient");
+//                speed = Integer.parseInt(OsMoDroid.settings.getString("speed", "3").equals(
+//                        "") ? "3" : OsMoDroid.settings.getString("speed", "3"));
+//                period = Integer.parseInt(OsMoDroid.settings.getString("period", "10000").equals(
+//                        "") ? "10000" : OsMoDroid.settings.getString("period", "10000"));
+//                distance = Integer.parseInt(OsMoDroid.settings.getString("distance", "50")
+//                        .equals("") ? "50" : OsMoDroid.settings.getString("distance", "50"));
+//                speedbearing = Integer.parseInt(OsMoDroid.settings.getString("speedbearing", "2")
+//                        .equals("") ? "2" : OsMoDroid.settings.getString("speedbearing", "2"));
+//                bearing = Integer.parseInt(OsMoDroid.settings.getString("bearing", "10").equals(
+//                        "") ? "10" : OsMoDroid.settings.getString("bearing", "2"));
+//                hdop = Integer
+//                        .parseInt(OsMoDroid.settings.getString("hdop", "30").equals("") ? "30"
+//                                : OsMoDroid.settings.getString("hdop", "30"));
+//                gpx = OsMoDroid.settings.getBoolean("gpx", false);
+//                //live = OsMoDroid.settings.getBoolean("live", true);
+//                vibrate = OsMoDroid.settings.getBoolean("vibrate", false);
+//                usecourse = OsMoDroid.settings.getBoolean("usecourse", false);
+//                vibratetime = Integer.parseInt(OsMoDroid.settings.getString("vibratetime", "200")
+//                        .equals("") ? "200" : OsMoDroid.settings.getString("vibratetime", "0"));
+//                playsound = OsMoDroid.settings.getBoolean("playsound", false);
+//                period_gpx = Integer.parseInt(OsMoDroid.settings.getString("period_gpx", "0")
+//                        .equals("") ? "0" : OsMoDroid.settings.getString("period_gpx", "0"));
+//                distance_gpx = Integer.parseInt(OsMoDroid.settings.getString("distance_gpx", "0")
+//                        .equals("") ? "0" : OsMoDroid.settings.getString("distance_gpx", "0"));
+//                speedbearing_gpx = Integer.parseInt(OsMoDroid.settings.getString(
+//                        "speedbearing_gpx", "0").equals("") ? "0" : OsMoDroid.settings.getString(
+//                        "speedbearing_gpx", "0"));
+//                bearing_gpx = Integer.parseInt(OsMoDroid.settings.getString("bearing_gpx", "0")
+//                        .equals("") ? "0" : OsMoDroid.settings.getString("bearing", "0"));
+//                hdop_gpx = Integer.parseInt(OsMoDroid.settings.getString("hdop_gpx", "30")
+//                        .equals("") ? "30" : OsMoDroid.settings.getString("hdop_gpx", "30"));
+//                usebuffer = OsMoDroid.settings.getBoolean("usebuffer", false);
+//                usewake = OsMoDroid.settings.getBoolean("usewake", false);
+//                notifyperiod = Integer.parseInt(OsMoDroid.settings.getString("notifyperiod",
+//                        "30000").equals("") ? "30000" : OsMoDroid.settings.getString(
+//                        "notifyperiod", "30000"));
+//                sendsound = OsMoDroid.settings.getBoolean("sendsound", false);
+//                // pass = OsMoDroid.settings.getString("pass", "");
+//            }
         void startlocalservice()
             {
                 //Intent i = new Intent(this, LocalService.class);

@@ -113,13 +113,17 @@ public class OsMoDroid extends Application
         @Override
         public void onCreate()
             {
+                super.onCreate();
                 settings = PreferenceManager.getDefaultSharedPreferences(this);
                 editor = settings.edit();
                 context = getApplicationContext();
                 Thread.setDefaultUncaughtExceptionHandler(ExceptionHandler.inContext(context));
                 inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                Configuration.getInstance().load(this,settings);
-                super.onCreate();
+                try {
+                    Configuration.getInstance().load(this,settings);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 LeakCanary.install(this);
                 mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
             }

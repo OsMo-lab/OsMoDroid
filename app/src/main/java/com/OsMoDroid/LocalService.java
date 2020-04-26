@@ -201,7 +201,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
         private int speedbearing_gpx;
         private int bearing_gpx;
         private long lastgpslocationtime = 0;
-        private int hdop_gpx;
+        private int hdop_gpx =30;
         private int period_gpx;
         private int distance_gpx;
         private int speed_gpx;
@@ -1310,29 +1310,37 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                     {
                         e.printStackTrace();
                     }
-                speed = Integer.parseInt(OsMoDroid.settings.getString("speed", "3").equals("") ? "3" : OsMoDroid.settings.getString("speed", "3"));
-                period = Integer.parseInt(OsMoDroid.settings.getString("period", "10000").equals("") ? "10000" : OsMoDroid.settings.getString("period", "10000"));
-                distance = Integer.parseInt(OsMoDroid.settings.getString("distance", "50").equals("") ? "50" : OsMoDroid.settings.getString("distance", "50"));
-                hash = OsMoDroid.settings.getString("hash", "");
-                n = Integer.parseInt(OsMoDroid.settings.getString("n", "0").equals("") ? "0" : OsMoDroid.settings.getString("n", "0"));
-                speedbearing = Integer.parseInt(OsMoDroid.settings.getString("speedbearing", "2").equals("") ? "2" : OsMoDroid.settings.getString("speedbearing", "2"));
-                bearing = Integer.parseInt(OsMoDroid.settings.getString("bearing", "10").equals("") ? "10" : OsMoDroid.settings.getString("bearing", "2"));
-                hdop = Integer.parseInt(OsMoDroid.settings.getString("hdop", "30").equals("") ? "30" : OsMoDroid.settings.getString("hdop", "30"));
+//                speed = Integer.parseInt(OsMoDroid.settings.getString("speed", "3").equals("") ? "3" : OsMoDroid.settings.getString("speed", "3"));
+//                period = Integer.parseInt(OsMoDroid.settings.getString("period", "10000").equals("") ? "10000" : OsMoDroid.settings.getString("period", "10000"));
+//                distance = Integer.parseInt(OsMoDroid.settings.getString("distance", "50").equals("") ? "50" : OsMoDroid.settings.getString("distance", "50"));
+ //               hash = OsMoDroid.settings.getString("hash", "");
+   //             n = Integer.parseInt(OsMoDroid.settings.getString("n", "0").equals("") ? "0" : OsMoDroid.settings.getString("n", "0"));
+    //            speedbearing = Integer.parseInt(OsMoDroid.settings.getString("speedbearing", "2").equals("") ? "2" : OsMoDroid.settings.getString("speedbearing", "2"));
+  //              bearing = Integer.parseInt(OsMoDroid.settings.getString("bearing", "10").equals("") ? "10" : OsMoDroid.settings.getString("bearing", "2"));
+                //hdop = Integer.parseInt(OsMoDroid.settings.getString("hdop", "30").equals("") ? "30" : OsMoDroid.settings.getString("hdop", "30"));
                 gpx = OsMoDroid.settings.getBoolean("gpx", false);
                 live = OsMoDroid.settings.getBoolean("live", true);
                 vibrate = OsMoDroid.settings.getBoolean("vibrate", false);
-                usecourse = OsMoDroid.settings.getBoolean("usecourse", false);
+    //            usecourse = OsMoDroid.settings.getBoolean("usecourse", false);
                 vibratetime = Integer.parseInt(OsMoDroid.settings.getString("vibratetime", "200").equals("") ? "200" : OsMoDroid.settings.getString("vibratetime", "0"));
                 playsound = OsMoDroid.settings.getBoolean("playsound", false);
-                period_gpx = Integer.parseInt(OsMoDroid.settings.getString("period_gpx", "0").equals("") ? "0" : OsMoDroid.settings.getString("period_gpx", "0"));
-                distance_gpx = Integer.parseInt(OsMoDroid.settings.getString("distance_gpx", "0").equals("") ? "0" : OsMoDroid.settings.getString("distance_gpx", "0"));
-                speedbearing_gpx = Integer.parseInt(OsMoDroid.settings.getString("speedbearing_gpx", "0").equals("") ? "0" : OsMoDroid.settings.getString("speedbearing_gpx", "0"));
-                bearing_gpx = Integer.parseInt(OsMoDroid.settings.getString("bearing_gpx", "0").equals("") ? "0" : OsMoDroid.settings.getString("bearing", "0"));
-                hdop_gpx = Integer.parseInt(OsMoDroid.settings.getString("hdop_gpx", "30").equals("") ? "30" : OsMoDroid.settings.getString("hdop_gpx", "30"));
-                speed_gpx = Integer.parseInt(OsMoDroid.settings.getString("speed_gpx", "3").equals("") ? "3" : OsMoDroid.settings.getString("speed_gpx", "3"));
+                try {
+                    period_gpx = Integer.parseInt(OsMoDroid.settings.getString("period_gpx", "0").equals("") ? "0" : OsMoDroid.settings.getString("period_gpx", "0"));
+                    distance_gpx = Integer.parseInt(OsMoDroid.settings.getString("distance_gpx", "0").equals("") ? "0" : OsMoDroid.settings.getString("distance_gpx", "0"));
+                    speedbearing_gpx = Integer.parseInt(OsMoDroid.settings.getString("speedbearing_gpx", "0").equals("") ? "0" : OsMoDroid.settings.getString("speedbearing_gpx", "0"));
+                    bearing_gpx = Integer.parseInt(OsMoDroid.settings.getString("bearing_gpx", "0").equals("") ? "0" : OsMoDroid.settings.getString("bearing", "0"));
+                    hdop_gpx = Integer.parseInt(OsMoDroid.settings.getString("hdop_gpx", "30").equals("") ? "30" : OsMoDroid.settings.getString("hdop_gpx", "30"));
+                    speed_gpx = Integer.parseInt(OsMoDroid.settings.getString("speed_gpx", "3").equals("") ? "3" : OsMoDroid.settings.getString("speed_gpx", "3"));
+                } catch (NumberFormatException e) {
+                    e.printStackTrace();
+                }
                 //usebuffer = OsMoDroid.settings.getBoolean("usebuffer", false);
                 usewake = OsMoDroid.settings.getBoolean("usewake", false);
-                notifyperiod = Integer.parseInt(OsMoDroid.settings.getString("notifyperiod", "30000").equals("") ? "30000" : OsMoDroid.settings.getString("notifyperiod", "30000"));
+                try {
+                    notifyperiod = Integer.parseInt(OsMoDroid.settings.getString("notifyperiod", "30000").equals("") ? "30000" : OsMoDroid.settings.getString("notifyperiod", "30000"));
+                } catch (NumberFormatException e) {
+                    e.printStackTrace();
+                }
                 sendsound = OsMoDroid.settings.getBoolean("sendsound", false);
             }
         @Override
@@ -2126,17 +2134,17 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                                 Log.d(this.getClass().getName(), "У нас уже нет GPS");
                             }
                         //LocalService.addlog("Lost GPS till");
-                        if ((location.distanceTo(prevlocation) > distance && System.currentTimeMillis() > (prevnetworklocationtime + period)))
+                      //  if ((location.distanceTo(prevlocation) > distance && System.currentTimeMillis() > (prevnetworklocationtime + period)))
                             {
                                 LocalService.addlog("send on because networklocation");
                                 prevnetworklocationtime = System.currentTimeMillis();
                                 sendlocation(location,false);
                                 return;
                             }
-                        else
-                            {
-                                //LocalService.addlog("send on because networklocation - ELSE");
-                            }
+//                        else
+//                            {
+//                                //LocalService.addlog("send on because networklocation - ELSE");
+//                            }
                     }
                 else
                     {
@@ -2357,7 +2365,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                         //LocalService.addlog("Session started="+sessionstarted);
                         if (live)
                             {
-                                if((int) location.getAccuracy() < hdop)
+                                //if((int) location.getAccuracy() < hdop)
                                 {
                                     prevlocation.set(location);
                                     sendlocation(location,true);

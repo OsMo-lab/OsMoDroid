@@ -3,6 +3,7 @@ buildscript {
     repositories {
         jcenter()
         google()
+
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.4.1'
@@ -21,4 +22,11 @@ allprojects {
             options.compilerArgs << "-Xlint:unchecked"
         }
     }
+    configurations.all {
+        resolutionStrategy {
+            cacheChangingModulesFor 0, 'seconds'
+        }
+    }
 }
+
+
