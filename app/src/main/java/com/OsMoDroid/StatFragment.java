@@ -280,12 +280,12 @@ public class StatFragment extends Fragment implements OnChartGestureListener,OnC
                 leftAxis.removeAllLimitLines(); // reset all limit lines to avoid overlapping lines
 
                 //leftAxis.setAxisMaxValue(50);
-                leftAxis.setAxisMinValue(0f);
+                leftAxis.setAxisMinimum(0f);
                 YAxis rightAxis = mChart.getAxisRight();
                 rightAxis.removeAllLimitLines(); // reset all limit lines to avoid overlapping lines
 
                 //leftAxis.setAxisMaxValue(50);
-                rightAxis.setAxisMinValue(0f);
+                rightAxis.setAxisMinimum(0f);
 
                 //speedLineData = new LineData(LocalService.distanceStringList);
                 speedLineData = new LineData();

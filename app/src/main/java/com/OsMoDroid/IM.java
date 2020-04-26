@@ -970,6 +970,9 @@ public class IM implements ResultsListener {
                 sendToServer("NET|" + postjson.toString(), false);
             }
         }
+        if (command.equals("NEEDSENDCHARGE")) {
+            sendToServer("GCM|" + addict, false);
+        }
 
         if (command.equals("NEEDSENDCHARGE")) {
             sendToServer("CHARGE|" + addict, false);

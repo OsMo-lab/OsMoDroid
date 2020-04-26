@@ -235,10 +235,10 @@ public class TrackStatFragment extends Fragment
                         mChart.setPinchZoom(true);
                         YAxis leftAxis = mChart.getAxisLeft();
                         leftAxis.removeAllLimitLines();
-                        leftAxis.setAxisMinValue(0f);
+                        leftAxis.setAxisMinimum(0f);
                         YAxis rightAxis = mChart.getAxisRight();
                         leftAxis.removeAllLimitLines();
-                        leftAxis.setAxisMinValue(0f);
+                        leftAxis.setAxisMinimum(0f);
                         speedLineData = new LineData();
                         if(speedDataSet.getEntryCount()>0) {
                             speedLineData.addDataSet(speedDataSet);

@@ -6,6 +6,9 @@ import android.util.Log;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
+
+
+
 public class MyInstanceIDListenerService extends FirebaseInstanceIdService
     {
         /**
@@ -32,9 +35,12 @@ public class MyInstanceIDListenerService extends FirebaseInstanceIdService
             {
                 Log.d(this.getClass().getName(), "sendRegistrationToServer: " + token);
              //   LocalService.addlog("RegId=" + token);
-                if (LocalService.myIM != null && LocalService.myIM.authed)
-                    {
-                        LocalService.myIM.sendToServer("GCM|" + token, false);
-                    }
+                Intent is = new Intent(this, LocalService.class);
+                is.putExtra("GCM","NEEDSENDTOKEN|"+token);
+                startService(is);
+//                if (LocalService.myIM != null && LocalService.myIM.authed)
+//                    {
+//                        LocalService.myIM.sendToServer("GCM|" + token, false);
+//                    }
             }
     }
