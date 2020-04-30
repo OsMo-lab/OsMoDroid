@@ -599,10 +599,13 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
                             break;
                         case 10:
                             mMapView.setTileSource(wikiTileSource);
+                            break;
                         case 11:
                             mMapView.setTileSource(hdMapnikTileSource);
+                            break;
                         case 12:
                             mMapView.setTileSource(topoTileSource);
+                            break;
                         default:
                             break;
                     }

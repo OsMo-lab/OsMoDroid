@@ -132,7 +132,7 @@ public class DrawerItemClickListener implements OnItemClickListener
                                     }
                             }
 
-                           if(familyExist)
+                           if(!familyExist)
                            {
                                Toast.makeText(activity, activity.getString(R.string.familygroupabsent), Toast.LENGTH_SHORT).show();
                            }

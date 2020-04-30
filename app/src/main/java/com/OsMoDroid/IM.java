@@ -725,7 +725,7 @@ public class IM implements ResultsListener {
                     sendToServer("TC", false);
                 }
                 if (OsMoDroid.settings.getBoolean("needsendgcmregid", true)) {
-                    LocalService.myIM.sendToServer("GCM|" + OsMoDroid.settings.getString("GCMRegId", ""), false);
+                    LocalService.myIM.sendToServer("PUSH|" + OsMoDroid.settings.getString("GCMRegId", ""), false);
                 }
                 if (needclosesession) {
                     sendToServer("DCU", false);
@@ -973,8 +973,8 @@ public class IM implements ResultsListener {
                 sendToServer("NET|" + postjson.toString(), false);
             }
         }
-        if (command.equals("NEEDSENDCHARGE")) {
-            sendToServer("GCM|" + addict, false);
+        if (command.equals("NEEDSENDTOKEN")) {
+            sendToServer("PUSH|" + addict, false);
         }
 
         if (command.equals("NEEDSENDCHARGE")) {
@@ -1072,8 +1072,8 @@ public class IM implements ResultsListener {
 
             if (param.equals(OsMoDroid.TRACKER_GCM_ID)) {
 
-                sendToServer("GCM|" + FirebaseInstanceId.getInstance().getInstanceId(), false);
-                //sendToServer("GCM|" + OsMoDroid.settings.getString("GCMRegId", "no"), false);
+                sendToServer("PUSH|" + FirebaseInstanceId.getInstance().getInstanceId(), false);
+                //sendToServer("PUSH|" + OsMoDroid.settings.getString("GCMRegId", "no"), false);
                 sendToServer("RCR:" + OsMoDroid.TRACKER_GCM_ID + "|1", false);
 
             }

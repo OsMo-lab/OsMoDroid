@@ -1321,6 +1321,7 @@ public class GPSLocalServiceClient extends AppCompatActivity implements ResultsL
                             {
                                 OsMoDroid.editor.putString("u", result.Jo.optString("nick"));
                                 OsMoDroid.editor.commit();
+                                mService.myIM.sendToServer("GROUP", true);
                                 mService.refresh();
 
                             }
@@ -1328,6 +1329,7 @@ public class GPSLocalServiceClient extends AppCompatActivity implements ResultsL
                             {
                                 OsMoDroid.editor.putString("u", result.Jo.optString("nick"));
                                 OsMoDroid.editor.commit();
+                                mService.myIM.sendToServer("GROUP", true);
                                 mService.refresh();
                             }
                         updateMainUI();
