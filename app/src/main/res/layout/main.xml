@@ -75,7 +75,11 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:clickable="false"
-            android:text="@string/start" />
+            android:text="@string/start"
+            android:background="@drawable/greenbutton"
+            android:shadowColor="#A8A8A8"
+
+            />
 
         <Button
             android:id="@+id/exitButton"
@@ -83,7 +87,10 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:clickable="true"
-            android:text="@string/stop" />
+            android:text="@string/stop"
+            android:background="@drawable/redbutton"
+            android:shadowColor="#A8A8A8"
+                />
     </LinearLayout>
 
     <Button
@@ -95,14 +102,20 @@
         android:id="@+id/signButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/registration" />
+        android:text="@string/registration"
+        android:background="@drawable/orangebutton"
+        android:shadowColor="#A8A8A8"
+       />
 
     <Button
         android:id="@+id/osmandButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/open_osmand"
-        android:visibility="gone"/>
+        android:visibility="gone"
+        android:background="@drawable/orangebutton"
+        android:shadowColor="#A8A8A8"
+       />
 
     <TextView
         android:id="@+id/Location"

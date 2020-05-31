@@ -53,9 +53,15 @@ public class MyFcmListenerService extends FirebaseMessagingService
 
         @Override
         public void onNewToken(@NonNull String s) {
-            Intent is = new Intent(this, LocalService.class);
-            is.putExtra("GCM","NEEDSENDTOKEN|"+s);
-            startService(is);
+            OsMoDroid.editor.putString ("GCMregId", s);
+            OsMoDroid.editor.putBoolean("needsendgcmregid", true);
+            OsMoDroid.editor.commit();
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+                Intent is = new Intent(this, LocalService.class);
+                is.putExtra("GCM", "NEEDSENDTOKEN|" + s);
+                startService(is);
+            }
+
         }
 
     }

@@ -16,6 +16,7 @@ import android.provider.Settings;
 import android.text.ClipboardManager;
 import android.text.util.Linkify;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -26,6 +27,9 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -36,10 +40,13 @@ import androidx.fragment.app.Fragment;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import static android.content.Context.LAYOUT_INFLATER_SERVICE;
+
 public class MainFragment extends Fragment implements GPSLocalServiceClient.upd
     {
         private BroadcastReceiver receiver;
         private GPSLocalServiceClient globalActivity;
+
         @Override
         public void onDestroy()
             {
@@ -652,7 +659,9 @@ public class MainFragment extends Fragment implements GPSLocalServiceClient.upd
                                                     alertdialog1.show();
                                                 }
                                         }
-                                    globalActivity.startlocalservice();
+
+                                    choosePrivate();
+
                                 }
                             else
                                 {
@@ -665,7 +674,7 @@ public class MainFragment extends Fragment implements GPSLocalServiceClient.upd
                                                 {
                                                     public void onClick(DialogInterface dialog, int which)
                                                         {
-                                                            globalActivity.startlocalservice();
+                                                            globalActivity.startlocalservice(LocalService.transportid);
                                                             return;
                                                         }
                                                 });
@@ -893,5 +902,202 @@ public class MainFragment extends Fragment implements GPSLocalServiceClient.upd
             {
                 updateMainUI();
             }
+
+        AlertDialog dialog;
+        void choosePrivate()
+        {
+
+            LayoutInflater inflater = (LayoutInflater) globalActivity.getSystemService(LAYOUT_INFLATER_SERVICE);
+            LinearLayout layout = new LinearLayout(globalActivity);
+            LinearLayout.LayoutParams lparams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            layout.setLayoutParams(lparams);
+            layout.setOrientation(LinearLayout.VERTICAL);
+            AlertDialog.Builder builder = new AlertDialog.Builder(globalActivity);
+            TextView textView = new TextView(globalActivity);
+            textView.setText(R.string.chprivmode);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            params.gravity = Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL;
+            textView.setLayoutParams(params);
+            layout.addView(textView);
+            final Button everyoneButton = new Button(globalActivity);
+            everyoneButton.setText(R.string.Everyone);
+            everyoneButton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    LocalService.privatemode = 0;
+                                    chooseActivity();
+                                    dialog.dismiss();
+                                }
+                            });
+             layout.addView(everyoneButton);
+
+            final Button linkButton = new Button(globalActivity);
+            linkButton.setText(R.string.linkonly);
+            linkButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    LocalService.privatemode = 1;
+                    chooseActivity();
+                    dialog.dismiss();
+                }
+            });
+            layout.addView(linkButton);
+
+            final Button friendButton = new Button(globalActivity);
+            friendButton.setText(R.string.friendonly);
+            friendButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    LocalService.privatemode = 2;
+                    chooseActivity();
+                    dialog.dismiss();
+                }
+            });
+            layout.addView(friendButton);
+
+
+
+
+            builder.setView(layout);
+            builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                @Override
+                public void onCancel(DialogInterface dialog) {
+
+                }
+            });
+
+
+
+            dialog = builder.create();
+            dialog.show();
+        }
+        AlertDialog dialogTransportChoose;
+        void chooseActivity() {
+
+            if (LocalService.transport.length()>0) {
+                LayoutInflater inflater = (LayoutInflater) globalActivity.getSystemService(LAYOUT_INFLATER_SERVICE);
+                ScrollView scrollView = new ScrollView(globalActivity);
+                scrollView.setVerticalScrollBarEnabled(true);
+                LinearLayout layout = new LinearLayout(globalActivity);
+                scrollView.addView(layout);
+                FrameLayout.LayoutParams lparams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                layout.setLayoutParams(lparams);
+                layout.setOrientation(LinearLayout.VERTICAL);
+                AlertDialog.Builder builder = new AlertDialog.Builder(globalActivity);
+                for (int i=0; i < LocalService.transport.length(); i++) {
+                    final JSONObject jo = LocalService.transport.optJSONObject(i);
+                    if(jo!=null)
+                    {
+                        final Button b = new Button(globalActivity);
+                        b.setText(jo.optString("name"));
+                        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(300,
+                               300);
+                        b.setVerticalFadingEdgeEnabled(true);
+                        b.setTextSize(14);
+                        params.setMargins(15,15,15,15);
+                        params.gravity = Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL;
+                        b.setLayoutParams(params);
+                        switch (jo.optInt("type")) {
+                            case  (1):
+                                b.setBackground(getResources().getDrawable(R.drawable.walk));
+                                b.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        LocalService.transportid = jo.optInt("id");
+                                        globalActivity.startlocalservice(LocalService.transportid);
+                                        dialogTransportChoose.dismiss();
+                                    }
+                                });
+                                break;
+                            case (2):
+                                b.setBackground(getResources().getDrawable(R.drawable.transport));
+                                b.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        LocalService.transportid = jo.optInt("id");
+                                        globalActivity.startlocalservice(LocalService.transportid);
+                                        dialogTransportChoose.dismiss();
+                                    }
+                                });
+                                break;
+
+                            case (3):
+                                b.setBackground(getResources().getDrawable(R.drawable.cycle));
+                                b.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        LocalService.transportid = jo.optInt("id");
+                                        globalActivity.startlocalservice(LocalService.transportid);
+                                        dialogTransportChoose.dismiss();
+                                    }
+                                });
+                                break;
+                            case (4):
+                                b.setBackground(getResources().getDrawable(R.drawable.car));
+                                b.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        LocalService.transportid = jo.optInt("id");
+                                        globalActivity.startlocalservice(LocalService.transportid);
+                                        dialogTransportChoose.dismiss();
+                                    }
+                                });
+                                break;
+                            case (5):
+                                b.setBackground(getResources().getDrawable(R.drawable.run));
+                                b.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        LocalService.transportid = jo.optInt("id");
+                                        globalActivity.startlocalservice(LocalService.transportid);
+                                        dialogTransportChoose.dismiss();
+                                    }
+                                });
+                                break;
+                            case (6):
+                                b.setBackground(getResources().getDrawable(R.drawable.water));
+                                b.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        LocalService.transportid = jo.optInt("id");
+                                        globalActivity.startlocalservice(LocalService.transportid);
+                                        dialogTransportChoose.dismiss();
+                                    }
+                                });
+                                break;
+
+                            default:
+                                b.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        LocalService.transportid = jo.optInt("id");
+                                        globalActivity.startlocalservice(LocalService.transportid);
+                                        dialogTransportChoose.dismiss();
+                                    }
+                                });
+                                break;
+                        }
+
+                        layout.addView(b);
+                    }
+                }
+                builder.setView(scrollView);
+                builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                    @Override
+                    public void onCancel(DialogInterface dialog) {
+
+                    }
+                });
+
+
+
+                dialogTransportChoose = builder.create();
+                dialogTransportChoose.show();
+            }
+            else
+            {
+                globalActivity.startlocalservice(LocalService.transportid);
+            }
+        }
 
     }

@@ -104,10 +104,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.TimeZone;
 
 import static com.OsMoDroid.IM.writeException;
 import static com.OsMoDroid.OsMoDroid.context;
+import static com.google.firebase.messaging.FirebaseMessaging.INSTANCE_ID_SCOPE;
 import static java.lang.Math.abs;
 import static org.osmdroid.util.GeometryMath.DEG2RAD;
 import static org.osmdroid.util.constants.GeoConstants.RADIUS_EARTH_METERS;
@@ -115,6 +117,7 @@ import static org.osmdroid.util.constants.GeoConstants.RADIUS_EARTH_METERS;
 public class LocalService extends Service implements LocationListener, GpsStatus.Listener, TextToSpeech.OnInitListener, ResultsListener, SensorEventListener, OsmAndHelper.OnOsmandMissingListener
 
     {
+        public static JSONArray transport = new JSONArray();
         public static Device mydev = new Device();
         //public static List<Point> traceList = new ArrayList<Point>();
         public static ArrayList<ColoredGPX> showedgpxList = new ArrayList<ColoredGPX>();
@@ -122,6 +125,8 @@ public class LocalService extends Service implements LocationListener, GpsStatus
         public static boolean osmandbind=false;
         static TrackFileAdapter trackFileAdapter;
         static ArrayList<TrackFile> trackFileList = new ArrayList<TrackFile>();
+        static int transportid;
+        static int privatemode=1;
         long sessionopentime;
         boolean binded = false;
         private SensorManager mSensorManager;
@@ -1307,7 +1312,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                     {
                         //pollperiod = 1000*(OsMoDroid.settings.getInt("refreshrateinteger", 5));
                     }
-                catch (NumberFormatException e)
+                catch (Exception e)
                     {
                         e.printStackTrace();
                     }
@@ -1332,14 +1337,14 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                     bearing_gpx = Integer.parseInt(OsMoDroid.settings.getString("bearing_gpx", "0").equals("") ? "0" : OsMoDroid.settings.getString("bearing", "0"));
                     hdop_gpx = Integer.parseInt(OsMoDroid.settings.getString("hdop_gpx", "30").equals("") ? "30" : OsMoDroid.settings.getString("hdop_gpx", "30"));
                     speed_gpx = Integer.parseInt(OsMoDroid.settings.getString("speed_gpx", "3").equals("") ? "3" : OsMoDroid.settings.getString("speed_gpx", "3"));
-                } catch (NumberFormatException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
                 //usebuffer = OsMoDroid.settings.getBoolean("usebuffer", false);
                 usewake = OsMoDroid.settings.getBoolean("usewake", false);
                 try {
                     notifyperiod = Integer.parseInt(OsMoDroid.settings.getString("notifyperiod", "30000").equals("") ? "30000" : OsMoDroid.settings.getString("notifyperiod", "30000"));
-                } catch (NumberFormatException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
                 sendsound = OsMoDroid.settings.getBoolean("sendsound", false);
@@ -1633,8 +1638,11 @@ public class LocalService extends Service implements LocationListener, GpsStatus
             }
 
         }
-
         public void startServiceWork(boolean opensession)
+        {
+            startServiceWork(opensession, 0);
+        }
+        public void startServiceWork(boolean opensession,int transportid)
             {
                 addlog("startservicework opensession="+opensession);
                 OsMoDroid.mFirebaseAnalytics.logEvent("TRIP_START",null);
@@ -1718,7 +1726,15 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                             {
                                 if(opensession) {
                                     sessionopentime = System.currentTimeMillis() / 1000;
-                                    myIM.sendToServer("TO|"+sessionopentime, false);
+                                    JSONObject jo = new JSONObject();
+                                    try {
+                                        jo.put("time", sessionopentime);
+                                        jo.put("transportid",transportid);
+                                        jo.put("private",privatemode);
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                    myIM.sendToServer("TO|"+jo.toString(), false);
                                     myIM.needopensession = true;
                                     myIM.needclosesession = false;
                                 }
@@ -3023,13 +3039,19 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                                     }
                                 if (result.Jo.has("device"))
                                     {
-                                        try
-                                            {
+                                        new Thread(new Runnable() {
+                                            @Override
+                                            public void run() {
                                                 try {
                                                     FirebaseInstanceId.getInstance().deleteInstanceId();
+                                                    FirebaseInstanceId.getInstance().deleteToken(FirebaseInstanceId.getInstance().getId(), INSTANCE_ID_SCOPE);
                                                 } catch (IOException e) {
                                                     e.printStackTrace();
                                                 }
+                                            }
+                                        }).start();
+                                        try
+                                            {
                                                 OsMoDroid.editor.putString("newkey", result.Jo.getString("device"));
                                                 OsMoDroid.editor.commit();
                                                 if (OsMoDroid.settings.getBoolean("live", false))

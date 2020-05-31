@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -452,7 +453,10 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
                             }
                     };
                 mMapView.addMapListener(wrappedListener);
-                LocalService.myIM.sendToServer("SP:"+choverlay.followdev+"|1", false);
+                if (LocalService.myIM != null && LocalService.myIM.authed)
+                {
+                    LocalService.myIM.sendToServer("SP:"+choverlay.followdev+"|1", false);
+                }
                 super.onResume();
             }
         private void sendcentercoords()
@@ -578,10 +582,12 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
                             mMapView.setTileSource(mapSurferTileSource);
                             break;
                         case 3:
+                            BingMapTileSource.retrieveBingKey(globalActivity);
                             bingTileSource.setStyle(BingMapTileSource.IMAGERYSET_AERIAL);
                             mMapView.setTileSource(bingTileSource);
                             break;
                         case 4:
+                            BingMapTileSource.retrieveBingKey(globalActivity);
                             bingTileSource.setStyle(BingMapTileSource.IMAGERYSET_AERIALWITHLABELS);
                             mMapView.setTileSource(bingTileSource);
                             break;
@@ -631,6 +637,10 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
                     }
                 //mMapView.getOverlays().add(myLoc);
                 mMapView.setBuiltInZoomControls(true);
+                mMapView.getZoomController().getDisplay().setBitmaps(((BitmapDrawable)mMapView.getResources().getDrawable(R.drawable.zoom_in)).getBitmap(),
+                        ((BitmapDrawable)mMapView.getResources().getDrawable(R.drawable.zoom_in)).getBitmap(),
+                        ((BitmapDrawable)mMapView.getResources().getDrawable(R.drawable.zoom_out)).getBitmap(),
+                        ((BitmapDrawable)mMapView.getResources().getDrawable(R.drawable.zoom_out)).getBitmap());
                 mMapView.setMultiTouchControls(true);
                 mController = mMapView.getController();
                 Bundle bundle = getArguments();

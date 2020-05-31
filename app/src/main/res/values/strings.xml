@@ -367,5 +367,15 @@
     <string name="bogoogleplay">No Google Services. Not all function will work</string>
     <string name="invite">Invite code</string>
     <string name="familygroupabsent">You do not have a Family group. To create it, write to our Patreon.com/osmomobi</string>
+    <string name="car">CAR</string>
+    <string name="run">RUN</string>
+    <string name="bike">CYCLE</string>
+    <string name="ski">SKI</string>
+    <string name="chooseway">Choose your way</string>
+    <string name="walk">WALK</string>
+    <string name="friendonly">Nobody</string>
+    <string name="linkonly">Link or Friends</string>
+    <string name="Everyone">Everyone</string>
+    <string name="chprivmode">Choose private mode</string>
 
 </resources>

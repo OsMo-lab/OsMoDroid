@@ -1048,12 +1048,12 @@ public class GPSLocalServiceClient extends AppCompatActivity implements ResultsL
 //                sendsound = OsMoDroid.settings.getBoolean("sendsound", false);
 //                // pass = OsMoDroid.settings.getString("pass", "");
 //            }
-        void startlocalservice()
+        void startlocalservice(int transportid)
             {
                 //Intent i = new Intent(this, LocalService.class);
                 //startService(i);
                 started = true;
-                mService.startServiceWork(true);
+                mService.startServiceWork(true, transportid);
             }
         private void bindService()
             {

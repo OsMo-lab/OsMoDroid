@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/walk"
+                android:layout_width="80sp"
+                android:layout_height="80sp"
+
+                android:layout_margin="15sp"
+
+                android:background="@drawable/walk"
+
+                android:text="@string/walk" />
+
+            <Button
+                android:id="@+id/car"
+                android:layout_width="80sp"
+                android:layout_height="80sp"
+
+                android:layout_margin="15sp"
+
+                android:background="@drawable/car"
+                android:text="@string/car" />
+
+            <Button
+                android:id="@+id/ski"
+                android:layout_width="80sp"
+                android:layout_height="80sp"
+
+                android:layout_margin="15sp"
+
+                android:background="@drawable/ski"
+                android:fadingEdge="vertical"
+
+                android:text="@string/ski" />
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+
+                android:text="@string/chooseway" />
+
+            <Button
+                android:id="@+id/cycle"
+                android:layout_width="80sp"
+                android:layout_height="80sp"
+
+                android:layout_margin="15sp"
+
+                android:background="@drawable/cycle"
+
+                android:fadingEdge="vertical"
+                android:text="@string/bike" />
+
+            <Button
+                android:id="@+id/run"
+                android:layout_width="80sp"
+                android:layout_height="80sp"
+
+                android:layout_margin="15sp"
+
+                android:background="@drawable/run"
+
+                android:text="@string/run" />
+        </LinearLayout>
+    </HorizontalScrollView>
+
+
+</LinearLayout>

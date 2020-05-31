@@ -33,7 +33,10 @@ import androidx.core.app.NotificationCompat;
 
 import com.OsMoDroid.Channel.Point;
 import com.OsMoDroid.Netutil.MyAsyncTask;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -69,6 +72,7 @@ import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
+//import static com.OsMoDroid.LocalService.activityname;
 import static com.OsMoDroid.LocalService.addlog;
 import static com.OsMoDroid.LocalService.myManager;
 import static com.OsMoDroid.OsMoDroid.context;
@@ -676,6 +680,7 @@ public class IM implements ResultsListener {
 //                if (command.equals("INIT"))
         if (command.equals("AUTH")) {
             if (!jo.has("error")) {
+                LocalService.transport = jo.optJSONArray("transport");
                 JSONObject postjson = getNET();
                 sendToServer("NET|" + postjson.toString(), false);
                 if (jo.optInt("motd") > OsMoDroid.settings.getInt("modtime", 0)) {
@@ -712,7 +717,7 @@ public class IM implements ResultsListener {
 
 
                 if (needopensession) {
-                    sendToServer("TO|" + localService.sessionopentime, false);
+                    sendToServer("TO|" + localService.sessionopentime+","+LocalService.transportid, false);
                 }
                 if (needclosesession) {
                     if (localService.sendingbuffer.size() == 0 && localService.buffer.size() != 0) {
@@ -1072,8 +1077,24 @@ public class IM implements ResultsListener {
 
             if (param.equals(OsMoDroid.TRACKER_GCM_ID)) {
 
-                sendToServer("PUSH|" + FirebaseInstanceId.getInstance().getInstanceId(), false);
-                //sendToServer("PUSH|" + OsMoDroid.settings.getString("GCMRegId", "no"), false);
+                FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                        if (!task.isSuccessful()) {
+                            addlog("getInstanceId failed "+ task.getException());
+                            return;
+                        }
+                        // Get new Instance ID token
+                        String token = task.getResult().getToken();
+                        if(!token.equals(""))
+                        {
+                            sendToServer("PUSH|" + token, false);
+                        }
+                    }
+                });
+                if(! OsMoDroid.settings.getString("GCMRegId", "no").equals("")) {
+                    sendToServer("PUSH|" + OsMoDroid.settings.getString("GCMRegId", "no"), false);
+                }
                 sendToServer("RCR:" + OsMoDroid.TRACKER_GCM_ID + "|1", false);
 
             }

@@ -367,4 +367,14 @@
   <string name="bogoogleplay">Не установлен Google Play, не все функции приложения будут доступны.</string>
   <string name="invite">Инвайт код</string>
   <string name="familygroupabsent">У вас нет группы "Семья". Чтобы её создать, напишите на наш Patreon.com/osmomobi</string>
+    <string name="car">АВТО</string>
+  <string name="run">БЕГ</string>
+  <string name="bike">ВЕЛ</string>
+  <string name="ski">ЛЫЖИ</string>
+  <string name="chooseway">Выбери свой путь</string>
+    <string name="walk">ПЕШКОМ</string>
+    <string name="friendonly">Не видно никому</string>
+  <string name="linkonly">Видно по ссылке или друзьям</string>
+  <string name="Everyone">Видно всем</string>
+  <string name="chprivmode">Укажите доступность поездки</string>
 </resources>
