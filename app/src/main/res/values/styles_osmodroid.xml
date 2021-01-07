@@ -29,7 +29,8 @@
         <item name="actionModeBackground">@drawable/cab_background_top_osmodroid</item>
         <item name="actionModeSplitBackground">@drawable/cab_background_bottom_osmodroid</item>
         <item name="actionModeCloseButtonStyle">@style/ActionButton.CloseMode.Osmodroid</item>
-
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
         
     </style>
 

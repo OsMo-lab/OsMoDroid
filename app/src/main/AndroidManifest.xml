@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.OsMoDroid"
     android:installLocation="auto"
-    android:versionCode="626"
+    android:versionCode="644"
     android:versionName="2.6.4">
 
 
@@ -166,6 +166,11 @@
             android:name=".SosActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen"></activity>
+
+        <activity
+            android:name=".ConfirmDialog"
+
+            android:theme="@style/Theme.AppCompat.Dialog" />
 
         <receiver android:name=".DoubleOsmoWidget">
             <intent-filter>

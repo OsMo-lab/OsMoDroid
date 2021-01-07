@@ -12,6 +12,18 @@
             android:key="imperial"
             android:summary="@string/imperial_summary"
             android:title="@string/imperial"/>
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="udpmode"
+            android:title="@string/udpmode" />
+        <EditTextPreference
+            android:defaultValue="10"
+            android:dependency="udpmode"
+            android:digits="0123456789"
+            android:inputType="number"
+            android:key="period"
+            android:summary="@string/seconds_how_often_to_send_location"
+            android:title="@string/send_frequency" />
     </PreferenceCategory>
     
     <PreferenceCategory android:title="@string/online">

@@ -217,7 +217,7 @@ Diese Anzeige hat eine permanente Referenz zum Überwachen Ihres Gerätes. Verf�
   <string name="no_follow_">nicht folgen</string>
   <string name="adjust_to_dpi">HD Karte</string>
   <string name="monitoring_settings">Überwachungseinstellungen</string>
-  <string name="milliseconds_how_often_to_send_location">Millisekunden – Wie oft die Position gesendet wird</string>
+  <string name="seconds_how_often_to_send_location">sekunden – Wie oft die Position gesendet wird</string>
   <string name="send_frequency">Senden frequenz</string>
   <string name="send_distance">Senden entfernung</string>
   <string name="degrees">Grad</string>

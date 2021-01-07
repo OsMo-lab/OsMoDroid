@@ -70,7 +70,7 @@ public class ChannelsFragment extends Fragment
                     boolean exist =false;
                     for(Channel ch : LocalService.channelList)
                         {
-                            if(ch.url.equals(groupurl))
+                            if(ch.browseurl.equals(groupurl))
                                 {
                                     if(!ch.send)
                                         {

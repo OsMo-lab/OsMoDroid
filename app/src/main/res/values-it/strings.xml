@@ -216,7 +216,7 @@
   <string name="no_follow_">Non seguire</string>
   <string name="adjust_to_dpi">Mappa HD</string>
   <string name="monitoring_settings">Impostazioni monitoraggio</string>
-  <string name="milliseconds_how_often_to_send_location">Millisecondi – Ogni quanto inviare la posizione</string>
+  <string name="seconds_how_often_to_send_location">secondi – Ogni quanto inviare la posizione</string>
   <string name="send_frequency">Frequenza di invio</string>
   <string name="meters_must_move_at_least_this_far_to_send_location_update">Metri – Devi spostarti almeno tanto lontano per inviare la posizione</string>
   <string name="send_distance">Distanza di invio</string>

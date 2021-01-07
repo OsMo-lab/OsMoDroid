@@ -216,7 +216,7 @@
   <string name="no_follow_">Спри следването</string>
   <string name="adjust_to_dpi">HD карта</string>
   <string name="monitoring_settings">Мониторинг настройки</string>
-  <string name="milliseconds_how_often_to_send_location">Милисекунди-Закъснение между изпращане на местоположението</string>
+  <string name="seconds_how_often_to_send_location">Cекунди-Закъснение между изпращане на местоположението</string>
   <string name="send_frequency">Период изпращане</string>
   <string name="meters_must_move_at_least_this_far_to_send_location_update">Метри-Стойност за превишаване за изпращане актуализиране на местоположението</string>
   <string name="send_distance">Разстояние изпращане</string>

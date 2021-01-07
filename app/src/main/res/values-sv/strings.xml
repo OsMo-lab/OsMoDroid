@@ -216,7 +216,7 @@
   <string name="no_follow_">Följ inte</string>
   <string name="adjust_to_dpi">HD-karta</string>
   <string name="monitoring_settings">Inställningar för spårning</string>
-  <string name="milliseconds_how_often_to_send_location">Millisekunder – hur ofta platsinfo sänds</string>
+  <string name="seconds_how_often_to_send_location">Sekunder – hur ofta platsinfo sänds</string>
   <string name="send_frequency">Skicka frekvens</string>
   <string name="meters_must_move_at_least_this_far_to_send_location_update">Meter – Måste förflytta sig så här långt innan platsangivelse skickas</string>
   <string name="send_distance">Skicka distans</string>

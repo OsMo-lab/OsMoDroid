@@ -10,7 +10,13 @@
     android:descendantFocusability="blocksDescendants"
     android:orientation="vertical"
     tools:context=".GPSLocalServiceClient" >
+    <TextView
+        android:id="@+id/workmode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.50"
 
+        android:textSize="20sp" />
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
@@ -97,6 +103,7 @@
         android:id="@+id/enterButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/orangebutton"
         android:text="@string/auth" />
     <Button
         android:id="@+id/signButton"
@@ -132,6 +139,7 @@
         android:text="SOS"
         android:textOff="SOS"
         android:textOn="SOS"
+        
         android:textSize="40sp" />
 
 </LinearLayout>

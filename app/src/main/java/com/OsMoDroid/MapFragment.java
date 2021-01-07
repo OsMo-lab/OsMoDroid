@@ -637,10 +637,13 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
                     }
                 //mMapView.getOverlays().add(myLoc);
                 mMapView.setBuiltInZoomControls(true);
-                mMapView.getZoomController().getDisplay().setBitmaps(((BitmapDrawable)mMapView.getResources().getDrawable(R.drawable.zoom_in)).getBitmap(),
-                        ((BitmapDrawable)mMapView.getResources().getDrawable(R.drawable.zoom_in)).getBitmap(),
-                        ((BitmapDrawable)mMapView.getResources().getDrawable(R.drawable.zoom_out)).getBitmap(),
-                        ((BitmapDrawable)mMapView.getResources().getDrawable(R.drawable.zoom_out)).getBitmap());
+                mMapView.getZoomController().getDisplay().setBitmaps(
+                        ((BitmapDrawable)mMapView.getResources().getDrawable(R.drawable.ic_zoom_in)).getBitmap(),
+                        ((BitmapDrawable)mMapView.getResources().getDrawable(R.drawable.ic_zoom_in)).getBitmap(),
+                        ((BitmapDrawable)mMapView.getResources().getDrawable(R.drawable.ic_zoom_out)).getBitmap(),
+                        ((BitmapDrawable)mMapView.getResources().getDrawable(R.drawable.ic_zoom_out)).getBitmap()
+                );
+                mMapView.getZoomController().getDisplay().setAdditionalPixelMargins(10,10,10,10);
                 mMapView.setMultiTouchControls(true);
                 mController = mMapView.getController();
                 Bundle bundle = getArguments();

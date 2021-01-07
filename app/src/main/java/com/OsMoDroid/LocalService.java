@@ -127,7 +127,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
         static ArrayList<TrackFile> trackFileList = new ArrayList<TrackFile>();
         static int transportid;
         static int privatemode=1;
-        long sessionopentime;
+        public long sessionopentime;
         boolean binded = false;
         private SensorManager mSensorManager;
         private Sensor mAccelerometer;
@@ -952,7 +952,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                             addlog("ondisconnect, sendingbufeer size="+sendingbuffer.size()+ " .buffer.size=" + buffer.size());
                             buffer.addAll(sendingbuffer);
                             sendingbuffer.clear();
-                            if (!sending.equals(""))
+                            if (!OsMoDroid.settings.getBoolean("udpmode",false)&&!sending.equals(""))
                                 {
                                     buffer.add(sending);
                                     sending = "";
@@ -1610,10 +1610,10 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                 foregroundnotificationBuilder.setContentIntent(osmodroidLaunchIntent);
                 foregroundnotificationBuilder.setChannelId("noisy");
 
-                Intent is = new Intent(this, LocalService.class);
-                is.putExtra("ACTION", "STOP");
+                Intent is = new Intent(this, ConfirmDialog.class);
+                //is.putExtra("ACTION", "STOP");
 
-                PendingIntent stop = PendingIntent.getService(this, 0, is, PendingIntent.FLAG_UPDATE_CURRENT);
+                PendingIntent stop = PendingIntent.getActivity(this, 0, is, PendingIntent.FLAG_UPDATE_CURRENT);
                 foregroundnotificationBuilder.addAction(android.R.drawable.ic_delete, getString(R.string.stop_monitoring), stop);
                 Notification notification = foregroundnotificationBuilder.build();
                 startForeground(OSMODROID_ID, notification);
@@ -1688,7 +1688,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                             }
                         manageGPSFixAlarm();
                         boolean crtfile = false;
-                        if (gpx)
+                        if (gpx||OsMoDroid.settings.getBoolean("udpmode",false))
                             {
                                 openGPX();
                             }
@@ -1710,10 +1710,10 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                 foregroundnotificationBuilder.setContentIntent(osmodroidLaunchIntent);
                 foregroundnotificationBuilder.setChannelId("silent");
 
-                Intent is = new Intent(this, LocalService.class);
-                is.putExtra("ACTION", "STOP");
+                Intent is = new Intent(this, ConfirmDialog.class);
+                //is.putExtra("ACTION", "STOP");
 
-                PendingIntent stop = PendingIntent.getService(this, 0, is, PendingIntent.FLAG_UPDATE_CURRENT);
+                PendingIntent stop = PendingIntent.getActivity(this, 0, is, PendingIntent.FLAG_UPDATE_CURRENT);
                 foregroundnotificationBuilder.addAction(android.R.drawable.ic_delete, getString(R.string.stop_monitoring), stop);
                 Notification notification = foregroundnotificationBuilder.build();
                 //notification = new Notification(icon, tickerText, when);
@@ -1734,7 +1734,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                                     } catch (JSONException e) {
                                         e.printStackTrace();
                                     }
-                                    myIM.sendToServer("TO|"+jo.toString(), false);
+                                    if( !OsMoDroid.settings.getBoolean("udpmode",false)) myIM.sendToServer("TO|"+jo.toString(), false);
                                     myIM.needopensession = true;
                                     myIM.needclosesession = false;
                                 }
@@ -2031,7 +2031,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                                         buffer.removeAll(sendingbuffer);
                                         myIM.sendToServer("B|" + new JSONArray(sendingbuffer), false);
                                     }
-                                myIM.sendToServer("TC", false);
+                                if(!OsMoDroid.settings.getBoolean("udpmode",false))myIM.sendToServer("TC", false);
                                 myIM.needclosesession = true;
                                 myIM.needopensession = false;
                             }
@@ -2042,7 +2042,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                             }
                         //buffer.clear();
                     }
-                if (gpx && fileheaderok && stopsession)
+                if ((OsMoDroid.settings.getBoolean("udpmode",false)||gpx) && fileheaderok && stopsession)
                     {
                         closeGPX();
                     }
@@ -2332,49 +2332,49 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                     {
                         //LocalService.addlog("Provider=GPS");
                         lastgpslocationtime = System.currentTimeMillis();
-                        if (gpx && fileheaderok)
-                            {
-                                if (bearing_gpx > 0)
-                                    {
-                                        //if(log)Log.d(this.getClass().getName(), "Пишем трек с курсом");
-                                        double lon1 = location.getLongitude();
-                                        double lon2 = prevlocation_gpx.getLongitude();
-                                        double lat1 = location.getLatitude();
-                                        double lat2 = prevlocation_gpx.getLatitude();
-                                        double dLon = lon2 - lon1;
-                                        double y = Math.sin(dLon) * Math.cos(lat2);
-                                        double x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLon);
-                                        brng_gpx = Math.toDegrees(Math.atan2(y, x)); //.toDeg();
-                                        position = position + "\n" + getString(R.string.TrackCourseChange) + OsMoDroid.df1.format(abs(brng_gpx - prevbrng_gpx));
-                                        refresh();
-                                        if (OsMoDroid.settings.getBoolean("modeAND_gpx", false) && (int) location.getAccuracy() < hdop_gpx && location.getSpeed() >= speed_gpx / 3.6 && (location.distanceTo(prevlocation_gpx) > distance_gpx && location.getTime() > (prevlocation_gpx.getTime() + period_gpx) && (location.getSpeed() >= speedbearing_gpx / 3.6 && abs(brng_gpx - prevbrng_gpx) >= bearing_gpx)))
-                                            {
-                                                prevlocation_gpx.set(location);
-                                                prevbrng_gpx = brng_gpx;
-                                                writegpx(location);
-                                            }
-                                        if (!OsMoDroid.settings.getBoolean("modeAND_gpx", false) && (int) location.getAccuracy() < hdop_gpx && location.getSpeed() >= speed_gpx / 3.6 && (location.distanceTo(prevlocation_gpx) > distance_gpx || location.getTime() > (prevlocation_gpx.getTime() + period_gpx) || (location.getSpeed() >= speedbearing_gpx / 3.6 && abs(brng_gpx - prevbrng_gpx) >= bearing_gpx)))
-                                            {
-                                                prevlocation_gpx.set(location);
-                                                prevbrng_gpx = brng_gpx;
-                                                writegpx(location);
-                                            }
+                        if(OsMoDroid.settings.getBoolean("udpmode",false)&&fileheaderok)
+                        {
+                            writegpx(location);
+                        }
+                        else {
+                            if (gpx && fileheaderok) {
+
+                                if (bearing_gpx > 0) {
+                                    //if(log)Log.d(this.getClass().getName(), "Пишем трек с курсом");
+                                    double lon1 = location.getLongitude();
+                                    double lon2 = prevlocation_gpx.getLongitude();
+                                    double lat1 = location.getLatitude();
+                                    double lat2 = prevlocation_gpx.getLatitude();
+                                    double dLon = lon2 - lon1;
+                                    double y = Math.sin(dLon) * Math.cos(lat2);
+                                    double x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLon);
+                                    brng_gpx = Math.toDegrees(Math.atan2(y, x)); //.toDeg();
+                                    position = position + "\n" + getString(R.string.TrackCourseChange) + OsMoDroid.df1.format(abs(brng_gpx - prevbrng_gpx));
+                                    refresh();
+                                    if (OsMoDroid.settings.getBoolean("modeAND_gpx", false) && (int) location.getAccuracy() < hdop_gpx && location.getSpeed() >= speed_gpx / 3.6 && (location.distanceTo(prevlocation_gpx) > distance_gpx && location.getTime() > (prevlocation_gpx.getTime() + period_gpx) && (location.getSpeed() >= speedbearing_gpx / 3.6 && abs(brng_gpx - prevbrng_gpx) >= bearing_gpx))) {
+                                        prevlocation_gpx.set(location);
+                                        prevbrng_gpx = brng_gpx;
+                                        writegpx(location);
                                     }
-                                else
-                                    {
-                                        //if(log)Log.d(this.getClass().getName(), "Пишем трек без курса");
-                                        if (OsMoDroid.settings.getBoolean("modeAND_gpx", false) && location.getSpeed() >= speed_gpx / 3.6 && (int) location.getAccuracy() < hdop_gpx && (location.distanceTo(prevlocation_gpx) > distance_gpx && location.getTime() > (prevlocation_gpx.getTime() + period_gpx)))
-                                            {
-                                                writegpx(location);
-                                                prevlocation_gpx.set(location);
-                                            }
-                                        if (!OsMoDroid.settings.getBoolean("modeAND_gpx", false) && location.getSpeed() >= speed_gpx / 3.6 && (int) location.getAccuracy() < hdop_gpx && (location.distanceTo(prevlocation_gpx) > distance_gpx || location.getTime() > (prevlocation_gpx.getTime() + period_gpx)))
-                                            {
-                                                writegpx(location);
-                                                prevlocation_gpx.set(location);
-                                            }
+                                    if (!OsMoDroid.settings.getBoolean("modeAND_gpx", false) && (int) location.getAccuracy() < hdop_gpx && location.getSpeed() >= speed_gpx / 3.6 && (location.distanceTo(prevlocation_gpx) > distance_gpx || location.getTime() > (prevlocation_gpx.getTime() + period_gpx) || (location.getSpeed() >= speedbearing_gpx / 3.6 && abs(brng_gpx - prevbrng_gpx) >= bearing_gpx))) {
+                                        prevlocation_gpx.set(location);
+                                        prevbrng_gpx = brng_gpx;
+                                        writegpx(location);
                                     }
+                                } else {
+                                    //if(log)Log.d(this.getClass().getName(), "Пишем трек без курса");
+                                    if (OsMoDroid.settings.getBoolean("modeAND_gpx", false) && location.getSpeed() >= speed_gpx / 3.6 && (int) location.getAccuracy() < hdop_gpx && (location.distanceTo(prevlocation_gpx) > distance_gpx && location.getTime() > (prevlocation_gpx.getTime() + period_gpx))) {
+                                        writegpx(location);
+                                        prevlocation_gpx.set(location);
+                                    }
+                                    if (!OsMoDroid.settings.getBoolean("modeAND_gpx", false) && location.getSpeed() >= speed_gpx / 3.6 && (int) location.getAccuracy() < hdop_gpx && (location.distanceTo(prevlocation_gpx) > distance_gpx || location.getTime() > (prevlocation_gpx.getTime() + period_gpx))) {
+                                        writegpx(location);
+                                        prevlocation_gpx.set(location);
+                                    }
+
+                                }
                             }
+                        }
                         if (log)
                             {
                                 Log.d(this.getClass().getName(), "sessionstarted=" + sessionstarted);
@@ -2384,8 +2384,19 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                             {
                                 //if((int) location.getAccuracy() < hdop)
                                 {
-                                    prevlocation.set(location);
-                                    sendlocation(location,true);
+                                    if(OsMoDroid.settings.getBoolean("udpmode",false))
+                                    {
+                                      if(location.getTime()>prevlocation.getTime()+1000*Integer.valueOf(OsMoDroid.settings.getString("period","10")))
+                                      {
+                                          prevlocation.set(location);
+                                          sendlocation(location, true);
+                                      }
+
+                                    }
+                                    else {
+                                        prevlocation.set(location);
+                                        sendlocation(location, true);
+                                    }
                                 }
 
                                 //LocalService.addlog("live and session satrted");
@@ -2601,12 +2612,15 @@ public class LocalService extends Service implements LocationListener, GpsStatus
                 writecounter++;
                 if ((gpxbuffer).length() < 5000)
                     {
-                        gpxbuffer = gpxbuffer + "<trkpt lat=\"" + OsMoDroid.df6.format(location.getLatitude()) + "\""
-                                + " lon=\"" + OsMoDroid.df6.format(location.getLongitude())
-                                + "\"><ele>" + OsMoDroid.df0.format(location.getAltitude())
-                                + "</ele><time>" + strgpstime
-                                + "</time><speed>" + OsMoDroid.df0.format(location.getSpeed())
-                                + "</speed>" + "<hdop>" + OsMoDroid.df0.format(location.getAccuracy() / 4) + "</hdop>" + "</trkpt>";
+                        gpxbuffer = gpxbuffer
+                                + "<trkpt lat=\"" + OsMoDroid.df6.format(location.getLatitude()) + "\""
+                                + " lon=\"" + OsMoDroid.df6.format(location.getLongitude()) + "\">"
+                                +"<ele>" + OsMoDroid.df0.format(location.getAltitude())+ "</ele>"
+                                +"<time>" + strgpstime + "</time>"
+                                +"<speed>" + OsMoDroid.df0.format(location.getSpeed())+ "</speed>"
+                                + "<sat>"+ countFix + "</sat>"
+                                + "<hdop>" + OsMoDroid.df0.format(location.getAccuracy() / 4) + "</hdop>"
+                                + "</trkpt>";
                     }
                 else
                     {
@@ -2641,40 +2655,42 @@ public class LocalService extends Service implements LocationListener, GpsStatus
 //	- 5 = hashstring (уникальный хеш пользователя)
 //	- 6 = checknumint(3) (контрольное число к хешу)
                 //T|L53.1:30.3S2A4H2B23
-                if (myIM != null && myIM.authed && sending.equals("")&&sessionstarted)
-                    {
-                        sending=locationtoSending(location);
-                        if(!gps)
-                            {
-                                sending=sending+"M";
-                            }
+
+
+                if(OsMoDroid.settings.getBoolean("udpmode", false))
+                {
+                    String sendingUDP = locationtoSending(location);
+                    LocalService.addlog("udpmode is on");
+                    myIM.sendUDP(OsMoDroid.settings.getString("udptoken","UNKNOWN")+"__"+sendingUDP);
+
+                }
+                else {
+                    if (myIM != null && myIM.authed && sending.equals("") && sessionstarted) {
+                        sending = locationtoSending(location);
+                        if (!gps) {
+                            sending = sending + "M";
+                        }
+
                         LocalService.addlog("Send:AUTHED=" + myIM.authed + " Sending:" + sending);
+
                         myIM.sendToServer(sending, false);
+
+
                         LocalService.addlog("Sendaf:AUTHED=" + myIM.authed + " Sending:" + sending);
-                        if (log)
-                            {
-                                Log.d(this.getClass().getName(), "GPS websocket sendlocation");
-                            }
-                    }
-                else
-                    {
-                        if (log)
-                            {
-                                Log.d(this.getClass().getName(), "Отправка не пошла: " + myIM.authed + " s " + sending);
-                            }
+                        if (log) {
+                            Log.d(this.getClass().getName(), "GPS websocket sendlocation");
+                        }
+                    } else {
+                        if (log) {
+                            Log.d(this.getClass().getName(), "Отправка не пошла: " + myIM.authed + " s " + sending);
+                        }
                         LocalService.addlog("Send not executed:AUTHED=" + myIM.authed + " Sending:" + sending);
-                        if (usebuffer)
-                            {
-                                buffer.add("T|L" + OsMoDroid.df6.format(location.getLatitude()) + ":" + OsMoDroid.df6.format(location.getLongitude())
-                                                + "S" + OsMoDroid.df1.format(location.getSpeed())
-                                                + "A" + OsMoDroid.df0.format(location.getAltitude())
-                                                + "H" + OsMoDroid.df0.format(location.getAccuracy())
-                                                + "C" + OsMoDroid.df0.format(location.getBearing())
-                                                + "T" + location.getTime() / 1000
-                                );
-                                buffercounter++;
-                            }
+                        if (usebuffer) {
+                            buffer.add(sending);
+                            buffercounter++;
+                        }
                     }
+                }
                 if (myIM != null && !myIM.authed && OsMoDroid.settings.getBoolean("sendsms",false))
                     {
                         if(SystemClock.uptimeMillis()>lastsmstime+1000*Integer.parseInt(OsMoDroid.settings.getString("smsperiod","300")))
@@ -2723,7 +2739,9 @@ public class LocalService extends Service implements LocationListener, GpsStatus
             if ((location.getSpeed() * 3.6) >= 6)
                 {
                     sending =
-                            "T|L" + OsMoDroid.df6.format(location.getLatitude()) + ":" + OsMoDroid.df6.format(location.getLongitude())
+                            ((OsMoDroid.settings.getBoolean("udpmode", false))?"Z":"T")
+                                    + "|L" + OsMoDroid.df6.format(location.getLatitude()) + ":" + OsMoDroid.df6.format(location.getLongitude())
+                                    + ((OsMoDroid.settings.getBoolean("udpmode", false))?"B"+batteryprocent:"")
                                     + "S" + OsMoDroid.df1.format(location.getSpeed())
                                     + "A" + OsMoDroid.df0.format(location.getAltitude())
                                     + "H" + OsMoDroid.df0.format(location.getAccuracy())
@@ -2736,7 +2754,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
             if ((location.getSpeed() * 3.6) < 6)
                 {
                     sending =
-                            "T|L" + OsMoDroid.df6.format(location.getLatitude()) + ":" + OsMoDroid.df6.format(location.getLongitude())
+                            ((OsMoDroid.settings.getBoolean("udpmode", false))?"Z":"T") + "|L" + OsMoDroid.df6.format(location.getLatitude()) + ":" + OsMoDroid.df6.format(location.getLongitude())
                                     + "S" + OsMoDroid.df1.format(location.getSpeed())
                                     + "A" + OsMoDroid.df0.format(location.getAltitude())
                                     + "H" + OsMoDroid.df0.format(location.getAccuracy());
@@ -2748,7 +2766,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
             if ((location.getSpeed() * 3.6) <= 1)
                 {
                     sending =
-                            "T|L" + OsMoDroid.df6.format(location.getLatitude()) + ":" + OsMoDroid.df6.format(location.getLongitude())
+                            ((OsMoDroid.settings.getBoolean("udpmode", false))?"Z":"T") + "|L" +OsMoDroid.df6.format(location.getLatitude()) + ":" + OsMoDroid.df6.format(location.getLongitude())
                                     + "A" + OsMoDroid.df0.format(location.getAltitude())
                                     + "H" + OsMoDroid.df0.format(location.getAccuracy());
                     if (usebuffer)
@@ -3324,7 +3342,7 @@ public class LocalService extends Service implements LocationListener, GpsStatus
             }
         static void addlog(final String str)
             {
-                Log.d("OsMoDroid", str);
+                if(log)Log.d("OsMoDroid", str);
                 alertHandler.post(new Runnable()
                 {
                     @Override

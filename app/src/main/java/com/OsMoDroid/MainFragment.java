@@ -87,13 +87,23 @@ public class MainFragment extends Fragment implements GPSLocalServiceClient.upd
         public void onResume()
             {
                 Log.d(getClass().getSimpleName(), "mainfragment onresume");
-                globalActivity.actionBar.setTitle(getString(R.string.tracker));
+                if(globalActivity.actionBar!=null)globalActivity.actionBar.setTitle(getString(R.string.tracker));
                 updateMainUI();
                 super.onResume();
             }
         void updateMainUI()
             {
                 //Log.d(getClass().getSimpleName(), "mainfragment updateMainUI");
+                TextView workModeTextView = (TextView)getView().findViewById(R.id.workmode);
+                if(OsMoDroid.settings.getBoolean("udpmode",false))
+                {
+                    workModeTextView.setVisibility(View.VISIBLE);
+                    workModeTextView.setText(getString(R.string.udpmode)+" "+getString(R.string.send_frequency)+" "+Integer.valueOf(OsMoDroid.settings.getString("period","10"))+" "+getString(R.string.seconds));
+                }
+                else
+                {
+                    workModeTextView.setVisibility(View.GONE);
+                }
                 ToggleButton sosButton = (ToggleButton) getView().findViewById(R.id.sosButton);
                 ToggleButton globalsendToggle = (ToggleButton) getView().findViewById(R.id.toggleButton1);
                 if (globalActivity != null && globalActivity.mService != null)

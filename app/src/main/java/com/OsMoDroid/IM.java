@@ -53,10 +53,14 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.security.cert.X509Certificate;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -75,6 +79,8 @@ import javax.net.ssl.X509TrustManager;
 //import static com.OsMoDroid.LocalService.activityname;
 import static com.OsMoDroid.LocalService.addlog;
 import static com.OsMoDroid.LocalService.myManager;
+import static com.OsMoDroid.LocalService.privatemode;
+import static com.OsMoDroid.LocalService.transportid;
 import static com.OsMoDroid.OsMoDroid.context;
 import static com.OsMoDroid.OsMoDroid.timeshift;
 
@@ -130,11 +136,15 @@ public class IM implements ResultsListener {
     long erorconenctcount = 0;
     private IMWriter iMWriter;
     private IMReader iMReader;
+    private UDPReader udpReader;
+    private UDPWriter udpWriter;
     volatile private boolean checkadressing = false;
     private String token = "";
     private String poll = "";
     private Thread readerThread;
     private Thread writerThread;
+    private Thread udpWriterThread;
+    private Thread udpReaderThread;
     private int workserverint = -1;
     private String workservername = "";
     private MyAsyncTask sendidtask;
@@ -153,8 +163,8 @@ public class IM implements ResultsListener {
                 }
             }
             LocalService.addlog("Online timeout onReceive, OsmodroidVisible=" + OsMoDroid.gpslocalserviceclientVisible + " gcmtodo=" + localService.gcmtodolist.size() + " where=" + localService.where + " existactivedevice=" + existactiveDevice + " state=" + localService.state);
-            if (OsMoDroid.gpslocalserviceclientVisible ||localService.followmonstarted|| localService.state || (localService.isOnline() && localService.gcmtodolist.size() > 0) || localService.where
-                    || (OsMoDroid.settings.getBoolean("subscribebackground", false) && existactiveDevice)) {
+            if (OsMoDroid.gpslocalserviceclientVisible ||!OsMoDroid.settings.getBoolean("udpmode",false)&&(localService.followmonstarted|| localService.state || (localService.isOnline() && localService.gcmtodolist.size() > 0) || localService.where
+                    || (OsMoDroid.settings.getBoolean("subscribebackground", false) && existactiveDevice))) {
                 setOnlineTimeout();
             } else {
                 LocalService.addlog("Online timeout onReceive close because not visible");
@@ -228,6 +238,7 @@ public class IM implements ResultsListener {
     private long timeonline = SystemClock.uptimeMillis();
     private boolean flicking = false;
     private long reconnecttime = 0;
+    private DatagramSocket clientSocket =null;
 
     public IM(String server, int port, LocalService service) {
         RECONNECT_TIMEOUT = Integer.parseInt(OsMoDroid.settings.getString("timeout", "30")) * 1000;
@@ -248,7 +259,38 @@ public class IM implements ResultsListener {
         iMWriter = new IMWriter();
         writerThread = new Thread(iMWriter, "writer");
         writerThread.start();
+        try {
+            clientSocket = new DatagramSocket();
+            udpReader = new UDPReader();
+            udpWriter = new UDPWriter();
+            udpReaderThread = new Thread(udpReader, "udpreader");
+            udpWriterThread = new Thread(udpWriter, "udpwriter");
+            udpReaderThread.setPriority(Thread.MIN_PRIORITY);
+            udpWriterThread.setPriority(Thread.MIN_PRIORITY);
+            udpReaderThread.start();
+            udpWriterThread.start();
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }
         startTraffic = TrafficStats.getUidTxBytes(context.getApplicationInfo().uid);
+
+    }
+
+    public void sendUDP (String str)
+    {
+        addlog(str);
+        if (udpWriter.handler != null) {
+            Message msg = new Message();
+            Bundle b = new Bundle();
+            b.putString("write", str);
+            msg.setData(b);
+            udpWriter.handler.sendMessage(msg);
+            localService.refresh();
+        }
+        else
+        {
+            LocalService.addlog("udpwriter handler null");
+        }
     }
 
     public void sendToServer(String str, boolean gui) {
@@ -716,10 +758,18 @@ public class IM implements ResultsListener {
                 }
 
 
-                if (needopensession) {
-                    sendToServer("TO|" + localService.sessionopentime+","+LocalService.transportid, false);
+                if (needopensession && !OsMoDroid.settings.getBoolean("udpmode",false)) {
+                    JSONObject j = new JSONObject();
+                    try {
+                        j.put("time", localService.sessionopentime);
+                        j.put("transportid",transportid);
+                        j.put("private",privatemode);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    sendToServer("TO|"+j.toString(), false);
                 }
-                if (needclosesession) {
+                if (needclosesession&& !OsMoDroid.settings.getBoolean("udpmode",false)) {
                     if (localService.sendingbuffer.size() == 0 && localService.buffer.size() != 0) {
                         localService.sendingbuffer.addAll(localService.buffer.subList(0,localService.buffer.size()>100?100:localService.buffer.size()));
                         localService.buffer.removeAll(localService.sendingbuffer);
@@ -729,10 +779,10 @@ public class IM implements ResultsListener {
                     }
                     sendToServer("TC", false);
                 }
-                if (OsMoDroid.settings.getBoolean("needsendgcmregid", true)) {
+                if (OsMoDroid.settings.getBoolean("needsendgcmregid", true)&&!OsMoDroid.settings.getString("GCMRegId", "").equals("")) {
                     LocalService.myIM.sendToServer("PUSH|" + OsMoDroid.settings.getString("GCMRegId", ""), false);
                 }
-                if (needclosesession) {
+                if (needtosendpreference) {
                     sendToServer("DCU", false);
                 }
                 if (LocalService.channelList.isEmpty()) {
@@ -785,6 +835,9 @@ public class IM implements ResultsListener {
                     } else {
                         OsMoDroid.permanent = false;
                     }
+                }
+                if(OsMoDroid.settings.getString("udptoken","").equals("")) {
+                    sendToServer("TOKEN", false);
                 }
                 localService.refresh();
 
@@ -858,6 +911,11 @@ public class IM implements ResultsListener {
             }
             Collections.sort(LocalService.trackFileList);
             LocalService.trackFileAdapter.notifyDataSetChanged();
+        }
+        if (command.equals("TOKEN"))
+        {
+            OsMoDroid.editor.putString("udptoken", addict);
+            OsMoDroid.editor.commit();
         }
 
         if (command.equals("MD")) {
@@ -978,7 +1036,7 @@ public class IM implements ResultsListener {
                 sendToServer("NET|" + postjson.toString(), false);
             }
         }
-        if (command.equals("NEEDSENDTOKEN")) {
+        if (command.equals("NEEDSENDTOKEN")&&addict!=null&&!addict.equals("")) {
             sendToServer("PUSH|" + addict, false);
         }
 
@@ -1032,6 +1090,18 @@ public class IM implements ResultsListener {
             localService.refresh();
             return;
         }
+        if (command.equals("OK")) {
+            localService.sendcounter++;
+            if (localService.sendsound && !localService.mayak) {
+                localService.soundPool.play(localService.sendpalyer, 1f, 1f, 1, 0, 1f);
+                localService.mayak = false;
+            }
+            String time = OsMoDroid.sdf3.format(new Date(System.currentTimeMillis()));
+            localService.sendresult = time + " " + localService.getString(R.string.succes);
+            localService.refresh();
+            return;
+        }
+
         if (command.equals("B")) {
             localService.buffercounter = localService.buffercounter - localService.sendingbuffer.size();
             localService.sendcounter = localService.sendcounter + localService.sendingbuffer.size();
@@ -1086,13 +1156,13 @@ public class IM implements ResultsListener {
                         }
                         // Get new Instance ID token
                         String token = task.getResult().getToken();
-                        if(!token.equals(""))
+                        if(token!=null&&!token.equals(""))
                         {
                             sendToServer("PUSH|" + token, false);
                         }
                     }
                 });
-                if(! OsMoDroid.settings.getString("GCMRegId", "no").equals("")) {
+                if(! OsMoDroid.settings.getString("GCMRegId", "").equals("")) {
                     sendToServer("PUSH|" + OsMoDroid.settings.getString("GCMRegId", "no"), false);
                 }
                 sendToServer("RCR:" + OsMoDroid.TRACKER_GCM_ID + "|1", false);
@@ -2737,6 +2807,78 @@ public class IM implements ResultsListener {
                         Looper.loop();
                     }
             }
+         private  class UDPWriter implements  Runnable {
+
+
+             public  Handler handler;
+             boolean error = false;
+             @Override
+             public void run()
+             {
+                 Looper.prepare();
+                 handler = new Handler()
+                 {
+                     @Override
+                     public void handleMessage(Message msg)
+                     {
+                         Bundle b = msg.getData();
+
+
+                                 try {
+                                     InetAddress IPAddress = InetAddress.getByName("osmo.mobi");
+                                     byte[] sendData = new byte[1024];
+                                     sendData = b.getString("write").getBytes();
+                                     DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, workserverint);
+                                     sendPacket.setLength(sendData.length);
+                                     clientSocket.send(sendPacket);
+
+                                     Log.d(this.getClass().getName(), "Write UDP OK " );
+                                 } catch (Exception e) {
+                                     e.printStackTrace();
+                                     Log.d(this.getClass().getName(), "Write UDP Exception " +e.toString());
+                                 }
+
+
+                         super.handleMessage(msg);
+                     }
+                 };
+                 Looper.loop();
+             }
+         }
+
+         private class UDPReader implements Runnable {
+             private String str;
+
+             @Override
+             public void run() {
+
+                 while (!Thread.currentThread().isInterrupted()) {
+                     LocalService.addlog("create datagram reader");
+                     byte[] msg = new byte[1000];
+                     DatagramPacket dp = new DatagramPacket(msg, msg.length);
+                    // DatagramSocket ds = null;
+
+                     try {
+                         //ds = new DatagramSocket(0);
+                         clientSocket.receive(dp);
+                         str = new String(msg, 0, dp.getLength());
+                         LocalService.addlog("receive  "+ str);
+                         Message message = new Message();
+                         Bundle b = new Bundle();
+                         b.putString("read", str);
+                         message.setData(b);
+                         if (localService.alertHandler != null) {
+                             localService.alertHandler.sendMessage(message);
+                         }
+                     } catch (IOException e) {
+                         e.printStackTrace();
+
+                     }
+
+                 }
+             }
+         }
+
         private class IMReader implements Runnable
             {
                 private StringBuilder stringBuilder = new StringBuilder(1024);

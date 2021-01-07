@@ -216,7 +216,7 @@
   <string name="no_follow_">Слежение отключено </string>
   <string name="adjust_to_dpi">HD карта</string>
   <string name="monitoring_settings">Параметры мониторинга</string>
-  <string name="milliseconds_how_often_to_send_location">Миллисекунды. Задержка между отправкой данных</string>
+  <string name="seconds_how_often_to_send_location">Секунды. Задержка между отправкой данных</string>
   <string name="send_frequency">Период отправки</string>
   <string name="meters_must_move_at_least_this_far_to_send_location_update">Метры. Минимальное расстояние между отправкой данных</string>
   <string name="send_distance">Дистанция отправки</string>
@@ -377,4 +377,7 @@
   <string name="linkonly">Видно по ссылке или друзьям</string>
   <string name="Everyone">Видно всем</string>
   <string name="chprivmode">Укажите доступность поездки</string>
+    <string name="confirmstop">Подтвердите завершение сессии</string>
+  <string name="areyousure">Вы уверены?</string>
+  <string name="udpmode">Походный режим</string>
 </resources>

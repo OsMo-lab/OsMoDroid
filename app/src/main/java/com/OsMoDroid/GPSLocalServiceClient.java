@@ -1,6 +1,7 @@
 package com.OsMoDroid;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
@@ -44,6 +45,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
@@ -51,7 +53,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.legacy.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 
 import com.OsMoDroid.LocalService.LocalBinder;
 import com.OsMoDroid.Netutil.MyAsyncTask;
@@ -69,6 +71,7 @@ import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.lang.reflect.Field;
+import java.net.URLEncoder;
 import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.List;
@@ -76,6 +79,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import static android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD;
+import static com.OsMoDroid.LocalService.addlog;
+import static com.OsMoDroid.LocalService.channelList;
+
 
 //import android.view.Menu;
 //import android.view.MenuItem;
@@ -132,6 +138,7 @@ public class GPSLocalServiceClient extends AppCompatActivity implements ResultsL
         private BroadcastReceiver mIMstatusReciever;
         //private boolean afterrotate=false;
         private Intent needIntent;
+        public TextView connectstateTextView;
         ServiceConnection conn = new ServiceConnection()
         {
             public void onServiceConnected(ComponentName className, IBinder service)
@@ -164,15 +171,15 @@ public class GPSLocalServiceClient extends AppCompatActivity implements ResultsL
                                 }
                             if (mService.myIM.connOpened && !mService.myIM.connecting)
                                 {
-                                    actionBar.setIcon(R.drawable.eyeo);
+                                    connectstateTextView.setBackgroundColor(Color.GREEN);
                                 }
                             else if (mService.myIM.connecting)
                                 {
-                                    actionBar.setIcon(R.drawable.eyeu);
+                                    connectstateTextView.setBackgroundColor(Color.YELLOW);
                                 }
                             else
                                 {
-                                    actionBar.setIcon(R.drawable.eyen);
+                                    connectstateTextView.setBackgroundColor(Color.parseColor("#F44336"));
                                 }
                             if (!OsMoDroid.settings.getBoolean("subscribebackground", false) && mBound)
                                 {
@@ -228,6 +235,7 @@ public class GPSLocalServiceClient extends AppCompatActivity implements ResultsL
 //		ft.replace(R.id.fragment_container, fragment);
 //		ft.commit();
 //	}
+        @SuppressLint("SourceLockedOrientationActivity")
         void showFragment(Fragment fragment, boolean backstack)
             {
                 if( fragment instanceof TrackStatFragment)
@@ -304,14 +312,20 @@ public class GPSLocalServiceClient extends AppCompatActivity implements ResultsL
 
                     },PERMISSION_REQUEST_CODE);
                 }
+                setContentView(R.layout.activity_main);
+                connectstateTextView =(TextView) findViewById(R.id.connect_state);
+                Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
+                setSupportActionBar(myToolbar);
                 LocalService.alertHandler.removeCallbacksAndMessages(null);
                 super.onCreate(savedInstanceState);
                 actionBar = getSupportActionBar();
-                actionBar.setDisplayHomeAsUpEnabled(true);
+
+                //actionBar.setDisplayHomeAsUpEnabled(false);
                 //actionBar.setDisplayShowHomeEnabled(true);
                 //actionBar.setDisplayUseLogoEnabled(true);
                 //actionBar.setHomeButtonEnabled(true);
-                actionBar.setHomeAsUpIndicator(R.drawable.eyeo);
+                //actionBar.setHomeAsUpIndicator(R.drawable.eyeo);
+                //actionBar.setIcon(R.drawable.eyeo);
                 OsMoDroid.activity = this;
                 PreferenceManager.setDefaultValues(this, R.xml.pref, true);
                 //ReadPref();
@@ -337,7 +351,7 @@ public class GPSLocalServiceClient extends AppCompatActivity implements ResultsL
                     {
                         //e.printStackTrace();
                     }
-                setContentView(R.layout.activity_main);
+
                 mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
                 mDrawerList = (ListView) findViewById(R.id.left_drawer);
                 // Set the notificationStringsAdapter for the list view
@@ -360,10 +374,11 @@ public class GPSLocalServiceClient extends AppCompatActivity implements ResultsL
                 mDrawerToggle = new ActionBarDrawerToggle(
                         this,                  /* host Activity */
                         mDrawerLayout,         /* DrawerLayout object */
-                        R.drawable.ic_drawer,  /* nav drawer image to replace 'Up' caret */
+                        myToolbar,
                         R.string.drawer_open,  /* "open drawer" description for accessibility */
                         R.string.drawer_close  /* "close drawer" description for accessibility */
                 )
+
                 {
                     public void onDrawerClosed(View view)
                         {
@@ -374,6 +389,8 @@ public class GPSLocalServiceClient extends AppCompatActivity implements ResultsL
                             super.onDrawerOpened(drawerView);
                         }
                 };
+
+                mDrawerToggle.syncState();
                 mDrawerLayout.setDrawerListener(mDrawerToggle);
                 fMan = getSupportFragmentManager();
                 drawClickListener = new DrawerItemClickListener(fMan, mDrawerList, mDrawerLayout, this);
@@ -398,26 +415,22 @@ public class GPSLocalServiceClient extends AppCompatActivity implements ResultsL
                                 {
                                     if (intent.getBooleanExtra("connect", false) && !intent.getBooleanExtra("connecting", false))
                                         {
-                                            actionBar.setIcon(R.drawable.eyeo);
-                                            actionBar.setHomeAsUpIndicator(R.drawable.eyeo);
+                                            connectstateTextView.setBackgroundColor(Color.GREEN);
                                             if(intent.hasExtra("executedlistsize"))
                                                 {
                                                     if(intent.getIntExtra("executedlistsize",0)>0)
                                                         {
-                                                            actionBar.setIcon(R.drawable.anim);
-                                                            actionBar.setHomeAsUpIndicator(R.drawable.anim);
+                                                            connectstateTextView.setBackgroundColor(Color.BLUE);
                                                         }
                                                 }
                                         }
                                     else if (intent.getBooleanExtra("connecting", false))
                                         {
-                                            actionBar.setIcon(R.drawable.eyeu);
-                                            actionBar.setHomeAsUpIndicator(R.drawable.eyeu);
-                                        }
+                                            connectstateTextView.setBackgroundColor(Color.YELLOW);
+                                       }
                                     else
                                         {
-                                            actionBar.setIcon(R.drawable.eyen);
-                                            actionBar.setHomeAsUpIndicator(R.drawable.eyen);
+                                            connectstateTextView.setBackgroundColor(Color.parseColor("#F44336"));
                                         }
                                 }
 
@@ -505,55 +518,45 @@ public class GPSLocalServiceClient extends AppCompatActivity implements ResultsL
                 return super.onOptionsItemSelected(item);
             }
         @Override
-        protected void onActivityResult(int requestCode, int resultCode, Intent data)
-            {
-                Log.d(this.getClass().getSimpleName(), "void onActivityResult" + requestCode + " " + resultCode);
-                updateMainUI();
-                if (conn == null || mService == null)
-                    {
+        protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+            super.onActivityResult(requestCode, resultCode, data);
+            Log.d(this.getClass().getSimpleName(), "void onActivityResult" + requestCode + " " + resultCode);
+            updateMainUI();
+            if (conn == null || mService == null) {
+            } else {
+                if (requestCode == 0) {
+                    Log.d(this.getClass().getSimpleName(), "void onActivityResult=preference");
+                    mService.applyPreference();
+                    Intent intent = new Intent(this, GPSLocalServiceClient.class);
+                    intent.setAction(Intent.ACTION_MAIN);
+                    intent.addCategory(Intent.CATEGORY_LAUNCHER);
+                    finish();
+                    startActivity(intent);
+                    if (mBound) {
+                        if (mService.myIM.authed) {
+                            mService.myIM.sendToServer("PG:1", false);
+                        }
+                        // mService.myIM.sendToServer("PD:1", false);
                     }
-                else
-                    {
-                        if (requestCode == 0)
-                            {
-                                Log.d(this.getClass().getSimpleName(), "void onActivityResult=preference");
-                                mService.applyPreference();
-                                Intent intent = new Intent(this, GPSLocalServiceClient.class);
-                                intent.setAction(Intent.ACTION_MAIN);
-                                intent.addCategory(Intent.CATEGORY_LAUNCHER);
-                                finish();
-                                startActivity(intent);
-                                if ( mBound)
-                                    {
-                                        if(mService.myIM.authed)
-
-                                            {
-                                                mService.myIM.sendToServer("PG:1", false);
-                                            }
-                                       // mService.myIM.sendToServer("PD:1", false);
-                                    }
-                                mService.myIM.needtosendpreference=true;
-                                if(mService.myIM.authed)
-                                    {
-                                        mService.myIM.sendToServer("DCU",false);
-                                    }
-
-                            }
-                        if (requestCode == 1 && resultCode == Activity.RESULT_OK)
-                            {
-                                Log.d(this.getClass().getSimpleName(), "void onActivityResult=reg");
-                                if (live&& mBound)
-                                    {
-                                        mService.myIM.close();
-                                        LocalService.channelList.clear();
-
-                                        mService.myIM.needtosendpreference=true;
-                                        mService.myIM.start();
-
-                                    }
-                            }
+                    mService.myIM.needtosendpreference = true;
+                    if (mService.myIM.authed) {
+                        mService.myIM.sendToServer("DCU", false);
                     }
+
+                }
+                if (requestCode == 1 && resultCode == Activity.RESULT_OK) {
+                    Log.d(this.getClass().getSimpleName(), "void onActivityResult=reg");
+                    if (live && mBound) {
+                        mService.myIM.close();
+                        channelList.clear();
+
+                        mService.myIM.needtosendpreference = true;
+                        mService.myIM.start();
+
+                    }
+                }
             }
+        }
         @Override
         protected void onStart()
             {
@@ -691,6 +694,18 @@ public class GPSLocalServiceClient extends AppCompatActivity implements ResultsL
                                         groupurl=groupurl.substring(0,trimInt);
                                     }
                                 bundle.putString("groupurl", groupurl);
+                                if(conn!=null && mBound==true)
+                                {
+                                    for(Channel ch:channelList)
+                                    {
+                                        if(ch.browseurl.equals(groupurl))
+                                        {
+                                            Toast.makeText(this,"Already in this group", Toast.LENGTH_SHORT).show();
+                                            drawClickListener.selectItem(getString(R.string.map), null);
+                                            return;
+                                        }
+                                    }
+                                }
                                 drawClickListener.selectItem(getString(R.string.chanals), bundle);
                                 Log.d(this.getClass().getSimpleName(), "on new intent=cation_view");
                             }
@@ -972,8 +987,10 @@ public class GPSLocalServiceClient extends AppCompatActivity implements ResultsL
                             {
                                 if (mService.myIM.authed)
                                     {
-                                        String email = inputEmail.getText().toString();
-                                        String password = passwordEditText.getText().toString();
+                                        try {
+                                            String email = URLEncoder.encode(inputEmail.getText().toString(), "UTF-8");
+                                            String password = URLEncoder.encode(passwordEditText.getText().toString(), "UTF-8");
+
 
                                         if (!email.equals("")&&!password.equals(""))
                                             {
@@ -988,6 +1005,12 @@ public class GPSLocalServiceClient extends AppCompatActivity implements ResultsL
                                             {
                                                 Toast.makeText(GPSLocalServiceClient.this,R.string.noallenter, Toast.LENGTH_SHORT).show();
                                             }
+                                        }
+                                        catch (Exception e)
+                                        {
+                                            Toast.makeText(GPSLocalServiceClient.this,"Cannot encode login or pass", Toast.LENGTH_SHORT).show();
+                                            addlog("Cannot encode login or pass"+e.toString());
+                                        }
 
 
                                     }

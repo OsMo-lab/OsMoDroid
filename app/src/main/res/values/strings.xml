@@ -215,7 +215,7 @@
     <string name="no_follow_">"No Follow "</string>
     <string name="adjust_to_dpi">HD map</string>
     <string name="monitoring_settings">Monitoring settings</string>
-    <string name="milliseconds_how_often_to_send_location">Milliseconds – How often to send location</string>
+    <string name="seconds_how_often_to_send_location">Seconds – How often to send location</string>
     <string name="send_frequency">Send frequency</string>
     <string name="meters_must_move_at_least_this_far_to_send_location_update">Meters – Must move at least this far to send location send</string>
     <string name="send_distance">Send distance</string>
@@ -377,5 +377,8 @@
     <string name="linkonly">Link or Friends</string>
     <string name="Everyone">Everyone</string>
     <string name="chprivmode">Choose private mode</string>
+    <string name="confirmstop">Confirm stop session</string>
+    <string name="areyousure">Are you sure ?</string>
+    <string name="udpmode">Trail mode</string>
 
 </resources>
