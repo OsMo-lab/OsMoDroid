@@ -55,7 +55,7 @@
   <string name="message">Сообщение</string>
   <string name="sendsupport">Сообщить в техническую поддержку</string>
   <string name="about">О программе</string>
-  <string name="abouttext">OsMoDroid – это приложение для сервиса OsMo.mobi под Android. Используя смартфон и сервис OsMo ваши друзья и близкие всегда будут знать где вы.\nРазработчик: Денис Фокин © 2020\n\nИспользуя данное приложение вы принимаете условия использования:\nhttps://osmo.mobi/terms\n\nОфициальный сайт OsMoDroid:\nhttps://osmodroid.ru\n\nИнформация о авторских правах: https://osmodroid.ru/copyright.html</string>
+  <string name="abouttext">OsMoDroid - это приложение для OsMo — Трекер под Android. Используя данное приложение, вы сможете записать трек поездки в самых суровых условиях.\nРазработчик: Денис Фокин © 2022\n\nИспользуя данное приложение вы принимаете условия использования:\nhttps://osmo.mobi/terms</string>
   <string name="send">&gt;&gt;</string>
   <string name="cancel">Отмена</string>
   <string name="speed">Скорость: км/ч</string>
