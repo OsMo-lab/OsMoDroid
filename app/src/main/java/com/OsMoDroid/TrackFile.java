@@ -11,7 +11,7 @@ public class TrackFile implements Comparable<TrackFile>
         public boolean showedonmap = false;
         public boolean fromServer = false;
         public String url;
-        public String distantion;
+        public String distance;
         public String image;
         int u;
         public TrackFile(String fileName, long date, long size)

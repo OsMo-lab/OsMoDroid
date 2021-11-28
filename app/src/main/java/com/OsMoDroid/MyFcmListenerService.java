@@ -21,7 +21,7 @@ public class MyFcmListenerService extends FirebaseMessagingService
 
         if (data.containsKey("GCM"))
             {
-                if(OsMoDroid.settings.getBoolean("live", true))
+                if(true)
                     {
                         Intent is = new Intent(this, LocalService.class);
 

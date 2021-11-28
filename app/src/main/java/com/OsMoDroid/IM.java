@@ -35,8 +35,8 @@ import com.OsMoDroid.Channel.Point;
 import com.OsMoDroid.Netutil.MyAsyncTask;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.InstanceIdResult;
+import com.google.firebase.messaging.FirebaseMessaging;
+
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -476,7 +476,7 @@ public class IM implements ResultsListener {
         if (SystemClock.uptimeMillis() > timeonline + ONLINE_TIMEOUT) {
             parent.sendBroadcast(new Intent(ONLINE_TIMEOUT_INTENT));
         }
-        if (OsMoDroid.settings.getBoolean("live", true)) {
+        if (true) {
             start = true;
             if (log) {
                 Log.d(this.getClass().getName(), "void IM.start");
@@ -878,7 +878,7 @@ public class IM implements ResultsListener {
                         TrackFile tr = new TrackFile(jsonObject.optString("name"), jsonObject.optLong("start")*1000, jsonObject.optInt("size"));
                         tr.u = jsonObject.getInt("u");
                         tr.name = jsonObject.optString("name");
-                        tr.distantion=jsonObject.optString("distantion");
+                        tr.distance=jsonObject.optString("distance");
                         tr.fromServer = true;
                         tr.url = jsonObject.optString("gpx");
                         tr.image = jsonObject.optString("image");
@@ -1147,21 +1147,21 @@ public class IM implements ResultsListener {
 
             if (param.equals(OsMoDroid.TRACKER_GCM_ID)) {
 
-                FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                FirebaseMessaging.getInstance().getToken().addOnCompleteListener(new OnCompleteListener<String>() {
                     @Override
-                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                    public void onComplete(@NonNull Task<String> task) {
                         if (!task.isSuccessful()) {
                             addlog("getInstanceId failed "+ task.getException());
                             return;
                         }
                         // Get new Instance ID token
-                        String token = task.getResult().getToken();
+                        String token = task.getResult();
                         if(token!=null&&!token.equals(""))
                         {
                             sendToServer("PUSH|" + token, false);
                         }
                     }
-                });
+                }) ;
                 if(! OsMoDroid.settings.getString("GCMRegId", "").equals("")) {
                     sendToServer("PUSH|" + OsMoDroid.settings.getString("GCMRegId", "no"), false);
                 }
@@ -1202,7 +1202,7 @@ public class IM implements ResultsListener {
                 Runnable runnable = new Runnable() {
                     public void run() {
                         try {
-                            File dir = new File(android.os.Environment.getExternalStorageDirectory() + "/OsMoDroid/channelsgpx/");
+                            File dir = new File(OsMoDroid.osmodirFile + "/OsMoDroid/channelsgpx/");
                             dir.mkdirs();
                             //if (dir.isDirectory())
                             {

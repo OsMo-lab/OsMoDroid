@@ -13,6 +13,7 @@ public class APIcomParams
         Builder notificationBuilder;
         int notification;
         ColoredGPX load;
+        String downloadfilename;
         public APIcomParams(String action, String post, String command, File uploadfile, Builder notificationBuilder, int notificationid)
             {
                 this.action = action;
@@ -33,4 +34,9 @@ public class APIcomParams
                 this.action = url;
                 this.load = load;
             }
+        public APIcomParams(String url, String filename)
+        {
+            this.action = url;
+            this.downloadfilename = filename;
+        }
     }

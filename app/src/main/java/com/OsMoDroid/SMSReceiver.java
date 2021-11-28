@@ -52,7 +52,7 @@ public class SMSReceiver extends BroadcastReceiver
                                 addlog("SMS From "+fromAddress+ " Data"+recMsgString);
                                 if(OsMoDroid.settings.getBoolean("getsms",false)&&fromAddress!=null && fromAddress.equals(OsMoDroid.settings.getString("getsmsnumber","1")))
                                     {
-                                        if(OsMoDroid.settings.getBoolean("live", true))
+                                        if(true)
                                             {
                                                 Intent is = new Intent(context, LocalService.class);
                                                 is.putExtra("GCM","SMS|"+recMsgString);

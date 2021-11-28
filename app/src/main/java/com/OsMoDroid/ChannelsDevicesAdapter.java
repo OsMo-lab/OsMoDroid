@@ -71,7 +71,7 @@ public class ChannelsDevicesAdapter extends ArrayAdapter<Device>
                                 channelDeviceDistance.setVisibility(View.VISIBLE);
                                 channelDeviceLocation.setLatitude((device.lat));
                                 channelDeviceLocation.setLongitude((device.lon));
-                                channelDeviceDistance.setText(context.getString(R.string.Distantion) + Integer.toString((int) LocalService.currentLocation.distanceTo(channelDeviceLocation) / 1000) + context.getString(R.string.Km) + Integer.toString((int) (1000 * (LocalService.currentLocation.distanceTo(channelDeviceLocation) / 1000 - (int) LocalService.currentLocation.distanceTo(channelDeviceLocation) / 1000))) + context.getString(R.string.m));
+                                channelDeviceDistance.setText(context.getString(R.string.Distantion ) + Integer.toString((int) LocalService.currentLocation.distanceTo(channelDeviceLocation) / 1000) + context.getString(R.string.Km) + Integer.toString((int) (1000 * (LocalService.currentLocation.distanceTo(channelDeviceLocation) / 1000 - (int) LocalService.currentLocation.distanceTo(channelDeviceLocation) / 1000))) + context.getString(R.string.m));
                             }
                         else
                             {

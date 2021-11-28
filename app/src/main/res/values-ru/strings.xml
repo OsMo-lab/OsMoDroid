@@ -380,4 +380,5 @@
     <string name="confirmstop">Подтвердите завершение сессии</string>
   <string name="areyousure">Вы уверены?</string>
   <string name="udpmode">Походный режим</string>
+    <string name="needbackgroundlocationpermition">Этому приложению требуется доступ к местоположению в фоновом режиме для передачи данных о вашем пеердвижении на сервер</string>
 </resources>

@@ -1,0 +1,63 @@
+[
+  {
+    "name": "MapnikHD",
+    "url": [
+      "https://osm.rrze.fau.de/osmhd/%1$s/%2$s/%3$s%4$s"
+    ],
+    "tile_size": 512,
+    "file_ext": ".png",
+    "min_zoom": 0,
+    "max_zoom": 18
+  },
+  {
+    "name": "Outdoor",
+    "url": ["https://tile.thunderforest.com/outdoors/%1$s/%2$s/%3$s%4$s"],
+    "tile_size": 256,
+    "file_ext": ".png",
+    "min_zoom": 0,
+    "max_zoom": 18
+  },
+  {
+    "name": "MTB",
+    "url": ["https://tile.mtbmap.cz/mtbmap_tiles/%1$s/%2$s/%3$s%4$s"],
+    "tile_size": 256,
+    "file_ext": ".png",
+    "min_zoom": 0,
+    "max_zoom": 18
+  },
+  {
+    "name": "Wiki",
+    "url": ["https://maps.wikimedia.org/osm-intl/%1$s/%2$s/%3$s%4$s"],
+    "tile_size": 256,
+    "file_ext": ".png",
+    "min_zoom": 0,
+    "max_zoom": 18
+  },
+  {
+    "name": "Topo",
+    "url": ["https://tile.opentopomap.org/%1$s/%2$s/%3$s%4$s"],
+    "tile_size": 256,
+    "file_ext": ".png",
+    "min_zoom": 0,
+    "max_zoom": 18
+  },
+  {
+    "name": "Humanitarium",
+    "url": ["https://tile-a.openstreetmap.fr/hot/%1$s/%2$s/%3$s%4$s",
+      "https://tile-b.openstreetmap.fr/hot/%1$s/%2$s/%3$s%4$s",
+      "https://tile-c.openstreetmap.fr/hot/%1$s/%2$s/%3$s%4$s"],
+    "tile_size": 256,
+    "file_ext": ".png",
+    "min_zoom": 0,
+    "max_zoom": 18
+  },
+  {
+    "name": "TopoRU",
+    "url": ["https://tile-a.opentopomap.ru/%1$s/%2$s/%3$s%4$s",
+      "https://tile-b.opentopomap.ru/%1$s/%2$s/%3$s%4$s"],
+    "tile_size": 256,
+    "file_ext": ".png",
+    "min_zoom": 0,
+    "max_zoom": 18
+  }
+]

@@ -13,7 +13,11 @@ public class BootComplitedReceiver extends BroadcastReceiver
         @Override
         public void onReceive(Context context, Intent recievedIntent)
             {
-                PreferenceManager.setDefaultValues(context, R.xml.pref, true);
+                try {
+                    PreferenceManager.setDefaultValues(context, R.xml.pref, true);
+                } catch (Exception e) {
+
+                }
                 SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
                 if (recievedIntent != null && recievedIntent.getAction() != null && recievedIntent.getAction().equalsIgnoreCase(ACTION_BOOT))
                     {

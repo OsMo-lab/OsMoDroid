@@ -36,7 +36,7 @@ public class Channel implements Serializable, ResultsListener
         public int type=0;
         public boolean chatconnected = false;
         ArrayList<Point> pointList = new ArrayList<Channel.Point>();
-        File sdDir = android.os.Environment.getExternalStorageDirectory();
+        File sdDir = OsMoDroid.osmodirFile;
         File fileName = new File(sdDir, "OsMoDroid/channelsgpx/");
         public Channel()
             {

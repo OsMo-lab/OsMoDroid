@@ -380,5 +380,6 @@
     <string name="confirmstop">Confirm stop session</string>
     <string name="areyousure">Are you sure ?</string>
     <string name="udpmode">Trail mode</string>
+    <string name="needbackgroundlocationpermition">The App use your location in background</string>
 
 </resources>

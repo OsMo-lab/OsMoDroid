@@ -4,13 +4,18 @@ import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.view.inputmethod.InputMethodManager;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
 
+import net.gotev.uploadservice.Logger;
+import net.gotev.uploadservice.UploadService;
+
 import org.osmdroid.config.Configuration;
 
+import java.io.File;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.SimpleDateFormat;
@@ -22,7 +27,7 @@ public class OsMoDroid extends Application
         public static final String NOTIFIESFILENAME = "messagelist";
         public static final String DEVLIST = "devlist";
         public static final String CHANNELLIST = "chlist";
-        public static final String app_code = "aVebh7F30a";
+        public static final String app_code = "b4Av0";
         public static final String TRACKER_GCM_ID = "80";
         public static final String TRACKER_BATTERY_INFO = "11";
         public static final String TRACKER_SATELLITES_INFO = "13";
@@ -93,6 +98,7 @@ public class OsMoDroid extends Application
         public static FirebaseAnalytics mFirebaseAnalytics;
         static long timeshift=0;
         public static boolean permanent=false;
+        public static File osmodirFile;
         public static int notifyidApp()
             {
                 return notifyid++;
@@ -112,16 +118,30 @@ public class OsMoDroid extends Application
         public void onCreate()
             {
                 super.onCreate();
+                Logger.setLogLevel(Logger.LogLevel.DEBUG);
+                UploadService.NAMESPACE = BuildConfig.APPLICATION_ID;
                 settings = PreferenceManager.getDefaultSharedPreferences(this);
                 editor = settings.edit();
                 context = getApplicationContext();
+                osmodirFile = context.getFilesDir();
                 Thread.setDefaultUncaughtExceptionHandler(ExceptionHandler.inContext(context));
                 inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 try {
+                    Configuration.getInstance()
+                            .setOsmdroidTileCache(
+                                    context.getCacheDir()
+                            );
+                    Configuration.getInstance()
+                            .setOsmdroidBasePath(
+                                    context.getApplicationContext().getFilesDir()
+                            );
                     Configuration.getInstance().load(this,settings);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
                 mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+
+
+
             }
     }

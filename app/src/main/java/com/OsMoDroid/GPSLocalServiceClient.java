@@ -29,8 +29,10 @@ import android.text.method.LinkMovementMethod;
 import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -88,7 +90,9 @@ import static com.OsMoDroid.LocalService.channelList;
 //import android.view.SubMenu;
 public class GPSLocalServiceClient extends AppCompatActivity implements ResultsListener
     {
-        private static final int PERMISSION_REQUEST_CODE = 777;
+        private static final int STORAGE_PERMISSION_REQUEST_CODE = 777;
+        private static final int FINE_LOCATION_PERMISSION_REQUEST_CODE = 888;
+        private static final int BACKGROUND_LOCATION_PERMISSION_REQUEST_CODE = 999;
         //SharedPreferences OsMoDroid.settings;
         public ActionBar actionBar;
         boolean messageShowed = false;
@@ -102,7 +106,7 @@ public class GPSLocalServiceClient extends AppCompatActivity implements ResultsL
         boolean mBound = false;
         int speedbearing;
         int bearing;
-        boolean live = OsMoDroid.settings.getBoolean("live", true);;
+        boolean live = true;
         int hdop;
         int period;
         int distance;
@@ -130,7 +134,7 @@ public class GPSLocalServiceClient extends AppCompatActivity implements ResultsL
         private boolean gpx = false;
         private int n;
         private boolean usebuffer = false;
-        private boolean usewake = false;
+
         private ArrayList<String> mDrawerItems = new ArrayList<String>();
         private ActionBarDrawerToggle mDrawerToggle;
         private CharSequence mTitle;
@@ -165,7 +169,7 @@ public class GPSLocalServiceClient extends AppCompatActivity implements ResultsL
                     if (mService.myIM != null)
                         {
                             mService.bitmapmapview();
-                            if(!mService.myIM.start&&OsMoDroid.settings.getBoolean("live", true))
+                            if(!mService.myIM.start)
                                 {
                                     mService.myIM.start();
                                 }
@@ -298,20 +302,13 @@ public class GPSLocalServiceClient extends AppCompatActivity implements ResultsL
                 Log.d(this.getClass().getSimpleName(), "onsave gpsclient");
                 super.onSaveInstanceState(outState);
             }
+        AlertDialog dialog;
         @Override
         public void onCreate(Bundle savedInstanceState)
             {
                 Log.d(this.getClass().getSimpleName(), "onCreate() gpsclient");
-                if (ContextCompat.checkSelfPermission(this,
-                        android.Manifest.permission.ACCESS_FINE_LOCATION)
-                        != PackageManager.PERMISSION_GRANTED  ||ContextCompat.checkSelfPermission(this,
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                        != PackageManager.PERMISSION_GRANTED ) {
-                    ActivityCompat.requestPermissions(this,new String[] {
-                            Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE
 
-                    },PERMISSION_REQUEST_CODE);
-                }
+
                 setContentView(R.layout.activity_main);
                 connectstateTextView =(TextView) findViewById(R.id.connect_state);
                 Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
@@ -329,10 +326,9 @@ public class GPSLocalServiceClient extends AppCompatActivity implements ResultsL
                 OsMoDroid.activity = this;
                 PreferenceManager.setDefaultValues(this, R.xml.pref, true);
                 //ReadPref();
-                String sdState = android.os.Environment.getExternalStorageState();
-                if (sdState.equals(android.os.Environment.MEDIA_MOUNTED))
+
                     {
-                        File sdDir = android.os.Environment.getExternalStorageDirectory();
+                        File sdDir = OsMoDroid.osmodirFile;
                         fileName = new File(sdDir, "OsMoDroid/");
                         fileName.mkdirs();
                         fileName = new File(sdDir, "OsMoDroid/settings.dat");
@@ -359,16 +355,11 @@ public class GPSLocalServiceClient extends AppCompatActivity implements ResultsL
                 mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
                 //mDrawerLayout.setBackgroundColor(Color.WHITE);
                 mDrawerList.setCacheColorHint(0);
-                if (OsMoDroid.settings.getBoolean("darktheme", true))
-                    {
+
                         setTheme(R.style.Theme_Osmodroid);
                         mDrawerLayout.setBackgroundColor(Color.TRANSPARENT);
-                    }
-                else
-                    {
-                        setTheme(R.style.Theme_AppCompat_Light);
-                        mDrawerLayout.setBackgroundColor(Color.WHITE);
-                    }
+
+
 
                 mTitle = mDrawerTitle = getTitle();
                 mDrawerToggle = new ActionBarDrawerToggle(
@@ -439,11 +430,44 @@ public class GPSLocalServiceClient extends AppCompatActivity implements ResultsL
                 registerReceiver(mIMstatusReciever, new IntentFilter("OsMoDroid"));
                 if (mService.myIM != null)
                     {
-                        if (!mService.myIM.start&&OsMoDroid.settings.getBoolean("live", true))
+                        if (!mService.myIM.start)
                             {
                                 mService.myIM.start();
                             }
                     }
+               /* if (
+                       // ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                        //||ContextCompat.checkSelfPermission(this,android.Manifest.permission.ACCESS_BACKGROUND_LOCATION) != PackageManager.PERMISSION_GRANTED
+                        ActivityCompat.checkSelfPermission(this,Manifest.permission.WRITE_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED )
+                {
+                    ActivityCompat.requestPermissions(GPSLocalServiceClient.this,new String[] {
+                            //Manifest.permission.ACCESS_FINE_LOCATION,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE
+
+                    }, STORAGE_PERMISSION_REQUEST_CODE);
+
+                }*/
+                if (
+                     ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                    )
+                {
+                    ActivityCompat.requestPermissions(GPSLocalServiceClient.this,new String[] {
+                            Manifest.permission.ACCESS_FINE_LOCATION
+
+
+                    }, FINE_LOCATION_PERMISSION_REQUEST_CODE);
+
+                }
+                /*else
+                {
+                    if (
+                        ContextCompat.checkSelfPermission(this,android.Manifest.permission.ACCESS_BACKGROUND_LOCATION) != PackageManager.PERMISSION_GRANTED
+                        )
+                    {
+                        requestBackgroundLocationPermition();
+
+                    }
+                }*/
 
             }
         void setupDrawerList()
@@ -593,14 +617,14 @@ public class GPSLocalServiceClient extends AppCompatActivity implements ResultsL
             {
                 super.onResume();
                 OsMoDroid.mFirebaseAnalytics.logEvent("APP_OPEN",null);
-                if(OsMoDroid.settings.getBoolean("usewake",false))
-                    {
+
+
                         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-                    }
-                else
-                    {
+
+
+
                         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-                    }
+
                 Log.d(this.getClass().getSimpleName(), "onResume() gpsclient");
 
 //		if (hash.equals("") && live) {
@@ -910,10 +934,10 @@ public class GPSLocalServiceClient extends AppCompatActivity implements ResultsL
                                                         APIcomParams params = new APIcomParams("https://api2.osmo.mobi/signup", "key=" + OsMoDroid.settings.getString("newkey", "") + "&email=" + email +
                                                                 //"&password=" + password+
                                                                 "&nick=" + nick+ "&gender=" + gender + "&invite="+invite, "SIGNUP");
-                                                        MyAsyncTask sendidtask = new Netutil.MyAsyncTask(GPSLocalServiceClient.this,GPSLocalServiceClient.this);
+                                                        MyAsyncTask sendidtask = new Netutil.MyAsyncTask(GPSLocalServiceClient.this,GPSLocalServiceClient.this,super.dialog);
                                                         sendidtask.execute(params);
                                                         Log.d(getClass().getSimpleName(), "signin start to execute");
-                                                        super.dialog.dismiss();
+                                                        //super.dialog.dismiss();
                                                         ;
                                                     }
                                                 //else
@@ -995,11 +1019,11 @@ public class GPSLocalServiceClient extends AppCompatActivity implements ResultsL
                                         if (!email.equals("")&&!password.equals(""))
                                             {
                                                 APIcomParams params = new APIcomParams("https://api2.osmo.mobi/signin", "key="+OsMoDroid.settings.getString("newkey","")+"&email="+email+"&password="+password,"SIGNIN");
-                                                MyAsyncTask sendidtask = new Netutil.MyAsyncTask(GPSLocalServiceClient.this,GPSLocalServiceClient.this);
+                                                MyAsyncTask sendidtask = new Netutil.MyAsyncTask(GPSLocalServiceClient.this,GPSLocalServiceClient.this,super.dialog);
                                                 sendidtask.execute(params);
                                                 Log.d(getClass().getSimpleName(), "signin start to execute");
 
-                                                super.dialog.dismiss();;
+                                                //super.dialog.dismiss();;
                                             }
                                         else
                                             {
@@ -1064,7 +1088,7 @@ public class GPSLocalServiceClient extends AppCompatActivity implements ResultsL
 //                hdop_gpx = Integer.parseInt(OsMoDroid.settings.getString("hdop_gpx", "30")
 //                        .equals("") ? "30" : OsMoDroid.settings.getString("hdop_gpx", "30"));
 //                usebuffer = OsMoDroid.settings.getBoolean("usebuffer", false);
-//                usewake = OsMoDroid.settings.getBoolean("usewake", false);
+
 //                notifyperiod = Integer.parseInt(OsMoDroid.settings.getString("notifyperiod",
 //                        "30000").equals("") ? "30000" : OsMoDroid.settings.getString(
 //                        "notifyperiod", "30000"));
@@ -1086,7 +1110,7 @@ public class GPSLocalServiceClient extends AppCompatActivity implements ResultsL
                 //Intent i = new Intent("OsMoDroid.local");
                 if (!mBound)
                     {
-                        bindService(i, conn, Context.BIND_AUTO_CREATE);
+                        bindService(i, conn, Context.BIND_AUTO_CREATE| Context.BIND_IMPORTANT);
                         Intent is = new Intent(this, LocalService.class);
                         startService(is);
                     }
@@ -1377,16 +1401,74 @@ public class GPSLocalServiceClient extends AppCompatActivity implements ResultsL
 
         @Override
         public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-            if (requestCode == PERMISSION_REQUEST_CODE && grantResults.length == 2) {
+            if (requestCode == BACKGROUND_LOCATION_PERMISSION_REQUEST_CODE && grantResults.length == 1) {
                 if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
                     Toast.makeText(this, R.string.requiregps, Toast.LENGTH_LONG).show();
                 }
-                if (grantResults[1] == PackageManager.PERMISSION_DENIED) {
-                    Toast t = Toast.makeText(this, R.string.requireSTORAGE, Toast.LENGTH_LONG);
-                    t.setGravity(Gravity.CENTER,0,0);
-                    t.show();
+            }
+            if (requestCode == FINE_LOCATION_PERMISSION_REQUEST_CODE && grantResults.length == 1) {
+                if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
+                    Toast.makeText(this, R.string.requiregps, Toast.LENGTH_LONG).show();
+                }
+                else
+                {
+            if (ContextCompat.checkSelfPermission(this,
+                    android.Manifest.permission.ACCESS_FINE_LOCATION)== PackageManager.PERMISSION_GRANTED
+                    //&&ContextCompat.checkSelfPermission(this,android.Manifest.permission.ACCESS_BACKGROUND_LOCATION) != PackageManager.PERMISSION_GRANTED
+            ) {
+               // requestBackgroundLocationPermition();
+
+            }
+                }
+                if (requestCode == STORAGE_PERMISSION_REQUEST_CODE && grantResults.length == 1) {
+                    if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
+                        Toast t = Toast.makeText(this, R.string.requireSTORAGE, Toast.LENGTH_LONG);
+                        t.setGravity(Gravity.CENTER, 0, 0);
+                        t.show();
+                    }
                 }
                 super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+            }
+        }
+
+        private void requestBackgroundLocationPermition() {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                LayoutInflater inflater = (LayoutInflater) this.getSystemService(LAYOUT_INFLATER_SERVICE);
+                LinearLayout layout = new LinearLayout(this);
+                LinearLayout.LayoutParams lparams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                layout.setLayoutParams(lparams);
+                layout.setOrientation(LinearLayout.VERTICAL);
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                TextView textView = new TextView(this);
+                textView.setText(R.string.needbackgroundlocationpermition);
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                params.gravity = Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL;
+                textView.setLayoutParams(params);
+                layout.addView(textView);
+                final Button okButton = new Button(this);
+                okButton.setText(R.string.yes);
+                okButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        ActivityCompat.requestPermissions(GPSLocalServiceClient.this, new String[]{
+                                Manifest.permission.ACCESS_BACKGROUND_LOCATION
+                        }, STORAGE_PERMISSION_REQUEST_CODE);
+                        dialog.dismiss();
+                    }
+                });
+                layout.addView(okButton);
+
+                builder.setView(layout);
+                builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                    @Override
+                    public void onCancel(DialogInterface dialog) {
+
+                    }
+                });
+
+
+                dialog = builder.create();
+                dialog.show();
             }
         }
 

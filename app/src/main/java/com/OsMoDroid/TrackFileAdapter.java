@@ -23,7 +23,7 @@ public class TrackFileAdapter extends ArrayAdapter<TrackFile> implements Results
         private TextView fileDate;
         private TextView fileSize;
         private ImageView imageView;
-        private File sdDir = android.os.Environment.getExternalStorageDirectory();
+        private File sdDir = OsMoDroid.osmodirFile;
         Context context;
 
         public TrackFileAdapter(Context context, int textViewResourceId, List<TrackFile> objects)
@@ -59,7 +59,7 @@ public class TrackFileAdapter extends ArrayAdapter<TrackFile> implements Results
                 }
                 if(trackFile.fromServer)
                 {
-                    fileName.setText(trackFile.fileName + '\n' + trackFile.distantion + "KM");
+                    fileName.setText(trackFile.fileName + '\n' + trackFile.distance + "KM");
                    // fileName.setBackgroundColor(Color.parseColor("#FF8C00"));
                 }
                 else

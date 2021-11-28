@@ -40,6 +40,8 @@ import java.io.StringWriter;
 
 import static android.text.InputType.TYPE_CLASS_TEXT;
 import static android.text.InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS;
+import static com.OsMoDroid.OsMoDroid.osmodirFile;
+
 public class ChannelsFragment extends Fragment
     {
         //private ListView lv1;
@@ -258,7 +260,6 @@ public class ChannelsFragment extends Fragment
                 super.onCreate(savedInstanceState);
                 setHasOptionsMenu(true);
                 //setRetainInstance(true);
-                super.onCreate(savedInstanceState);
             }
         @Override
         public void onAttach(Activity activity)
@@ -314,7 +315,7 @@ public class ChannelsFragment extends Fragment
                         Runnable runnable = new Runnable() {
                             public void run() {
                                 try {
-                                    File dir = new File(android.os.Environment.getExternalStorageDirectory()+"/OsMoDroid/channelsgpx/");
+                                    File dir = new File(osmodirFile+"/OsMoDroid/channelsgpx/");
                                     dir.mkdirs();
                                     //if (dir.isDirectory())
                                     {

@@ -40,7 +40,7 @@ import static java.lang.Math.abs;
 //import android.support.v4.os.AsyncTaskCompat;
 public class TrackStatFragment extends Fragment
     {
-        private File sdDir = android.os.Environment.getExternalStorageDirectory();
+        private File sdDir = OsMoDroid.osmodirFile;
         private LineChart mChart;
         LineData speedLineData;
         LineDataSet speedDataSet;
