@@ -23,9 +23,13 @@ public class BootComplitedReceiver extends BroadcastReceiver
                     {
                         if (settings.getBoolean("autostart", false))
                             {
+                                Intent is = new Intent(context, LocalService.class);
                                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-                                    Intent is = new Intent(context, LocalService.class);
                                     context.startService(is);
+                                }
+                                else
+                                {
+                                    context.startForegroundService(is);
                                 }
                             }
                     }

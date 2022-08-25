@@ -273,8 +273,8 @@
     <string name="use_gps">Use GPS</string>
     <string name="determine_location_by_cellular_networks_and_wifi_not_very_accurate_but_easier_on_battery_">Determine location by cellular networks and WiFi</string>
     <string name="use_mobile_networks">Use Mobile Networks</string>
-    <string name="launch_background_service_when_the_phone_starts_up_">Launch background service when the phone starts up.</string>
-    <string name="startup_at_boot">Startup at boot</string>
+    <string name="launch_background_service_when_the_phone_starts_up_">Keep background service permanent</string>
+    <string name="startup_at_boot">Permanent Mode</string>
     <string name="general">General</string>
     <string name="dark_theme">Dark Theme</string>
     <string name="gps_poll_period">GPS poll period</string>
@@ -381,5 +381,6 @@
     <string name="areyousure">Are you sure ?</string>
     <string name="udpmode">Trail mode</string>
     <string name="needbackgroundlocationpermition">The App use your location in background</string>
+    <string name="currtrack">Current track</string>
 
 </resources>

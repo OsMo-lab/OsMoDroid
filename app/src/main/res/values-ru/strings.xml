@@ -274,8 +274,8 @@
   <string name="use_gps">GPS</string>
   <string name="determine_location_by_cellular_networks_and_wifi_not_very_accurate_but_easier_on_battery_">Определять местоположение по сотовым сетям и WiFi</string>
   <string name="use_mobile_networks">Мобильные сети</string>
-  <string name="launch_background_service_when_the_phone_starts_up_">Запускать сервис при включении телефона</string>
-  <string name="startup_at_boot">Автозагрузка</string>
+  <string name="launch_background_service_when_the_phone_starts_up_">Постоянная работа сервиса</string>
+  <string name="startup_at_boot">Постоянный режим</string>
   <string name="general">Основное</string>
   <string name="dark_theme">Тёмная тема</string>
   <string name="gps_poll_period">Период опроса GPS</string>
@@ -381,4 +381,5 @@
   <string name="areyousure">Вы уверены?</string>
   <string name="udpmode">Походный режим</string>
     <string name="needbackgroundlocationpermition">Этому приложению требуется доступ к местоположению в фоновом режиме для передачи данных о вашем пеердвижении на сервер</string>
+    <string name="currtrack">Текущий трек</string>
 </resources>

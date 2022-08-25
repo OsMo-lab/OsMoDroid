@@ -98,7 +98,7 @@ public class MainFragment extends Fragment implements GPSLocalServiceClient.upd 
         TextView workModeTextView = (TextView) getView().findViewById(R.id.workmode);
         if (OsMoDroid.settings.getBoolean("udpmode", false)) {
             workModeTextView.setVisibility(View.VISIBLE);
-            workModeTextView.setText(getString(R.string.udpmode) + " " + getString(R.string.send_frequency) + " " + Integer.valueOf(OsMoDroid.settings.getString("period", "10")) + " " + getString(R.string.seconds));
+            workModeTextView.setText(getString(R.string.udpmode) + " " + getString(R.string.send_frequency) + " " + Integer.valueOf(OsMoDroid.settings.getInt("period", 10)) + " " + getString(R.string.seconds));
         } else {
             workModeTextView.setVisibility(View.GONE);
         }
@@ -240,6 +240,7 @@ public class MainFragment extends Fragment implements GPSLocalServiceClient.upd 
             OsMoDroid.editor.remove("newkey");
             OsMoDroid.editor.remove("p");
             OsMoDroid.editor.remove("u");
+            OsMoDroid.editor.remove("udptoken");
             OsMoDroid.editor.commit();
 
             LocalService.channelList.clear();

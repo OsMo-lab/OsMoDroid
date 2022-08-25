@@ -1,5 +1,8 @@
 package com.OsMoDroid;
 
+import static com.OsMoDroid.LocalService.myIM;
+import static com.OsMoDroid.LocalService.waypointsList;
+
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.graphics.Canvas;
@@ -684,7 +687,7 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
         @Override
         public boolean onLongPress(MotionEvent e, MapView mapView)
             {
-                if(LocalService.channelList.size()>0)
+                if(LocalService.channelList.size()>0 ||OsMoDroid.settings.getBoolean("started",false))
                     {
                         Projection proj = mapView.getProjection();
                         IGeoPoint p = proj.fromPixels((int) e.getX(), (int) e.getY());
@@ -711,6 +714,13 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
                         final Spinner groupSpinner = new Spinner(map.getContext());
                         layout.addView(groupSpinner);
                         List<Channel> activeChannelList = new ArrayList<Channel>();
+                        Channel currentTrackChannel = new Channel();
+                        currentTrackChannel.u = -1;
+                        currentTrackChannel.name = map.getContext().getString(R.string.currtrack);
+                        if(OsMoDroid.settings.getBoolean("started",false))
+                        {
+                            activeChannelList.add(currentTrackChannel);
+                        }
                         for(Channel ch: LocalService.channelList)
                             {
                                 if(ch.send)
@@ -720,6 +730,7 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
                             }
                         ArrayAdapter<Channel> dataAdapter = new ArrayAdapter<Channel>(map.getContext(), R.layout.spinneritem, activeChannelList);
                         groupSpinner.setAdapter(dataAdapter);
+                        if(LocalService.lastGroupSpinnerSelectedPosition<=activeChannelList.size())groupSpinner.setSelection(LocalService.lastGroupSpinnerSelectedPosition);
                         AlertDialog alertdialog1 = new AlertDialog.Builder(map.getContext()).setPositiveButton(R.string.yes, new DialogInterface.OnClickListener()
                             {
                                 @Override
@@ -751,12 +762,14 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
                                                             {
                                                                 jo.put("name", pointName.getText().toString());
                                                                 jo.put("group", ((Channel) groupSpinner.getSelectedItem()).u);
+                                                                waypointsList.add(jo);
                                                             }
                                                         catch (JSONException e1)
                                                             {
                                                                 e1.printStackTrace();
                                                             }
                                                         LocalService.myIM.sendToServer("GPA|" + jo.toString(), true);
+                                                        LocalService.lastGroupSpinnerSelectedPosition =  groupSpinner.getSelectedItemPosition();
                                                         super.dialog.dismiss();
                                                     }
                                                 else
@@ -766,6 +779,7 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
                                             }
                                         else
                                             {
+                                                OsMoDroid.saveObject(myIM.localService,  waypointsList, "waypointsList");
                                                 Toast.makeText(map.getContext(), R.string.CheckInternet, Toast.LENGTH_SHORT).show();
 
                                             }

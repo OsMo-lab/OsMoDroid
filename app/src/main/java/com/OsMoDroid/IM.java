@@ -82,6 +82,7 @@ import static com.OsMoDroid.LocalService.myManager;
 import static com.OsMoDroid.LocalService.privatemode;
 import static com.OsMoDroid.LocalService.transportid;
 import static com.OsMoDroid.OsMoDroid.context;
+import static com.OsMoDroid.OsMoDroid.osmodirFile;
 import static com.OsMoDroid.OsMoDroid.timeshift;
 
 //import android.R;
@@ -794,7 +795,7 @@ public class IM implements ResultsListener {
                     LocalService.gcmtodolist.clear();
                     localService.addlog("set connectcompleted=true");
                     LocalService.connectcompleted = true;
-                    localService.saveObject(LocalService.gcmtodolist, OsMoDroid.GCMTODOLIST);
+                    OsMoDroid.saveObject(localService, LocalService.gcmtodolist, OsMoDroid.GCMTODOLIST);
                 }
 
 
@@ -836,7 +837,7 @@ public class IM implements ResultsListener {
                         OsMoDroid.permanent = false;
                     }
                 }
-                if(OsMoDroid.settings.getString("udptoken","").equals("")) {
+                if(OsMoDroid.settings.getString("udptoken","").equals("")||OsMoDroid.settings.getString("udptoken","").equals("null")) {
                     sendToServer("TOKEN", false);
                 }
                 localService.refresh();
@@ -875,7 +876,7 @@ public class IM implements ResultsListener {
 //                                {
 //                                    if (tf.u == Integer.parseInt(jsonObject.optString("u")))
 //                                    {
-                        TrackFile tr = new TrackFile(jsonObject.optString("name"), jsonObject.optLong("start")*1000, jsonObject.optInt("size"));
+                        TrackFile tr = new TrackFile(jsonObject.optString("name"), jsonObject.optLong("start")*1000, jsonObject.optInt("file_size"));
                         tr.u = jsonObject.getInt("u");
                         tr.name = jsonObject.optString("name");
                         tr.distance=jsonObject.optString("distance");
@@ -978,7 +979,7 @@ public class IM implements ResultsListener {
             if (log) {
                 Log.d(getClass().getSimpleName(), "write group list to file");
             }
-            localService.saveObject(LocalService.channelList, OsMoDroid.CHANNELLIST);
+            OsMoDroid.saveObject(localService,LocalService.channelList, OsMoDroid.CHANNELLIST);
             //sendToServer("GROUP", false);
         }
         if (command.equals("GD") && !jo.has("error")) {
@@ -994,7 +995,7 @@ public class IM implements ResultsListener {
             if (log) {
                 Log.d(getClass().getSimpleName(), "write group list to file");
             }
-            localService.saveObject(LocalService.channelList, OsMoDroid.CHANNELLIST);
+            OsMoDroid.saveObject(localService,LocalService.channelList, OsMoDroid.CHANNELLIST);
         }
         if (command.equals("GC")) {
             for (int k = 0; k < ja.length(); k++) {
@@ -1014,7 +1015,7 @@ public class IM implements ResultsListener {
             //02-08 19:50:40.608 1149-1149/com.OsMoDroid D/com.OsMoDroid.LocalService$6: recive GRPA|{"u":7515,"type":1,"group_id":"QUZM_6745","name":"tytstysy","description":"","policy":"","url":"https:\/\/osmo.mobi\/g\/reyxtidvyzysdhmn","UC":true}
             if (jo.has("UC")) {
 
-                localService.saveObject(LocalService.channelList, OsMoDroid.CHANNELLIST);
+                OsMoDroid.saveObject(localService,LocalService.channelList, OsMoDroid.CHANNELLIST);
                 localService.refresh();
                 stop();
                 start();
@@ -1343,7 +1344,7 @@ public class IM implements ResultsListener {
                 LocalService.gcmtodolist.clear();
                 localService.addlog("set connectcompleted=true");
                 LocalService.connectcompleted = true;
-                localService.saveObject(LocalService.gcmtodolist, OsMoDroid.GCMTODOLIST);
+                OsMoDroid.saveObject(localService,LocalService.gcmtodolist, OsMoDroid.GCMTODOLIST);
                 localService.stopSelf();
                 System.exit(0);
             }
@@ -1593,7 +1594,7 @@ public class IM implements ResultsListener {
                             {
                                 Log.d(getClass().getSimpleName(), "write group list to file");
                             }
-                        localService.saveObject(LocalService.channelList, OsMoDroid.CHANNELLIST);
+                        OsMoDroid.saveObject(localService,LocalService.channelList, OsMoDroid.CHANNELLIST);
 //                        for (Channel ch : LocalService.channelList)
 //                            {
 //                                if (ch.send)
@@ -1620,7 +1621,7 @@ public class IM implements ResultsListener {
                         LocalService.gcmtodolist.clear();
                         localService.addlog("set connectcompleted=true");
                         LocalService.connectcompleted =true;
-                        localService.saveObject(LocalService.gcmtodolist, OsMoDroid.GCMTODOLIST);
+                        OsMoDroid.saveObject(localService,LocalService.gcmtodolist, OsMoDroid.GCMTODOLIST);
                         localService.osmAndAddAllChannels();
                         localService.bitmapmapview();
                     }
@@ -1648,7 +1649,7 @@ public class IM implements ResultsListener {
                                     {
                                         Log.d(getClass().getSimpleName(), "write group list to file");
                                     }
-                                localService.saveObject(LocalService.channelList, OsMoDroid.CHANNELLIST);
+                                OsMoDroid.saveObject(localService,LocalService.channelList, OsMoDroid.CHANNELLIST);
                             }
                     }
                 if (command.equals("LINK"))
@@ -2317,7 +2318,7 @@ public class IM implements ResultsListener {
                             {
                                 Log.d(getClass().getSimpleName(), "write group list to file");
                             }
-                        localService.saveObject(LocalService.channelList, OsMoDroid.CHANNELLIST);
+                        OsMoDroid.saveObject(localService,LocalService.channelList, OsMoDroid.CHANNELLIST);
                         if(gcm)
                             {
                                 sendToServer("GPI:" + param, false);

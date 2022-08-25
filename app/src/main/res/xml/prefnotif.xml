@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+
+
+    android:title="@string/notification">
+                <PreferenceScreen android:title="@string/notification" >
+                            <CheckBoxPreference
+                                android:key="vibrate"
+                                android:title="@string/vibrate_on_signal_loss"
+                                android:summary="@string/vibrate_when_internet_or_gps_signal_is_lost"
+                                android:defaultValue="false"/>
+                            <EditTextPreference
+                                android:digits="0123456789"
+                                android:inputType="number"
+                                android:key="vibratetime"
+                                android:numeric="integer"
+                                android:summary="@string/milliseconds"
+                                android:title="@string/vibration_time_interval"
+                                android:defaultValue="500"/>
+
+                            <EditTextPreference
+                                android:digits="0123456789"
+                                android:inputType="number"
+                                android:key="notifyperiod"
+                                android:numeric="integer"
+                                android:summary="@string/milliseconds"
+                                android:title="@string/period_of_gps_unavailability"
+                                android:defaultValue="60000"/>
+                            <CheckBoxPreference
+                                android:key="sendsound"
+                                android:title="@string/sound_when_sending"
+                                android:summary ="@string/play_a_sound_when_sending_each_location_update"
+                                android:defaultValue="false"/>
+                            
+                            <CheckBoxPreference
+                                android:key="silentnotify"
+                                android:title="@string/disable_notification"
+                                android:summary="@string/do_not_use_android_notifications"
+                                android:defaultValue="false"/>
+                        <CheckBoxPreference
+                                android:key="statenotify"
+                                android:title="@string/notify_with_monitoring"
+                                android:defaultValue="false"
+                                android:summary="@string/status_notification_for_monitoring_your_devices"/>
+                        <CheckBoxPreference
+                            android:key="chatnotify"
+                            android:title="@string/usechatnotification"
+                            android:summary="@string/usechatsummary"
+                            android:defaultValue="true"/>
+
+                            <CheckBoxPreference
+                                android:summary="@string/alarm_when_device_acceleration_exceeds_a_threshold"
+                                android:key="usealarm"
+                                android:title="@string/acceleration_alarm"
+                                android:defaultValue="false"/>
+                            <EditTextPreference
+                                android:title="@string/sensitivity"
+                                android:summary="@string/acceleration_to_activate_the_alarm"
+                                android:key="sensivity"
+                                android:defaultValue="2"/>
+                            <CheckBoxPreference
+                            	android:key="usetts"
+                            	android:summary="@string/enable_speech_options"
+                            	android:title="@string/use_text_to_speech_tts_"
+                            	android:defaultValue="false" />
+                            <PreferenceCategory android:dependency="usetts" android:title="@string/tts_settings">
+                                <CheckBoxPreference android:title="@string/speak_current_speed" android:key="ttsspeed"/>
+                                <CheckBoxPreference android:title="@string/speak_average_speed" android:key="ttsavgspeed"/>
+                                <CheckBoxPreference android:title="@string/speak_remote_commands" android:key="ttsremote"/>
+                                <CheckBoxPreference
+                                    android:key="playsound"
+                                    android:title="@string/sound_on_signal_loss"
+                                    android:summary="@string/play_a_sound_when_internet_or_gps_signal_is_lost"
+                                    android:defaultValue="false"/>
+                            </PreferenceCategory>
+                    </PreferenceScreen>
+
+
+
+        <CheckBoxPreference
+            android:key="usenetwork"
+            android:summary="@string/determine_location_by_cellular_networks_and_wifi_not_very_accurate_but_easier_on_battery_"
+            android:title="@string/use_mobile_networks"
+            android:defaultValue="true"/>
+        <CheckBoxPreference
+            android:key="autostart"
+            android:summary="@string/launch_background_service_when_the_phone_starts_up_"
+            android:title="@string/startup_at_boot"
+            android:defaultValue="false"/>
+        <CheckBoxPreference
+            android:key="autostartsession"
+            android:summary="@string/autostartses"
+            android:title="@string/startsesonrun"
+            android:defaultValue="false"/>
+        <CheckBoxPreference android:key="subscribebackground" android:title="@string/update_map_in_background" android:defaultValue="false"/>
+        <!--<CheckBoxPreference android:key="tcpnodelay" android:title="@string/tcp_no_delay" android:defaultValue="false"/>-->
+        <!--<CheckBoxPreference android:key="tls" android:title="Use TLS Socket" android:defaultValue="false"/>-->
+        
+
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="osmand"
+        android:title="@string/osmand"/>
+<!--    <PreferenceCategory-->
+<!--        android:key="smsprefcategory"-->
+<!--        android:title="@string/smsexchange">-->
+
+
+<!--    <CheckBoxPreference-->
+<!--        android:defaultValue="false"-->
+<!--        android:key="sendsms"-->
+<!--        android:title="@string/sendsms"/>-->
+<!--    <EditTextPreference-->
+<!--        android:dependency="sendsms"-->
+<!--        android:defaultValue="Default value"-->
+<!--        android:key="sendsmsnumber"-->
+<!--        android:selectAllOnFocus="true"-->
+<!--        android:singleLine="true"-->
+<!--        android:title="@string/sendsmsnumber"/>-->
+<!--    <EditTextPreference-->
+<!--        android:dependency="sendsms"-->
+<!--        android:defaultValue="300"-->
+<!--        android:key="smsperiod"-->
+<!--        android:selectAllOnFocus="true"-->
+<!--        android:singleLine="true"-->
+<!--        android:digits="0123456789"-->
+<!--        android:inputType="number"-->
+<!--        android:numeric="integer"-->
+<!--        android:title="@string/sendsmsperiod"/>-->
+<!--    <CheckBoxPreference-->
+<!--        android:defaultValue="false"-->
+<!--        android:key="getsms"-->
+<!--        android:title="@string/getsms"/>-->
+<!--    <EditTextPreference-->
+<!--        android:dependency="getsms"-->
+<!--        android:defaultValue="Default value"-->
+<!--        android:key="getsmsnumber"-->
+<!--        android:selectAllOnFocus="true"-->
+<!--        android:singleLine="true"-->
+<!--        android:title="@string/getsmsnumber"/>-->
+<!--    </PreferenceCategory>-->
+
+</PreferenceScreen>

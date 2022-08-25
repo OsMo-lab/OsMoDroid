@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
 
 
     android:title="@string/settings">
@@ -20,17 +20,19 @@
             android:key="udpmode"
             android:title="@string/udpmode" />
         <SeekBarPreference
-            defaultValue="1"
-            seekBarIncrement="1"
-            showSeekBarValue="true"
+
+            android:dependency="udpmode"
             android:key="period"
             android:max="600"
             android:min="1"
-
             android:summary="@string/seconds_how_often_to_send_location"
-            android:id="@+id/preference_delay_seek_bar"
             android:title="@string/send_frequency"
-            android:visibility="visible" />
+            android:visibility="visible"
+
+            defaultValue="1"
+
+            seekBarIncrement="1"
+            showSeekBarValue="true" />
     </PreferenceCategory>
     
 

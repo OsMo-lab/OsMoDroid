@@ -1,5 +1,7 @@
 package com.OsMoDroid;
 
+import static com.OsMoDroid.LocalService.addlog;
+
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -16,6 +18,10 @@ import net.gotev.uploadservice.UploadService;
 import org.osmdroid.config.Configuration;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.StreamCorruptedException;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.SimpleDateFormat;
@@ -144,4 +150,38 @@ public class OsMoDroid extends Application
 
 
             }
+        static void saveObject(Context ctx, Object obj, String filename)
+        {
+            try
+            {
+                FileOutputStream fos = ctx.openFileOutput(filename, Context.MODE_PRIVATE);
+                ObjectOutputStream output = new ObjectOutputStream(fos);
+                output.writeObject(obj);
+                output.flush();
+                output.close();
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        }
+        static Object loadObject(Context ctx, String filename, Class type)
+        {
+            try
+            {
+                ObjectInputStream input = new ObjectInputStream(ctx.openFileInput(filename));
+                return type.cast(input.readObject());
+            }
+            catch (StreamCorruptedException e)
+            {
+                e.printStackTrace();
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+                addlog("object not loaded from file - excepion");
+
+            }
+            return null;
+        }
     }

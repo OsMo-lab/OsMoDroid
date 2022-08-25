@@ -274,7 +274,7 @@ public class TracFileListFragment extends Fragment implements ResultsListener
                         is.close();
                         os.close();
 
-                    } catch (IOException e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                         writeException(e);
                         Toast.makeText(getActivity(), R.string.error, Toast.LENGTH_LONG).show();

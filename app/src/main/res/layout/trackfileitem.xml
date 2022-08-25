@@ -43,7 +43,7 @@
         android:layout_height="400dp"
 
 
-        android:layout_below="@+id/fileDate"
+        android:layout_below="@+id/fileSize"
 
         android:layout_alignParentRight="true"
 

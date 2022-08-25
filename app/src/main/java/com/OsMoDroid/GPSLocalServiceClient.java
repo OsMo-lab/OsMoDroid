@@ -303,6 +303,9 @@ public class GPSLocalServiceClient extends AppCompatActivity implements ResultsL
                 super.onSaveInstanceState(outState);
             }
         AlertDialog dialog;
+
+
+
         @Override
         public void onCreate(Bundle savedInstanceState)
             {
@@ -324,6 +327,12 @@ public class GPSLocalServiceClient extends AppCompatActivity implements ResultsL
                 //actionBar.setHomeAsUpIndicator(R.drawable.eyeo);
                 //actionBar.setIcon(R.drawable.eyeo);
                 OsMoDroid.activity = this;
+                try {
+                    int i = OsMoDroid.settings.getInt("period",10);
+                } catch (ClassCastException e) {
+                    OsMoDroid.editor.putInt("period",10).commit();
+
+                }
                 PreferenceManager.setDefaultValues(this, R.xml.pref, true);
                 //ReadPref();
 

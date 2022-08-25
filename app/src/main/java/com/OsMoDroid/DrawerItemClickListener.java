@@ -169,9 +169,7 @@ public class DrawerItemClickListener implements OnItemClickListener
                     }
                 else if (name.equals(OsMoDroid.context.getString(R.string.settings)))
                     {
-                        Intent intent = new Intent();
-                        intent.setClass(activity, PrefActivity.class);
-                        activity.startActivityForResult(intent, 0);
+                        ft.replace(R.id.fragment_container, new PrefFragment());
                     }
                 else if (name.equals(OsMoDroid.context.getString(R.string.exit)))
                     {
