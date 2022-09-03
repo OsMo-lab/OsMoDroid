@@ -1,5 +1,7 @@
 package com.OsMoDroid;
 
+import static android.app.PendingIntent.FLAG_MUTABLE;
+
 import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.PendingIntent;
@@ -194,8 +196,7 @@ public class IM implements ResultsListener {
                 lastsendnet = SystemClock.uptimeMillis();
                 Intent is = new Intent(context, LocalService.class);
                 is.putExtra("GCM", "NEEDSENDNET");
-                context.startService(is);
-
+                localService.handleStart(is,0);
                 LocalService.addlog("Network broadcast receive - send NEEDSENDNET");
 
 
@@ -249,9 +250,9 @@ public class IM implements ResultsListener {
         localService = service;
         parent = service;
         manager = (AlarmManager) (parent.getSystemService(Context.ALARM_SERVICE));
-        reconnectPIntent = PendingIntent.getBroadcast(parent, 0, new Intent(RECONNECT_INTENT), 0);
-        keepAlivePIntent = PendingIntent.getBroadcast(parent, 1, new Intent(KEEPALIVE_INTENT), 0);
-        getTokenTimeoutPIntent = PendingIntent.getBroadcast(parent, 2, new Intent(GET_TOKEN_TIMEOUT_INTENT), 0);
+        reconnectPIntent = PendingIntent.getBroadcast(parent, 0, new Intent(RECONNECT_INTENT), FLAG_MUTABLE);
+        keepAlivePIntent = PendingIntent.getBroadcast(parent, 1, new Intent(KEEPALIVE_INTENT), FLAG_MUTABLE);
+        getTokenTimeoutPIntent = PendingIntent.getBroadcast(parent, 2, new Intent(GET_TOKEN_TIMEOUT_INTENT), FLAG_MUTABLE);
         //onlineTimeoutPIntent = PendingIntent.getBroadcast(parent, 3, new Intent(ONLINE_TIMEOUT_INTENT), 0);
         SERVER_IP = server;
         SERVERPORT = port;

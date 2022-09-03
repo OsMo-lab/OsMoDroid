@@ -107,7 +107,7 @@ public class TracFileListFragment extends Fragment implements ResultsListener
                 if (item.getItemId() == 1)
                     {
                         File file = new File(sdDir, "OsMoDroid/" + LocalService.trackFileList.get((int) acmi.id).fileName);
-                        PendingIntent contentIntent = PendingIntent.getActivity(getActivity(), 0, new Intent(), 0);
+                        PendingIntent contentIntent = PendingIntent.getActivity(getActivity(), 0, new Intent(), PendingIntent.FLAG_MUTABLE);
                         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(
                                 LocalService.serContext.getApplicationContext(),"default")
                                 .setWhen(System.currentTimeMillis())

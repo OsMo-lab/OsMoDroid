@@ -485,7 +485,7 @@ public class LocalService extends Service implements SharedPreferences.OnSharedP
                             Intent activ = new Intent(serContext, GPSLocalServiceClient.class);
                             activ.setAction("notif");
                             activ.putExtras(a);
-                            PendingIntent contentIntent = PendingIntent.getActivity(serContext, OsMoDroid.notifyidApp(), activ, 0);
+                            PendingIntent contentIntent = PendingIntent.getActivity(serContext, OsMoDroid.notifyidApp(), activ, PendingIntent.FLAG_MUTABLE);
                             Long when = System.currentTimeMillis();
                             numberofnotif++;
                             NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(
@@ -857,7 +857,7 @@ public class LocalService extends Service implements SharedPreferences.OnSharedP
                 String alarm = Context.ALARM_SERVICE;
                 am = (AlarmManager) getSystemService(alarm);
                 Intent intent = new Intent("CHECK_GPS");
-                pi = PendingIntent.getBroadcast(this, 0, intent, 0);
+                pi = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_MUTABLE);
                 batteryReciever = new BroadcastReceiver()
                 {
                     public void onReceive(Context context, Intent intent)
@@ -1701,7 +1701,7 @@ public class LocalService extends Service implements SharedPreferences.OnSharedP
                 Intent notificationIntent = new Intent(this, GPSLocalServiceClient.class);
                 notificationIntent.setAction(Intent.ACTION_MAIN);
                 notificationIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-                osmodroidLaunchIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+                osmodroidLaunchIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_MUTABLE);
                 foregroundnotificationBuilder = new NotificationCompat.Builder(this,"default");
                 foregroundnotificationBuilder.setWhen(System.currentTimeMillis());
                 foregroundnotificationBuilder.setContentText(message);
@@ -1810,7 +1810,7 @@ public class LocalService extends Service implements SharedPreferences.OnSharedP
                 Intent notificationIntent = new Intent(this, GPSLocalServiceClient.class);
                 notificationIntent.setAction(Intent.ACTION_MAIN);
                 notificationIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-                osmodroidLaunchIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+                osmodroidLaunchIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_MUTABLE);
                 foregroundnotificationBuilder = new NotificationCompat.Builder(this,"default");
                 foregroundnotificationBuilder.setWhen(System.currentTimeMillis());
                 foregroundnotificationBuilder.setContentText(tickerText);
@@ -2194,7 +2194,7 @@ public class LocalService extends Service implements SharedPreferences.OnSharedP
             }
         public void upload(File file)
             {
-                PendingIntent contentIntent = PendingIntent.getActivity(this, 0, new Intent(), 0);
+                PendingIntent contentIntent = PendingIntent.getActivity(this, 0, new Intent(), PendingIntent.FLAG_MUTABLE);
                 NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(
                         serContext.getApplicationContext(),"default")
                         .setWhen(System.currentTimeMillis())
@@ -3058,7 +3058,7 @@ public class LocalService extends Service implements SharedPreferences.OnSharedP
                                                 Intent notificationIntent = new Intent(LocalService.this, GPSLocalServiceClient.class);
                                                 notificationIntent.setAction("mapfromwidget");
                                                 //notificationIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-                                                osmodroidLaunchIntent = PendingIntent.getActivity(LocalService.this, 0, notificationIntent, 0);
+                                                osmodroidLaunchIntent = PendingIntent.getActivity(LocalService.this, 0, notificationIntent, PendingIntent.FLAG_MUTABLE);
                                                 remoteViews.setOnClickPendingIntent(R.id.mapimageView, osmodroidLaunchIntent);
                                                 remoteViews.setImageViewBitmap(R.id.mapimageView, bm);
 
@@ -3099,7 +3099,7 @@ public class LocalService extends Service implements SharedPreferences.OnSharedP
                         notificationIntent.putExtra("mode", mode);
                         //notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP	| Intent.FLAG_ACTIVITY_SINGLE_TOP);
                         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                        PendingIntent contentIntent = PendingIntent.getActivity(this, OsMoDroid.notifyidApp(), notificationIntent, 0);
+                        PendingIntent contentIntent = PendingIntent.getActivity(this, OsMoDroid.notifyidApp(), notificationIntent, PendingIntent.FLAG_MUTABLE);
                         NotificationCompat.Builder notificationBuilder = null;
                         if (OsMoDroid.settings.getBoolean("silentnotify", false))
                             {
@@ -3297,7 +3297,7 @@ public class LocalService extends Service implements SharedPreferences.OnSharedP
                     Intent notificationIntent = new Intent(this, GPSLocalServiceClient.class);
                     notificationIntent.setAction(Intent.ACTION_MAIN);
                     notificationIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-                    osmodroidLaunchIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+                    osmodroidLaunchIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_MUTABLE);
                     remoteViews.setOnClickPendingIntent(R.id.textViewWidget, osmodroidLaunchIntent);
 
                     appWidgetManager.updateAppWidget(widgetId, remoteViews);
@@ -3583,7 +3583,7 @@ public class LocalService extends Service implements SharedPreferences.OnSharedP
             Intent notificationIntent = new Intent(this, GPSLocalServiceClient.class);
             notificationIntent.setAction(Intent.ACTION_MAIN);
             notificationIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-            osmodroidLaunchIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+            osmodroidLaunchIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_MUTABLE);
             foregroundnotificationBuilder = new NotificationCompat.Builder(this,"default");
             foregroundnotificationBuilder.setWhen(System.currentTimeMillis());
             foregroundnotificationBuilder.setContentText(tickerText);

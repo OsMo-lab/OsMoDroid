@@ -44,7 +44,7 @@ public class OsMoWidget extends AppWidgetProvider
                         remoteViews.setImageViewResource(R.id.imageButtonWidget, R.drawable.off);
                         is.putExtra("ACTION", "START");
                         is.setClass(context,LocalService.class);
-                        PendingIntent stop = PendingIntent.getService(context.getApplicationContext(), 0, is, 0);
+                        PendingIntent stop = PendingIntent.getService(context.getApplicationContext(), 0, is, PendingIntent.FLAG_MUTABLE);
                         Log.d(getClass().getSimpleName(), "on update for pinetn="+stop.toString());
                         remoteViews.setOnClickPendingIntent(R.id.imageButtonWidget, stop);
                         appWidgetManager.updateAppWidget(new ComponentName(context, OsMoWidget.class), remoteViews);

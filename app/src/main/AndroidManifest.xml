@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     android:installLocation="auto"
-    android:versionCode="673"
+    android:versionCode="674"
     android:versionName="2.7.0">
 
 
@@ -60,6 +60,7 @@
 <!--    <uses-permission android:name="android.permission.CAMERA" />-->
     <uses-permission android:name="android.permission.FLASHLIGHT" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
 
     <uses-feature
         android:name="android.hardware.telephony"
@@ -82,7 +83,8 @@
         <activity
             android:name=".GPSLocalServiceClient"
             android:label="@string/app_name"
-            android:launchMode="singleTask">
+            android:launchMode="singleTask"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -113,7 +115,7 @@
         <service android:name=".LocalService"
             android:enabled="true"
             android:foregroundServiceType="location"
-            >
+            android:exported="true">
 
             <intent-filter>
                 <action android:name="OsMoDroid.local" />
@@ -128,20 +130,23 @@
             android:name=".AboutActivity"
             android:theme="@android:style/Theme.Dialog" />
 
-        <receiver android:name=".BootComplitedReceiver">
+        <receiver android:name=".BootComplitedReceiver"
+            android:exported="false">
             <intent-filter android:priority="500">
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
             </intent-filter>
         </receiver>
-        <receiver android:name=".PowerConnectionReceiver">
+        <receiver android:name=".PowerConnectionReceiver"
+            android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.ACTION_POWER_CONNECTED" />
                 <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED" />
             </intent-filter>
         </receiver>
 
-        <activity android:name=".AuthActivity">
+        <activity android:name=".AuthActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -152,7 +157,8 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name=".OsMoWidget">
+        <receiver android:name=".OsMoWidget"
+            android:exported="false">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -162,7 +168,8 @@
                 android:resource="@xml/os_mo_widget_info" />
         </receiver>
 
-        <service android:name=".MyFcmListenerService">
+        <service android:name=".MyFcmListenerService"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
@@ -178,7 +185,8 @@
 
             android:theme="@style/Theme.AppCompat.Dialog" />
 
-        <receiver android:name=".DoubleOsmoWidget">
+        <receiver android:name=".DoubleOsmoWidget"
+            android:exported="false">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -205,7 +213,8 @@
         <!-- </intent-filter> -->
         <!-- </activity> -->
 
-        <receiver android:name=".MapWidget">
+        <receiver android:name=".MapWidget"
+            android:exported="false">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -221,7 +230,8 @@
         <!-- </intent-filter> -->
         <!-- </activity> -->
 
-        <receiver android:name=".SMSReceiver">
+        <receiver android:name=".SMSReceiver"
+            android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.DATA_SMS_RECEIVED" />
 
@@ -231,7 +241,8 @@
                     android:scheme="sms" />
             </intent-filter>
         </receiver>
-        <receiver android:name=".SOSWidget">
+        <receiver android:name=".SOSWidget"
+            android:exported="false">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>

@@ -1,4 +1,6 @@
 package com.OsMoDroid;
+import static android.app.PendingIntent.FLAG_MUTABLE;
+
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
@@ -37,7 +39,7 @@ public class DoubleOsmoWidget extends AppWidgetProvider
                         remoteViews.setImageViewResource(R.id.imageButtonWidget, R.drawable.off);
                         is.putExtra("ACTION", "START");
                         is.setClass(context,LocalService.class);
-                        PendingIntent stop = PendingIntent.getService(context.getApplicationContext(), 0, is, 0);
+                        PendingIntent stop = PendingIntent.getService(context.getApplicationContext(), 0, is, FLAG_MUTABLE);
                         Log.d(getClass().getSimpleName(), "on update for pinetn="+stop.toString());
                         remoteViews.setOnClickPendingIntent(R.id.imageButtonWidget, stop);
                         appWidgetManager.updateAppWidget(new ComponentName(context, DoubleOsmoWidget.class), remoteViews);

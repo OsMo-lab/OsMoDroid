@@ -26,7 +26,7 @@ public class SOSWidget extends AppWidgetProvider {
 
         is.putExtra("GCM", "WIDGETSOS");
         is.setClass(context,LocalService.class);
-        PendingIntent sospintent = PendingIntent.getService(context.getApplicationContext(), 101, is, 0);
+        PendingIntent sospintent = PendingIntent.getService(context.getApplicationContext(), 101, is, PendingIntent.FLAG_MUTABLE);
         if(LocalService.sos)
         {
             views.setInt(R.id.soswidgetbutton, "setBackgroundColor", Color.RED);
