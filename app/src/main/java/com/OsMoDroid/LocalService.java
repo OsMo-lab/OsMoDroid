@@ -1713,7 +1713,7 @@ public class LocalService extends Service implements SharedPreferences.OnSharedP
                 Intent is = new Intent(this, ConfirmDialog.class);
                 //is.putExtra("ACTION", "STOP");
 
-                PendingIntent stop = PendingIntent.getActivity(this, 0, is, PendingIntent.FLAG_UPDATE_CURRENT);
+                PendingIntent stop = PendingIntent.getActivity(this, 0, is, PendingIntent.FLAG_MUTABLE|PendingIntent.FLAG_UPDATE_CURRENT);
                 foregroundnotificationBuilder.addAction(android.R.drawable.ic_delete, getString(R.string.stop_monitoring), stop);
                 Notification notification = foregroundnotificationBuilder.build();
                 startForeground(OSMODROID_ID, notification);
@@ -1822,7 +1822,7 @@ public class LocalService extends Service implements SharedPreferences.OnSharedP
                 Intent is = new Intent(this, ConfirmDialog.class);
                 //is.putExtra("ACTION", "STOP");
 
-                PendingIntent stop = PendingIntent.getActivity(this, 0, is, PendingIntent.FLAG_UPDATE_CURRENT);
+                PendingIntent stop = PendingIntent.getActivity(this, 0, is, PendingIntent.FLAG_MUTABLE|PendingIntent.FLAG_UPDATE_CURRENT);
                 foregroundnotificationBuilder.addAction(android.R.drawable.ic_delete, getString(R.string.stop_monitoring), stop);
                 Notification notification = foregroundnotificationBuilder.build();
                 //notification = new Notification(icon, tickerText, when);
@@ -1983,9 +1983,17 @@ public class LocalService extends Service implements SharedPreferences.OnSharedP
                             {
                                 try {
                                     myManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, pollperiod, 0, locationListener);
-                                    myManager.addGpsStatusListener(LocalService.this);
+
                                 } catch (SecurityException e) {
                                     e.printStackTrace();
+                                }
+                                try {
+
+                                        myManager.addGpsStatusListener(LocalService.this);
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        e.printStackTrace();
                                 }
                             }
                         else
@@ -3268,7 +3276,7 @@ public class LocalService extends Service implements SharedPreferences.OnSharedP
                             is1.putExtra("ACTION", "START");
                             Log.d(getClass().getSimpleName(), "on updatewidgets set action=START state=" + state);
                         }
-                    PendingIntent stop1 = PendingIntent.getService(this, 0, is1, PendingIntent.FLAG_UPDATE_CURRENT);
+                    PendingIntent stop1 = PendingIntent.getService(this, 0, is1, PendingIntent.FLAG_MUTABLE|PendingIntent.FLAG_UPDATE_CURRENT);
                     remoteViews.setOnClickPendingIntent(R.id.imageButtonWidget, stop1);
                     appWidgetManager.updateAppWidget(widgetId, remoteViews);
 
@@ -3290,7 +3298,7 @@ public class LocalService extends Service implements SharedPreferences.OnSharedP
                             is2.putExtra("ACTION", "START");
                             Log.d(getClass().getSimpleName(), "on updatewidgets set action=START state=" + state);
                         }
-                    PendingIntent stop2 = PendingIntent.getService(this, 0, is2, PendingIntent.FLAG_UPDATE_CURRENT);
+                    PendingIntent stop2 = PendingIntent.getService(this, 0, is2, PendingIntent.FLAG_MUTABLE|PendingIntent.FLAG_UPDATE_CURRENT);
                     remoteViews.setOnClickPendingIntent(R.id.imageButtonWidget, stop2);
                     remoteViews.setTextViewText(R.id.textViewWidget, OsMoDroid.df2.format(workdistance / 1000)+'\n'+OsMoDroid.df0.format(avgspeed*3600)+'\n'+formatInterval(timeperiod));
 
@@ -3313,7 +3321,7 @@ public class LocalService extends Service implements SharedPreferences.OnSharedP
                         is3.putExtra("GCM", "WIDGETSOS");
 
 
-                    PendingIntent stop3 = PendingIntent.getService(this, 101, is3, PendingIntent.FLAG_UPDATE_CURRENT);
+                    PendingIntent stop3 = PendingIntent.getService(this, 101, is3, PendingIntent.FLAG_MUTABLE|PendingIntent.FLAG_UPDATE_CURRENT);
                     remoteViews.setOnClickPendingIntent(R.id.soswidgetbutton, stop3);
                     Log.d(getClass().getSimpleName(), "on updatewidgets SOS state=" + sos);
                     if(LocalService.sos)

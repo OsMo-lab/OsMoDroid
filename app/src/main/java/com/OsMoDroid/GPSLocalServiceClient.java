@@ -3,6 +3,7 @@ package com.OsMoDroid;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -24,6 +25,7 @@ import android.os.IBinder;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.preference.PreferenceManager;
+import android.provider.Settings;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.text.method.PasswordTransformationMethod;
@@ -467,6 +469,7 @@ public class GPSLocalServiceClient extends AppCompatActivity implements ResultsL
                     }, FINE_LOCATION_PERMISSION_REQUEST_CODE);
 
                 }
+
                 /*else
                 {
                     if (
@@ -477,8 +480,39 @@ public class GPSLocalServiceClient extends AppCompatActivity implements ResultsL
 
                     }
                 }*/
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P)
+                {
+                    PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
+                    if (!pm.isIgnoringBatteryOptimizations(BuildConfig.APPLICATION_ID))
+
+                    {
+                        // Show some message to the user that app won't work in background and needs to change settings
+                        //... (implement dialog)
+                        // When user clicks 'Ok' or 'Go to settings', then:
+                        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                        builder.setMessage(R.string.reliabletext)
+                                .setPositiveButton(R.string.start, new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        openBatterySettings();
+                                    }
+                                })
+                                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        // User cancelled the dialog
+                                    }
+                                });
+                        builder.show();
+                    }
+                }
+
 
             }
+        private void openBatterySettings()
+        {
+            Intent intent = new Intent();
+            intent.setAction(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS);
+            startActivity(intent);
+        }
         void setupDrawerList()
             {
                 mDrawerItems.clear();

@@ -382,5 +382,6 @@
     <string name="udpmode">Trail mode</string>
     <string name="needbackgroundlocationpermition">The App use your location in background</string>
     <string name="currtrack">Current track</string>
+    <string name="reliabletext">\"For reliable operation of the application, it is recommended to disable battery optimization in the Android system settings. Go to settings ? \"</string>
 
 </resources>

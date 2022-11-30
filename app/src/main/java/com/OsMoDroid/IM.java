@@ -566,7 +566,7 @@ public class IM implements ResultsListener {
                 fromDevice = jo.optString("name");
                 Intent intent = new Intent(localService, GPSLocalServiceClient.class).putExtra("channelpos", channelU);
                 intent.setAction("channelchat");
-                PendingIntent contentIntent = PendingIntent.getActivity(localService, 333, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+                PendingIntent contentIntent = PendingIntent.getActivity(localService, 333, intent, PendingIntent.FLAG_MUTABLE|PendingIntent.FLAG_CANCEL_CURRENT);
                 Long when = System.currentTimeMillis();
                 NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(
                         localService.getApplicationContext(), "default")

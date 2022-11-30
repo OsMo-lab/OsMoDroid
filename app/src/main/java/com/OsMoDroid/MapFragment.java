@@ -486,6 +486,7 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
 
             @Override
             public boolean onZoom(ZoomEvent zoomEvent) {
+                sendcentercoords();
                 return false;
             }
         };
