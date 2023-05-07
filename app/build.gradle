@@ -7,7 +7,7 @@ android {
     archivesBaseName = "OsMoDroid"
     defaultConfig {
         applicationId "com.OsMoDroid"
-        minSdkVersion 19
+        minSdkVersion 21
         targetSdkVersion 33
         multiDexEnabled = true
     }
@@ -50,20 +50,20 @@ repositories {
 }
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'com.google.firebase:firebase-messaging:23.1.0'
+    implementation 'com.google.firebase:firebase-messaging:23.1.1'
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
     implementation 'org.osmdroid:osmdroid-android:6.1.13'
     implementation 'androidx.preference:preference:1.2.0'
-    def uploadServiceVersion = "3.5.2"
-    implementation "net.gotev:uploadservice:$uploadServiceVersion"
-    implementation 'androidx.appcompat:appcompat:1.5.1'
+    //def uploadServiceVersion = "3.5.2"
+    implementation "net.gotev:uploadservice:4.7.0"
+    implementation 'androidx.appcompat:appcompat:1.6.1'
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.9.1'
     implementation 'org.jetbrains:annotations:23.0.0'
     implementation 'com.github.bumptech.glide:glide:4.13.2'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.13.2'
     implementation 'com.google.android.gms:play-services-base:18.1.0'
     implementation 'com.google.firebase:firebase-core:21.1.1'
-
+    implementation 'androidx.work:work-runtime:2.8.0'
     implementation "androidx.lifecycle:lifecycle-viewmodel:2.5.1"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1"
 }

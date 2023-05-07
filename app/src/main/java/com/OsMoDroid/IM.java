@@ -110,6 +110,7 @@ public class IM implements ResultsListener {
     static long sendBytes = 0;
     static long recievedBytes = 0;
     private static int RECONNECT_TIMEOUT = 1000 * 30;
+    private static int prevRECONNECT_TIMEOUT = 1000 * 30;
     final boolean log = true;
     static long startTraffic = 0;
     public Socket socket;
@@ -168,6 +169,14 @@ public class IM implements ResultsListener {
             LocalService.addlog("Online timeout onReceive, OsmodroidVisible=" + OsMoDroid.gpslocalserviceclientVisible + " gcmtodo=" + localService.gcmtodolist.size() + " where=" + localService.where + " existactivedevice=" + existactiveDevice + " state=" + localService.state);
             if (OsMoDroid.gpslocalserviceclientVisible ||!OsMoDroid.settings.getBoolean("udpmode",false)&&(localService.followmonstarted|| localService.state || (localService.isOnline() && localService.gcmtodolist.size() > 0) || localService.where
                     || (OsMoDroid.settings.getBoolean("subscribebackground", false) && existactiveDevice))) {
+                if(localService.state) {
+                    prevRECONNECT_TIMEOUT = RECONNECT_TIMEOUT;
+                    RECONNECT_TIMEOUT = 5 * 1000;
+                }
+                else
+                {
+                    RECONNECT_TIMEOUT = prevRECONNECT_TIMEOUT;
+                }
                 setOnlineTimeout();
             } else {
                 LocalService.addlog("Online timeout onReceive close because not visible");
@@ -247,6 +256,7 @@ public class IM implements ResultsListener {
         if (RECONNECT_TIMEOUT < 5000) {
             RECONNECT_TIMEOUT = 5000;
         }
+        prevRECONNECT_TIMEOUT = RECONNECT_TIMEOUT;
         localService = service;
         parent = service;
         manager = (AlarmManager) (parent.getSystemService(Context.ALARM_SERVICE));
@@ -1126,6 +1136,14 @@ public class IM implements ResultsListener {
         }
         if (command.equals("DCU")) {
             needtosendpreference = false;
+        }
+
+        if (command.equals("SOFF"))
+        {
+            stop();
+            localService.internetnotify(false);
+            localService.refresh();
+            start();
         }
         if (command.equals("RC")) {
             if (param.equals("PP")) {

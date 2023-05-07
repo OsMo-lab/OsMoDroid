@@ -1,11 +1,22 @@
 package com.OsMoDroid;
 
+import static android.content.Context.STORAGE_SERVICE;
+import static android.provider.DocumentsContract.EXTRA_INITIAL_URI;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.UriPermission;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.ParcelFileDescriptor;
+import android.os.storage.StorageManager;
+import android.os.storage.StorageVolume;
+import android.provider.DocumentsContract;
 import android.text.ClipboardManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -18,7 +29,11 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.documentfile.provider.DocumentFile;
 import androidx.fragment.app.Fragment;
 
 import java.io.File;
@@ -27,10 +42,104 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
+
 public class DebugFragment extends Fragment
     {
         final private static SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-mm-dd HH:mm:ss");
         private GPSLocalServiceClient globalActivity;
+        private final String EXTERNAL_STORAGE_PROVIDER_AUTHORITY = "com.android.externalstorage.documents";
+        private final String ANDROID_DOCID = "primary:Android/data/com.OsmoDroid";
+        Uri directoryUri;
+       // Uri uri;
+        //Uri treeUri;
+        private Intent intent;
+        private ActivityResultLauncher<Intent> handleIntentActivityResult;
+
+        private Boolean checkIfGotAccess(Uri uri) {
+            List<UriPermission> permissionList = getActivity().getContentResolver().getPersistedUriPermissions();
+            for (int i = 0; i < permissionList.size(); i++) {
+                UriPermission it = permissionList.get(i);
+                if (it.getUri().equals(uri) && it.isReadPermission())
+                    return true;
+            }
+            return false;
+        }
+
+        @RequiresApi(api = Build.VERSION_CODES.Q)
+        private void saveDebugLog() {
+
+            if (checkIfGotAccess(directoryUri)) {
+                saveFile(directoryUri);
+                //return;
+            }
+
+            handleIntentActivityResult.launch(intent);
+
+        }
+
+
+        @RequiresApi(api = Build.VERSION_CODES.N)
+        private StorageVolume getPrimaryVolume() {
+            StorageManager sm = (StorageManager) getActivity().getSystemService(STORAGE_SERVICE);
+            return sm.getPrimaryStorageVolume();
+        }
+
+        @RequiresApi(api = Build.VERSION_CODES.Q)
+        private void saveFile(Uri treeUri) {
+            DocumentFile pickedDir = DocumentFile.fromTreeUri(getActivity(), treeUri);
+            String extension = "log";
+            try {
+                assert pickedDir != null;
+                DocumentFile existing = pickedDir.findFile("debug.log");
+                if(existing!=null)
+                    existing.delete();
+                DocumentFile newFile = pickedDir.createFile("*/" + extension, "debug.log");
+                assert newFile != null;
+                ParcelFileDescriptor out = getActivity().getContentResolver().openFileDescriptor(newFile.getUri(), "w");
+
+                FileWriter writer = new FileWriter(out.getFileDescriptor());
+                StringBuilder stringBuilder = new StringBuilder();
+                for (String s : LocalService.debuglist)
+                {
+                    stringBuilder.append(s);
+                    stringBuilder.append("\n");
+                }
+                writer.write(stringBuilder.toString());
+                Toast.makeText(getActivity(), "Log saved to "+out.toString(), Toast.LENGTH_SHORT).show();
+                out.close();
+                writer.close();
+            } catch (Exception e) {
+                LocalService.addlog(e.toString());
+            }
+        }
+        @RequiresApi(api = Build.VERSION_CODES.Q)
+        void initContetResolver()
+        {
+
+            intent =
+                    getPrimaryVolume().createOpenDocumentTreeIntent()
+                            ;
+            handleIntentActivityResult = registerForActivityResult(
+                    new ActivityResultContracts.StartActivityForResult(),
+                    result -> {
+                        if (result.getResultCode() == Activity.RESULT_OK) {
+                            if (result.getData() == null || result.getData().getData() == null)
+                                return;
+                            directoryUri = result.getData().getData();
+                            getActivity().getContentResolver().takePersistableUriPermission(
+                                    directoryUri,
+                                    Intent.FLAG_GRANT_READ_URI_PERMISSION
+                            );
+                            if (checkIfGotAccess(directoryUri))
+                                saveFile(directoryUri);
+                            else
+                                Log.d("AppLog", "you didn't grant permission to the correct folder");
+                        }
+                    });
+        }
+
+
         @Override
         public void onDestroy()
             {
@@ -79,7 +188,6 @@ public class DebugFragment extends Fragment
                 super.onCreate(savedInstanceState);
                 setHasOptionsMenu(true);
                 //setRetainInstance(true);
-                super.onCreate(savedInstanceState);
             }
         @Override
         public void onResume()
@@ -97,6 +205,9 @@ public class DebugFragment extends Fragment
         public void onAttach(Activity activity)
             {
                 globalActivity = (GPSLocalServiceClient) activity;// TODO Auto-generated method stub
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    initContetResolver();
+                }
                 super.onAttach(activity);
             }
         /* (non-Javadoc)
@@ -126,12 +237,16 @@ public class DebugFragment extends Fragment
                             String sendtext = getDebugAsString();
                             Intent sendIntent = new Intent(Intent.ACTION_SEND);
                             sendIntent.setType("text/plain");
-                            sendIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{"osmo.mobi@gmail.com"});
-                            sendIntent.putExtra(android.content.Intent.EXTRA_TEXT, sendtext);
-                            sendIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Debug log");
+                            sendIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{"osmo.mobi@gmail.com"});
+                            sendIntent.putExtra(Intent.EXTRA_TEXT, sendtext);
+                            sendIntent.putExtra(Intent.EXTRA_SUBJECT, "Debug log");
                             startActivity(Intent.createChooser(sendIntent, "Email"));
                             break;
                         case 3:
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                                saveDebugLog();
+                                break;
+                            }
                             final Date dumpDate = new Date(System.currentTimeMillis());
                             final String state = Environment.getExternalStorageState();
                             final DateFormat fileFormatter = new SimpleDateFormat("dd-MM-yy");

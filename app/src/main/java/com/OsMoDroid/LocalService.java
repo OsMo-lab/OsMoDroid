@@ -73,11 +73,16 @@ import com.github.mikephil.charting.data.Entry;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 
-import net.gotev.uploadservice.MultipartUploadRequest;
-import net.gotev.uploadservice.ServerResponse;
-import net.gotev.uploadservice.UploadInfo;
-import net.gotev.uploadservice.UploadNotificationConfig;
-import net.gotev.uploadservice.UploadServiceBroadcastReceiver;
+//import net.gotev.uploadservice.MultipartUploadRequest;
+//import net.gotev.uploadservice.ServerResponse;
+//import net.gotev.uploadservice.UploadInfo;
+//import net.gotev.uploadservice.UploadNotificationConfig;
+//import net.gotev.uploadservice.UploadServiceBroadcastReceiver;
+import net.gotev.uploadservice.data.UploadInfo;
+import net.gotev.uploadservice.data.UploadNotificationConfig;
+import net.gotev.uploadservice.data.UploadNotificationStatusConfig;
+import net.gotev.uploadservice.network.ServerResponse;
+import net.gotev.uploadservice.protocols.multipart.MultipartUploadRequest;
 import net.osmand.aidl.map.ALatLon;
 
 import org.json.JSONArray;
@@ -296,7 +301,7 @@ public class LocalService extends Service implements SharedPreferences.OnSharedP
         public static ArrayList<Entry> avgspeeddistanceEntryList = new ArrayList<Entry>();
         public static ArrayList<Entry> altitudedistanceEntryList = new ArrayList<Entry>();
         public static ArrayList<String> distanceStringList = new ArrayList<String>();
-        private UploadServiceBroadcastReceiver uploadServiceBroadcastReceiver = new UploadServiceBroadcastReceiver() {
+        /*private UploadServiceBroadcastReceiver uploadServiceBroadcastReceiver = new UploadServiceBroadcastReceiver() {
             @Override
             public void onProgress(Context context, UploadInfo uploadInfo) {
                 // your implementation
@@ -318,7 +323,7 @@ public class LocalService extends Service implements SharedPreferences.OnSharedP
             public void onCancelled(Context context, UploadInfo uploadInfo) {
                 // your implementation
             }
-        };
+        };*/
 
 
         LocationListener followLocationListener = new LocationListener() {
@@ -806,7 +811,7 @@ public class LocalService extends Service implements SharedPreferences.OnSharedP
                 getversion();
                 serContext = LocalService.this;
                 AssetManager assetManagerm = context.getAssets();
-                registerReceiver(uploadServiceBroadcastReceiver, new IntentFilter("com.OsMoDroid.uploadservice.broadcast.status"));
+                //registerReceiver(uploadServiceBroadcastReceiver, new IntentFilter("com.OsMoDroid.uploadservice.broadcast.status"));
 
                 try {
                     InputStream stream = this.getAssets().open("maps.json");
@@ -1311,7 +1316,7 @@ public class LocalService extends Service implements SharedPreferences.OnSharedP
                 {
                     if (receiver != null)
                     {
-                        unregisterReceiver(uploadServiceBroadcastReceiver);
+                        //unregisterReceiver(uploadServiceBroadcastReceiver);
                     }
                 }
                 catch (Exception e)
@@ -1993,6 +1998,7 @@ public class LocalService extends Service implements SharedPreferences.OnSharedP
                                     }
                                     catch (Exception e)
                                     {
+                                        writeException(e);
                                         e.printStackTrace();
                                 }
                             }
@@ -2893,42 +2899,7 @@ public class LocalService extends Service implements SharedPreferences.OnSharedP
                 return sending;
         }
 
-        public void onGpsStatusChanged(int event)
-            {
-                int MaxPrn = 0;
-                int count1 = 0;
-                int countFix1 = 0;
-                boolean hasA = false;
-                boolean hasE = false;
-                try {
-                    GpsStatus xGpsStatus = myManager.getGpsStatus(null);
-                    Iterable<GpsSatellite> iSatellites = xGpsStatus.getSatellites();
-                    Iterator<GpsSatellite> it = iSatellites.iterator();
-                    while (it.hasNext())
-                        {
-                            GpsSatellite oSat = (GpsSatellite) it.next();
-                            count1 = count1 + 1;
-                            hasA = oSat.hasAlmanac();
-                            hasE = oSat.hasEphemeris();
-                            if (oSat.usedInFix())
-                                {
-                                    countFix1 = countFix1 + 1;
-                                    if (oSat.getPrn() > MaxPrn)
-                                        {
-                                            MaxPrn = oSat.getPrn();
-                                        }
-                                    //Log.e("A fost folosit ", "int fix!");
-                                }
-                        }
-                    satellite = getString(R.string.Sputniki) + count + ":" + countFix; //+" ("+hasA+"-"+hasE+")";
-                    count = count1;
-                    countFix = countFix1;
-                    refresh();
-                } catch (SecurityException e) {
-                    e.printStackTrace();
-                }
-                //addlog("onGpsStatusChanged "+count1+" "+countFix1);
-            }
+
         public void onInit(int status)
             {
                 if (status == TextToSpeech.SUCCESS)
@@ -3429,6 +3400,45 @@ public class LocalService extends Service implements SharedPreferences.OnSharedP
             }
         }
 
+        @Override
+        public void onGpsStatusChanged(int event) {
+            int MaxPrn = 0;
+            int count1 = 0;
+            int countFix1 = 0;
+            boolean hasA = false;
+            boolean hasE = false;
+            try {
+                GpsStatus xGpsStatus = myManager.getGpsStatus(null);
+                Iterable<GpsSatellite> iSatellites = xGpsStatus.getSatellites();
+                Iterator<GpsSatellite> it = iSatellites.iterator();
+                while (it.hasNext())
+                {
+                    GpsSatellite oSat = (GpsSatellite) it.next();
+                    count1 = count1 + 1;
+                    hasA = oSat.hasAlmanac();
+                    hasE = oSat.hasEphemeris();
+                    if (oSat.usedInFix())
+                    {
+                        countFix1 = countFix1 + 1;
+                        if (oSat.getPrn() > MaxPrn)
+                        {
+                            MaxPrn = oSat.getPrn();
+                        }
+                        //Log.e("A fost folosit ", "int fix!");
+                    }
+                }
+                satellite = getString(R.string.Sputniki) + count + ":" + countFix; //+" ("+hasA+"-"+hasE+")";
+                count = count1;
+                countFix = countFix1;
+                addlog(satellite);
+                refresh();
+            } catch (SecurityException e) {
+                writeException(e);
+                e.printStackTrace();
+            }
+
+        }
+
 
         public class LocalBinder extends Binder
             {
@@ -3548,7 +3558,6 @@ public class LocalService extends Service implements SharedPreferences.OnSharedP
                         new MultipartUploadRequest(this, "https://api2.osmo.mobi/deviceTripUpload")
                                 // starting from 3.1+, you can also use content:// URI string instead of absolute file
                                 .addFileToUpload(filepath, "file")
-                                .setNotificationConfig(new UploadNotificationConfig())
                                 .setMaxRetries(2)
                                 .addParameter("k",OsMoDroid.settings.getString("newkey", ""))
                                 .setAutoDeleteFilesAfterSuccessfulUpload(true)

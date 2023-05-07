@@ -19,6 +19,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -509,9 +510,11 @@ public class GPSLocalServiceClient extends AppCompatActivity implements ResultsL
             }
         private void openBatterySettings()
         {
-            Intent intent = new Intent();
-            intent.setAction(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS);
-            startActivity(intent);
+            String packageName = BuildConfig.APPLICATION_ID;
+            Intent i = new Intent();
+            i.setAction(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
+            i.setData(Uri.parse("package:" + packageName));
+            startActivity(i);
         }
         void setupDrawerList()
             {

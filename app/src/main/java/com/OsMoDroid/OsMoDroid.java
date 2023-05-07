@@ -12,9 +12,14 @@ import android.view.inputmethod.InputMethodManager;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
 
-import net.gotev.uploadservice.Logger;
+//import net.gotev.uploadservice.Logger;
 import net.gotev.uploadservice.UploadService;
+import net.gotev.uploadservice.UploadServiceConfig;
+import net.gotev.uploadservice.data.UploadNotificationConfig;
+import net.gotev.uploadservice.logger.UploadServiceLogger;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.osmdroid.config.Configuration;
 
 import java.io.File;
@@ -124,8 +129,24 @@ public class OsMoDroid extends Application
         public void onCreate()
             {
                 super.onCreate();
-                Logger.setLogLevel(Logger.LogLevel.DEBUG);
-                UploadService.NAMESPACE = BuildConfig.APPLICATION_ID;
+                UploadServiceConfig.initialize(this,"silent",true);
+                UploadServiceLogger.setLogLevel(UploadServiceLogger.LogLevel.Debug);
+                UploadServiceLogger.setDelegate(new UploadServiceLogger.Delegate() {
+                    @Override
+                    public void error(@NotNull String s, @NotNull String s1, @NotNull String s2, @Nullable Throwable throwable) {
+                        addlog(s+s1+s2);
+                    }
+
+                    @Override
+                    public void debug(@NotNull String s, @NotNull String s1, @NotNull String s2) {
+                        addlog(s+s1+s2);
+                    }
+
+                    @Override
+                    public void info(@NotNull String s, @NotNull String s1, @NotNull String s2) {
+                        addlog(s+s1+s2);
+                    }
+                });
                 settings = PreferenceManager.getDefaultSharedPreferences(this);
                 editor = settings.edit();
                 context = getApplicationContext();

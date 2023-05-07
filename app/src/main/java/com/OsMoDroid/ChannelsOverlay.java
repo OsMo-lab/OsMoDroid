@@ -792,7 +792,7 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
                     {
                         Toast.makeText(map.getContext(), R.string.nogroupstosendpoint, Toast.LENGTH_SHORT).show();
                     }
-                        return super.onLongPress(e, mapView);
+                        return true;
 
             }
         @Override
@@ -884,6 +884,6 @@ public class ChannelsOverlay extends Overlay implements RotationGestureDetector.
                                         }
                                 }
                             }
-                return super.onSingleTapConfirmed(e, mapView);
+                return true;
             }
     }

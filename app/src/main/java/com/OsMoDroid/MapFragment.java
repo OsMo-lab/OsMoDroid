@@ -53,6 +53,7 @@ import org.osmdroid.tileprovider.tilesource.bing.BingMapTileSource;
 import org.osmdroid.tileprovider.util.SimpleRegisterReceiver;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.util.MapTileIndex;
+import org.osmdroid.views.CustomZoomButtonsController;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.ItemizedIconOverlay;
 import org.osmdroid.views.overlay.ItemizedOverlayWithFocus;
@@ -487,7 +488,7 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
             @Override
             public boolean onZoom(ZoomEvent zoomEvent) {
                 sendcentercoords();
-                return false;
+                return true;
             }
         };
         mMapView.addMapListener(wrappedListener);
@@ -674,7 +675,8 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
             myLoc.enableFollowLocation();
         }
         //mMapView.getOverlays().add(myLoc);
-        mMapView.setBuiltInZoomControls(true);
+
+        mMapView.getZoomController().setVisibility(CustomZoomButtonsController.Visibility.SHOW_AND_FADEOUT);
         mMapView.getZoomController().getDisplay().setBitmaps(
                 ((BitmapDrawable) mMapView.getResources().getDrawable(R.drawable.ic_zoom_in)).getBitmap(),
                 ((BitmapDrawable) mMapView.getResources().getDrawable(R.drawable.ic_zoom_in)).getBitmap(),
@@ -682,6 +684,7 @@ public class MapFragment extends Fragment implements DeviceChange, IMyLocationPr
                 ((BitmapDrawable) mMapView.getResources().getDrawable(R.drawable.ic_zoom_out)).getBitmap()
         );
         mMapView.getZoomController().getDisplay().setAdditionalPixelMargins(10, 10, 10, 10);
+
         mMapView.setMultiTouchControls(true);
         mController = mMapView.getController();
         Bundle bundle = getArguments();
