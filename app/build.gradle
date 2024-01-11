@@ -11,6 +11,25 @@ android {
         targetSdkVersion 33
         multiDexEnabled = true
     }
+    flavorDimensions "version"
+
+
+    productFlavors {
+        osmodroid {
+            dimension "version"
+            resValue "string", "app_name", "OsmoDroid"
+            applicationId "com.OsMoDroid"
+            versionName "2.7.0"
+            versionCode 689
+        }
+        esya {
+            dimension "version"
+            resValue "string", "app_name", "Esya"
+            applicationId "ru.Esya"
+            versionName "1.0.0"
+            versionCode 1
+        }
+    }
     buildTypes {
         release {
             minifyEnabled false
