@@ -120,6 +120,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
+import java.util.regex.Pattern;
 
 import static com.OsMoDroid.IM.writeException;
 import static com.OsMoDroid.OsMoDroid.context;
@@ -329,7 +330,7 @@ public class LocalService extends Service implements SharedPreferences.OnSharedP
         LocationListener followLocationListener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
-                myIM.sendToServer(locationtoSending(location)+'F',false);
+                myIM.sendUDP(locationtoSending(location)+'F');
             }
 
             @Override
@@ -376,7 +377,7 @@ public class LocalService extends Service implements SharedPreferences.OnSharedP
                                     {
                                         e.printStackTrace();
                                     }
-                                myIM.sendToServer("RCR:" + OsMoDroid.WHERE + "|" + postjson.toString(), false);
+                                myIM.sendUDP("RCR:" + OsMoDroid.WHERE + "|" + postjson.toString());
                                 where = false;
                                 if (!state)
                                     {
@@ -453,6 +454,64 @@ public class LocalService extends Service implements SharedPreferences.OnSharedP
                                 }
                             return;
                         }
+                    if (b.containsKey("udpread"))
+                    {
+                        String str = "";
+                        str = b.getString("udpread");
+                        LocalService.addlog("udpread "+str);
+                        if (str.length()>1)
+                        {
+                            try
+                            {
+                                String[] splited = str.split(" ");
+                                for (String element : splited) {
+                                    System.out.println(element);
+                                    String[] devsplitted = element.split(Pattern.quote("|"));
+                                    Device d = new Device(Integer.parseInt(devsplitted[0]), "", "black", 1);
+                                    d.lat= Float.parseFloat(devsplitted[1]);
+                                    d.lon = Float.parseFloat(devsplitted[2]);
+                                    d.speed = devsplitted[3];
+                                    d.updatated = System.currentTimeMillis();
+                                    if(channelList.get(0).deviceList.contains(d))
+                                    {
+                                        Device t = channelList.get(0).deviceList.get(channelList.get(0).deviceList.indexOf(d));
+                                        t.lat= Float.parseFloat(devsplitted[1]);
+                                        t.lon = Float.parseFloat(devsplitted[2]);
+                                        t.speed = devsplitted[3];
+                                        t.updatated = System.currentTimeMillis();
+                                    }
+                                    else
+                                    {
+                                        channelList.get(0).deviceList.add(d);
+                                    }
+                                }
+                            }
+                            catch (Exception e)
+                            {
+                                e.printStackTrace();
+                                StringWriter sw = new StringWriter();
+                                e.printStackTrace(new PrintWriter(sw));
+                                String exceptionAsString = sw.toString();
+                                LocalService.addlog(exceptionAsString);
+                            }
+                        }
+                        else
+                        {
+                            try
+                            {
+                                myIM.parseEx(new String(str),false);
+                            }
+                            catch (Exception e)
+                            {
+                                e.printStackTrace();
+                                StringWriter sw = new StringWriter();
+                                e.printStackTrace(new PrintWriter(sw));
+                                String exceptionAsString = sw.toString();
+                                LocalService.addlog(exceptionAsString);
+                            }
+                        }
+                        return;
+                    }
 
                     if (b.containsKey("deviceU") && LocalService.currentDevice != null && LocalService.currentDevice.u == (b.getInt("deviceU")))
                         {
@@ -1007,7 +1066,14 @@ public class LocalService extends Service implements SharedPreferences.OnSharedP
                     {
                         gcmtodolist.addAll(loadedgcm);
                     }
-
+Channel testChannel = new Channel();
+                testChannel.gu=1;
+                testChannel.u=1;
+                testChannel.description = "test";
+                testChannel.send = true;
+                testChannel.name = "test";
+                if(!channelList.contains(testChannel))
+                    channelList.add(testChannel);
                 APIcomParams params = new APIcomParams("https://osmo.mobi/ts.json", osmodirFile+"/maps.json");
                new MyAsyncTask(this::onResultsSucceeded).execute(params);
                 //myIM = new IM("osmo.mobi", 4254, this)
@@ -1040,6 +1106,7 @@ public class LocalService extends Service implements SharedPreferences.OnSharedP
                     }
                 else
                     {
+                        getTokenRequest(OsMoDroid.settings.getString("newkey", ""));
                         if (true)
                             {
                                 myIM.start();
@@ -1116,7 +1183,7 @@ public class LocalService extends Service implements SharedPreferences.OnSharedP
 
         void Pong(Context context) throws JSONException
             {
-                myIM.sendToServer("RCR|1", false);
+                myIM.sendUDP("RCR|1");
             }
         void batteryinfo(Context context) throws JSONException
             {
@@ -1126,7 +1193,7 @@ public class LocalService extends Service implements SharedPreferences.OnSharedP
                 postjson.put("voltage", voltage);
                 postjson.put("plugged", plugged);
                 postjson.put("health", health);
-                myIM.sendToServer("RCR:" + OsMoDroid.TRACKER_BATTERY_INFO + "|" + postjson.toString(), false);
+                myIM.sendUDP("RCR:" + OsMoDroid.TRACKER_BATTERY_INFO + "|" + postjson.toString());
             }
         private String capitalize(String s)
             {
@@ -1171,12 +1238,12 @@ public class LocalService extends Service implements SharedPreferences.OnSharedP
                 postjson.put("tz", TimeZone.getDefault().getID());
                 postjson.put("locale", Locale.getDefault().getISO3Language());
 
-                myIM.sendToServer("RCR:" + OsMoDroid.TRACKER_SYSTEM_INFO + "|" + postjson.toString(), false);
+                myIM.sendUDP("RCR:" + OsMoDroid.TRACKER_SYSTEM_INFO + "|" + postjson.toString());
             }
         void vibrate(Context context, long milliseconds)
             {
                 vibrator.vibrate(milliseconds);
-                myIM.sendToServer("RCR:" + OsMoDroid.TRACKER_VIBRATE + "|1", false);
+                myIM.sendUDP("RCR:" + OsMoDroid.TRACKER_VIBRATE + "|1");
             }
         void satelliteinfo(Context context) throws JSONException
             {
@@ -1184,7 +1251,7 @@ public class LocalService extends Service implements SharedPreferences.OnSharedP
                 postjson.put("view", count);
                 postjson.put("active", countFix);
                 postjson.put("accuracy", accuracy);
-                myIM.sendToServer("RCR:" + OsMoDroid.TRACKER_SATELLITES_INFO + "|" + postjson.toString(), false);
+                myIM.sendUDP("RCR:" + OsMoDroid.TRACKER_SATELLITES_INFO + "|" + postjson.toString());
             }
         void getpreferences(Context context) throws JSONException
             {
@@ -1204,7 +1271,7 @@ public class LocalService extends Service implements SharedPreferences.OnSharedP
                 postjson.remove("motdtime");
 
 
-                myIM.sendToServer("RCR:"+OsMoDroid.TRACKER_GET_PREFS+"|"+postjson.toString(),false);
+                myIM.sendUDP("RCR:"+OsMoDroid.TRACKER_GET_PREFS+"|"+postjson.toString());
             }
         void setpreferences(JSONObject jo, Context context) throws JSONException
             {
@@ -1242,19 +1309,19 @@ public class LocalService extends Service implements SharedPreferences.OnSharedP
                         }
                     OsMoDroid.editor.commit();
                 }
-                myIM.sendToServer("RCR:"+OsMoDroid.TRACKER_SET_PREFS+"|"+1,false);
+                myIM.sendUDP("RCR:"+OsMoDroid.TRACKER_SET_PREFS+"|"+1);
             }
         void wifion(Context context)
             {
                 WifiManager wifi = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
                 wifi.setWifiEnabled(true);
-                myIM.sendToServer("RCR:" + OsMoDroid.TRACKER_WIFI_ON + "|1", false);
+                myIM.sendUDP("RCR:" + OsMoDroid.TRACKER_WIFI_ON + "|1");
             }
         void wifioff(Context context)
             {
                 WifiManager wifi = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
                 wifi.setWifiEnabled(false);
-                myIM.sendToServer("RCR:" + OsMoDroid.TRACKER_WIFI_OFF + "|1", false);
+                myIM.sendUDP("RCR:" + OsMoDroid.TRACKER_WIFI_OFF + "|1");
             }
         void wifiinfo(Context context) throws JSONException
             {
@@ -1276,7 +1343,7 @@ public class LocalService extends Service implements SharedPreferences.OnSharedP
                     {
                         postjson.put("state", "noconnect");
                     }
-                myIM.sendToServer("RCR:" + OsMoDroid.TRACKER_WIFI_INFO + "|" + postjson.toString(), false);
+                myIM.sendUDP("RCR:" + OsMoDroid.TRACKER_WIFI_INFO + "|" + postjson.toString());
             }
         @Override
         public void onDestroy()
@@ -1848,7 +1915,7 @@ public class LocalService extends Service implements SharedPreferences.OnSharedP
                                     } catch (JSONException e) {
                                         e.printStackTrace();
                                     }
-                                    if( !OsMoDroid.settings.getBoolean("udpmode",false)) myIM.sendToServer("TO|"+jo.toString(), false);
+                                    if( !OsMoDroid.settings.getBoolean("udpmode",false)) myIM.sendUDP("TO|"+jo.toString());
                                     myIM.needopensession = true;
                                     myIM.needclosesession = false;
                                 }
@@ -1925,6 +1992,12 @@ public class LocalService extends Service implements SharedPreferences.OnSharedP
             MyAsyncTask sendidtask = new Netutil.MyAsyncTask(this);
             sendidtask.execute(params);
             Log.d(getClass().getSimpleName(), "sendidtask start to execute");
+        }
+        public void getTokenRequest(String key){
+            APIcomParams params = new APIcomParams("https://api2.osmo.mobi/tss?k="+key, "", "tokenrequest");
+            MyAsyncTask sendidtask = new Netutil.MyAsyncTask(this);
+            sendidtask.execute(params);
+            Log.d(getClass().getSimpleName(), "tokenrequest start to execute");
 
         }
         private void ttsManage()
@@ -2133,9 +2206,9 @@ public class LocalService extends Service implements SharedPreferences.OnSharedP
                                     {
                                         sendingbuffer.addAll(buffer.subList(0,buffer.size()>100?100:buffer.size()));
                                         buffer.removeAll(sendingbuffer);
-                                        myIM.sendToServer("B|" + new JSONArray(sendingbuffer), false);
+                                        myIM.sendUDP("B|" + new JSONArray(sendingbuffer));
                                     }
-                                if(!OsMoDroid.settings.getBoolean("udpmode",false))myIM.sendToServer("TC", false);
+                                if(!OsMoDroid.settings.getBoolean("udpmode",false))myIM.sendUDP("TC");
                                 myIM.needclosesession = true;
                                 myIM.needopensession = false;
                             }
@@ -2782,7 +2855,9 @@ public class LocalService extends Service implements SharedPreferences.OnSharedP
                     if(!OsMoDroid.settings.getString("udptoken","UNKNOWN").equals("UNKNOWN")
                     ||!OsMoDroid.settings.getString("udptoken","UNKNOWN").equals("null")
                     )
-                    myIM.sendUDP(OsMoDroid.settings.getString("udptoken","UNKNOWN")+"__"+sendingUDP);
+                    myIM.sendUDP(OsMoDroid.settings.getString("udptoken","UNKNOWN")+"|"+sendingUDP);
+                    //myIM.sendUDP(" 2MAZqoy%|"+sendingUDP);
+
                     else
                         LocalService.addlog("udpmode no TOKEN!!!! ");
 
@@ -2796,7 +2871,7 @@ public class LocalService extends Service implements SharedPreferences.OnSharedP
                             sending = sending + "M";
                         }
                         LocalService.addlog("Send:AUTHED=" + myIM.authed + " Sending:" + sending);
-                        myIM.sendToServer(sending, false);
+                        myIM.sendUDP(sending);
                         LocalService.addlog("Sendaf:AUTHED=" + myIM.authed + " Sending:" + sending);
                     }
                     else
@@ -2854,6 +2929,11 @@ public class LocalService extends Service implements SharedPreferences.OnSharedP
                 {
                     Log.d(this.getClass().getName(), "Отправка:" + myIM.authed + " s " + sending);
                 }
+            if(OsMoDroid.settings.getBoolean("udpmode", false))
+            {
+
+                return   OsMoDroid.df6.format(location.getLatitude()) + "|" + OsMoDroid.df6.format(location.getLongitude())+ "|" + OsMoDroid.df1.format(location.getSpeed());
+            }
             if ((location.getSpeed() * 3.6) >= 6)
                 {
                     sending =
@@ -3158,6 +3238,7 @@ public class LocalService extends Service implements SharedPreferences.OnSharedP
                                             {
                                                 OsMoDroid.editor.putString("newkey", result.Jo.getString("device"));
                                                 OsMoDroid.editor.commit();
+                                                getTokenRequest(result.Jo.getString("device"));
                                                 if (true)
                                                     {
                                                         myIM.start();
@@ -3174,6 +3255,33 @@ public class LocalService extends Service implements SharedPreferences.OnSharedP
                                 notifywarnactivity(getString(R.string.warnhash), true, OsMoDroid.NOTIFY_ERROR_SENDID);
                             }
                     }
+                if(result.Command!=null&&result.Command.equals("tokenrequest"))
+                {
+
+                    if (!(result.Jo == null))
+                    {
+                        if (log)
+                        {
+                            Log.d(getClass().getSimpleName(), "tokenrequest response:" + result.Jo.toString());
+                        }
+                        if (result.Jo.has("token"))
+                        {
+                            try
+                            {
+                                OsMoDroid.editor.putString("udptoken", result.Jo.getString("token"));
+                                OsMoDroid.editor.commit();
+                            }
+                            catch (JSONException e)
+                            {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                    else
+                    {
+                        notifywarnactivity(getString(R.string.warnhash), true, OsMoDroid.NOTIFY_ERROR_SENDID);
+                    }
+                }
             }
         public void playAlarmOn()
             {
@@ -3212,7 +3320,7 @@ public class LocalService extends Service implements SharedPreferences.OnSharedP
             {
                 if(myIM!=null)
                     {
-                        myIM.sendToServer("DISALARM",true);
+                        myIM.sendUDP("DISALARM");
                     }
                 OsMoDroid.editor.remove("signalisation");
                 OsMoDroid.editor.commit();
@@ -3334,8 +3442,8 @@ public class LocalService extends Service implements SharedPreferences.OnSharedP
                     {
                         OsMoDroid.editor.putLong("signalisation", System.currentTimeMillis());
                         OsMoDroid.editor.commit();
-                        //myIM.sendToServer("REMOTE_CONTROL:"+OsMoDroid.settings.getString("tracker_id", "") +"|"+"ALARM");
-                        //myIM.sendToServer("ALARM", false);
+                        //myIM.sendUDP("REMOTE_CONTROL:"+OsMoDroid.settings.getString("tracker_id", "") +"|"+"ALARM");
+                        //myIM.sendUDP("ALARM", false);
                         Intent is = new Intent(this, LocalService.class);
                         is.putExtra("GCM","NEEDSENDALARM");
                         handleStart(is,0);
@@ -3382,7 +3490,7 @@ public class LocalService extends Service implements SharedPreferences.OnSharedP
             ja.put(allWidgetIds3.length);
             ja.put(allWidgetIds4.length);
 
-            myIM.sendToServer("RCR:" + OsMoDroid.WIDGETINFO + "|" + ja.toString(), false);
+            myIM.sendUDP("RCR:" + OsMoDroid.WIDGETINFO + "|" + ja.toString());
 
         }
 

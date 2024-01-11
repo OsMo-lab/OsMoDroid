@@ -129,7 +129,7 @@ public class IM implements ResultsListener {
     PendingIntent keepAlivePIntent;
     PendingIntent getTokenTimeoutPIntent;
     //PendingIntent onlineTimeoutPIntent;
-    Thread connectThread;
+
     Context parent;
     int mestype = 0;
     LocalService localService;
@@ -138,61 +138,29 @@ public class IM implements ResultsListener {
     int socketRetryInt = 0;
     long connectcount = 0;
     long erorconenctcount = 0;
-    private IMWriter iMWriter;
-    private IMReader iMReader;
+
     private UDPReader udpReader;
     private UDPWriter udpWriter;
     volatile private boolean checkadressing = false;
     private String token = "";
     private String poll = "";
-    private Thread readerThread;
-    private Thread writerThread;
+
     private Thread udpWriterThread;
     private Thread udpReaderThread;
     private int workserverint = -1;
     private String workservername = "";
     private MyAsyncTask sendidtask;
     ArrayList<String> executedCommandArryaList = new ArrayList<String>();
-    BroadcastReceiver onlineTimeoutReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            boolean existactiveDevice = false;
-            for (Channel ch : LocalService.channelList) {
-                for (Device dev : ch.deviceList) {
-                    if (dev.state != 0) {
-                        if ((System.currentTimeMillis() - dev.updatated) < 15 * 60 * 1000) {
-                            existactiveDevice = true;
-                        }
-                    }
-                }
-            }
-            LocalService.addlog("Online timeout onReceive, OsmodroidVisible=" + OsMoDroid.gpslocalserviceclientVisible + " gcmtodo=" + localService.gcmtodolist.size() + " where=" + localService.where + " existactivedevice=" + existactiveDevice + " state=" + localService.state);
-            if (OsMoDroid.gpslocalserviceclientVisible ||!OsMoDroid.settings.getBoolean("udpmode",false)&&(localService.followmonstarted|| localService.state || (localService.isOnline() && localService.gcmtodolist.size() > 0) || localService.where
-                    || (OsMoDroid.settings.getBoolean("subscribebackground", false) && existactiveDevice))) {
-                if(localService.state) {
-                    prevRECONNECT_TIMEOUT = RECONNECT_TIMEOUT;
-                    RECONNECT_TIMEOUT = 5 * 1000;
-                }
-                else
-                {
-                    RECONNECT_TIMEOUT = prevRECONNECT_TIMEOUT;
-                }
-                setOnlineTimeout();
-            } else {
-                LocalService.addlog("Online timeout onReceive close because not visible");
-                close();
-            }
-        }
-    };
+
     BroadcastReceiver keepAliveReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (connOpened) {
-                LocalService.addlog("Socket sendPing");
+                LocalService.addlog("UPD sendPing");
                 if (log) {
                     Log.d(this.getClass().getName(), " send ping");
                 }
-                sendToServer("P", false);
+                sendUDP("P");
             }
         }
     };
@@ -226,24 +194,7 @@ public class IM implements ResultsListener {
             start();
         }
     };
-    BroadcastReceiver reconnectReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (SystemClock.uptimeMillis() > timeonline + ONLINE_TIMEOUT) {
-                parent.sendBroadcast(new Intent(ONLINE_TIMEOUT_INTENT));
-            }
-            LocalService.addlog("Socket reconnect receiver trigged onlinebybcr=" + onlinebybcr);
-
-            disablekeepAliveAlarm();
-            stop();
-            localService.internetnotify(false);
-            localService.refresh();
-            start();
-
-
-            //context.unregisterReceiver(this);
-        }
-    };
+    
     public boolean needtosendpreference = false;
     private boolean warnedsocketconnecterror = false;
     private long timeonline = SystemClock.uptimeMillis();
@@ -268,9 +219,7 @@ public class IM implements ResultsListener {
         SERVERPORT = port;
         LocalService.addlog("IM create");
         LocalService.addlog("GCMID=" + OsMoDroid.settings.getString("GCMRegId", ""));
-        iMWriter = new IMWriter();
-        writerThread = new Thread(iMWriter, "writer");
-        writerThread.start();
+
         try {
             clientSocket = new DatagramSocket();
             udpReader = new UDPReader();
@@ -305,40 +254,7 @@ public class IM implements ResultsListener {
         }
     }
 
-    public void sendToServer(String str, boolean gui) {
-        Message msg = new Message();
-        Bundle b = new Bundle();
-        b.putString("write", str);
-        b.putBoolean("pp", str.equals("PP"));
-        msg.setData(b);
-        if (running) {
-            if (iMWriter.handler != null) {
-                String[] data = str.split("\\===");
-                ArrayList<String> cl = new ArrayList<String>();
-                for (int index = 0; index < data.length; index++) {
-                    if (data[index].contains("|")) {
-                        data[index] = data[index].substring(0, data[index].indexOf('|'));
-                    }
-                    if (!data[index].equals("PP")) {
-                        cl.add(data[index]);
-                    }
-                }
-                executedCommandArryaList.addAll(cl);
-                LocalService.addlog("Add to command order " + cl);
-                iMWriter.handler.sendMessage(msg);
-                localService.refresh();
-            } else {
-                LocalService.addlog("panic! handler is null");
-                if (log) {
-                    Log.d(this.getClass().getName(), " handler is null!!!");
-                }
-            }
-        } else {
-            if (gui) {
-                Toast.makeText(localService, localService.getString(R.string.offline_on), Toast.LENGTH_LONG).show();
-            }
-        }
-    }
+    
 
     public void setOnlineTimeout() {
         LocalService.addlog("Socket void setOnlineTimeOut");
@@ -431,7 +347,7 @@ public class IM implements ResultsListener {
      * Выключает IM
      */
     void close() {
-        // sendToServer("BYE", false);
+        // sendUDP("BYE", false);
 
         if (log) {
             Log.d(this.getClass().getName(), "void IM.close");
@@ -442,10 +358,7 @@ public class IM implements ResultsListener {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        try {
-            parent.unregisterReceiver(reconnectReceiver);
-        } catch (Exception e) {
-        }
+        
         try {
             parent.unregisterReceiver(keepAliveReceiver);
         } catch (Exception e) {
@@ -454,10 +367,8 @@ public class IM implements ResultsListener {
             parent.unregisterReceiver(getTokenTimeoutReceiver);
         } catch (Exception e) {
         }
-        try {
-            parent.unregisterReceiver(onlineTimeoutReceiver);
-        } catch (Exception e) {
-        }
+        
+        
         stop();
         start = false;
     }
@@ -497,22 +408,12 @@ public class IM implements ResultsListener {
             running = true;
             connecting = true;
             localService.refresh();
-            iMReader = new IMReader();
-            connectThread = new Thread(new IMConnect(), "connecter");
-            readerThread = new Thread(iMReader, "reader");
-            connectThread.setPriority(Thread.MIN_PRIORITY);
-            readerThread.setPriority(Thread.MIN_PRIORITY);
-            writerThread.setPriority(Thread.MIN_PRIORITY);
-            if (workserverint == -1) {
-                checkaddres();
-            } else {
-                connectThread.start();
-            }
+
+
             //
             parent.registerReceiver(bcr, new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"));
-            parent.registerReceiver(onlineTimeoutReceiver, new IntentFilter(ONLINE_TIMEOUT_INTENT));
             parent.registerReceiver(keepAliveReceiver, new IntentFilter(KEEPALIVE_INTENT));
-            parent.registerReceiver(reconnectReceiver, new IntentFilter(RECONNECT_INTENT));
+            
 
 
         } else {
@@ -732,152 +633,7 @@ public class IM implements ResultsListener {
 
         JSONObject jsonObject;
 //                if (command.equals("INIT"))
-        if (command.equals("AUTH")) {
-            if (!jo.has("error")) {
-                LocalService.transport = jo.optJSONArray("transport");
-                JSONObject postjson = getNET();
-                sendToServer("NET|" + postjson.toString(), false);
-                if (jo.optInt("motd") > OsMoDroid.settings.getInt("modtime", 0)) {
-                    sendToServer("MD", false);
-                } else {
-                    localService.motd = OsMoDroid.settings.getString("motd", "");
-                }
-                if (jo.optInt("pro") == 1) {
-                    localService.pro = true;
-                } else {
-                    localService.pro = true;
-                }
-                OsMoDroid.editor.putString("device", jo.optString("id"));
-                OsMoDroid.editor.putString("tracker_id", jo.optString("id"));
-                OsMoDroid.editor.putString("motdtime", jo.optString("motd"));
-                OsMoDroid.editor.putBoolean("pro", localService.pro);
-                OsMoDroid.editor.commit();
-                authed = true;
-                setOnlineTimeout();
-                if (jo.has("uid")) {
-                    if (jo.optInt("uid") > 0) {
-                        OsMoDroid.editor.putString("u", jo.optString("name", ""));
-                        OsMoDroid.editor.putString("p", jo.optString("uid", ""));
-                        OsMoDroid.editor.commit();
-
-                    } else {
-                        OsMoDroid.editor.remove("p");
-                        OsMoDroid.editor.remove("u");
-                        OsMoDroid.editor.commit();
-
-                    }
-                    localService.refresh();
-                }
-
-
-                if (needopensession && !OsMoDroid.settings.getBoolean("udpmode",false)) {
-                    JSONObject j = new JSONObject();
-                    try {
-                        j.put("time", localService.sessionopentime);
-                        j.put("transportid",transportid);
-                        j.put("private",privatemode);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    sendToServer("TO|"+j.toString(), false);
-                }
-                if (needclosesession&& !OsMoDroid.settings.getBoolean("udpmode",false)) {
-                    if (localService.sendingbuffer.size() == 0 && localService.buffer.size() != 0) {
-                        localService.sendingbuffer.addAll(localService.buffer.subList(0,localService.buffer.size()>100?100:localService.buffer.size()));
-                        localService.buffer.removeAll(localService.sendingbuffer);
-                        sendToServer("B|" + new JSONArray(localService.sendingbuffer), false);
-                    } else {
-                        addlog("not send buffer becase, sendingbuffersize=" + localService.sendingbuffer.size() + " localService.buffer.size=" + localService.buffer.size());
-                    }
-                    sendToServer("TC", false);
-                }
-                if (OsMoDroid.settings.getBoolean("needsendgcmregid", true)&&!OsMoDroid.settings.getString("GCMRegId", "").equals("")) {
-                    LocalService.myIM.sendToServer("PUSH|" + OsMoDroid.settings.getString("GCMRegId", ""), false);
-                }
-                if (needtosendpreference) {
-                    sendToServer("DCU", false);
-                }
-                if (LocalService.channelList.isEmpty()) {
-                    sendToServer("GROUP", false);
-                } else {
-                    for (String s : LocalService.gcmtodolist) {
-                        parseEx(s, true);
-                    }
-                    LocalService.gcmtodolist.clear();
-                    localService.addlog("set connectcompleted=true");
-                    LocalService.connectcompleted = true;
-                    OsMoDroid.saveObject(localService, LocalService.gcmtodolist, OsMoDroid.GCMTODOLIST);
-                }
-
-
-//                                if (LocalService.deviceList.isEmpty())
-//                                    {
-//                                        sendToServer("DEVICE", false);
-//                                    }
-                setkeepAliveAlarm();
-                localService.internetnotify(true);
-                if (!OsMoDroid.settings.getBoolean("subscribebackground", false)) {
-                    if (OsMoDroid.gpslocalserviceclientVisible) {
-                        sendToServer("PG:1", false);
-                    }
-                } else {
-                    sendToServer("PG:1", false);
-                }
-
-                if (jo.has("group")) {
-                    if (jo.optInt("group") == 1) {
-                        localService.globalsend = true;
-                    }
-                    if (jo.optInt("group") == 0) {
-                        localService.globalsend = false;
-                    }
-                    localService.refresh();
-                }
-                if (jo.has("sos")) {
-                    if (jo.optInt("sos") == 1) {
-                        localService.sos = true;
-                    } else {
-                        localService.sos = false;
-                    }
-                    localService.refresh();
-                }
-                if (jo.has("permanent")) {
-                    if (jo.optInt("permanent") == 1) {
-                        OsMoDroid.permanent = true;
-                    } else {
-                        OsMoDroid.permanent = false;
-                    }
-                }
-                if(OsMoDroid.settings.getString("udptoken","").equals("")||OsMoDroid.settings.getString("udptoken","").equals("null")) {
-                    sendToServer("TOKEN", false);
-                }
-                localService.refresh();
-
-            } else {
-
-                if (jo.optInt("error") == 10 || jo.optInt("error") == 100 || jo.optString("token").equals("false")) {
-                    localService.internetnotify(false);
-                    close();
-                    localService.notifywarnactivity(LocalService.unescape(jo.optString("error_description")), false, OsMoDroid.NOTIFY_NO_DEVICE);
-                    //localService.motd=LocalService.unescape(result.Jo.optString("error_description"));
-                    localService.sendid();
-                    localService.refresh();
-                } else if (jo.optInt("error") == 67 || jo.optInt("error") == 68 || jo.optInt("error") == 69) {
-                    close();
-                    localService.notifywarnactivity(LocalService.unescape(jo.optString("error_description")), true, OsMoDroid.NOTIFY_EXPIRY_USER);
-                    localService.motd = LocalService.unescape(jo.optString("error_description"));
-                    localService.refresh();
-                } else if (jo.optInt("error") == 21) {
-                    close();
-                    localService.notifywarnactivity(LocalService.unescape(jo.optString("error_description")), true, 0);
-                    localService.motd = LocalService.unescape(jo.optString("error_description"));
-                    localService.refresh();
-                }
-
-
-            }
-            localService.refresh();
-        }
+        
         if (command.equals("HISTORY")) {
             for (int i = 0; i < ja.length(); i++) {
                 try {
@@ -991,7 +747,7 @@ public class IM implements ResultsListener {
                 Log.d(getClass().getSimpleName(), "write group list to file");
             }
             OsMoDroid.saveObject(localService,LocalService.channelList, OsMoDroid.CHANNELLIST);
-            //sendToServer("GROUP", false);
+            //sendUDP("GROUP", false);
         }
         if (command.equals("GD") && !jo.has("error")) {
             for (Channel ch : LocalService.channelList) {
@@ -1032,103 +788,35 @@ public class IM implements ResultsListener {
                 start();
 
             } else {
-                sendToServer("GROUP", false);
+                sendUDP("GROUP");
             }
         }
         if (command.equals("NEEDSENDALARM")) {
-            sendToServer("ALARM", false);
+            sendUDP("ALARM");
         }
         if (command.equals("WIDGETSOS")) {
-            sendToServer("SOS", false);
+            sendUDP("SOS");
         }
         if (command.equals("NEEDSENDNET")) {
             if (!executedCommandArryaList.contains("NET")) {
 
                 JSONObject postjson = getNET();
-                sendToServer("NET|" + postjson.toString(), false);
+                sendUDP("NET|" + postjson.toString());
             }
         }
         if (command.equals("NEEDSENDTOKEN")&&addict!=null&&!addict.equals("")) {
-            sendToServer("PUSH|" + addict, false);
+            sendUDP("PUSH|" + addict);
         }
 
         if (command.equals("NEEDSENDCHARGE")) {
-            sendToServer("CHARGE|" + addict, false);
+            sendUDP("CHARGE|" + addict);
         }
         if (command.equals("SMS")) {
-            sendToServer("T|" + addict + "X", false);
+            sendUDP("T|" + addict + "X");
         }
-        if (command.equals("TO")) {
-            localService.sessionstarted = true;
-            sendBytes = 0;
-            recievedBytes = 0;
-            connectcount = 0;
-            erorconenctcount = 0;
-            needopensession = false;
-            OsMoDroid.editor.putString("viewurl", "https://osmo.mobi/s/" + jo.optString("url"));
-            OsMoDroid.editor.commit();
-            if (localService.sendingbuffer.size() == 0 && localService.buffer.size() != 0) {
-                localService.sendingbuffer.addAll(localService.buffer.subList(0,localService.buffer.size()>100?100:localService.buffer.size()));
-                localService.buffer.removeAll(localService.sendingbuffer);
-                sendToServer("B|" + new JSONArray(localService.sendingbuffer), false);
-            } else {
-                addlog("not send buffer becase, sendingbuffersize=" + localService.sendingbuffer.size() + " localService.buffer.size=" + localService.buffer.size());
-            }
-            localService.refresh();
-        }
-        if (command.equals("TC")) {
-            localService.sessionstarted = false;
-            needclosesession = false;
-            OsMoDroid.editor.putString("viewurl", "");
-            OsMoDroid.editor.commit();
-            localService.refresh();
-        }
-        if (command.equals("T")) {
-            localService.sendcounter++;
-            localService.sending = "";
-            if (localService.sendingbuffer.size() == 0 && localService.buffer.size() != 0) {
-                localService.sendingbuffer.addAll(localService.buffer.subList(0,localService.buffer.size()>100?100:localService.buffer.size()));
-                localService.buffer.removeAll(localService.sendingbuffer);
-                sendToServer("B|" + new JSONArray(localService.sendingbuffer), false);
-            } else {
-                addlog("not send buffer becase, sendingbuffersize=" + localService.sendingbuffer.size() + " localService.buffer.size=" + localService.buffer.size());
-            }
-            if (localService.sendsound && !localService.mayak) {
-                localService.soundPool.play(localService.sendpalyer, 1f, 1f, 1, 0, 1f);
-                localService.mayak = false;
-            }
-            String time = OsMoDroid.sdf3.format(new Date(System.currentTimeMillis()));
-            localService.sendresult = time + " " + localService.getString(R.string.succes);
-            localService.refresh();
-            return;
-        }
-        if (command.equals("OK")) {
-            localService.sendcounter++;
-            if (localService.sendsound && !localService.mayak) {
-                localService.soundPool.play(localService.sendpalyer, 1f, 1f, 1, 0, 1f);
-                localService.mayak = false;
-            }
-            String time = OsMoDroid.sdf3.format(new Date(System.currentTimeMillis()));
-            localService.sendresult = time + " " + localService.getString(R.string.succes);
-            localService.refresh();
-            return;
-        }
-
-        if (command.equals("B")) {
-            localService.buffercounter = localService.buffercounter - localService.sendingbuffer.size();
-            localService.sendcounter = localService.sendcounter + localService.sendingbuffer.size();
-            localService.sendingbuffer.clear();
-            if (localService.sendingbuffer.size() == 0 && localService.buffer.size() != 0) {
-                localService.sendingbuffer.addAll(localService.buffer.subList(0,localService.buffer.size()>100?100:localService.buffer.size()));
-                localService.buffer.removeAll(localService.sendingbuffer);
-                sendToServer("B|" + new JSONArray(localService.sendingbuffer), false);
-            } else {
-                addlog("not send buffer becase, sendingbuffersize=" + localService.sendingbuffer.size() + " localService.buffer.size=" + localService.buffer.size());
-            }
-            localService.refresh();
-        }
+        
         if (command.equals("PP")) {
-            sendToServer("PP", false);
+            sendUDP("PP");
         }
         if (command.equals("GCM")) {
             OsMoDroid.editor.putBoolean("needsendgcmregid", false);
@@ -1147,7 +835,7 @@ public class IM implements ResultsListener {
         }
         if (command.equals("RC")) {
             if (param.equals("PP")) {
-                sendToServer("PP", false);
+                sendUDP("PP");
             }
             if (param.equals(OsMoDroid.SOS)) {
                 Intent dialogIntent = new Intent(localService, SosActivity.class);
@@ -1178,14 +866,14 @@ public class IM implements ResultsListener {
                         String token = task.getResult();
                         if(token!=null&&!token.equals(""))
                         {
-                            sendToServer("PUSH|" + token, false);
+                            sendUDP("PUSH|" + token);
                         }
                     }
                 }) ;
                 if(! OsMoDroid.settings.getString("GCMRegId", "").equals("")) {
-                    sendToServer("PUSH|" + OsMoDroid.settings.getString("GCMRegId", "no"), false);
+                    sendUDP("PUSH|" + OsMoDroid.settings.getString("GCMRegId", "no"));
                 }
-                sendToServer("RCR:" + OsMoDroid.TRACKER_GCM_ID + "|1", false);
+                sendUDP("RCR:" + OsMoDroid.TRACKER_GCM_ID + "|1");
 
             }
             if (param.equals(OsMoDroid.UPDATE_MOTD)) {
@@ -1193,28 +881,28 @@ public class IM implements ResultsListener {
                 OsMoDroid.editor.putString("startmessage", LocalService.unescape(addict));
                 OsMoDroid.editor.commit();
                 localService.refresh();
-                sendToServer("RCR:" + OsMoDroid.UPDATE_MOTD + "|1", false);
+                sendUDP("RCR:" + OsMoDroid.UPDATE_MOTD + "|1");
             }
 
             if (param.equals(OsMoDroid.FLASH_ON)) {
                 localService.alertHandler.removeCallbacks(flickRunable);
                 flashOn();
-                sendToServer("RCR:" + OsMoDroid.FLASH_ON + "|1", false);
+                sendUDP("RCR:" + OsMoDroid.FLASH_ON + "|1");
             }
             if (param.equals(OsMoDroid.FLASH_OFF)) {
                 localService.alertHandler.removeCallbacks(flickRunable);
                 flashoff();
-                sendToServer("RCR:" + OsMoDroid.FLASH_OFF + "|1", false);
+                sendUDP("RCR:" + OsMoDroid.FLASH_OFF + "|1");
             }
             if (param.equals(OsMoDroid.FLASH_BLINK)) {
                 localService.alertHandler.removeCallbacks(flickRunable);
                 flick();
-                sendToServer("RCR:" + OsMoDroid.FLASH_BLINK + "|1", false);
+                sendUDP("RCR:" + OsMoDroid.FLASH_BLINK + "|1");
             }
             if (param.equals(OsMoDroid.CHANGE_MOTD_TEXT)) {
                 localService.motd = addict;
                 localService.refresh();
-                sendToServer("RCR:" + OsMoDroid.CHANGE_MOTD_TEXT + "|1", false);
+                sendUDP("RCR:" + OsMoDroid.CHANGE_MOTD_TEXT + "|1");
             }
 
 
@@ -1231,8 +919,8 @@ public class IM implements ResultsListener {
                                     new File(dir, children[i]).delete();
                                 }
                             }
-                            sendToServer("GROUP", false);
-                            sendToServer("RCR:" + OsMoDroid.REFRESH_GROUPS + "|1", false);
+                            sendUDP("GROUP");
+                            sendUDP("RCR:" + OsMoDroid.REFRESH_GROUPS + "|1");
                         } catch (Exception e) {
 
                             e.printStackTrace();
@@ -1240,8 +928,8 @@ public class IM implements ResultsListener {
                             e.printStackTrace(new PrintWriter(sw));
                             String exceptionAsString = sw.toString();
                             LocalService.addlog(exceptionAsString);
-                            sendToServer("GROUP", false);
-                            sendToServer("RCR:" + OsMoDroid.REFRESH_GROUPS + "|1", false);
+                            sendUDP("GROUP");
+                            sendUDP("RCR:" + OsMoDroid.REFRESH_GROUPS + "|1");
                         }
                     }
                 };
@@ -1250,45 +938,45 @@ public class IM implements ResultsListener {
 
             }
             if (param.equals(OsMoDroid.REFRESH_DEVICES)) {
-                sendToServer("DEVICE", false);
-                sendToServer("RCR:" + OsMoDroid.REFRESH_DEVICES + "|1", false);
+                sendUDP("DEVICE");
+                sendUDP("RCR:" + OsMoDroid.REFRESH_DEVICES + "|1");
             }
             if (param.equals(OsMoDroid.TRACKER_FOLLOW_START)) {
                 try {
                     localService.startFollow(addict);
-                    sendToServer("RCR:" + OsMoDroid.TRACKER_FOLLOW_START + "|1", false);
+                    sendUDP("RCR:" + OsMoDroid.TRACKER_FOLLOW_START + "|1");
                 } catch (Exception e) {
-                    sendToServer("RCR:" + OsMoDroid.TRACKER_FOLLOW_START + "|0", false);
+                    sendUDP("RCR:" + OsMoDroid.TRACKER_FOLLOW_START + "|0");
                 }
             }
             if (param.equals(OsMoDroid.TRACKER_FOLLOW_STOP)) {
                 localService.stopFollow();
-                sendToServer("RCR:" + OsMoDroid.TRACKER_FOLLOW_STOP + "|1", false);
+                sendUDP("RCR:" + OsMoDroid.TRACKER_FOLLOW_STOP + "|1");
             }
             if (param.equals(OsMoDroid.TRACKER_SESSION_START)) {
                 if (!localService.state) {
                     localService.startServiceWork(true);
                 }
-                sendToServer("RCR:" + OsMoDroid.TRACKER_SESSION_START + "|1", false);
+                sendUDP("RCR:" + OsMoDroid.TRACKER_SESSION_START + "|1");
             }
             if (param.equals(OsMoDroid.TRACKER_SESSION_STOP)) {
                 if (localService.state) {
                     localService.stopServiceWork(true);
                 }
-                sendToServer("RCR:" + OsMoDroid.TRACKER_SESSION_STOP + "|1", false);
+                sendUDP("RCR:" + OsMoDroid.TRACKER_SESSION_STOP + "|1");
             }
             if (param.equals(OsMoDroid.TRACKER_SESSION_CONTINUE)) {
                 if (localService.paused) {
                     localService.startServiceWork(false);
                 }
-                sendToServer("RCR:" + OsMoDroid.TRACKER_SESSION_PAUSE + "|1", false);
+                sendUDP("RCR:" + OsMoDroid.TRACKER_SESSION_PAUSE + "|1");
             }
             if (param.equals(OsMoDroid.TRACKER_SESSION_PAUSE)) {
                 if (localService.state) {
                     localService.setPause(true);
                     localService.stopServiceWork(false);
                 }
-                sendToServer("RCR:" + OsMoDroid.TRACKER_SESSION_PAUSE + "|1", false);
+                sendUDP("RCR:" + OsMoDroid.TRACKER_SESSION_PAUSE + "|1");
             }
             if (param.equals(OsMoDroid.TTS)) {
                 if (OsMoDroid.settings.getBoolean("ttsremote", false) && localService.tts != null) {
@@ -1296,23 +984,23 @@ public class IM implements ResultsListener {
                 }
             }
             if (param.equals(OsMoDroid.SIGNAL_STATUS)) {
-                sendToServer("RCR:" + OsMoDroid.SIGNAL_STATUS + '|' + (localService.signalisationOn ? 1 : 0), false);
+                sendUDP("RCR:" + OsMoDroid.SIGNAL_STATUS + '|' + (localService.signalisationOn ? 1 : 0));
             }
             if (param.equals(OsMoDroid.ALARM_ON)) {
                 localService.playAlarmOn();
-                sendToServer("RCR:" + OsMoDroid.ALARM_ON + "|1", false);
+                sendUDP("RCR:" + OsMoDroid.ALARM_ON + "|1");
             }
             if (param.equals(OsMoDroid.ALARM_OFF)) {
                 localService.playAlarmOff();
-                sendToServer("RCR:" + OsMoDroid.ALARM_OFF + "|1", false);
+                sendUDP("RCR:" + OsMoDroid.ALARM_OFF + "|1");
             }
             if (param.equals(OsMoDroid.SIGNAL_ON)) {
                 localService.enableSignalisation();
-                sendToServer("RCR:" + OsMoDroid.SIGNAL_ON + "|1", false);
+                sendUDP("RCR:" + OsMoDroid.SIGNAL_ON + "|1");
             }
             if (param.equals(OsMoDroid.SIGNAL_OFF)) {
                 localService.disableSignalisation();
-                sendToServer("RCR:" + OsMoDroid.SIGNAL_OFF + "|1", false);
+                sendUDP("RCR:" + OsMoDroid.SIGNAL_OFF + "|1");
             }
             if (param.equals(OsMoDroid.TRACKER_BATTERY_INFO)) {
                 try {
@@ -1359,7 +1047,7 @@ public class IM implements ResultsListener {
                 localService.vibrate(localService, 3000);
             }
             if (param.equals(OsMoDroid.TRACKER_EXIT)) {
-                sendToServer("RCR:" + OsMoDroid.TRACKER_EXIT + "|1", false);
+                sendUDP("RCR:" + OsMoDroid.TRACKER_EXIT + "|1");
                 LocalService.gcmtodolist.clear();
                 localService.addlog("set connectcompleted=true");
                 LocalService.connectcompleted = true;
@@ -1374,7 +1062,7 @@ public class IM implements ResultsListener {
                 localService.setpreferences(jo, localService);
             }
             if (param.equals(OsMoDroid.WHERE_GPS_ONLY)) {
-                sendToServer("RCR:" + OsMoDroid.WHERE_GPS_ONLY + "|1", false);
+                sendUDP("RCR:" + OsMoDroid.WHERE_GPS_ONLY + "|1");
                 localService.where = true;
                 List<String> list = myManager.getProviders(true);
                 if (list.contains(LocationManager.GPS_PROVIDER)) {
@@ -1411,7 +1099,7 @@ public class IM implements ResultsListener {
                 }, 5 * 60 * 1000);
             }
             if (param.equals(OsMoDroid.WHERE_NETWORK_ONLY)) {
-                sendToServer("RCR:" + OsMoDroid.WHERE_NETWORK_ONLY + "|1", false);
+                sendUDP("RCR:" + OsMoDroid.WHERE_NETWORK_ONLY + "|1");
                 localService.where = true;
                 List<String> list = myManager.getProviders(true);
                 if (list.contains(LocationManager.NETWORK_PROVIDER)) {
@@ -1448,7 +1136,7 @@ public class IM implements ResultsListener {
                 }, 5 * 60 * 1000);
             }
             if (param.equals(OsMoDroid.WHERE)) {
-                sendToServer("RCR:" + OsMoDroid.WHERE + "|1", false);
+                sendUDP("RCR:" + OsMoDroid.WHERE + "|1");
                 localService.where = true;
                 List<String> list = myManager.getProviders(true);
                 if (list.contains(LocationManager.GPS_PROVIDER)) {
@@ -1539,23 +1227,23 @@ public class IM implements ResultsListener {
                     }
                 if (command.equals("GE"))
                     {
-                        sendToServer("GROUP", false);
+                        sendUDP("GROUP");
                     }
                 if (command.equals("DS"))
                     {
-                        sendToServer("DEVICE", false);
+                        sendUDP("DEVICE");
                     }
                 if (command.equals("DSS"))
                     {
-                        sendToServer("DEVICE", false);
+                        sendUDP("DEVICE");
                     }
                 if (command.equals("DSA"))
                     {
-                        sendToServer("DEVICE", false);
+                        sendUDP("DEVICE");
                     }
                 if (command.equals("DSD"))
                     {
-                        sendToServer("DEVICE", false);
+                        sendUDP("DEVICE");
                     }
 
 
@@ -1618,10 +1306,10 @@ public class IM implements ResultsListener {
 //                            {
 //                                if (ch.send)
 //                                    {
-//                                        sendToServer("GC:" + ch.u, false);
+//                                        sendUDP("GC:" + ch.u, false);
 //                                    }
 //                            }
-                        //sendToServer("PG");
+                        //sendUDP("PG");
                         for (String s: LocalService.gcmtodolist)
                             {
                                 try
@@ -1814,7 +1502,7 @@ public class IM implements ResultsListener {
                             {
                                 if (jo.getBoolean("refresh"))
                                     {
-                                        sendToServer("GROUP", false);
+                                        sendUDP("GROUP");
                                     }
                             }
                         for (Channel ch : LocalService.channelList)
@@ -2340,11 +2028,11 @@ public class IM implements ResultsListener {
                         OsMoDroid.saveObject(localService,LocalService.channelList, OsMoDroid.CHANNELLIST);
                         if(gcm)
                             {
-                                sendToServer("GPI:" + param, false);
+                                sendUDP("GPI:" + param);
                             }
                         else
                             {
-                                sendToServer("GPR:" + param+'|'+eid, false);
+                                sendUDP("GPR:" + param+'|'+eid);
                             }
                     }
 
@@ -2686,7 +2374,7 @@ public class IM implements ResultsListener {
 
                                         try
                                             {
-                                                connectThread.start();
+
                                             }
                                         catch (IllegalThreadStateException e)
                                             {
@@ -2760,73 +2448,7 @@ public class IM implements ResultsListener {
                         setReconnectOnError();
                     }
             }
-        public class IMWriter implements Runnable
-            {
-                public Handler handler;
-                boolean error = false;
-                @Override
-                public void run()
-                    {
-                        Looper.prepare();
-                        handler = new Handler()
-                        {
-                            @Override
-                            public void handleMessage(Message msg)
-                                {
-                                    Bundle b = msg.getData();
-                                    if (running)
-                                        {
-                                            if (socket != null && socket.isConnected() && wr != null)
-                                                {
-                                                    if (!b.getBoolean("pp"))
-                                                        {
-                                                            setReconnectAlarm(false);
-                                                        }
-                                                    try
-                                                        {
-                                                            Thread.sleep(0);
-                                                        }
-                                                    catch (InterruptedException e)
-                                                        {
-                                                            writeException(e);
-                                                            e.printStackTrace();
-                                                        }
-                                                    wr.println(b.getString("write"));
-                                                    error = wr.checkError();
-                                                    if (log)
-                                                        {
-                                                            Log.d(this.getClass().getName(), "Write " + b.getString("write") + " error=" + error);
-                                                        }
-                                                    LocalService.addlog("SocketWrite " + b.getString("write") + " error=" + error);
-                                                    if (error)
-                                                        {
-                                                            if (running)
-                                                                {
-                                                                    Log.d(this.getClass().getName(), "set recconect in error in writer");
-                                                                    setReconnectOnError();
-                                                                }
-                                                            //Looper.myLooper().quit();
-                                                        }
-                                                    else
-                                                        {
-                                                            sendBytes = sendBytes + b.getString("write").getBytes().length;
-                                                        }
-                                                }
-                                        }
-                                    else
-                                        {
-                                            LocalService.addlog("not connected now");
-                                            if (OsMoDroid.gpslocalserviceclientVisible)
-                                                {
-                                                    Toast.makeText(localService, localService.getString(R.string.CheckInternet), Toast.LENGTH_SHORT).show();
-                                                }
-                                        }
-                                    super.handleMessage(msg);
-                                }
-                        };
-                        Looper.loop();
-                    }
-            }
+        
          private  class UDPWriter implements  Runnable {
 
 
@@ -2848,7 +2470,8 @@ public class IM implements ResultsListener {
                                      InetAddress IPAddress = InetAddress.getByName("osmo.mobi");
                                      byte[] sendData = new byte[1024];
                                      sendData = b.getString("write").getBytes();
-                                     DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, workserverint);
+                                     DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress,// workserverint
+                                             24827);
                                      sendPacket.setLength(sendData.length);
                                      clientSocket.send(sendPacket);
 
@@ -2885,7 +2508,7 @@ public class IM implements ResultsListener {
                          LocalService.addlog("receive  "+ str);
                          Message message = new Message();
                          Bundle b = new Bundle();
-                         b.putString("read", str);
+                         b.putString("udpread", str);
                          message.setData(b);
                          if (localService.alertHandler != null) {
                              localService.alertHandler.sendMessage(message);
@@ -2899,190 +2522,8 @@ public class IM implements ResultsListener {
              }
          }
 
-        private class IMReader implements Runnable
-            {
-                private StringBuilder stringBuilder = new StringBuilder(1024);
-                private String str;
-                @Override
-                public void run()
-                    {
-                        while (connOpened && !Thread.currentThread().isInterrupted())
-                            {
-                                try
-                                    {
-                                        stringBuilder.setLength(0);
-                                        int c = 0;
-                                        int i = 0;
-                                        while (!(c == 10) && !Thread.currentThread().isInterrupted())
-                                            {
-                                                c = rd.read();
-                                                if (!(c == -1))
-                                                    {
-                                                        stringBuilder.append((char) c);
-                                                    }
-                                                else
-                                                    {
-                                                        if (log)
-                                                            {
-                                                                Log.d(this.getClass().getName(), "inputstream c=-1 ");
-                                                            }
-                                                        LocalService.addlog("inputstream c=-1 ");
-                                                        setReconnectOnError();
-                                                        break;
-                                                    }
-                                                i = i + 1;
-                                            }
-                                        if (stringBuilder.length() != 0 && connOpened)
-                                            {
-                                                str = stringBuilder.toString();
-                                                recievedBytes = recievedBytes + str.getBytes().length;
-                                                Message msg = new Message();
-                                                Bundle b = new Bundle();
-                                                b.putString("read", str);
-                                                msg.setData(b);
-                                                if (localService.alertHandler != null)
-                                                    {
-                                                        localService.alertHandler.sendMessage(msg);
-                                                    }
-                                                else
-                                                    {
-                                                        LocalService.addlog("panic!alert handler is null ");
-                                                        if (log)
-                                                            {
-                                                                Log.d(this.getClass().getName(), " alert handler is null!!!");
-                                                            }
-                                                    }
-                                            }
-                                    }
-                                catch (IOException e)
-                                    {
-                                        if (running)
-                                            {
-                                                Log.d(this.getClass().getName(), "set recconectonerror in reader");
-                                                setReconnectOnError();
-                                            }
-                                        writeException(e);
-                                        e.printStackTrace();
-                                    }
-                            }
-                    }
-            }
-        private class IMConnect implements Runnable
-            {
-                @Override
-                public void run()
-                    {
-
-                        SocketAddress sockAddr;
-                        SSLContext sslContext;
-                        connectcount++;
-                        try
-                            {
-
-                                        InetAddress serverAddr = InetAddress.getByName(workservername);
-                                        sockAddr = new InetSocketAddress(serverAddr, workserverint);
-//                                InetAddress serverAddr = InetAddress.getByName(SERVER_IP);
-//                                        sockAddr = new InetSocketAddress(serverAddr, SERVERPORT);
-
-
-                                socket = new Socket();
-
-
-                                if (log){Log.d(this.getClass().getName(), "sockAddr=" + sockAddr);}
-                                LocalService.addlog("SSL TCP Try to connect sockAddr=" + sockAddr);
-                                        socket.connect(sockAddr, RECONNECT_TIMEOUT);
-                                setReconnectAlarm(false);
-                                        //socket.connect(new InetSocketAddress("osmo.mobi", 5050), 5000);
-
-                                //
-                               // TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
-
-                              //  trustManagerFactory.init((KeyStore)null);
-                              //  TrustManager[] trustAndroidCerts = trustManagerFactory.getTrustManagers();
-                                        //sslContext.init(null, null, null);
-                                        TrustManager[] trustAllCerts = new TrustManager[]{
-                                                new X509TrustManager()
-                                                    {
-                                                        public X509Certificate[] getAcceptedIssuers()
-                                                            {
-                                                                X509Certificate[] myTrustedAnchors = new X509Certificate[0];
-                                                                return myTrustedAnchors;
-                                                            }
-                                                        @Override
-                                                        public void checkClientTrusted(X509Certificate[] certs, String authType)
-                                                            {
-                                                            }
-                                                        @Override
-                                                        public void checkServerTrusted(X509Certificate[] certs, String authType)
-                                                            {
-                                                            }
-                                                    }
-                                        };
-                                        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB)
-                                            {
-                                                 sslContext = SSLContext.getInstance("TLS");
-                                                sslContext.init(null,trustAllCerts,null);
-                                            }
-                                else
-                                            {
-                                                 sslContext = SSLContext.getDefault();
-                                            }
-                                        SSLSocketFactory socketFactory = sslContext.getSocketFactory();
-                                      //  sslsocket = (SSLSocket) socketFactory.createSocket(socket, workservername,workserverint, false);
-                                sslsocket = (SSLSocket) socketFactory.createSocket(socket, workservername   ,workserverint, false);
-                                sslsocket.setUseClientMode(true);
-                                        SSLSession sslSession = sslsocket.getSession();
-                                        if (log){Log.d(this.getClass().getName(), "Secured=" + sslSession.isValid());}
-                                        if (!sslSession.isValid())
-                                            {
-                                                throw new Exception();
-                                            }
-                                //workserverint = -1;
-                                //workservername = "";
-                                        LocalService.addlog("SSL TCP Connected");
-                                        rd = new BufferedReader(new InputStreamReader(sslsocket.getInputStream()));
-                                        wr = new PrintWriter(new OutputStreamWriter(sslsocket.getOutputStream(), "UTF8"), true);
-
-
-                                socketRetryInt = 0;
-                                connOpened = true;
-                                connecting = false;
-
-                                localService.alertHandler.post(new Runnable() {
-                                    @Override
-                                    public void run() {
-
-                                        localService.refresh();
-                                    }
-                                });
-
-                                readerThread.start();
-                                //sendToServer("INIT|" + token, false);
-                                sendToServer("AUTH|" + OsMoDroid.settings.getString("newkey", ""), false);
-                                warnedsocketconnecterror=false;
-                            }
-                        catch (final Exception e1)
-                            {
-                                erorconenctcount++;
-                                socketRetryInt++;
-                                e1.printStackTrace();
-                                connecting = false;
-                                setReconnectOnError();
-
-                                            LocalService.addlog("could no conenct to socket " + socketRetryInt + e1.getMessage());
-                                if(socketRetryInt>5)
-                                    {
-                                        workserverint=-1;
-                                    }
-
-                                if (socketRetryInt > 3 && !OsMoDroid.settings.getBoolean("understand", false)&&!warnedsocketconnecterror)
-                                    {
-                                        warnedsocketconnecterror=true;
-                                        //localService.notifywarnactivity(localService.getString(R.string.checkfirewall), false, OsMoDroid.NOTIFY_NO_CONNECT);
-                                    }
-                            }
-                    }
-            }
+        
+        
         void flashOn()
             {
                 flicking=true;
@@ -3097,7 +2538,7 @@ public class IM implements ResultsListener {
                 if (camera == null)
                     {
                         addlog("no camera");
-                  //      sendToServer("RCR:" + OsMoDroid.FLASH_ON + "|0", false);
+                  //      sendUDP("RCR:" + OsMoDroid.FLASH_ON + "|0", false);
                     }
                 else
                     {
@@ -3128,12 +2569,12 @@ public class IM implements ResultsListener {
                                             {
                                             }
                                     });
-                            //    sendToServer("RCR:" + OsMoDroid.FLASH_ON + "|1", false);
+                            //    sendUDP("RCR:" + OsMoDroid.FLASH_ON + "|1", false);
                             }
                         catch (Exception e)
                             {
                                 addlog("cannot start preview");
-                               // sendToServer("RCR:" + OsMoDroid.FLASH_ON + "|0", false);
+                               // sendUDP("RCR:" + OsMoDroid.FLASH_ON + "|0", false);
                             }
                     }
             }

@@ -95,12 +95,12 @@ public class ChannelDevicesFragment extends Fragment implements ResultsListener
                         if (item.getItemId() == 8)
                             {
                                 //REMOTE_CONTROL:[tracker_id]|DESTROY_DEVICE
-                                LocalService.myIM.sendToServer("SRC:" + LocalService.currentchanneldeviceList.get((int) subacmi.id).u + "|" + OsMoDroid.TRACKER_SESSION_START, true);
+                                LocalService.myIM.sendUDP("SRC:" + LocalService.currentchanneldeviceList.get((int) subacmi.id).u + "|" + OsMoDroid.TRACKER_SESSION_START);
                             }
                         if (item.getItemId() == 9)
                             {
                                 //REMOTE_CONTROL:[tracker_id]|DESTROY_DEVICE
-                                globalActivity.mService.myIM.sendToServer("SRC:" + LocalService.currentchanneldeviceList.get((int) subacmi.id).u + "|" + OsMoDroid.TRACKER_SESSION_STOP, true);
+                                globalActivity.mService.myIM.sendUDP("SRC:" + LocalService.currentchanneldeviceList.get((int) subacmi.id).u + "|" + OsMoDroid.TRACKER_SESSION_STOP, true);
                             }
                         if (item.getItemId() == 10)
                             {
@@ -124,7 +124,7 @@ public class ChannelDevicesFragment extends Fragment implements ResultsListener
                                                         {
                                                             if (!(inputhash.getText().toString().equals("")))
                                                                 {
-                                                                    globalActivity.mService.myIM.sendToServer("SRC:" + LocalService.currentchanneldeviceList.get((int) subacmi.id).u + "|" + "TTS:" + inputhash.getText().toString(), true);
+                                                                    globalActivity.mService.myIM.sendUDP("SRC:" + LocalService.currentchanneldeviceList.get((int) subacmi.id).u + "|" + "TTS:" + inputhash.getText().toString(), true);
                                                                 }
                                                         }
                                                 })
@@ -142,23 +142,23 @@ public class ChannelDevicesFragment extends Fragment implements ResultsListener
                             }
                         if (item.getItemId() == 11)
                             {
-                                globalActivity.mService.myIM.sendToServer("SRC:" + LocalService.currentchanneldeviceList.get((int) subacmi.id).u + "|" + OsMoDroid.ALARM_ON, true);
+                                globalActivity.mService.myIM.sendUDP("SRC:" + LocalService.currentchanneldeviceList.get((int) subacmi.id).u + "|" + OsMoDroid.ALARM_ON, true);
                             }
                         if (item.getItemId() == 12)
                             {
-                                globalActivity.mService.myIM.sendToServer("SRC:" + LocalService.currentchanneldeviceList.get((int) subacmi.id).u + "|" + OsMoDroid.ALARM_OFF, true);
+                                globalActivity.mService.myIM.sendUDP("SRC:" + LocalService.currentchanneldeviceList.get((int) subacmi.id).u + "|" + OsMoDroid.ALARM_OFF, true);
                             }
                         if (item.getItemId() == 13)
                             {
-                                globalActivity.mService.myIM.sendToServer("SRC:" + LocalService.currentchanneldeviceList.get((int) subacmi.id).u + "|" + OsMoDroid.SIGNAL_ON, true);
+                                globalActivity.mService.myIM.sendUDP("SRC:" + LocalService.currentchanneldeviceList.get((int) subacmi.id).u + "|" + OsMoDroid.SIGNAL_ON, true);
                             }
                         if (item.getItemId() == 14)
                             {
-                                globalActivity.mService.myIM.sendToServer("SRC:" + LocalService.currentchanneldeviceList.get((int) subacmi.id).u + "|" + OsMoDroid.SIGNAL_OFF, true);
+                                globalActivity.mService.myIM.sendUDP("SRC:" + LocalService.currentchanneldeviceList.get((int) subacmi.id).u + "|" + OsMoDroid.SIGNAL_OFF, true);
                             }
                         if (item.getItemId() == 15)
                             {
-                                globalActivity.mService.myIM.sendToServer("SRC:" + LocalService.currentchanneldeviceList.get((int) subacmi.id).u + "|" + OsMoDroid.WHERE, true);
+                                globalActivity.mService.myIM.sendUDP("SRC:" + LocalService.currentchanneldeviceList.get((int) subacmi.id).u + "|" + OsMoDroid.WHERE, true);
                             }
                         if (item.getItemId() == 6)
                             {
@@ -267,7 +267,7 @@ public class ChannelDevicesFragment extends Fragment implements ResultsListener
                 if(LocalService.currentChannel!=null)
                     {
                         globalActivity.actionBar.setTitle(getString(R.string.chanal) + ' ' + LocalService.currentChannel.name);
-                        LocalService.myIM.sendToServer("GC:" + LocalService.currentChannel.u, false);
+                        LocalService.myIM.sendUDP("GC:" + LocalService.currentChannel.u, false);
                     }
                 super.onResume();
             }
@@ -294,9 +294,9 @@ public class ChannelDevicesFragment extends Fragment implements ResultsListener
             {
                 if (item.getItemId() == 3)
                     {
-                        //globalActivity.mService.myIM.sendToServer("GROUP_CONNECT:"+LocalService.currentChannel.group_id);
-                        globalActivity.mService.myIM.sendToServer("GROUP", true);
-                        //globalActivity.mService.myIM.sendToServer("GC:"+LocalService.currentChannel.u);
+                        //globalActivity.mService.myIM.sendUDP("GROUP_CONNECT:"+LocalService.currentChannel.group_id);
+                        globalActivity.mService.myIM.sendUDP("GROUP", true);
+                        //globalActivity.mService.myIM.sendUDP("GC:"+LocalService.currentChannel.u);
                     }
                 if (item.getItemId() == 4)
                     {
@@ -398,7 +398,7 @@ public class ChannelDevicesFragment extends Fragment implements ResultsListener
                                             try
                                                 {
                                                     postjson.put("text", input.getText().toString());
-                                                    globalActivity.mService.myIM.sendToServer("GCS:" + LocalService.currentChannel.u + '|' + postjson.toString(), true);
+                                                    globalActivity.mService.myIM.sendUDP("GCS:" + LocalService.currentChannel.u + '|' + postjson.toString(), true);
                                                     //http://apim.esya.ru/?key=H8&query=om_channel_chat_post&format=jsonp
                                                     //json={"channel":"51","device":"40","text":"789"}
                                                     //t.add(Netutil.newapicommand((ResultsListener)ChannelDevicesFragment.this,(Context)getSherlockActivity(), "om_channel_chat_post","json="+postjson.toString()));
